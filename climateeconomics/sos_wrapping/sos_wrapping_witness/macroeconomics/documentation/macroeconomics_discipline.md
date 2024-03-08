@@ -8,7 +8,7 @@
 - Shares of investment in  ($energy$ and $non\ energy$): share of total investment that goes to energy sector and non-energy sectors
 - Damage to productivity ($damage{\textunderscore}to{\textunderscore}productivity$): if True: apply damage to productivity. If False: Apply damage only to production. 
 - CO2 Emissions: dataframe with C02 emissions per year in Gt 
-- C02 taxes($CO2{\textunderscore}taxes$): C02 taxes per year in\$/tC02 
+- C02 taxes($CO2{\textunderscore}taxes$): C02 taxes per year in \$/tC02 
 - Initial rate of time preference ($init{\textunderscore}rate{\textunderscore}time{\textunderscore}pref$)
 - Sector list ($sector{\textunderscore}list$): list of sectors
 - Section list ($section{\textunderscore}list$): list of all sub-sectors
