@@ -74,6 +74,7 @@ class Population:
         self.kcal_pc_ref = inputs['kcal_pc_ref']
         self.theta_diet = inputs['theta_diet']
         self.activate_climate_effect_on_population = inputs['assumptions_dict']['activate_climate_effect_population']
+        self.activate_pandemic_effect_on_population = inputs['assumptions_dict']['activate_pandemic_effect_population']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
 
@@ -285,6 +286,8 @@ class Population:
 
         # Add pandemic impact on death rate
         pandemic_death_rate = self.pandemic_param_df['mortality'].values
+        if not self.activate_pandemic_effect_on_population:
+            pandemic_death_rate *= 0
 
         # Fill the year key in each death rate dict
         # FIXME: why do we have [year] on the left and side and not also on the right hand side?
@@ -386,7 +389,14 @@ class Population:
 
     def compute(self, in_dict) -> tuple[DataFrame, DataFrame, dict[str, DataFrame], DataFrame, dict, DataFrame, DataFrame]:
         """
-        Compute all
+        Compute all, returning tuple of:
+            population df,
+            birth_rate df,
+            death_rate dict,
+            birth df,
+            death dict,
+            life_expectancy df,
+            working_age_pop df,
         """
         self.create_dataframe()
         year_range = self.years_range
@@ -446,7 +456,7 @@ class Population:
         self.death_rate_df = DataFrame.from_dict(
             self.death_rate_df_dict, orient='index', columns=self.column_list)
 
-        # recontruction of the death rate_dict with dataframes instead f
+        # recontruction of the death rate_dict with dataframes instead of
         # ditionaries at the end of the year loop
         self.death_rate_dict = {'base': self.base_death_rate_df,
                                 'climate': self.climate_death_rate_df,
@@ -486,6 +496,7 @@ class Population:
         d_death_rate_climate_d_output = {}
         d_death_d_output = {}
         d_pop_1549_d_output = np.zeros((nb_years, nb_years))
+        d_pop_disabled_d_output = np.zeros((nb_years, nb_years))
 
         for year in self.years_range:
             if year == self.year_end:
@@ -615,7 +626,7 @@ class Population:
 
     def d_climate_death_rate_d_output(self, year, d_base_death_rate):
         """
-        for every columns of death rate dataframe create a dictionary that contains all derivatives wrt temp
+        for every columns of climate death rate dataframe create a dictionary that contains all derivatives wrt output
         """
         nb_years = (self.year_end - self.year_start + 1)
         iyear = year - self.year_start
