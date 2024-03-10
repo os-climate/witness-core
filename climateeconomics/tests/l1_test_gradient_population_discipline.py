@@ -444,6 +444,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
         assumptions_dict['activate_climate_effect_population'] = False
+        assumptions_dict['activate_pandemic_effect_population'] = False
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,

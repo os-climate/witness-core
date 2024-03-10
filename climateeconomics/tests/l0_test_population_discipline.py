@@ -210,6 +210,7 @@ class PopDiscTest(unittest.TestCase):
 
         assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
         assumptions_dict['activate_climate_effect_population'] = False
+        assumptions_dict['activate_pandemic_effect_population'] = False
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,

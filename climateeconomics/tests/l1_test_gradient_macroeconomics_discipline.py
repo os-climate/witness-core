@@ -700,6 +700,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
+                            'activate_pandemic_effect_population': True,
                             'invest_co2_tax_in_renewables': True
                             },
                        f'{self.name}.gross_output_in': pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}, index=self.years),
@@ -780,6 +781,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
+                            'activate_pandemic_effect_population': True,
                             'invest_co2_tax_in_renewables': True,
                             },
                        f'{self.name}.gross_output_in': pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}, index=self.years),
@@ -859,6 +861,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                            {'compute_gdp': True,
                             'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
+                            'activate_pandemic_effect_population': True,
                             'invest_co2_tax_in_renewables': False,
                             },
                        }
@@ -1098,6 +1101,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
+                            'activate_pandemic_effect_population': True,
                             'invest_co2_tax_in_renewables': True
                             },
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list

@@ -110,6 +110,7 @@ class Study(ClimateEconomicsStudyManager):
         updated_data = {f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': False,
                                                                 'activate_climate_effect_population': False,
+                                                                'activate_pandemic_effect_population': False,
                                                                 'invest_co2_tax_in_renewables': False
                                                                }}
         data_witness.append(updated_data)
