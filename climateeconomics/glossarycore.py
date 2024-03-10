@@ -459,19 +459,6 @@ class GlossaryCore:
         },
     }
 
-    PandemicParamDf = {
-        "var_name": "pandemic_param_df",
-        "type": "dataframe",
-        "default": "default_pandemic_param_df",
-        "user_level": 3,
-        "unit": "-",
-        "dataframe_descriptor": {
-            "param": ("string", None, False),
-            "disability": ("float", [0, 1e30], True),
-            "mortality": ("float", [0, 1e30], True),
-        },
-    }
-
     Alpha = "alpha"
     DamageToProductivity = "damage_to_productivity"
     DamageFractionOutput = "damage_frac_output"
@@ -1094,6 +1081,21 @@ class GlossaryCore:
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
+    }
+
+    PandemicParamDf = {
+        "var_name": "pandemic_param_df",
+        "type": "dataframe",
+        "default": "default_pandemic_param_df",
+        # "user_level": 3,
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "dataframe_descriptor": {
+            "param": ("string", None, False),
+            "disability": ("float", [0, 1e30], True),
+            "mortality": ("float", [0, 1e30], True),
+        },
     }
 
     WorkforceDfValue = "workforce_df"

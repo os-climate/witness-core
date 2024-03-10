@@ -242,6 +242,8 @@ output_pop_exponent,Output population exponent,,Parameter of WITNESS production 
 output_pop_share,Output population share,,Parameter of WITNESS production function: share of the population in the equation by opposition to the share of capital stock ( equals to 1 - share of capital stock).,,
 param_a,Productivity damage function parameter a ,,Parameter of the damage function that links temperature increase and productivity reduction.,,
 param_b,Productivity damage function parameter b,,Parameter of the damage function that links temperature increase and productivity reduction.,,
+pandemic_disability,Pandemic Disability Rate by Age,%,Rate of Disability by Age,,
+pandemic_mortality,Pandemic Mortality Rate by Age,%,Rate of Excess Mortality by Age,,
 past_production,Past production,million_tonnes,Data concerning CO2 past_pro.,,
 pc_consumption_constraint_df,Pc consumption constraint df,,Df data concerning consumption.,,
 phi_knowledge,Phi knowledge,,Data concerning CO2 phi_know.,,
