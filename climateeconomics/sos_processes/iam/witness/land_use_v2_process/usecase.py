@@ -34,7 +34,7 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, name='.Land_Use_V2', execution_engine=None,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, name='.Land_Use_V2', execution_engine=None,
                  extra_name=''):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'

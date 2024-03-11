@@ -14,25 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from copy import deepcopy
-
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
-import logging
-
+import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
 import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
-import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
-from climateeconomics.charts_tools import graph_gross_and_net_output
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-from plotly.colors import qualitative
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
@@ -114,6 +107,9 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+            fill='tonexty',  # fill area between trace0 and trace1
+            mode='lines',
+            fillcolor='rgba(200, 200, 200, 0.0)',
             name='Net CO2 emissions',
             stackgroup='one',
         ), secondary_y=False)
@@ -134,7 +130,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         fig.add_trace(go.Scatter(
             x=years,
             y=graph_gross_co2,
-            name='Gross CO2 emissions',
+            name='Total CO2 emissions',
         ), secondary_y=False)
 
         fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")

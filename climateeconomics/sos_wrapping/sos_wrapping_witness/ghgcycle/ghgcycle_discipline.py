@@ -45,7 +45,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
     }
     _maturity = 'Research'
 
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
 
     # init concentrations in each box from FUND repo in ppm/volume in 1950
     # https://github.com/fund-model/MimiFUND.jl/blob/master/src

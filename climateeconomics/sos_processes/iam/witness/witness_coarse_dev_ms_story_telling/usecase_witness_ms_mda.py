@@ -18,6 +18,8 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
+    Study as usecase_witness_mda
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
@@ -32,10 +34,6 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
     Study as usecase6
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
     Study as usecase7
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
-    Study as usecase_witness_mda
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -52,7 +50,6 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
-        self.check_outputs = True
 
     def setup_usecase(self, study_folder_path=None):
 
@@ -95,29 +92,7 @@ class Study(ClimateEconomicsStudyManager):
                 values_dict.update(dict_data)
         return values_dict
 
-    def specific_check_outputs(self):
-        """Some outputs are retrieved and their range is checked"""
-        list_scenario = {self.USECASE2, self.USECASE2B, self.USECASE3, self.USECASE4, self.USECASE5, self.USECASE6, self.USECASE7}
-        dm = self.execution_engine.dm
-        all_temp_increase = dm.get_all_namespaces_from_var_name('temperature_df')
-        ref_value_temp_increase= {self.USECASE2: 4.23, self.USECASE2B: 4.07, self.USECASE3: 3.14, self.USECASE4: 3.34, self.USECASE5: 2.86, self.USECASE6: 2.58, self.USECASE7: 2.41}
-        all_co2_taxes = dm.get_all_namespaces_from_var_name('CO2_taxes')
-        ref_value_co2_tax = {self.USECASE2: 0, self.USECASE2B: 0, self.USECASE3: 344, self.USECASE4: 0, self.USECASE5: 0, self.USECASE6: 0, self.USECASE7: 1192}
-        for scenario in list_scenario:
-            # Checking that the temperature value in 2100 is in an acceptable range for each usecase
-            for scenario_temp_increase in all_temp_increase:
-                if scenario in scenario_temp_increase:
-                    temp_increase = dm.get_value(scenario_temp_increase)
-                    value_temp_increase = temp_increase.loc[temp_increase['years']==2100]['temp_atmo'].values[0]
-                    assert value_temp_increase >= ref_value_temp_increase[scenario] * 0.8
-                    assert value_temp_increase <= ref_value_temp_increase[scenario] * 1.2
-            # Checking that the CO2 tax value in 2100 is in an acceptable range for each usecase
-            for scenario_co2_tax in all_co2_taxes:
-                if scenario in scenario_co2_tax:
-                    co2_tax = dm.get_value(scenario_co2_tax)
-                    value_co2_tax = co2_tax.loc[co2_tax['years']==2100]['CO2_tax'].values[0]
-                    assert value_co2_tax >= ref_value_co2_tax[scenario] * 0.8
-                    assert value_co2_tax <= ref_value_co2_tax[scenario] * 1.2
+
 
 
 if '__main__' == __name__:

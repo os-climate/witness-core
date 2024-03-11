@@ -16,7 +16,7 @@ limitations under the License.
 '''
 # -*- coding: utf-8 -*-
 
-from os.path import join, dirname
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
@@ -60,16 +60,14 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         values_dict = {}
         for dict_item in dc_witness.setup_usecase():
             values_dict.update(dict_item)
-        year_start = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault
 
-        data_dir = join(dirname(__file__), 'data')
-
-        economics_df_all = pd.read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
-
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
-            GlossaryCore.Years, GlossaryCore.GrossOutput]]
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+        })
 
         # energy simple outputs
         values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),

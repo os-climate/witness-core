@@ -25,7 +25,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 
 WITNESS_SERIES_NAME = 'WITNESS'
-WITNESS_YEARS = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+WITNESS_YEARS = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
 
 # CSV files keys
 REGION = 'Region'
@@ -33,7 +33,7 @@ SCENARIO = 'Scenario'
 MODEL = 'Model'
 CSV_SEP = ';'
 CSV_DEC = ','
-CSV_YRS = [str(_yr) for _yr in range(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1, 10)]
+CSV_YRS = [str(_yr) for _yr in range(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 10)]
 YEARS = GlossaryCore.Years
 
 # POSTPROCESSING DICTS KEYS (INTERNAL USAGE)

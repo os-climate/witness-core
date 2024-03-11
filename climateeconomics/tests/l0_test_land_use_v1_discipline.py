@@ -35,7 +35,7 @@ class LandUseV1TestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start =GlossaryCore.YeartStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2055
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1

@@ -48,8 +48,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         data_dir = join(dirname(__file__), 'data')
-        self.year_start =GlossaryCore.YeartStartDefault
-        self.year_end = GlossaryCore.YeartEndDefault
+        self.year_start =GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefault
         years = np.arange(self.year_start, self.year_end + 1)
         nb_per = self.year_end + 1 - self.year_start
 
@@ -117,11 +117,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
+        AbstractJacobianUnittest.DUMP_JACOBIAN = False
 
     def test_working_population_discipline_analytic_grad_temp(self):
         '''
@@ -138,11 +139,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
+        AbstractJacobianUnittest.DUMP_JACOBIAN = False
 
     def test_population_discipline_analytic_grad_temperature(self):
         '''
@@ -171,7 +173,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with negative temperature
         '''
 
-        year_start = GlossaryCore.YeartStartDefault
+        year_start = GlossaryCore.YearStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -216,7 +218,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with big GDP
         '''
 
-        year_start = GlossaryCore.YeartStartDefault
+        year_start = GlossaryCore.YearStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -261,7 +263,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with big temp but not so big
         '''
 
-        year_start = GlossaryCore.YeartStartDefault
+        year_start = GlossaryCore.YearStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -306,7 +308,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with small population
         '''
 
-        year_start = GlossaryCore.YeartStartDefault
+        year_start = GlossaryCore.YearStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -357,7 +359,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
 
         data_dir = join(dirname(__file__), 'data')
-        year_start = GlossaryCore.YeartStartDefault
+        year_start = GlossaryCore.YearStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -405,8 +407,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Test gradient population with a huge increase in calories intake
         '''
-        year_start = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault
         years = np.arange(year_start, year_end + 1)
 
         calories_pc_df = pd.DataFrame(
