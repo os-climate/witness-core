@@ -88,10 +88,10 @@ class ServicesDiscTest(unittest.TestCase):
             **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
                        weighted_average_percentage_per_sector_df.values[0, 1:]))
         }
-        self.section_gdp_df = pd.DataFrame(subsector_share_dict)
+        self.gdp_percentage_per_section_df = pd.DataFrame(subsector_share_dict)
 
         section_non_energy_emission_gdp_df = pd.read_csv(
-            join(global_data_dir, 'section_non_energy_emission_gdp_df.csv'))
+            join(global_data_dir, 'non_energy_emission_gdp_per_section_df.csv'))
         section_non_energy_emission_gdp_dict = {
             **{GlossaryCore.Years: self.years, },
             **dict(zip(section_non_energy_emission_gdp_df.columns[1:],
@@ -99,14 +99,14 @@ class ServicesDiscTest(unittest.TestCase):
         }
         self.section_non_energy_emission_gdp_df = pd.DataFrame(section_non_energy_emission_gdp_dict)
 
-        section_energy_consumption_percentage_df = pd.read_csv(
-            join(global_data_dir, 'section_energy_consumption_percentage_df.csv'))
-        section_energy_consumption_percentage_dict = {
+        energy_consumption_percentage_per_section_df = pd.read_csv(
+            join(global_data_dir, 'energy_consumption_percentage_per_section_df.csv'))
+        section_energy_consumption_percentage_per_section_dict = {
             **{GlossaryCore.Years: self.years, },
-            **dict(zip(section_energy_consumption_percentage_df.columns[1:],
-                       section_energy_consumption_percentage_df.values[0, 1:]))
+            **dict(zip(energy_consumption_percentage_per_section_df.columns[1:],
+                       energy_consumption_percentage_per_section_df.values[0, 1:]))
         }
-        self.section_energy_consumption_percentage_df = pd.DataFrame(section_energy_consumption_percentage_dict)
+        self.energy_consumption_percentage_per_section_df = pd.DataFrame(section_energy_consumption_percentage_per_section_dict)
 
         self.energy_emission_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -138,9 +138,9 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
-                       f'{self.name}.{GlossaryCore.SectionNonEnergyEmissionDfValue}': self.section_non_energy_emission_gdp_df,
-                       f'{self.name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': self.section_energy_consumption_percentage_df,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_percentage_per_section_df,
+                       f'{self.name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}': self.section_non_energy_emission_gdp_df,
+                       f'{self.name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': self.section_non_energy_emission_gdp_df,
                        f'{self.name}.{GlossaryCore.TotalEnergyEmissions}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
@@ -189,9 +189,9 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
-                       f'{self.name}.{GlossaryCore.SectionNonEnergyEmissionDfValue}': self.section_non_energy_emission_gdp_df,
-                       f'{self.name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': self.section_energy_consumption_percentage_df,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_percentage_per_section_df,
+                       f'{self.name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}': self.section_non_energy_emission_gdp_df,
+                       f'{self.name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': self.section_non_energy_emission_gdp_df,
                        f'{self.name}.{GlossaryCore.TotalEnergyEmissions}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {

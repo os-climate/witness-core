@@ -211,7 +211,7 @@ class GlossaryCore:
         "structuring": True,
     }
     df_descriptor_section_df = {
-        section: ("float", [0.0, 100.0], True) for section in SectionsPossibleValues
+        section: ("float", [0.0, 1e30], True) for section in SectionsPossibleValues
     }
     df_descriptor_section_df.update({Years: ("int", [1900, YearEndDefault], False)})
     SectionGdpPercentageDf = {
