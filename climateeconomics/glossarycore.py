@@ -590,7 +590,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             TotalEmissions: ("float", [0, 1e30], False),
         },
     }
@@ -605,7 +605,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             TotalEmissions: ("float", [0, 1e30], False),
             EnergyEmissions: ("float", [0, 1e30], False),
             NonEnergyEmissions: ("float", [0, 1e30], False),
@@ -618,7 +618,7 @@ class GlossaryCore:
         "description": "",
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
         },
     }
 
@@ -628,7 +628,7 @@ class GlossaryCore:
         "description": "",
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
         },
     }
 
@@ -638,7 +638,7 @@ class GlossaryCore:
         "description": "",
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
         },
     }
 

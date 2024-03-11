@@ -467,15 +467,16 @@ class SectorModel():
         Computing the energy emission for each section of the sector
         """
         section_energy_consumption_percentage_df = self.compute_percentage_per_section(self.energy_consumption_percentage_per_section_df)
-        self.section_emission_df = section_energy_consumption_percentage_df.copy()
+        self.section_energy_emission_df = section_energy_consumption_percentage_df.copy()
         energy_emission_df_copy = self.energy_emission_df.copy(deep=True)
-        self.section_emission_df[self.section_list] = self.section_emission_df[self.section_list].multiply(
+        self.section_energy_emission_df[self.section_list] = self.section_energy_emission_df[self.section_list].multiply(
             energy_emission_df_copy.reset_index(drop=True)[GlossaryCore.TotalEnergyEmissions], axis='index') / 100.
 
     def compute_non_energy_emission_per_section(self):
         """
         Computing the energy emission for each section of the sector
         """
+        # TODO : only take sections of the sector?
         self.section_non_energy_emission_df = self.section_non_energy_emission_gdp_df.copy(deep=True)
         self.section_non_energy_emission_df[self.section_list] *= self.section_gdp_df[self.section_list] / 1000.
 
