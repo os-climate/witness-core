@@ -480,7 +480,9 @@ class SectorModel():
         """
         Computing the energy emission for each section of the sector
         """
-        section_energy_consumption_percentage_df = self.compute_percentage_per_section(self.energy_consumption_percentage_per_section_df)
+        section_energy_consumption_percentage_df = self.check_start_end_years(self.energy_consumption_percentage_per_section_df)
+        section_energy_consumption_percentage_df = self.get_sections(section_energy_consumption_percentage_df)
+        section_energy_consumption_percentage_df = self.compute_percentage_per_section(section_energy_consumption_percentage_df)
         self.section_energy_emission_df = section_energy_consumption_percentage_df.copy()
         energy_emission_df_copy = self.energy_emission_df.copy(deep=True)
         self.section_energy_emission_df[self.section_list] = self.section_energy_emission_df[self.section_list].multiply(
@@ -490,8 +492,9 @@ class SectorModel():
         """
         Computing the energy emission for each section of the sector
         """
-        # TODO : only take sections of the sector?
-        self.section_non_energy_emission_df = self.section_non_energy_emission_gdp_df.copy(deep=True)
+        section_non_energy_emission_df = self.check_start_end_years(self.section_non_energy_emission_gdp_df)
+        section_non_energy_emission_df = self.get_sections(section_non_energy_emission_df)
+        self.section_non_energy_emission_df = section_non_energy_emission_df.copy(deep=True)
         self.section_non_energy_emission_df[self.section_list] *= self.section_gdp_df[self.section_list] / 1000.
 
     def compute_total_emission_per_section(self):
