@@ -14,15 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
+
 from climateeconomics.glossarycore import GlossaryCore
 
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
 import unittest
-from os.path import join, dirname
-from pandas import read_csv
-from pandas import DataFrame 
+from pandas import DataFrame
 import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -33,23 +33,24 @@ class LaborMarketTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start =GlossaryCore.YeartStartDefault
-        self.year_end = GlossaryCore.YeartEndDefault
+        self.year_start =GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefault
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
         self.years = np.arange(self.year_start, self.year_end+1)
-        
-        agrishare = 27.4
-        indusshare = 21.7
-        serviceshare = 50.9
-        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agrishare,
-                                     GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: serviceshare})
-        self.workforce_share = workforce_share
-        data_dir = join(dirname(__file__), 'data')
-        working_age_pop_df = read_csv(
-                join(data_dir, 'workingage_population_df.csv'))
-        working_age_pop_df.index = self.years
-        self.working_age_pop_df = working_age_pop_df
+
+        self.workforce_share = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.SectorAgriculture: 27.4,
+            GlossaryCore.SectorIndustry: 21.7,
+            GlossaryCore.SectorServices: 50.9
+        })
+
+        self.working_age_pop_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Population1570: np.linspace(5490, 6061, len(self.years))
+        })
+
         
 
     def test_labormarket_discipline(self):

@@ -41,8 +41,8 @@ def sigmoid(ratio):
 coal_name=ResourceGlossary.Coal['name']
 copper_name=ResourceGlossary.Copper['name']
 
-year_start = GlossaryCore.YeartStartDefault
-year_end = GlossaryCore.YeartEndDefault
+year_start = GlossaryCore.YearStartDefault
+year_end = GlossaryCore.YearEndDefault
 years = np.arange(year_start, year_end + 1)
 lifespan = 30
 new_stock = 47
@@ -87,7 +87,7 @@ for resource_type in coal_sub_resource_list:
 """copper_oui= copper.to_dict()
 
 year = 2021
-year_end = GlossaryCore.YeartEndDefault + 1
+year_end = GlossaryCore.YearEndDefault + 1
 
 years = np.arange(year, year_end)
 

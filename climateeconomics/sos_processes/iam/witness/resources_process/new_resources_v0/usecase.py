@@ -32,7 +32,7 @@ class Study(StudyManager):
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
-        year, year_end = GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault
+        year, year_end = GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault
 
         copper_demand = pd.DataFrame(columns=['Year', 'Demand'])
 

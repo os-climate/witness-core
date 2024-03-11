@@ -56,7 +56,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, name='', execution_engine=None,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, name='', execution_engine=None,
                  main_study: bool=True):
         super().__init__(__file__, execution_engine=execution_engine)
         self.main_study = main_study
@@ -105,9 +105,15 @@ class Study(StudyManager):
                                                  GlossaryCore.EnergyInvestmentsWoTaxValue: 1000.
                                                  })
 
-
         global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
-        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        weighted_average_percentage_per_sector_df = pd.read_csv(
+            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        subsector_share_dict = {
+            **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
+            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
+                       weighted_average_percentage_per_sector_df.values[0, 1:]))
+        }
+        gdp_section_df = pd.DataFrame(subsector_share_dict)
 
         cons_input = {
             f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
@@ -116,7 +122,7 @@ class Study(StudyManager):
             f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}": damage_fraction_df,
             f"{self.study_name}.{GlossaryCore.EconomicsDfValue}": economics_df,
             f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
-            f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
+            f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}': gdp_section_df,
         }
 
         if self.main_study:
