@@ -116,9 +116,9 @@ class SectorModel():
         if self.sector_name == GlossaryCore.SectorAgriculture:
             self.section_list = GlossaryCore.SectionsAgriculture
 
-    def compute_percentage_per_section(self, dataframe):
+    def check_start_end_years(self, dataframe):
         '''
-        Compute percentage values for each section of a sector in a dataframe
+        Compare the year range between the study and the dataframe
         '''
         # the year range for the study can differ from that stated in the csv file
         start_year_csv = dataframe.loc[0, GlossaryCore.Years]
@@ -146,18 +146,30 @@ class SectorModel():
             dataframe.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
                 end_year_csv+1, self.year_end+1)
 
-        # filtering in order to keep only the percentages of the sections in the sector
+        return dataframe
+
+    def get_sections(self, dataframe):
+        '''
+        Keep only the sections of the sector for a dataframe
+        '''
         new_dataframe = pd.DataFrame()
         new_dataframe[GlossaryCore.Years] = dataframe[GlossaryCore.Years]
-        sum_sections = 0
         for section in dataframe.columns:
             if section in self.section_list:
                 new_dataframe[section] = dataframe[section]
-                sum_sections += new_dataframe[section].iloc[0]
-        for section in new_dataframe.columns:
-            if section != 'years':
-                new_dataframe[section] = (new_dataframe[section] * 100) / sum_sections
         return new_dataframe
+
+    def compute_percentage_per_section(self, dataframe):
+        '''
+        Compute percentage values for each section of a sector in a dataframe
+        '''
+        sum_sections = 0
+        for section in dataframe.columns:
+            sum_sections += dataframe[section].iloc[0]
+        for section in dataframe.columns:
+            if section != 'years':
+                dataframe[section] = (dataframe[section] * 100) / sum_sections
+        return dataframe
 
     def init_dataframes(self):
         '''
@@ -326,7 +338,9 @@ class SectorModel():
         """
         Splitting output net of damages between sections of the sector
         """
-        section_gdp_percentage_df = self.compute_percentage_per_section(self.gdp_percentage_per_section_df)
+        section_gdp_percentage_df = self.check_start_end_years(self.gdp_percentage_per_section_df)
+        section_gdp_percentage_df = self.get_sections(section_gdp_percentage_df)
+        section_gdp_percentage_df = self.compute_percentage_per_section(section_gdp_percentage_df)
         self.section_gdp_df = section_gdp_percentage_df.copy()
         production_df_copy = self.production_df.copy(deep=True)
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(

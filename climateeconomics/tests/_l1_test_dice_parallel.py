@@ -39,6 +39,10 @@ class DICEParallelTest(unittest.TestCase):
         self.root_dir = gettempdir()
         self.ee = ExecutionEngine(self.name)
 
+        self.co2_emissions_gt = pd.DataFrame(
+            {GlossaryCore.Years: self.years,
+             GlossaryCore.TotalCO2Emissions: np.linspace(34, 55, len(self.years))})
+
     def test_01_exec_parallel(self):
         """
         1 proc
@@ -104,8 +108,8 @@ class DICEParallelTest(unittest.TestCase):
 
         # put manually the index
 
-        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
-        values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
+        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = self.energy_supply_df
+        values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
@@ -138,16 +142,16 @@ class DICEParallelTest(unittest.TestCase):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
-        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
-        values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
-        values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
+        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = self.energy_supply_df
+        values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
+        values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
         values_dict[f'{self.name}.n_processes'] = n_proc
-        values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = co2_emissions_ccus_Gt
-        values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
-        values_dict[f'{self.name}.CO2_emissions_by_use_sinks'] = CO2_emissions_by_use_sinks
-        values_dict[f'{self.name}.EnergyMix.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
+        values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = self.co2_emissions_ccus_Gt
+        values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources
+        values_dict[f'{self.name}.CO2_emissions_by_use_sinks'] = self.CO2_emissions_by_use_sinks
+        values_dict[f'{self.name}.EnergyMix.co2_emissions_needed_by_energy_mix'] = self.co2_emissions_needed_by_energy_mix
         values_dict[f'{self.name}.{GlossaryCore.energy_list}'] = []
         values_dict[f'{self.name}.{GlossaryCore.ccs_list}'] = []
 
