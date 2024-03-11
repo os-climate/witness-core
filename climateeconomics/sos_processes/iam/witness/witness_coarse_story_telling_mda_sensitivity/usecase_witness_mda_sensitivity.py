@@ -61,9 +61,14 @@ class Study(ClimateEconomicsStudyManager):
         input_selection = pd.DataFrame(input_selection)
 
         output_selection = {
-            "selected_output": [True, True, True, True],
+            "selected_output": [True, True, True, True, True, True, True, True, True],
             "full_name": [
                 f"{self.USECASE7}.Indicators.mean_energy_price_2100",
+                f"{self.USECASE7}.Indicators.fossil_energy_price_2100",
+                f"{self.USECASE7}.Indicators.renewable_energy_price_2100",
+                f"{self.USECASE7}.Indicators.total_energy_production_2100",
+                f"{self.USECASE7}.Indicators.fossil_energy_production_2100",
+                f"{self.USECASE7}.Indicators.renewable_energy_production_2100",
                 f"{self.USECASE7}.Indicators.world_net_product_2100",
                 f"{self.USECASE7}.Indicators.temperature_rise_2100",
                 f"{self.USECASE7}.Indicators.welfare_indicator",
