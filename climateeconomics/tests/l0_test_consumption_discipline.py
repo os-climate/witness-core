@@ -19,7 +19,6 @@ from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from pandas import read_csv
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -31,6 +30,12 @@ class ConsumptionDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),
+        })
 
     def test_execute(self):
 
@@ -54,22 +59,14 @@ class ConsumptionDiscTest(unittest.TestCase):
 
         data_dir = join(dirname(__file__), 'data')
 
-        economics_df = read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
-        economics_df = economics_df[economics_df[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
 
-        # remove energy wasted as not used for the test and breaks other l0 tests (CO2 emissions) if adds it to
-        # the csv file
-        economics_df = economics_df[[key for key in GlossaryCore.EconomicsDf['dataframe_descriptor'].keys() if key != GlossaryCore.EnergyWasted]]
-
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
-        population_df = read_csv(
-            join(global_data_dir, 'population_df.csv'))
+        population_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.PopulationValue: np.linspace(7886, 9550, len(self.years))
+        })
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        economics_df.index = years
-        population_df.index = years
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
@@ -81,12 +78,12 @@ class ConsumptionDiscTest(unittest.TestCase):
         invest = np.asarray([10] * len(years))
         investment_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: invest})
         np.set_printoptions(threshold=np.inf)
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
-                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,

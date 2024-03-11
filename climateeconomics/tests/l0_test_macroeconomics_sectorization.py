@@ -31,8 +31,8 @@ class MacroeconomicsTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryCore.YeartStartDefault
-        self.year_end = GlossaryCore.YeartEndDefault
+        self.year_start = GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefault
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
         self.years = np.arange(self.year_start, self.year_end+1)

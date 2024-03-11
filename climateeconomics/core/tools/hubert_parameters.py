@@ -32,7 +32,7 @@ Q_2020 = 751.691 #751.691  0.007319767919
 Q_inf_th = Q_2020 + hypot_reservers # Q(2020) + reserve underground
 past_production = pd.read_csv(join(dirname(__file__), f'../core_resources/models/resources_data/{resource_name}_production_data.csv'))
 production_start = 1925 #1925   1967
-production_years = np.arange(production_start, GlossaryCore.YeartEndDefault + 1)
+production_years = np.arange(production_start, GlossaryCore.YearEndDefault + 1)
 past_production_years = np.arange(production_start, 2021) 
 
 

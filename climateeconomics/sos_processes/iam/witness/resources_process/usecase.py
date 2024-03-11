@@ -53,8 +53,8 @@ def update_dspace_with(dspace_dict, name, value, lower, upper):
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self,
-                 year_start=GlossaryCore.YeartStartDefault,
-                 year_end=GlossaryCore.YeartEndDefault,
+                 year_start=GlossaryCore.YearStartDefault,
+                 year_end=GlossaryCore.YearEndDefault,
                  time_step=1,
                  execution_engine=None,
                  main_study: bool = True,

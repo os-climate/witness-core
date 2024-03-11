@@ -15,22 +15,17 @@ limitations under the License.
 '''
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_optim_story_telling_sub_process.usecase_witness_optim_sub \
     import Study as witness_optim_sub_usecase
-
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
     OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
-
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None):
         # initialize usecase and set default values
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)

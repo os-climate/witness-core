@@ -21,19 +21,18 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
 
+from climateeconomics.charts_tools import graph_gross_and_net_output
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.charts_tools import graph_gross_and_net_output
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -53,7 +52,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     _maturity = 'Research'
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
@@ -203,8 +202,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         '''
         Get default values for gross_output_in into GDP PPP economics_df_ssp3.csv file
         '''
-        year_start = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])

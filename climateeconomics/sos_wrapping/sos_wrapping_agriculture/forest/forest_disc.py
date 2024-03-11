@@ -19,11 +19,10 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
+from climateeconomics.core.core_forest.forest_v2 import Forest
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-
-from climateeconomics.core.core_forest.forest_v2 import Forest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -50,7 +49,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     AGRI_CAPITAL_TECHNO_LIST = []
     biomass_cal_val = BiomassDry.data_energy_dict[
         'calorific_value']
-    default_year_start = GlossaryCore.YeartStartDefault
+    default_year_start = GlossaryCore.YearStartDefault
     default_year_end = 2050
 
     deforestation_limit = 1000

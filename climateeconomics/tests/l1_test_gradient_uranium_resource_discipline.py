@@ -40,8 +40,8 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryCore.YeartStartDefault
-        self.year_end = GlossaryCore.YeartEndDefault
+        self.year_start = GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefault
 
         data_dir = join(dirname(__file__), 'data')
 

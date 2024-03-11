@@ -18,8 +18,6 @@ from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from pandas import read_csv
-from scipy.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
@@ -57,63 +55,45 @@ class ServicesDiscTest(unittest.TestCase):
         self.ee.configure()
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        self.years = years
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
+        self.year_start = GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefault
+        self.time_step = 1
 
-        year_start = GlossaryCore.YeartStartDefault
-        self.year_start = year_start
-        year_end = GlossaryCore.YeartEndDefault
-        self.year_end = year_end
-        time_step = 1
-        self.time_step = time_step
-        nb_per = round((year_end - year_start) / time_step + 1)
-        self.nb_per = nb_per
-       
+
         # input
-        data_dir = join(dirname(__file__), 'data')
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        self.workforce_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            SectorDiscipline.sector_name: np.linspace(5490, 6061, len(self.years)) * 0.659 * 0.509
+        })
 
-        total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
-        total_workforce_df.index = years
-        #multiply ageworking pop by employment rate and by % in services
-        workforce = total_workforce_df[GlossaryCore.Population1570]* 0.659 * 0.509
-        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, SectorDiscipline.sector_name: workforce})
+        self.energy_supply_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
+        })
 
-        #Energy_supply
-        brut_net = 1/1.45
-        share_indus = 0.37
-        #prepare energy df  
-        energy_outlook = pd.DataFrame({
-            'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
-            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
-        f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
-        #Find values for 2020, 2050 and concat dfs 
-        energy_supply = f2(np.arange(year_start, year_end+1))
-        energy_supply_values = energy_supply * brut_net * share_indus
-        self.energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
-        self.energy_supply_df.index = self.years
-        #energy_supply_df.loc[2020, GlossaryCore.TotalProductionValue] = 91.936
-
-        #Investment growth at 2% 
-        init_value = 25
-        invest_serie = []
-        invest_serie.append(init_value)
-        for year in np.arange(1, nb_per):
-            invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: years,
-                                          GlossaryCore.InvestmentsValue: invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
+                                          GlossaryCore.InvestmentsValue: 25 * 1.02 ** np.arange(len(self.years))})
         
         #damage
         self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
                                                 GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),
-                                                GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-        self.damage_fraction_df.index = self.years
+                                                GlossaryCore.BaseCarbonPrice: 0.})
+
+        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        weighted_average_percentage_per_sector_df = pd.read_csv(
+            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        subsector_share_dict = {
+            **{GlossaryCore.Years: self.years, },
+            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
+                       weighted_average_percentage_per_sector_df.values[0, 1:]))
+        }
+        self.section_gdp_df = pd.DataFrame(subsector_share_dict)
 
 
 
     def test_execute(self):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
-        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
         section_list = GlossaryCore.SectionsIndustry
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
@@ -136,7 +116,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
@@ -161,7 +141,6 @@ class ServicesDiscTest(unittest.TestCase):
 
     def test_execute_forfitting(self):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
-        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
         section_list = GlossaryCore.SectionsIndustry
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
@@ -186,7 +165,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
