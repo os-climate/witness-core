@@ -18,6 +18,8 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
+    Study as usecase_witness_mda
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
@@ -32,9 +34,6 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
     Study as usecase6
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
     Study as usecase7
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
-    Study as usecase_witness_mda
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -94,15 +93,16 @@ class Study(ClimateEconomicsStudyManager):
         return values_dict
 
 
+
+
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    post_processing_factory = PostProcessingFactory()
-    post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-    all_post_processings = post_processing_factory.get_all_post_processings(
-         uc_cls.execution_engine, False, as_json=False, for_test=False)
+    uc_cls.test()
+    # post_processing_factory = PostProcessingFactory()
+    # post_processing_factory.get_post_processing_by_namespace(
+    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
+    # all_post_processings = post_processing_factory.get_all_post_processings(
+    #      uc_cls.execution_engine, False, as_json=False, for_test=False)
 
 #    for namespace, post_proc_list in all_post_processings.items():
 #        for chart in post_proc_list:

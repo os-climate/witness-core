@@ -15,10 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from os.path import join, dirname
 
 import numpy as np
-from pandas import read_csv
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -30,6 +29,12 @@ class CarbonCycleDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
+        self.CO2_emissions_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            "total_emissions": np.linspace(35, 0, len(self.years)),
+            "cum_total_emissions": np.linspace(513, 680, len(self.years)),
+        })
 
     def test_execute(self):
 
@@ -49,26 +54,14 @@ class CarbonCycleDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
 
-        CO2_emissions_df_all = read_csv(
-            join(data_dir, 'co2_emissions_onestep.csv'))
-
-        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-
-        # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
-        CO2_emissions_df_y.index = years
-        CO2_emissions_df_y = CO2_emissions_df_y[GlossaryCore.CO2EmissionsDf['dataframe_descriptor'].keys()]
-        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': CO2_emissions_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': self.CO2_emissions_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
-
-        res_carbon_cycle = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CarbonCycleDfValue}')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

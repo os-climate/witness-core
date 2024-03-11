@@ -43,8 +43,8 @@ class CopperResourceDiscipline(ResourceDiscipline):
         'icon': 'fa-solid fa-pallet',
         'version': '',
     }
-    default_year_start = GlossaryCore.YeartStartDefault
-    default_year_end = GlossaryCore.YeartEndDefault
+    default_year_start = GlossaryCore.YearStartDefault
+    default_year_end = GlossaryCore.YearEndDefault
     default_production_start = 1974
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     default_stock_start = 780.0

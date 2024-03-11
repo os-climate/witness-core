@@ -48,8 +48,8 @@ class TestSoSDiscipline(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        year = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault + 1
+        year = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault + 1
 
         copper_demand = pd.DataFrame(
             [(year, rd.gauss(26, 0.5), 'million_tonnes')], columns=['Year', 'Demand', 'unit'])
@@ -59,9 +59,9 @@ class TestSoSDiscipline(unittest.TestCase):
 
         while year < year_end:
             copper_demand = copper_demand.append({'Year': year,
-                                                  'Demand': rd.gauss(26, 0.5) * (1.056467) ** (year - GlossaryCore.YeartStartDefault),
+                                                  'Demand': rd.gauss(26, 0.5) * (1.056467) ** (year - GlossaryCore.YearStartDefault),
                                                   'unit': 'million_tonnes'}, ignore_index=True)
-            extraction += [26 * (1.056467) ** (year - GlossaryCore.YeartStartDefault)]
+            extraction += [26 * (1.056467) ** (year - GlossaryCore.YearStartDefault)]
             year += 1
 
         print(extraction)

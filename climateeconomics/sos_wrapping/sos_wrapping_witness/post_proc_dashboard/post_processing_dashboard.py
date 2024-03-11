@@ -14,25 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from copy import deepcopy
-
 import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
-import logging
-
+import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
 import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
-import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
-from climateeconomics.charts_tools import graph_gross_and_net_output
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-from plotly.colors import qualitative
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
@@ -83,7 +76,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         carbon_captured = execution_engine.dm.get_value(
             f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
         co2_emissions = execution_engine.dm.get_value(f'{namespace}.{CO2Emissions_Disc}.co2_emissions_ccus_Gt')
-        #carbon_storage_by_invest = execution_engine.dm.get_value(f'{namespace}.{CO2Emissions_Disc}.
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and CO2 evolution over the years'
@@ -95,11 +87,14 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
             name='Temperature',
         ), secondary_y=True)
-       #create list of values according to CO2 storage limited by co2 captured
+
+       # Creating list of values according to CO2 storage limited by CO2 captured
+        graph_gross_co2 = []
         graph_dac = []
         graph_flue_gas = []
         for year_index, year in enumerate(years):
             storage_limit = co2_emissions['carbon_storage Limited by capture (Gt)'][year_index]
+            graph_gross_co2.append(total_ghg_df[f'Total CO2 emissions'][year_index] + storage_limit)
             captured_total = carbon_captured['DAC'][year_index]*0.001+carbon_captured['flue gas'][year_index]*0.001
             if captured_total > 0.0:
                 proportion_stockage = storage_limit/captured_total
@@ -109,38 +104,34 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 graph_dac.append(0)
                 graph_flue_gas.append(0)
 
-
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+            fill='tonexty',  # fill area between trace0 and trace1
+            mode='lines',
+            fillcolor='rgba(200, 200, 200, 0.0)',
             name='Net CO2 emissions',
             stackgroup='one',
-            visible='legendonly'
-
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=graph_dac,
-            name='CO2 captured by DAC',
+            name='CO2 captured by DAC and stored',
             stackgroup='one',
-            visible='legendonly',
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=graph_flue_gas,
-            name='CO2 captured by flue gas',
+            name='CO2 captured by flue gas and stored',
             stackgroup='one',
-            visible='legendonly',
         ), secondary_y=False)
         fig.add_trace(go.Scatter(
             x=years,
-            y=total_ghg_df[f'Total CO2 emissions'].to_list()+co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
-            name='Gross CO2 emissions',
-            visible='legendonly',
+            y=graph_gross_co2,
+            name='Total CO2 emissions',
         ), secondary_y=False)
-
 
         fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
         fig.update_yaxes(title_text=f'CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
@@ -148,6 +139,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
         instanciated_charts.append(new_chart)
+
     if 'population and death' in chart_list:
         pop_df = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.population_detail_df')
         death_dict = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.death_dict')

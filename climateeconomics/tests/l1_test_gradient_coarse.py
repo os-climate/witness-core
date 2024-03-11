@@ -61,7 +61,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.name = 'Test_Coarse'
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.years = years
 
     def tearDown(self):

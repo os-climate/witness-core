@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/03/08 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 
 class DataStudy():
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1,
                  agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
         self.study_name = 'default_name'
         self.year_start = year_start
@@ -85,7 +85,7 @@ class DataStudy():
         global_data_dir = join(Path(__file__).parents[3], 'data')
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
-        population_df.index = years
+        #population_df.index = years
         witness_input[self.study_name + f'.{GlossaryCore.PopulationDfValue}'] = population_df
         working_age_population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
@@ -149,7 +149,7 @@ class DataStudy():
                                                            index=[2017, 2018, 2019])
 
 
-        CO2_emitted_land = pd.DataFrame()
+        CO2_emitted_land = pd.DataFrame({GlossaryCore.Years: years})
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)
@@ -230,8 +230,16 @@ class DataStudy():
                                                    GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
 
-        data_dir = join(dirname(dirname(dirname(dirname(__file__)))), 'data')
-        section_gdp_df = pd.read_csv(join(data_dir, 'weighted_average_percentage_per_sector.csv'))
+        global_data_dir = join(dirname(dirname(dirname(dirname(__file__)))), 'data')
+        weighted_average_percentage_per_sector_df = pd.read_csv(
+            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+
+        subsector_share_dict = {
+            **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
+            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
+                       weighted_average_percentage_per_sector_df.values[0, 1:]))
+        }
+        section_gdp_df = pd.DataFrame(subsector_share_dict)
         witness_input[f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}'] = section_gdp_df
 
         setup_data_list.append(witness_input)
@@ -249,6 +257,7 @@ class DataStudy():
                 'gwp100_objective',
                 GlossaryCore.EnergyWastedObjective,
                 GlossaryCore.ConsumptionObjective,
+                GlossaryCore.EnergyMeanPriceObjectiveValue,
 
             ],
             'parent': [
@@ -259,11 +268,12 @@ class DataStudy():
                 'GWP_long_term_obj',
                 'invest_objective',
                 'invest_objective',
+                'invest_objective',
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [5e-4, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, ]
+            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
+            'weight': [5e-4, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 1.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, ]
         }
 
         func_df = DataFrame(data)
@@ -286,7 +296,7 @@ class DataStudy():
         list_parent.extend(['CO2 ppm', 'CO2 ppm'])
         list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([0.0, -1.0])
+        list_weight.extend([0.0, -0.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
 
@@ -296,7 +306,7 @@ class DataStudy():
         list_parent.append('agriculture_constraints')
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
+        list_weight.append(-0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
@@ -306,7 +316,7 @@ class DataStudy():
         list_parent.extend(['invests_constraints'])
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
+        list_weight.extend([-0.0])
         list_aggr_type.extend([
             AGGR_TYPE_SMAX])
 
@@ -314,7 +324,7 @@ class DataStudy():
         list_parent.append('invests_constraints')
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
+        list_weight.append(-0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
@@ -322,7 +332,7 @@ class DataStudy():
         list_parent.append('agriculture_constraint')
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
+        list_weight.append(-0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 

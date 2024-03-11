@@ -82,8 +82,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     techno_name = 'CropEnergy'
-    default_year_start = GlossaryCore.YeartStartDefault
-    default_year_end = GlossaryCore.YeartEndDefault
+    default_year_start = GlossaryCore.YearStartDefault
+    default_year_end = GlossaryCore.YearEndDefault
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     '''
     Sources:
@@ -317,7 +317,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
+        GlossaryCore.YearEnd: GlossaryCore.get_dynamic_variable(GlossaryCore.YearEndVar),
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
@@ -400,7 +400,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'param_a': {'type': 'float', 'default': -0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default': -0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
-                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
+                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YearEndDefault], False),
                                                      GlossaryCore.InvestmentsValue: ('float', None, True)},
                             'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop',
                             'default': crop_investment_default},
@@ -417,12 +417,12 @@ class CropDiscipline(ClimateEcoDiscipline):
                                             'margin': ('float', None, True)}},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                            'namespace': GlossaryCore.NS_WITNESS,
-                           'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
+                           'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YearEndDefault], False),
                                                     'transport': ('float', None, True)},
                            'dataframe_edition_locked': False},
         'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                              'namespace': GlossaryCore.NS_WITNESS,
-                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YearEndDefault], False),
                                                       'margin': ('float', None, True)},
                              'dataframe_edition_locked': False},
         'data_fuel_dict': {'type': 'dict', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -508,12 +508,10 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     def setup_sos_disciplines(self):  # type: (...) -> None
 
-        if GlossaryCore.YearStart in self.get_data_in():
-            year_start, year_end = self.get_sosdisc_inputs(
-                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
-            years = np.arange(year_start, year_end + 1)
+        if "red_meat_calories_per_day" in self.get_data_in():
+            red_meat_calories_per_day = self.get_sosdisc_inputs("red_meat_calories_per_day")
             default_food_waste_percentage_df = pd.DataFrame({
-                GlossaryCore.Years: years,
+                GlossaryCore.Years: red_meat_calories_per_day[GlossaryCore.Years].values,
                 GlossaryCore.FoodWastePercentageValue: DatabaseWitnessCore.FoodWastePercentage.value
             })
             self.set_dynamic_default_values({GlossaryCore.FoodWastePercentageValue: default_food_waste_percentage_df})

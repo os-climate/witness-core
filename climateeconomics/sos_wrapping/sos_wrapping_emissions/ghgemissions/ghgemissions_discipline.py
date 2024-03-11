@@ -40,7 +40,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     name = 'GHGEmissions'
     _maturity = 'Research'
 
@@ -92,6 +92,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
         GlossaryCore.CO2EmissionsObjectiveValue: GlossaryCore.CO2EmissionsObjective,
+        GlossaryCore.TotalEnergyEmissions: GlossaryCore.TotalEnergyCO2eqEmissionsDf
     }
 
     def init_execution(self):
@@ -118,6 +119,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.GHGEmissionsDfValue: emissions_df,
                        'GWP_emissions': self.emissions_model.gwp_emissions,
                        GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
+                       GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions
                        }
         if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
@@ -141,16 +143,26 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             for column in ghg_land_emissions.columns:
                 if column != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'), (f'{ghg}_land_emissions', column),  np.identity(len(years)))
+                        (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'),
+                        (f'{ghg}_land_emissions', column),
+                        np.identity(len(years)))
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'), ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'),
+                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
                 np.identity(len(years)))
 
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.TotalEnergyEmissions, GlossaryCore.TotalEnergyEmissions),
+                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                np.identity(len(years))* self.emissions_model.gwp_100[ghg])
+
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),  np.identity(len(years)))
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
+            ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),  np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions), ('CO2_indus_emissions_df', 'indus_emissions'),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            ('CO2_indus_emissions_df', 'indus_emissions'),
             np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2EmissionsObjectiveValue,), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),

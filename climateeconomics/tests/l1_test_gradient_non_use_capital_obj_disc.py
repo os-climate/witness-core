@@ -36,8 +36,8 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.model_name = 'non_use_capital'
-        self.year_start = GlossaryCore.YeartStartDefault
-        self.year_end = GlossaryCore.YeartEndDefault
+        self.year_start = GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
@@ -61,8 +61,8 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        year_end = GlossaryCore.YeartEndDefault
-        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YearEndDefault
+        year_start = GlossaryCore.YearStartDefault
         loss_fg = 12
         loss_ct = 2
         loss_ub = 22

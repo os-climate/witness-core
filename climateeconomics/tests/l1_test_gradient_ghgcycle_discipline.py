@@ -16,9 +16,10 @@ limitations under the License.
 '''
 
 import logging
-from os.path import join, dirname
+from os.path import dirname
 
-from pandas import read_csv
+import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -32,6 +33,15 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
+
+        self.ghg_emissions_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years)),
+            GlossaryCore.TotalCH4Emissions: np.linspace(35, 0, len(self.years)) * 0.3 / 40,
+            GlossaryCore.TotalN2OEmissions: np.linspace(35, 0, len(self.years)) * 0.008 / 40,
+        })
 
     def analytic_grad_entry(self):
         return [
@@ -57,17 +67,7 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
-
-        emissions_df = read_csv(
-            join(data_dir, 'co2_emissions_onestep.csv'))
-        emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
-
-        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-        emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.01
-        emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.001
-
-        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, GlossaryCore.TotalCH4Emissions, GlossaryCore.TotalN2OEmissions]]}
+        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': self.ghg_emissions_df}
 
         self.ee.load_study_from_input_dict(values_dict)
 

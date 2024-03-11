@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/03/05 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ from copy import deepcopy
 
 import numpy as np
 
+import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -47,7 +47,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-thermometer-three-quarters fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
@@ -151,6 +151,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        # todo: for sensitivity, generalise ?
+        self.model.init_temp_atmo = in_dict['init_temp_atmo']
         if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_input_var()
             self.check_ranges(in_dict, dict_ranges)
@@ -386,7 +388,7 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
         fillcolor='rgba(200,200,200,0.25)',
         line={'dash': 'dash', 'color': "rgba(200,200,200,0.3)"},
         opacity=0.2,
-        name='El Ninõ/La Niña', ))
+        name='Natural variations (El Niño/La Niña)', ))
 
     la_nina_min_temp = temperature_df[GlossaryCore.TempAtmo].values - DatabaseWitnessCore.ENSOTemperatureAnomaly.value
     new_chart.add_trace(go.Scatter(
