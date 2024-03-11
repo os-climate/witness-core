@@ -258,6 +258,27 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     @param namespace: Namespace at which the data can be accessed
 
     @return multilevel_df: Dataframe
+
+    Definitions of the various levels of emissions:
+    CO2_from_production = -scope 1- (direct emissions): direct CO2 emissions during the production phase of the techno
+            ex: CO2 emitted or needed as part of the chemical reaction used to produced the techno (ex: Sabatier reaction
+            requires CO2 to produce methane from H2) + company facilities emissions + company vehicles emissions
+            + CO2 emissions of energy used for the production + ...
+    CO2_from_other_consumption = -scope 2- (indirect emissions): CO2 emissions during the production of the energies
+            used in scope 1, namely of the energies used during the production of the techno = emissions during
+            production of purchased electricity, steam, heating & cooling for own use
+            NB: in energy_models/core/techno_type/techno_type.py, CO2_from_other_consumption is referred to as
+            co2_emissions_frominput_energies
+            In https://ghgprotocol.org/sites/default/files/standards/ghg-protocol-revised.pdf p.31, scope 2 definition only accounts for
+                indirect CO2 emissions of purchased electricity
+    CO2_techno = -scope 1 + scope 2- = CO2_from_production + CO2_from_other_consumption
+    CO2_per_use = - scope 3 (partially, ie only the indirect downstream emissions)- : CO2 emitted when using the techno
+            ex: CO2 emitted when burning techno=biogas, techno=methane, etc
+    CO2_per_kWh_techno 	= scope 1 + scope 2 + scope 3 (downstream emissions only)
+                = CO2_after_use
+				= total_emissions
+				= CO2_per_use + CO2_techno
+				= CO2_from_production + CO2_from_input_energies + CO2_per_use
     '''
 
     ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
