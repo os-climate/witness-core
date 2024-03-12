@@ -1,4 +1,0 @@
-variable,parent,ftype,weight,aggr,namespace
-CO2EmissionsObjective,objectives,objective,1.0,sum,ns_functions
-Target production constraint,constraints,ineq_constraint,100.0,sum,ns_functions
-Max budget constraint,constraints,ineq_constraint,100.0,sum,ns_functions
