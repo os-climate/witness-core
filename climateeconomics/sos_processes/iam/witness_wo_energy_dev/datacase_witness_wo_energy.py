@@ -252,28 +252,21 @@ class DataStudy():
             'variable': [
                 GlossaryCore.EnergyInvestmentsMinimizationObjective,
                 GlossaryCore.NegativeWelfareObjective,
-                GlossaryCore.LastYearDiscountedUtilityObjective,
-                'gwp20_objective',
-                'gwp100_objective',
-                GlossaryCore.EnergyWastedObjective,
+                GlossaryCore.UsableCapitalObjectiveName,
                 GlossaryCore.ConsumptionObjective,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
-
             ],
             'parent': [
                 'invest_objective',
                 'utility_objective',
-                'utility_objective',
-                'GWP_short_term_obj',
-                'GWP_long_term_obj',
                 'invest_objective',
                 'invest_objective',
                 'invest_objective',
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [5e-4, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0, 1.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, ]
+            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
+            'weight': [0.01, 1.0, 0.5, 0.0, 0.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
         }
 
         func_df = DataFrame(data)
