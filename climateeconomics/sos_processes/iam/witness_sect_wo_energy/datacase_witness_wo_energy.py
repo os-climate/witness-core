@@ -137,7 +137,8 @@ class DataStudy():
         self.CO2_tax = np.asarray([50.] * len(years))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}"] = df_energy_investment
-        witness_input[f"{self.study_name}.{'energy_investment_before_year_start'}"] = df_energy_investment_before_year_start
+        witness_input[
+            f"{self.study_name}.{'energy_investment_before_year_start'}"] = df_energy_investment_before_year_start
 
         intermediate_point = 30
         # CO2 taxes related inputs
@@ -206,14 +207,15 @@ class DataStudy():
         witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
-        
+
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
-        
+
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4,
+                                                                                               len(years)),
                                                    GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
         setup_data_list.append(witness_input)
@@ -237,7 +239,8 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [1.0, 1.0, 0.0, 0.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_WITNESS]
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS,
+                          GlossaryCore.NS_WITNESS]
         }
 
         func_df = DataFrame(data)
@@ -245,8 +248,6 @@ class DataStudy():
         return func_df
 
     def setup_constraints(self):
-        func_df = DataFrame(columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
-
         data = [
             {
                 'variable': 'rockstrom_limit_constraint',
@@ -299,6 +300,7 @@ class DataStudy():
         ]
 
         # Append the data to the DataFrame
-        func_df = func_df.append(data, ignore_index=True)
+        df_list = [pd.DataFrame(df) for df in data]
+        func_df = pd.concat(df_list, ignore_index=True)
 
         return func_df
