@@ -74,7 +74,7 @@ class SectorModel():
         self.sector_name = sector_name
         self.retrieve_sections_list()
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
-        self.section_non_energy_emission_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDf]
+        self.section_non_energy_emission_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]
         self.energy_emission_df = inputs_dict[GlossaryCore.TotalEnergyEmissions]
         self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
         self.productivity_start = inputs_dict['productivity_start']
@@ -218,6 +218,8 @@ class SectorModel():
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
         self.damage_fraction_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_df.index = self.damage_fraction_df[GlossaryCore.Years].values
+        self.energy_emission_df = inputs[GlossaryCore.TotalEnergyEmissions]
+        self.energy_emission_df.index = self.energy_emission_df[GlossaryCore.Years].values
 
     def compute_productivity_growthrate(self):
         """
@@ -508,9 +510,16 @@ class SectorModel():
         """
         Computing the total emissions of the sector
         """
-        self.emission_df[GlossaryCore.TotalEmissions] = self.section_emission_df.sum(axis=1)
-        self.emission_df[GlossaryCore.EnergyEmissions] = self.section_energy_emission_df.sum(axis=1)
-        self.emission_df[GlossaryCore.NonEnergyEmissions] = self.section_non_energy_emission_df.sum(axis=1)
+        self.emission_df = self.emission_df.reset_index(drop=True)
+        section_emission_df = self.section_emission_df.copy()
+        section_emission_df = section_emission_df.drop(GlossaryCore.Years, axis=1)
+        self.emission_df[GlossaryCore.TotalEmissions] = section_emission_df.sum(axis=1)
+        section_energy_emission_df = self.section_energy_emission_df.copy()
+        section_energy_emission_df = section_energy_emission_df.drop(GlossaryCore.Years, axis=1)
+        self.emission_df[GlossaryCore.EnergyEmissions] = section_energy_emission_df.sum(axis=1)
+        section_non_energy_emission_df = self.section_non_energy_emission_df.copy()
+        section_non_energy_emission_df = section_non_energy_emission_df.drop(GlossaryCore.Years, axis=1)
+        self.emission_df[GlossaryCore.NonEnergyEmissions] = section_non_energy_emission_df.sum(axis=1)
 
     # RUN
     def compute(self, inputs):

@@ -172,7 +172,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, emission_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df, emission_df = self.model.compute(
             model_inputs)
 
         # Store output data
@@ -383,10 +383,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyEfficiency,
                       GlossaryCore.EnergyUsage,
                       GlossaryCore.SectionGdpPart,
-                      GlossaryCore.EmissionDetailedDf,
-                      GlossaryCore.SectionEmissionDf,
-                      GlossaryCore.SectionEnergyEmissionDf,
-                      GlossaryCore.SectionNonEnergyEmissionDf,
+                      GlossaryCore.TotalEmissions,
+                      GlossaryCore.SectionEmissionPart,
+                      GlossaryCore.SectionEnergyEmissionPart,
+                      GlossaryCore.SectionNonEnergyEmissionPart,
                       ]
 
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
@@ -422,7 +422,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         damage_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}")
         if prod_func_fit:
             lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
-        emission_detailed_df =  self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.EmissionDetailedDfValue}")
+        emission_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.EmissionDetailedDfValue}")
 
         if 'sector output' in chart_list:
             chart_name = f'{self.sector_name} sector economics output'
@@ -704,13 +704,13 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 fig, chart_name=chart_name,
                 default_title=True, default_legend=False))
 
-        if GlossaryCore.EmissionDetailedDf in chart_list:
-
+        if GlossaryCore.TotalEmissions in chart_list:
             total_emissions = emission_detailed_df[GlossaryCore.TotalEmissions].values
             energy_emissions = emission_detailed_df[GlossaryCore.EnergyEmissions].values
             non_energy_emissions = emission_detailed_df[GlossaryCore.NonEnergyEmissions].values
 
             years = list(emission_detailed_df.index)
+
             chart_name = f'Breakdown of emissions'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Gt',
@@ -733,14 +733,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if GlossaryCore.SectionEmissionDf in chart_list:
+        if GlossaryCore.SectionEmissionPart in chart_list:
             sections_emission = self.get_sosdisc_outputs(GlossaryCore.SectionEmissionDfValue)
             sections_emission = sections_emission.drop('years', axis=1)
             years = list(production_df.index)
 
             chart_name = f'Breakdown of emission per section for {self.sector_name} sector [Gt]'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEmissionDf,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEmissionPart,
                                                      chart_name=chart_name, stacked_bar=True)
 
             # loop on all sections of the sector
@@ -761,14 +761,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 fig, chart_name=chart_name,
                 default_title=True, default_legend=False))
 
-        if GlossaryCore.SectionEnergyEmissionDf in chart_list:
+        if GlossaryCore.SectionEnergyEmissionPart in chart_list:
             sections_energy_emission = self.get_sosdisc_outputs(GlossaryCore.SectionEnergyEmissionDfValue)
             sections_energy_emission = sections_energy_emission.drop('years', axis=1)
             years = list(production_df.index)
 
             chart_name = f'Breakdown of energy emission per section for {self.sector_name} sector [Gt]'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyEmissionDf,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyEmissionPart,
                                                      chart_name=chart_name, stacked_bar=True)
 
             # loop on all sections of the sector
@@ -789,14 +789,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 fig, chart_name=chart_name,
                 default_title=True, default_legend=False))
 
-        if GlossaryCore.SectionNonEnergyEmissionDf in chart_list:
+        if GlossaryCore.SectionNonEnergyEmissionPart in chart_list:
             sections_non_energy_emission = self.get_sosdisc_outputs(GlossaryCore.SectionNonEnergyEmissionDfValue)
             sections_non_energy_emission = sections_non_energy_emission.drop('years', axis=1)
             years = list(production_df.index)
 
             chart_name = f'Breakdown of non energy emission per section for {self.sector_name} sector [Gt]'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionNonEnergyEmissionDf,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionNonEnergyEmissionPart,
                                                      chart_name=chart_name, stacked_bar=True)
 
             # loop on all sections of the sector

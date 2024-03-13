@@ -68,6 +68,9 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
+    SectionEmissionPart = "Part of the total emission per section [Gt]"
+    SectionEnergyEmissionPart = "Part of the energy emission per section [Gt]"
+    SectionNonEnergyEmissionPart = "Part of the non energy emission per section [Gt]"
 
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
