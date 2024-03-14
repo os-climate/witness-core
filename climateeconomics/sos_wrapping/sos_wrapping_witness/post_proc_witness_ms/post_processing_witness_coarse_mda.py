@@ -538,6 +538,8 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
     Determines for each scenario if the damage and the taxes are activated
     assumes that tax is activated when ccs_price_percentage > 0 and co2_damage_price_percentage > 0 in case of damage
         NB: if damage are deactivated, co2_damage_price_percentage can be set to 0 as it has no effect
+        In case there is no damage, co2_damage_price_percentage > 0 does not activate the tax but ccs_price_percentage > 0 does
+
     assumes that damage are activated when damage_to_productivity and compute_climate_impact_on_gdp and
                                           activate_climate_effect_population are true
     '''
