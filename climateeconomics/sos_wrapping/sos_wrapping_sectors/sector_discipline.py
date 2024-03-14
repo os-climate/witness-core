@@ -713,7 +713,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             chart_name = f'Breakdown of emissions'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Gt',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'GtCO2eq',
                                                  chart_name=chart_name, stacked_bar=True)
 
             new_series = InstanciatedSeries(
@@ -722,12 +722,12 @@ class SectorDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(new_series)
 
             new_series = InstanciatedSeries(
-                years, list(energy_emissions), 'Energy emissions', 'lines', True)
+                years, list(energy_emissions), 'Energy emissions', 'bar', True)
 
             new_chart.add_series(new_series)
 
             new_series = InstanciatedSeries(
-                years, list(non_energy_emissions), 'Non energy emissions', 'lines', True)
+                years, list(non_energy_emissions), 'Non energy emissions', 'bar', True)
 
             new_chart.add_series(new_series)
 
@@ -738,7 +738,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             sections_emission = sections_emission.drop('years', axis=1)
             years = list(production_df.index)
 
-            chart_name = f'Breakdown of emission per section for {self.sector_name} sector [Gt]'
+            chart_name = f'Breakdown of emission per section for {self.sector_name} sector [GtCO2eq]'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEmissionPart,
                                                      chart_name=chart_name, stacked_bar=True)
@@ -766,7 +766,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             sections_energy_emission = sections_energy_emission.drop('years', axis=1)
             years = list(production_df.index)
 
-            chart_name = f'Breakdown of energy emission per section for {self.sector_name} sector [Gt]'
+            chart_name = f'Breakdown of energy emission per section for {self.sector_name} sector [GtCO2eq]'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyEmissionPart,
                                                      chart_name=chart_name, stacked_bar=True)
@@ -794,7 +794,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             sections_non_energy_emission = sections_non_energy_emission.drop('years', axis=1)
             years = list(production_df.index)
 
-            chart_name = f'Breakdown of non energy emission per section for {self.sector_name} sector [Gt]'
+            chart_name = f'Breakdown of non energy emission per section for {self.sector_name} sector [GtCO2eq]'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionNonEnergyEmissionPart,
                                                      chart_name=chart_name, stacked_bar=True)
