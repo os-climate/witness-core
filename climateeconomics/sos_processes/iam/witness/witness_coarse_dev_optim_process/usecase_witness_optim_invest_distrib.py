@@ -42,8 +42,9 @@ class Study(ClimateEconomicsStudyManager):
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT,
                  agri_techno_list=COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
-                 process_level='dev'):
-        super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
+                 process_level='dev',
+                 file_path=__file__):
+        super().__init__(file_path=file_path, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -141,12 +142,36 @@ class Study(ClimateEconomicsStudyManager):
 
         # print("Design space dimension is ", dspace_size)
 
-        return [values_dict] + [optim_values_dict] + [ref_value_dict]
+        out = {}
+        out.update(values_dict)
+        out.update(optim_values_dict)
+        out.update(ref_value_dict)
+
+        dspace = out[f'{self.study_name}.{self.optim_name}.design_space']
+        list_design_var_to_clean = ['red_meat_calories_per_day_ctrl',
+                                    'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl',
+                                    'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix',
+                                    'deforestation_investment_ctrl']
+
+        # clean dspace
+        dspace.drop(dspace.loc[dspace['variable'].isin(list_design_var_to_clean)].index, inplace=True)
+
+        # clean dspace descriptor
+        dvar_descriptor = out[
+            f'{self.study_name}.{self.optim_name}.{self.coupling_name}.DesignVariables.design_var_descriptor']
+
+        updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
+        out.update({
+            f'{self.study_name}.{self.optim_name}.design_space': dspace,
+            f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor': updated_dvar_descriptor
+        })
+        return out
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
+    uc_cls.run()
 
     # df_xvect = pd.read_pickle('df_xvect.pkl')
     # df_xvect.columns = [
@@ -157,7 +182,6 @@ if '__main__' == __name__:
     # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
     # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
     # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
 
 #     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_reduced_graph(
 #         "reduced.pdf")
