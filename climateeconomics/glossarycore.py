@@ -238,7 +238,7 @@ class GlossaryCore:
     SectionNonEnergyEmissionGdpDf = {
         "var_name": SectionNonEnergyEmissionGdpDfValue,
         "type": "dataframe",
-        "unit": "t/Million $GDP",
+        "unit": "tCO2eq/Million $GDP",
         "description": "Non energy CO2 emission per $GDP",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -591,7 +591,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "Gt",
+        "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalEmissions: ("float", [0, 1e30], False),
@@ -606,7 +606,7 @@ class GlossaryCore:
         "type": "dataframe",
         "namespace": NS_MACRO,
         "visibility": "Shared",
-        "unit": "Gt",
+        "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalEmissions: ("float", [0, 1e30], False),
@@ -619,7 +619,7 @@ class GlossaryCore:
         "var_name": SectionEmissionDfValue,
         "type": "dataframe",
         "description": "",
-        "unit": "Gt",
+        "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },
@@ -629,7 +629,7 @@ class GlossaryCore:
         "var_name": SectionEnergyEmissionDfValue,
         "type": "dataframe",
         "description": "",
-        "unit": "Gt",
+        "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },
@@ -639,7 +639,7 @@ class GlossaryCore:
         "var_name": SectionNonEnergyEmissionDfValue,
         "type": "dataframe",
         "description": "",
-        "unit": "Gt",
+        "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },
