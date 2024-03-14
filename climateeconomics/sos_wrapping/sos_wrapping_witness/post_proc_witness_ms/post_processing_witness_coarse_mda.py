@@ -540,7 +540,7 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
         NB: if damage are deactivated, co2_damage_price_percentage can be set to 0 as it has no effect
     assumes that damage are activated when damage_to_productivity and compute_climate_impact_on_gdp and
                                           activate_climate_effect_population and
-                                          activate_pandemic_effect_population are true
+                                          activate_pandemic_effects are true
     '''
     df_paths = ['assumptions_dict']
     (assumption_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
@@ -556,7 +556,7 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
         status_dict[scenario][DAMAGE_NAME] = damage_to_productivity_dict[scenario] and \
                                           assumption_dict[scenario]['compute_climate_impact_on_gdp'] and \
                                           assumption_dict[scenario]['activate_climate_effect_population'] and \
-                                          assumption_dict[scenario]['activate_pandemic_effect_population']
+                                          assumption_dict[scenario]['activate_pandemic_effects']
         status_dict[scenario][TAX_NAME] = (ccs_price_dict[scenario] > 0. and (co2_damage_price_dict[scenario] > 0. or \
                                                                              (co2_damage_price_dict[scenario] <= 0. and \
                                                                               not status_dict[scenario][DAMAGE_NAME])))

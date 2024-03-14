@@ -223,7 +223,7 @@ meat_to_vegetables,Meat to vegetables percentage,%,"Gives the percentage of whit
 meat_to_vegetables_ctrl,Meat to vegetables ctrl,%,Ctrl data concerning to.,,
 methane_FossilGas_array_mix,Methane FossilGas array mix,%,Mix data concerning FossilGas.,,
 methane_UpgradingBiogas_array_mix,Methane UpgradingBiogas array mix,%,Mix data concerning UpgradingBiogas.,,
-milk_and_eggs_calories_per_day,milk and egg calories per day,number of calories coming from egg and milk consumed per day per person.,,
+milk_and_eggs_calories_per_day,milk and egg calories per day,kcal,number of calories coming from egg and milk consumed per day per person.,,
 min_co2_objective,Min CO2 objective,GtCO2,"Value of CO2 objective. Smaller the value is, better the objective is accomplished.",,
 min_utility_objective,Min utility objective,,"Value of the min utility objective. Smaller the value is, better the objective is accomplished.",,
 mix_detailed_prices,Detailed mix prices,$/MWh,Prices of residues and not residues.,,

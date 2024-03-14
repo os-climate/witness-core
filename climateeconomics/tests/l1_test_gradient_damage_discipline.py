@@ -158,7 +158,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                            {'compute_gdp': True,
                             'compute_climate_impact_on_gdp': False,
                             'activate_climate_effect_population': False,
-                            'activate_pandemic_effect_population': False,
+                            'activate_pandemic_effects': False,
                             }
                        }
 

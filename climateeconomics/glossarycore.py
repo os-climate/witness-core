@@ -1097,8 +1097,9 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
     }
 
+    PandemicParamDfValue = "pandemic_param_df"
     PandemicParamDf = {
-        "var_name": "pandemic_param_df",
+        "var_name": PandemicParamDfValue,
         "type": "dataframe",
         "default": "default_pandemic_param_df",
         # "user_level": 3,

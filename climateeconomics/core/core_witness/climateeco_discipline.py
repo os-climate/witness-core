@@ -14,6 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from os.path import join
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
@@ -29,7 +32,7 @@ class ClimateEcoDiscipline(SoSWrapp):
     assumptions_dict_default = {'compute_gdp': True,
                                 'compute_climate_impact_on_gdp': True,
                                 'activate_climate_effect_population': True,
-                                'activate_pandemic_effect_population': True,
+                                'activate_pandemic_effects': True,
                                 'invest_co2_tax_in_renewables': True,
                                 }
 
@@ -48,6 +51,15 @@ class ClimateEcoDiscipline(SoSWrapp):
                       GlossaryCore.N2O: 265.}
     ASSUMPTIONS_DESC_IN = {
         'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'structuring': True, 'unit': '-'}
+
+    desc_in_default_pandemic_param = GlossaryCore.PandemicParamDf
+    # https://stackoverflow.com/questions/13905741/accessing-class-variables-from-a-list-comprehension-in-the-class-definition
+    global_data_dir = join(Path(__file__).parents[2], 'data')
+    desc_in_default_pandemic_param['default'] = pd.read_csv(join(global_data_dir, 'pandemic_param.csv')).set_index('param', drop=False)
+    PANDEMIC_DESC_IN = {
+        GlossaryCore.PandemicParamDfValue: GlossaryCore.PandemicParamDf,
+        GlossaryCore.PandemicParamDf['var_name']: desc_in_default_pandemic_param,
+    }
 
     # ontology information
     _ontology_data = {

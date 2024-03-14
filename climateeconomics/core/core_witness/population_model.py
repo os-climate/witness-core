@@ -55,7 +55,7 @@ class Population:
         self.br_delta = inputs['birth_rate_delta']
         self.climate_mortality_param_df = deepcopy(inputs['climate_mortality_param_df'])
         # Pandemic parameters
-        self.pandemic_param_df = deepcopy(inputs['pandemic_param_df'])
+        self.pandemic_mortality_df = deepcopy(inputs[GlossaryCore.PandemicParamDfValue]['mortality'])
         self.cal_temp_increase = inputs['calibration_temperature_increase']
         self.theta = inputs['theta']
         self.dr_param_df = deepcopy(inputs['death_rate_param'])
@@ -74,7 +74,7 @@ class Population:
         self.kcal_pc_ref = inputs['kcal_pc_ref']
         self.theta_diet = inputs['theta_diet']
         self.activate_climate_effect_on_population = inputs['assumptions_dict']['activate_climate_effect_population']
-        self.activate_pandemic_effect_on_population = inputs['assumptions_dict']['activate_pandemic_effect_population']
+        self.activate_pandemic_effects = inputs['assumptions_dict']['activate_pandemic_effects']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
 
@@ -285,8 +285,8 @@ class Population:
                 diet_death_rate[i] = (1 - death_rate[i] * (1 + climate_death_rate[i]))/ (1 + np.exp(-diet_death_rate[i]))
 
         # Add pandemic impact on death rate
-        pandemic_death_rate = self.pandemic_param_df['mortality'].values
-        if not self.activate_pandemic_effect_on_population:
+        pandemic_death_rate = self.pandemic_mortality_df.values
+        if not self.activate_pandemic_effects:
             pandemic_death_rate *= 0
 
         # Fill the year key in each death rate dict
@@ -407,18 +407,8 @@ class Population:
         self.calories_pc_df = in_dict[GlossaryCore.CaloriesPerCapitaValue]
         self.calories_pc_df.index = self.calories_pc_df[GlossaryCore.Years].values
         self.compute_knowledge()
-        init_disability_pandemic_df = in_dict['pandemic_param_df']
-        init_disability_pandemic_df.index = init_disability_pandemic_df['param'].values
-        disability_pandemic_df = DataFrame({
-            str(year): [value]
-            for year_range in init_disability_pandemic_df.index[:-1]
-            for year_start, year_end in [year_range.split('-')]
-            for year in range(int(year_start), int(year_end)+1)
-            for value in [init_disability_pandemic_df.loc[year_range]['disability']]
-        })
 
         # Loop over year to compute population evolution. except last year
-
         for year in year_range:
             self.compute_birth_rate_v2(year)
             self.compute_death_rate_v2(year)
@@ -436,11 +426,9 @@ class Population:
             [np.inf, -np.inf], np.nan)
 
         # Compute working age population between 15 and 70 years
-        # (and factor out those with long-term pandemic disabilities)
         working_age_idx = [str(i) for i in np.arange(15, 71)]
         self.working_age_population_df[GlossaryCore.Population1570] = (
             self.population_df[working_age_idx]
-            .mul(disability_pandemic_df[working_age_idx].rsub(1.0).values, axis=1)
             .sum(axis=1)
         )
 

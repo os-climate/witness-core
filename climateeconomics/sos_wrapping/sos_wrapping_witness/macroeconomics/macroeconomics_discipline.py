@@ -121,6 +121,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.UsableCapitalObjectiveRefName: GlossaryCore.UsableCapitalObjectiveRef,
         GlossaryCore.ConsumptionObjectiveRefValue: GlossaryCore.ConsumptionObjectiveRef,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
+        **ClimateEcoDiscipline.PANDEMIC_DESC_IN,
     }
 
     DESC_OUT = {
