@@ -14,15 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
-    Study as usecase_witness
-
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
     Study as StudyOptimInvestDistrib
-from energy_models.database_witness_energy import DatabaseWitnessEnergy
 
 
 class Study(StudyOptimInvestDistrib):

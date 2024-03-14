@@ -18,11 +18,16 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_fossil_only_no_damage_low_tax import Study as Study1
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_2_fossil_only_damage_high_tax import Study as Study2
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import Study as Study3
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import Study as Study4
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_5_no_renew_damage_high_tax import Study as Study5
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_fossil_only_no_damage_low_tax import \
+    Study as Study1
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_2_fossil_only_damage_high_tax import \
+    Study as Study2
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import \
+    Study as Study3
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import \
+    Study as Study4
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_5_no_renew_damage_high_tax import \
+    Study as Study5
 
 
 class Study(ClimateEconomicsStudyManager):
