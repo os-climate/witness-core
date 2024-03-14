@@ -118,7 +118,7 @@ Having a different GDP from McIsaac (2017)[^1] we could not use values of parame
 ## Working age population
 The working age population is the population in age to work, it is the sum of population in the 15-70 age range.
 
-When modeling the effects of COVID-19, we calculate the fraction of the population estimated to be affected by Long Covid (by age [^12]) and thus unable to work.
+When modeling the effects of COVID-19, we considered calculating the fraction of the population estimated to be affected by Long Covid (by age [^12]) and thus unable to work, but decided this was better applied to employment rate in the macroeconomics models/disciplines.
 
 ## Life expectancy
 Life expectancy at birth is the age-averaged proportion of surviving people:

@@ -115,7 +115,7 @@ To obtain the labor force we use the population in working age and the employmen
 ```math
 L = working\_age\_pop * employment\_rate
 ```
-The employment rate is for now fixed at  $65.9\%$ following International Labour Organization data[^9]. However to take into account the impact of COVID-19 crisis on employment rate, the value is different for 2020-2031 year interval. We used ILO forecast values for 2021, 2022 and 2023 to extrapolate a recovery function until fixed value is reached.   
+The employment rate is for now fixed at  $65.9\%$ following International Labour Organization data[^9]. However to take into account the impact of COVID-19 crisis on employment rate, the value is different for 2020-2031 year interval. We used ILO forecast values for 2021, 2022 and 2023 to extrapolate a recovery function until fixed value is reached.  We also use CDC data[^11] to infer the long-term impact of Long Covid.
 | ![employmentrate.PNG](employmentrate.PNG) | 
 |:--:| 
 | *International Labour Organization Employment rate. Copyright International Labor Organization* |
@@ -198,4 +198,6 @@ To obtain the value of the production function parameters we fitted our calculat
 
 [^9]: International Labour Organization, ILOSTAT database. Data retrieved on February 8, 2022.
 
-[^10]: IEA 2022; World total final consumption by source, https://www.iea.org/reports/key-world-energy-statistics-2020/final-consumption, License: CC BY 4.0. 
+[^10]: IEA 2022; World total final consumption by source, https://www.iea.org/reports/key-world-energy-statistics-2020/final-consumption, License: CC BY 4.0.
+
+[^11]: Adjaye-Gbewonyo D, Vahratian A, Perrine CG, Bertolli J. Long COVID in adults: United States, 2022. NCHS Data Brief, no 480. Hyattsville, MD: National Center for Health Statistics. 2023. DOI: https://dx.doi.org/10.15620/cdc:132417
