@@ -115,7 +115,7 @@ To obtain the labor force we use the population in working age and the employmen
 ```math
 L = working\_age\_pop * employment\_rate
 ```
-The employment rate is for now fixed at  $65.9\%$ following International Labour Organization data[^9]. However to take into account the impact of COVID-19 crisis on employment rate, the value is different for 2020-2031 year interval. We used ILO forecast values for 2021, 2022 and 2023 to extrapolate a recovery function until fixed value is reached.  We also use CDC data[^11] to infer the long-term impact of Long Covid.
+The employment rate is for now fixed at  $65.9\%$ following International Labour Organization data[^9]. However to take into account the impact of COVID-19 crisis on employment rate, the value is different for 2020-2031 year interval. We used ILO forecast values for 2021, 2022 and 2023 to extrapolate a recovery function until fixed value is reached.  We also use National Center for Health Statistics (NCHS) data[^11] to infer the long-term impact of Long Covid.
 | ![employmentrate.PNG](employmentrate.PNG) | 
 |:--:| 
 | *International Labour Organization Employment rate. Copyright International Labor Organization* |
