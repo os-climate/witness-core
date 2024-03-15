@@ -157,14 +157,14 @@ class Study(StudyManager):
         }
         section_non_energy_emission_gdp_df = pd.DataFrame(section_non_energy_emission_gdp_dict)
 
-        energy_consumption_percentage_per_section_df = pd.read_csv(
+        section_energy_consumption_percentage_df = pd.read_csv(
             join(global_data_dir, 'energy_consumption_percentage_per_section_df.csv'))
-        section_energy_consumption_percentage_per_section_dict = {
+        section_energy_consumption_percentage_dict = {
             **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
-            **dict(zip(energy_consumption_percentage_per_section_df.columns[1:],
-                       energy_consumption_percentage_per_section_df.values[0, 1:]))
+            **dict(zip(section_energy_consumption_percentage_df.columns[1:],
+                       section_energy_consumption_percentage_df.values[0, 1:]))
         }
-        energy_consumption_percentage_per_section_df = pd.DataFrame(section_energy_consumption_percentage_per_section_dict)
+        section_energy_consumption_percentage_df = pd.DataFrame(section_energy_consumption_percentage_dict)
 
         energy_emission_df = pd.DataFrame({
             GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
@@ -185,7 +185,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}"] = section_gdp_df
         sect_input[f"{self.study_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emission_gdp_df
-        sect_input[f"{self.study_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = energy_consumption_percentage_per_section_df
+        sect_input[f"{self.study_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = section_energy_consumption_percentage_df
         sect_input[f"{self.study_name}.{GlossaryCore.TotalEnergyEmissions}"] = energy_emission_df
 
         if self.year_start == 2000:
