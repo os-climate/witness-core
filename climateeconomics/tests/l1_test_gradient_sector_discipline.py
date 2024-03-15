@@ -92,7 +92,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.energy_emission_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalEnergyEmissions: 100.0
+            GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
 
     def analytic_grad_entry(self):
@@ -148,7 +148,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f'{self.name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}': self.section_non_energy_emission_gdp_df,
                        f'{self.name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': self.section_non_energy_emission_gdp_df,
-                       f'{self.name}.{GlossaryCore.TotalEnergyEmissions}': self.energy_emission_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
@@ -235,7 +235,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f'{self.name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}': self.section_non_energy_emission_gdp_df,
                        f'{self.name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': self.section_non_energy_emission_gdp_df,
-                       f'{self.name}.{GlossaryCore.TotalEnergyEmissions}': self.energy_emission_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        }
 
@@ -307,7 +307,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f'{self.name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}': self.section_non_energy_emission_gdp_df,
                        f'{self.name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': self.section_non_energy_emission_gdp_df,
-                       f'{self.name}.{GlossaryCore.TotalEnergyEmissions}': self.energy_emission_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,

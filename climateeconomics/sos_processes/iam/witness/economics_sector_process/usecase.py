@@ -168,7 +168,7 @@ class Study(StudyManager):
 
         energy_emission_df = pd.DataFrame({
             GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
-            GlossaryCore.TotalEnergyEmissions: 100.0
+            GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
 
         sect_input = {}
@@ -186,7 +186,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}"] = section_gdp_df
         sect_input[f"{self.study_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emission_gdp_df
         sect_input[f"{self.study_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = section_energy_consumption_percentage_df
-        sect_input[f"{self.study_name}.{GlossaryCore.TotalEnergyEmissions}"] = energy_emission_df
+        sect_input[f"{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"] = energy_emission_df
 
         if self.year_start == 2000:
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'capital_start'}"] = 31.763

@@ -135,7 +135,7 @@ class Study(StudyManager):
 
         # energy_emission_df = pd.DataFrame({
         #     GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
-        #     GlossaryCore.TotalEnergyEmissions: 100.0
+        #     GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         # })
 
 
@@ -149,7 +149,7 @@ class Study(StudyManager):
             f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}': gdp_section_df,
             f'{self.study_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}': section_non_energy_emission_gdp_df,
             f'{self.study_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}': section_energy_consumption_percentage_df,
-            # f'{self.study_name}.{GlossaryCore.TotalEnergyEmissions}': energy_emission_df,
+            # f'{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': energy_emission_df,
         }
 
         if self.main_study:

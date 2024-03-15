@@ -75,7 +75,7 @@ class SectorModel():
         self.retrieve_sections_list()
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         self.section_non_energy_emission_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]
-        self.energy_emission_df = inputs_dict[GlossaryCore.TotalEnergyEmissions]
+        self.energy_emission_df = inputs_dict[GlossaryCore.EnergyCarbonIntensityDfValue]
         self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
@@ -218,7 +218,7 @@ class SectorModel():
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
         self.damage_fraction_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_df.index = self.damage_fraction_df[GlossaryCore.Years].values
-        self.energy_emission_df = inputs[GlossaryCore.TotalEnergyEmissions]
+        self.energy_emission_df = inputs[GlossaryCore.EnergyCarbonIntensityDfValue]
         self.energy_emission_df.index = self.energy_emission_df[GlossaryCore.Years].values
 
     def compute_productivity_growthrate(self):
@@ -488,7 +488,7 @@ class SectorModel():
         self.section_energy_emission_df = section_energy_consumption_percentage_df.copy()
         energy_emission_df_copy = self.energy_emission_df.copy(deep=True)
         self.section_energy_emission_df[self.section_list] = self.section_energy_emission_df[self.section_list].multiply(
-            energy_emission_df_copy.reset_index(drop=True)[GlossaryCore.TotalEnergyEmissions], axis='index') / 100.
+            energy_emission_df_copy.reset_index(drop=True)[GlossaryCore.EnergyCarbonIntensityDfValue], axis='index') / 100.
 
     def compute_non_energy_emission_per_section(self):
         """
