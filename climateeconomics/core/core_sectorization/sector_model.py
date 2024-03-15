@@ -490,6 +490,10 @@ class SectorModel():
     def compute_energy_emission_per_section(self):
         """
         Computing the energy emission for each section of the sector
+
+        Energy emissions of section S (GtCO2Eq) = Conso energy section S (TWh) x Carbon intensity (kgCO2Eq / kWh) -> todo: conversion
+        Conso energy section S (TWh) = Share conso energy section S related to sector consumption (%) x Conso energy sector (TWh)
+        (example : Construction consumes 30% of energy allocated to Sector Industry, but only 12% of global energy supplied -> we want the 30%)
         """
         self.section_energy_emission_df = self.energy_consumption_percentage_per_section_df.copy()
         energy_emission_df_copy = self.energy_emission_df.copy(deep=True)
