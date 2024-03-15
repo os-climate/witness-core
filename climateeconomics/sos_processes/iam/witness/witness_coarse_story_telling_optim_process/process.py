@@ -53,4 +53,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_optim',
             'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_optim.post_processing_witness_full')
 
+        self.ee.ns_manager.add_ns_def({'ns_dashboard': self.ee.study_name})
+
         return opt_builder
