@@ -74,9 +74,20 @@ class SectorModel():
         self.sector_name = sector_name
         self.retrieve_sections_list()
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
-        self.section_non_energy_emission_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]
+        # Getting the relevant years, sections and percentages for gdp
+        self.gdp_percentage_per_section_df = self.check_start_end_years(self.gdp_percentage_per_section_df)
+        self.gdp_percentage_per_section_df = self.get_sections(self.gdp_percentage_per_section_df)
+        self.gdp_percentage_per_section_df = self.compute_percentage_per_section(self.gdp_percentage_per_section_df)
         self.energy_emission_df = inputs_dict[GlossaryCore.EnergyCarbonIntensityDfValue]
         self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
+        # Getting the relevant years, sections and percentages for energy consumption
+        self.energy_consumption_percentage_per_section_df = self.check_start_end_years(self.energy_consumption_percentage_per_section_df)
+        self.energy_consumption_percentage_per_section_df = self.get_sections(self.energy_consumption_percentage_per_section_df)
+        self.energy_consumption_percentage_per_section_df = self.compute_percentage_per_section(self.energy_consumption_percentage_per_section_df)
+        self.section_non_energy_emission_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]
+        # Getting the relevant years and sections for non energy emissions
+        self.section_non_energy_emission_gdp_df = self.check_start_end_years(self.section_non_energy_emission_gdp_df)
+        self.section_non_energy_emission_gdp_df = self.get_sections(self.section_non_energy_emission_gdp_df)
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
@@ -165,7 +176,8 @@ class SectorModel():
         '''
         sum_sections = 0
         for section in dataframe.columns:
-            sum_sections += dataframe[section].iloc[0]
+            if section != 'years':
+                sum_sections += dataframe[section].iloc[0]
         for section in dataframe.columns:
             if section != 'years':
                 dataframe[section] = (dataframe[section] * 100) / sum_sections
@@ -340,10 +352,7 @@ class SectorModel():
         """
         Splitting output net of damages between sections of the sector
         """
-        section_gdp_percentage_df = self.check_start_end_years(self.gdp_percentage_per_section_df)
-        section_gdp_percentage_df = self.get_sections(section_gdp_percentage_df)
-        section_gdp_percentage_df = self.compute_percentage_per_section(section_gdp_percentage_df)
-        self.section_gdp_df = section_gdp_percentage_df.copy()
+        self.section_gdp_df = self.gdp_percentage_per_section_df.copy()
         production_df_copy = self.production_df.copy(deep=True)
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
             production_df_copy.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
@@ -482,22 +491,17 @@ class SectorModel():
         """
         Computing the energy emission for each section of the sector
         """
-        section_energy_consumption_percentage_df = self.check_start_end_years(self.energy_consumption_percentage_per_section_df)
-        section_energy_consumption_percentage_df = self.get_sections(section_energy_consumption_percentage_df)
-        section_energy_consumption_percentage_df = self.compute_percentage_per_section(section_energy_consumption_percentage_df)
-        self.section_energy_emission_df = section_energy_consumption_percentage_df.copy()
+        self.section_energy_emission_df = self.energy_consumption_percentage_per_section_df.copy()
         energy_emission_df_copy = self.energy_emission_df.copy(deep=True)
         self.section_energy_emission_df[self.section_list] = self.section_energy_emission_df[self.section_list].multiply(
-            energy_emission_df_copy.reset_index(drop=True)[GlossaryCore.EnergyCarbonIntensityDfValue], axis='index') / 100.
+            energy_emission_df_copy.reset_index(drop=True)[GlossaryCore.EnergyCarbonIntensityDfValue], axis='index') / 1e6
 
     def compute_non_energy_emission_per_section(self):
         """
         Computing the energy emission for each section of the sector
         """
-        section_non_energy_emission_df = self.check_start_end_years(self.section_non_energy_emission_gdp_df)
-        section_non_energy_emission_df = self.get_sections(section_non_energy_emission_df)
-        self.section_non_energy_emission_df = section_non_energy_emission_df.copy(deep=True)
-        self.section_non_energy_emission_df[self.section_list] *= self.section_gdp_df[self.section_list] / 1000.
+        self.section_non_energy_emission_df = self.section_non_energy_emission_gdp_df.copy(deep=True)
+        self.section_non_energy_emission_df[self.section_list] *= self.section_gdp_df[self.section_list] * 1e6
 
     def compute_total_emission_per_section(self):
         """
