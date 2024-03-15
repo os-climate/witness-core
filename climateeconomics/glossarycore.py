@@ -43,6 +43,10 @@ class GlossaryCore:
     # Trillion $ / T$   /   10^12
     # Giga$      / G$   /   10^9
     # Million$   / M$   /   10^6
+    # Megatons : 1e6 tons
+    # Gigatons : 1e9 tons = 1e3 Megatons
+    # PWh = 1e3 TWh
+    # 1 TWh  = 1e9 kWh
 
     Years = "years"
     YearStart = "year_start"
@@ -766,6 +770,19 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", [0, 1e30], False),
+        },
+    }
+    EnergyCarbonIntensityDfValue = "Carbon intensity of Energy Mix"
+    EnergyCarbonIntensityDf = {
+        "var_name": EnergyProductionValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "kgCO2Eq/kWh",
+        "namespace": NS_ENERGY_MIX,
+        "description": "Total CO2 equivalent emitted by energy mix divided by total energy production of energy mix",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            EnergyCarbonIntensityDfValue: ("float", [0, 1e30], False),
         },
     }
 
