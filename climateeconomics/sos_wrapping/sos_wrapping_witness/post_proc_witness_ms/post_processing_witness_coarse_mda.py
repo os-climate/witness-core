@@ -17,6 +17,8 @@ import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
     Study as usecase_ms_mda
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import \
+    Study as usecase_ms_mdo
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -51,16 +53,28 @@ graphs_list = ['Temperature per scenario',
                'Fossil production per scenario',
                'Renewable production per scenario'
                ]
+
+def get_shared_value(execution_engine, short_name_var: str):
+    """returns the value of a variables common to all scenarios"""
+    var_full_name = execution_engine.dm.get_all_namespaces_from_var_name(short_name_var)[0]
+    value = execution_engine.dm.get_value(var_full_name)
+    return value, var_full_name
+
+def get_all_scenarios_values(execution_engine, short_name_var: str):
+    var_full_names = execution_engine.dm.get_all_namespaces_from_var_name(short_name_var)
+    values = {var_full_name: execution_engine.dm.get_value(var_full_name) for var_full_name in var_full_names}
+    return values
+
 def post_processing_filters(execution_engine, namespace):
 
     filters = []
 
-    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
+    samples_df, varfullname_samples_df = get_shared_value(execution_engine, 'samples_df')
+    scenario_list = samples_df['scenario_name'].tolist()
 
     # recover year start and year end arbitrarily from the first scenario
-    year_start = execution_engine.dm.get_value(f'{namespace_w}.{scenario_list[0]}.{GlossaryCore.YearStart}')
-    year_end = execution_engine.dm.get_value(f'{namespace_w}.{scenario_list[0]}.{GlossaryCore.YearEnd}')
+    year_start, _ = get_shared_value(execution_engine, GlossaryCore.YearStart)
+    year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
     years_list = np.arange(year_start, year_end + 1).tolist()
 
     filters.append(ChartFilter(CHART_NAME, graphs_list, graphs_list, CHART_NAME))
@@ -78,20 +92,16 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
 
-    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
+    samples_df, _ = get_shared_value(execution_engine, 'samples_df')
+    scenario_list = samples_df['scenario_name'].tolist()
 
     selected_scenarios = scenario_list
 
-    df_paths = [f'{GlossaryCore.YearStart}',
-                f'{GlossaryCore.YearEnd}', ]
-    year_start_dict, year_end_dict = get_df_per_scenario_dict(
-        execution_engine, df_paths, scenario_list)
-    year_start, year_end = year_start_dict[scenario_list[0]
-                                           ], year_end_dict[scenario_list[0]]
+    year_start, _ = get_shared_value(execution_engine, GlossaryCore.YearStart)
+    year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
 
     damage_tax_activation_status_dict = get_scenario_damage_tax_activation_status(execution_engine, scenario_list)
-
+    #graphs_list = []
     if filters is not None:
         for chart_filter in filters: # filter on "scenarios" must occur before filter on "Effects" otherwise filter "Effects" does not work
             if chart_filter.filter_key == CHART_NAME:
@@ -300,9 +310,8 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'invest in energy and ccus per scenario' in graphs_list:
 
-        namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}.{scenario_list[0]}'
-        energy_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.energy_list}')
-        ccs_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.ccs_list}')
+        energy_list, _ = get_shared_value(execution_engine, GlossaryCore.energy_list)
+        ccs_list, _ = get_shared_value(execution_engine, GlossaryCore.ccs_list)
 
         for energy in energy_list + ccs_list:
             # will sum in list_energy all the invests of all the technos of a given energy
@@ -312,7 +321,7 @@ def post_processings(execution_engine, namespace, filters):
             else:
                 energy_disc = CCUS.name
             if energy != BiomassDry.name:
-                techno_list = execution_engine.dm.get_value(f'{namespace_w}.{energy_disc}.{energy}.{GlossaryEnergy.TechnoListName}')
+                techno_list, _ = get_shared_value(execution_engine, f"{energy}.{GlossaryEnergy.TechnoListName}")
 
                 for techno in techno_list:
                     df_paths = [f'{energy_disc}.{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', ]
@@ -557,9 +566,7 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
         status_dict[scenario][DAMAGE_NAME] = damage_to_productivity_dict[scenario] and \
                                           assumption_dict[scenario]['compute_climate_impact_on_gdp'] and \
                                           assumption_dict[scenario]['activate_climate_effect_population']
-        status_dict[scenario][TAX_NAME] = (ccs_price_dict[scenario] > 0. and (co2_damage_price_dict[scenario] > 0. or \
-                                                                             (co2_damage_price_dict[scenario] <= 0. and \
-                                                                              not status_dict[scenario][DAMAGE_NAME])))
+        status_dict[scenario][TAX_NAME] = ccs_price_dict[scenario] > 25. or (co2_damage_price_dict[scenario] > 0  and status_dict[scenario][DAMAGE_NAME])
 
     return status_dict
 
@@ -585,12 +592,14 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         line color is red for fossil (usecase 2 & 2b), green for NZE (usecase 6 & 7), orange for fossil + renewable 
         (usecase 3, 4, 5)
         '''
-        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B]:
+        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B, usecase_ms_mdo.UC1,  usecase_ms_mdo.UC2]:
             line_color = dict(color='red')
-        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5]:
+        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5, usecase_ms_mdo.UC3]:
             line_color = dict(color='orange')
-        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7]:
+        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7, usecase_ms_mdo.UC4]:
             line_color = dict(color='green')
+        elif scenario in [usecase_ms_mdo.UC5]:
+            line_color = dict(color='purple')
         else:
             line_color = None
         marker_symbol = 'circle'
@@ -612,20 +621,21 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
     return new_chart
 
 
-def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
+def get_df_per_scenario_dict(execution_engine, var_names, scenario_list=[]):
     '''! Function to retrieve dataframes from all the scenarios given a specified path
     @param execution_engine: Execution_engine, object from which the data is gathered
-    @param df_paths: list of string, containing the paths to access the df
+    @param var_names: list of string, containing the paths to access the df
 
     @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
     '''
-    df_per_scenario_dicts = [{} for _ in df_paths]
-    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
+    df_per_scenario_dicts = [{} for _ in var_names]
     if not scenario_list:
-        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
+        samples_df, _ = get_shared_value(execution_engine, 'samples_df')
+        scenario_list = samples_df['scenario_name']
 
-    for scenario in scenario_list:
-        for i, df_path in enumerate(df_paths):
-            df_per_scenario_dicts[i][scenario] = execution_engine.dm.get_value(
-                f'{namespace_w}.{scenario}.{df_path}')
+    for i, var_name in enumerate(var_names):
+        all_scenarios_variable_values = get_all_scenarios_values(execution_engine, var_name)
+        for scenario in scenario_list:
+            scenario_var_name = list(filter(lambda x: scenario in x, all_scenarios_variable_values.keys()))[0]
+            df_per_scenario_dicts[i][scenario] = all_scenarios_variable_values[scenario_var_name]
     return df_per_scenario_dicts

@@ -30,6 +30,13 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
     InstantiatedPlotlyNativeChart
 
 
+def get_scenario_value(execution_engine, var_name, scenario_name):
+    """returns the value of a variable for the specified scenario"""
+    all_scenario_varnames = execution_engine.dm.get_all_namespaces_from_var_name(var_name)
+    selected_scenario_varname = list(filter(lambda x: scenario_name in x, all_scenario_varnames))[0]
+    value_selected_scenario = execution_engine.dm.get_value(selected_scenario_varname)
+    return value_selected_scenario
+
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -44,7 +51,7 @@ def post_processing_filters(execution_engine, namespace):
     return chart_filters
 
 
-def post_processings(execution_engine, namespace, chart_filters=None):
+def post_processings(execution_engine, scenario_name, chart_filters=None):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
@@ -71,11 +78,10 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 chart_list = chart_filter.selected_values
 
     if 'temperature and ghg evolution' in chart_list:
-        temperature_df = execution_engine.dm.get_value(f'{namespace}.{TEMPCHANGE_DISC}.temperature_detail_df')
-        total_ghg_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.GHGEmissionsDfValue}')
-        carbon_captured = execution_engine.dm.get_value(
-            f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
-        co2_emissions = execution_engine.dm.get_value(f'{namespace}.{CO2Emissions_Disc}.co2_emissions_ccus_Gt')
+        temperature_df = get_scenario_value(execution_engine, 'temperature_detail_df', scenario_name)
+        total_ghg_df = get_scenario_value(execution_engine, GlossaryCore.GHGEmissionsDfValue, scenario_name)
+        carbon_captured = get_scenario_value(execution_engine, GlossaryEnergy.CarbonCapturedValue, scenario_name)
+        co2_emissions = get_scenario_value(execution_engine, 'co2_emissions_ccus_Gt', scenario_name)
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and CO2 evolution over the years'
@@ -141,22 +147,21 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'population and death' in chart_list:
-        pop_df = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.population_detail_df')
-        death_dict = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.death_dict')
+        pop_df = get_scenario_value(execution_engine, 'population_detail_df', scenario_name)
+        death_dict = get_scenario_value(execution_engine, 'death_dict', scenario_name)
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
 
     if 'gdp breakdown' in chart_list:
-        economics_df = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.EconomicsDetailDfValue}')
-        damage_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.DamageDetailedDfValue}')
-        compute_climate_impact_on_gdp = execution_engine.dm.get_value(f'{namespace}.assumptions_dict')['compute_climate_impact_on_gdp']
-        damages_to_productivity = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.DamageToProductivity}') and compute_climate_impact_on_gdp
+        economics_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
+        damage_df = get_scenario_value(execution_engine, GlossaryCore.DamageDetailedDfValue, scenario_name)
+        compute_climate_impact_on_gdp = get_scenario_value(execution_engine, 'assumptions_dict', scenario_name)['compute_climate_impact_on_gdp']
+        damages_to_productivity = get_scenario_value(execution_engine, GlossaryCore.DamageToProductivity, scenario_name) and compute_climate_impact_on_gdp
         new_chart = MacroEconomics.breakdown_gdp(economics_df, damage_df, compute_climate_impact_on_gdp, damages_to_productivity)
         instanciated_charts.append(new_chart)
 
     if 'energy mix' in chart_list:
-        energy_production_detailed = execution_engine.dm.get_value(f'{namespace}.{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}')
-        energy_mean_price = execution_engine.dm.get_value(f'{namespace}.{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyMeanPriceValue}')
-
+        energy_production_detailed = get_scenario_value(execution_engine, f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
+        energy_mean_price = get_scenario_value(execution_engine, GlossaryCore.EnergyMeanPriceValue, scenario_name)
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Net Energies production/consumption and mean price out of energy mix'
@@ -196,15 +201,15 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'investment distribution' in chart_list:
-        forest_investment = execution_engine.dm.get_value(f'{namespace}.{INVESTDISTRIB_DISC}.{GlossaryEnergy.ForestInvestmentValue}')
+        forest_investment = get_scenario_value(execution_engine, GlossaryEnergy.ForestInvestmentValue, scenario_name)
         years = forest_investment[GlossaryEnergy.Years]
 
         chart_name_energy = f'Distribution of investments on each energy vs years'
 
         new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                     chart_name=chart_name_energy, stacked_bar=True)
-        energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryEnergy.energy_list}')
-        ccs_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryEnergy.ccs_list}')
+        energy_list = get_scenario_value(execution_engine, GlossaryCore.energy_list, scenario_name)
+        ccs_list = get_scenario_value(execution_engine, GlossaryCore.ccs_list, scenario_name)
 
         new_chart_energy = new_chart_energy.to_plotly()
 
@@ -212,15 +217,9 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         for energy in energy_list + ccs_list:
             list_energy = []
             if energy != BiomassDry.name:
-                techno_list_name = f'{energy}.{GlossaryEnergy.TechnoListName}'
-                var = [var for var in execution_engine.dm.get_all_namespaces_from_var_name(techno_list_name) if
-                       namespace in var][0]
-                techno_list = execution_engine.dm.get_value(var)
-
+                techno_list = get_scenario_value(execution_engine, f'{energy}.{GlossaryEnergy.TechnoListName}', scenario_name)
                 for techno in techno_list:
-                    investval = [var for var in execution_engine.dm.get_all_namespaces_from_var_name(
-                        f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}') if namespace in var][0]
-                    invest_level = execution_engine.dm.get_value(investval)
+                    invest_level = get_scenario_value(execution_engine, f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', scenario_name)
                     list_energy.append(invest_level[f'{GlossaryEnergy.InvestValue}'].values)
 
                 total_invest = list(np.sum(list_energy, axis=0))
@@ -245,7 +244,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         new_chart = new_chart.to_plotly()
 
         # total crop surface
-        surface_df = execution_engine.dm.get_value(f'{namespace}.{AGRICULTUREMIX_DISC}.{CROP_DISC}.food_land_surface_df')
+        surface_df = get_scenario_value(execution_engine, f'{CROP_DISC}.food_land_surface_df', scenario_name)
         years = surface_df[GlossaryCore.Years].values.tolist()
         for key in surface_df.keys():
             if key == GlossaryCore.Years:
@@ -263,7 +262,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 ))
 
         # total food and forest surface, food should be at the bottom to be compared with crop surface
-        land_surface_detailed = execution_engine.dm.get_value(f'{namespace}.{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}')
+        land_surface_detailed = get_scenario_value(execution_engine, f'{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}', scenario_name)
         column = 'Forest Surface (Gha)'
         legend = column.replace(' (Gha)', '')
         new_chart.add_trace(go.Scatter(
