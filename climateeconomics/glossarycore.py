@@ -72,7 +72,8 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
-    ChartGDPPerRegion = "GDP per region [T$]"
+    ChartGDPPerGroup = "GDP per group [T$]"
+    ChartPercentagePerGroup = "Percentage per group [%]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
@@ -111,6 +112,7 @@ class GlossaryCore:
     SectorEnergy = "energy"
     TotalGDPGroupDFName = "total_gdp_per_group_df"
     PercentageGDPGroupDFName = "percentage_gdp_group_df"
+    GDPCountryDFName = "gdp_per_country_df"
 
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
     ConsumptionObjectiveRef = get_ref_variable(
@@ -1386,6 +1388,11 @@ class GlossaryCore:
         "var_name": PercentageGDPGroupDFName,
         'type': 'dataframe',
         'unit': '%',
+    }
+    GDPCountryDF = {
+        "var_name": GDPCountryDFName,
+        'type': 'dataframe',
+        'unit': 'T$',
     }
 
     @staticmethod
