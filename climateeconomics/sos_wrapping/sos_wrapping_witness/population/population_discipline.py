@@ -785,7 +785,7 @@ def graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated
     min_value = min(min(min_values.values()), min_value_pop)
     max_value = max(max(max_values.values()), max_value_pop)
 
-    chart_name = 'World population and cumulative climate deaths vs years'
+    chart_name = 'World population and cumulative climate deaths '
 
     new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Number of people',
                                             [year_start - 5, year_end + 5],

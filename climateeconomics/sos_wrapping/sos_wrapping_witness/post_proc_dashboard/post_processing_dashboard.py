@@ -204,7 +204,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         forest_investment = get_scenario_value(execution_engine, GlossaryEnergy.ForestInvestmentValue, scenario_name)
         years = forest_investment[GlossaryEnergy.Years]
 
-        chart_name_energy = f'Distribution of investments on each energy vs years'
+        chart_name_energy = f'Distribution of investments on each energy '
 
         new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                     chart_name=chart_name_energy, stacked_bar=True)
