@@ -288,7 +288,7 @@ class Study(ClimateEconomicsStudyManager):
         self.dspace_size = dspace.pop('dspace_size')
 
         dspace_dict = defaultdict(list)
-        for key, elem in self.dspace.items():
+        for key, elem in dspace.items():
             dspace_dict['variable'].append(key)
             for column, value in elem.items():
                 dspace_dict[column].append(value)
