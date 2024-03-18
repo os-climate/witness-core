@@ -495,16 +495,25 @@ class SectorModel():
         Computing the energy consumption for each section of the sector
         """
         # section_energy_consumption (PWh) = sector_energy_production (Pwh) x section_energy_consumption_percentage (%)
-        self.section_energy_consumption_df[self.section_list] = (self.energy_production[GlossaryCore.TotalProductionValue]
-                                                            * self.energy_consumption_percentage_per_section_df[self.section_list]) / 100
+        # self.section_energy_consumption_df[self.section_list] = (self.energy_production[GlossaryCore.TotalProductionValue]
+        #                                                     * self.energy_consumption_percentage_per_section_df[self.section_list]) / 100
+        self.section_energy_consumption_df = self.energy_consumption_percentage_per_section_df.copy()
+        energy_production_df_copy = self.energy_production.copy(deep=True)
+        self.section_energy_consumption_df[self.section_list] = self.section_energy_consumption_df[self.section_list].multiply(
+            energy_production_df_copy.reset_index(drop=True)[GlossaryCore.TotalProductionValue], axis='index') / 100.
+
 
     def compute_energy_emission_per_section(self):
         """
         Computing the energy emission for each section of the sector
         """
         # section_energy_emission (GtCO2eq) = section_energy_consumption (PWh) x carbon_intensity (kgCO2eq/kWh)
-        self.section_energy_emission_df[self.section_list] = (self.section_energy_consumption_df[self.section_list]
-                                                              * self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue])
+        # self.section_energy_emission_df[self.section_list] = (self.section_energy_consumption_df[self.section_list]
+        #                                                       * self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue])
+        self.section_energy_emission_df = self.section_energy_consumption_df.copy()
+        carbon_intensity_df_copy = self.carbon_intensity_of_energy_mix.copy(deep=True)
+        self.section_energy_emission_df[self.section_list] = self.section_energy_emission_df[self.section_list].multiply(
+            carbon_intensity_df_copy.reset_index(drop=True)[GlossaryCore.EnergyCarbonIntensityDfValue], axis='index')
 
     def compute_non_energy_emission_per_section(self):
         """
@@ -512,7 +521,7 @@ class SectorModel():
         """
         # section_non_energy_emission (GtCO2eq) = section_non_energy_emission_wrt_gdp (tCO2eq/M$) x section_gdp (T$)
         self.section_non_energy_emission_df[self.section_list] = (self.section_non_energy_emission_per_dollar_of_gdp_df[self.section_list]
-                                                                  * self.section_gdp_df[self.section_list]) / 1000
+                                                                  * self.section_gdp_df[self.section_list]) / 1000.
 
     def compute_total_emission_per_section(self):
         """
@@ -930,10 +939,3 @@ class SectorModel():
     def d_estimated_damages_d_user_input(self, d_estimated_damages_from_climate_d_user_input, d_estimated_damages_from_productivity_loss_d_user_input):
         return d_estimated_damages_from_climate_d_user_input + d_estimated_damages_from_productivity_loss_d_user_input
 
-    def compute_energy_consumption_per_section(self):
-        """
-        Conso energy section S (TWh) = Share conso energy section S related to sector consumption (%) x Conso energy sector (TWh)
-        """
-
-        # TODO
-        pass
