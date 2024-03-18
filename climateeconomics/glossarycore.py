@@ -381,7 +381,7 @@ class GlossaryCore:
     CO2Taxes = {
         "var_name": CO2TaxesValue,
         "type": "dataframe",
-        "unit": "$/tCO2",
+        "unit": "$/tCO2Eq",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
@@ -685,6 +685,14 @@ class GlossaryCore:
             TotalProductionValue: ("float", [0, 1e30], False),
         },
     }
+
+    EnergyProductionDetailedDf = {
+        "var_name": EnergyProductionValue,
+        "type": "dataframe",
+        "unit": "TWh",
+        "dynamic_dataframe_columns": True,
+    }
+
     EnergyCarbonIntensityDfValue = "Carbon intensity of Energy Mix"
     EnergyCarbonIntensityDf = {
         "var_name": EnergyProductionValue,
@@ -768,6 +776,7 @@ class GlossaryCore:
     TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"
     GHGEmissionsDf = {
+        "var_name": GHGEmissionsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
