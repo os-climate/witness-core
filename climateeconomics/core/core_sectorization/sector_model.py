@@ -51,6 +51,7 @@ class SectorModel():
         self.section_emission_df = None
         self.section_energy_emission_df = None
         self.section_non_energy_emission_df = None
+        self.section_energy_consumption_df = None
         self.emission_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint = None
@@ -196,6 +197,7 @@ class SectorModel():
         self.section_energy_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionEnergyEmissionDf['dataframe_descriptor'].keys())
         self.section_non_energy_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionNonEnergyEmissionDf['dataframe_descriptor'].keys())
         self.emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.EmissionDetailedDf['dataframe_descriptor'].keys())
+        self.section_energy_consumption_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionEnergyConsumptionDf['dataframe_descriptor'].keys())
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years, 'net_output_growth_rate'])
@@ -205,6 +207,7 @@ class SectorModel():
         self.section_energy_emission_df[GlossaryCore.Years] = self.years
         self.section_non_energy_emission_df[GlossaryCore.Years] = self.years
         self.emission_df[GlossaryCore.Years] = self.years
+        self.section_energy_consumption_df[GlossaryCore.Years] = self.years
         self.damage_df[GlossaryCore.Years] = self.years
         self.capital_df[GlossaryCore.Years] = self.years
         self.productivity_df[GlossaryCore.Years] = self.years
@@ -487,32 +490,33 @@ class SectorModel():
         self.damage_df[GlossaryCore.EstimatedDamages] = self.damage_df[GlossaryCore.EstimatedDamagesFromClimate] + self.damage_df[GlossaryCore.EstimatedDamagesFromProductivityLoss]
         self.damage_df[GlossaryCore.Damages] = self.damage_df[GlossaryCore.DamagesFromClimate] + self.damage_df[GlossaryCore.DamagesFromProductivityLoss]
 
+    def compute_energy_consumption_per_section(self):
+        """
+        Computing the energy consumption for each section of the sector
+        """
+        # section_energy_consumption (PWh) = sector_energy_production (Pwh) x section_energy_consumption_percentage (%)
+        self.section_energy_consumption_df[self.section_list] = (self.energy_production[GlossaryCore.TotalProductionValue]
+                                                            * self.energy_consumption_percentage_per_section_df[self.section_list]) / 100
+
     def compute_energy_emission_per_section(self):
         """
         Computing the energy emission for each section of the sector
-
-        Energy emissions of section S (GtCO2Eq) = Conso energy section S (PWh) x Carbon intensity (kgCO2Eq / kWh) -> todo: conversion
-        (example : Construction consumes 30% of energy allocated to Sector Industry, but only 12% of global energy supplied -> we want the 30%)
         """
-        section_energy_consumption_df = pd.DataFrame()
-        section_energy_consumption_df[GlossaryCore.Years] = self.years
-        section_energy_consumption_df[self.section_list] = (GlossaryCore.EnergyProductionValue[GlossaryCore.TotalProductionValue]
-                                                            * self.energy_consumption_percentage_per_section_df[self.section_list]) / 100
-        self.section_energy_emission_df[self.section_list] = (section_energy_consumption_df[self.section_list]
+        # section_energy_emission (GtCO2eq) = section_energy_consumption (PWh) x carbon_intensity (kgCO2eq/kWh)
+        self.section_energy_emission_df[self.section_list] = (self.section_energy_consumption_df[self.section_list]
                                                               * self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue])
 
     def compute_non_energy_emission_per_section(self):
         """
         Computing the energy emission for each section of the sector
         """
+        # section_non_energy_emission (GtCO2eq) = section_non_energy_emission_wrt_gdp (tCO2eq/M$) x section_gdp (T$)
         self.section_non_energy_emission_df[self.section_list] = (self.section_non_energy_emission_per_dollar_of_gdp_df[self.section_list]
-                                                                  * self.section_gdp_df[self.section_list])
+                                                                  * self.section_gdp_df[self.section_list]) / 1000
 
     def compute_total_emission_per_section(self):
         """
         Computing the total emission for each section of the sector
-
-        Emissions of section S = emissions related to energy consumption of section S + emissions not related to energy consumption of section S
         """
         self.section_emission_df[self.section_list] = (self.section_energy_emission_df[self.section_list]
                                                        + self.section_non_energy_emission_df[self.section_list])
@@ -521,6 +525,7 @@ class SectorModel():
         """
         Computing the total emissions of the sector
         """
+        # sector_emission = sum of section_emission
         self.emission_df = self.emission_df.reset_index(drop=True)
         section_emission_df = self.section_emission_df.copy()
         section_emission_df = section_emission_df.drop(GlossaryCore.Years, axis=1)
@@ -558,6 +563,7 @@ class SectorModel():
         self.section_emission_df = self.section_emission_df.fillna(0.0)
         self.section_energy_emission_df = self.section_energy_emission_df.fillna(0.0)
         self.section_non_energy_emission_df = self.section_non_energy_emission_df.fillna(0.0)
+        self.section_energy_consumption_df = self.section_energy_consumption_df.fillna(0.0)
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
         if self.prod_function_fitting:
@@ -566,7 +572,7 @@ class SectorModel():
 
         self.compute_output_net_of_damage_per_section()
 
-        #self.compute_energy_consumption_per_section()
+        self.compute_energy_consumption_per_section()
         self.compute_energy_emission_per_section()
         self.compute_non_energy_emission_per_section()
         self.compute_total_emission_per_section()
@@ -577,7 +583,7 @@ class SectorModel():
         self.compute_damage_from_productivity_loss()
         self.compute_damage_from_climate()
         self.compute_total_damages()
-        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df, self.section_emission_df, self.section_energy_emission_df, self.section_non_energy_emission_df, self.emission_df
+        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df, self.section_emission_df, self.section_energy_emission_df, self.section_non_energy_emission_df, self.emission_df, self.section_energy_consumption_df
     
     ### GRADIENTS ###
 

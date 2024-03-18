@@ -72,9 +72,10 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
-    SectionEmissionPart = "Part of the total emission per section [Gt]"
-    SectionEnergyEmissionPart = "Part of the energy emission per section [Gt]"
-    SectionNonEnergyEmissionPart = "Part of the non energy emission per section [Gt]"
+    SectionEmissionPart = "Part of the total emission per section [GtCO2eq]"
+    SectionEnergyEmissionPart = "Part of the energy emission per section [GtCO2eq]"
+    SectionNonEnergyEmissionPart = "Part of the non energy emission per section [GtCO2eq]"
+    SectionEnergyConsumptionPart = "Part of the energy consumption per section [PWh]"
 
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
@@ -91,6 +92,7 @@ class GlossaryCore:
     SectionEmissionDfValue = "section_emission_df"
     SectionEnergyEmissionDfValue = "section_energy_emission_df"
     SectionNonEnergyEmissionDfValue = "section_non_energy_emission_df"
+    SectionEnergyConsumptionDfValue = "section_energy_consumption_df"
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     SectionEnergyConsumptionPercentageDfValue = 'section_energy_consumption_percentage_df'
@@ -644,6 +646,16 @@ class GlossaryCore:
         "type": "dataframe",
         "description": "",
         "unit": "GtCO2eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+        },
+    }
+
+    SectionEnergyConsumptionDf = {
+        "var_name": SectionEnergyConsumptionDfValue,
+        "type": "dataframe",
+        "description": "",
+        "unit": "PWh",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },

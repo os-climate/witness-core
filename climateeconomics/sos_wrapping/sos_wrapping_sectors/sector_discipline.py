@@ -84,6 +84,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         GlossaryCore.SectionEmissionDfValue: GlossaryCore.SectionEmissionDf,
         GlossaryCore.SectionEnergyEmissionDfValue: GlossaryCore.SectionEnergyEmissionDf,
         GlossaryCore.SectionNonEnergyEmissionDfValue: GlossaryCore.SectionNonEnergyEmissionDf,
+        GlossaryCore.SectionEnergyConsumptionDfValue : GlossaryCore.SectionEnergyConsumptionDf,
         GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf,
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
@@ -172,7 +173,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df, emission_df = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df, emission_df, section_energy_consumption_df = self.model.compute(
             model_inputs)
 
         # Store output data
@@ -190,6 +191,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.SectionEmissionDfValue: self.model.section_emission_df,
                        GlossaryCore.SectionEnergyEmissionDfValue: self.model.section_energy_emission_df,
                        GlossaryCore.SectionNonEnergyEmissionDfValue: self.model.section_non_energy_emission_df,
+                       GlossaryCore.SectionEnergyConsumptionDfValue: self.model.section_energy_consumption_df,
                        }
 
         if prod_function_fitting:
@@ -387,6 +389,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.SectionEmissionPart,
                       GlossaryCore.SectionEnergyEmissionPart,
                       GlossaryCore.SectionNonEnergyEmissionPart,
+                      GlossaryCore.SectionEnergyConsumptionPart,
                       ]
 
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
@@ -810,6 +813,34 @@ class SectorDiscipline(ClimateEcoDiscipline):
             fig.update_traces(hoverlabel=dict(namelength=-1))
             # if dictionaries has big size, do not show legend, otherwise show it
             if len(list(sections_non_energy_emission.keys())) > 5:
+                fig.update_layout(showlegend=False)
+            else:
+                fig.update_layout(showlegend=True)
+            instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                fig, chart_name=chart_name,
+                default_title=True, default_legend=False))
+
+        if GlossaryCore.SectionEnergyConsumptionPart in chart_list:
+            sections_energy_consumption = self.get_sosdisc_outputs(GlossaryCore.SectionEnergyConsumptionDfValue)
+            sections_energy_consumption = sections_energy_consumption.drop('years', axis=1)
+            years = list(production_df.index)
+
+            chart_name = f'Breakdown of energy consumption per section for {self.sector_name} sector [PWh]'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyConsumptionPart,
+                                                     chart_name=chart_name, stacked_bar=True)
+
+            # loop on all sections of the sector
+            for section, section_value in sections_energy_consumption.items():
+                new_series = InstanciatedSeries(
+                    years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                new_chart.add_series(new_series)
+
+            # have a full label on chart (for long names)
+            fig = new_chart.to_plotly()
+            fig.update_traces(hoverlabel=dict(namelength=-1))
+            # if dictionaries has big size, do not show legend, otherwise show it
+            if len(list(sections_energy_consumption.keys())) > 5:
                 fig.update_layout(showlegend=False)
             else:
                 fig.update_layout(showlegend=True)
