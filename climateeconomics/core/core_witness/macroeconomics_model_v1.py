@@ -19,7 +19,6 @@ import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
-from sklearn.linear_model import LinearRegression
 
 class MacroEconomics:
     """
@@ -111,6 +110,7 @@ class MacroEconomics:
         self.create_dataframe()
         self.total_gdp_per_group_df = pd.DataFrame()
         self.percentage_gdp_per_group_df = pd.DataFrame()
+        self.df_gdp_per_country = pd.DataFrame(columns=['country_name', 'years', 'gdp', 'group'])
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
@@ -726,7 +726,22 @@ class MacroEconomics:
         self.total_gdp_per_group_df[list(breakdown_countries.keys())] = total_gdp_per_group
         self.percentage_gdp_per_group_df[GlossaryCore.Years] = self.years_range
         self.percentage_gdp_per_group_df[list(breakdown_countries.keys())] = percentage_gdp_per_group
-
+        # get percentage of gdp per country in each group
+        mean_percentage_gdp_country = DatabaseWitnessCore.GDPPercentagePerCountry.value
+        # Iterate over each row to compute gdp of the country
+        for _, row in mean_percentage_gdp_country.iterrows():
+            # repeat the years for each country
+            df_temp = pd.DataFrame({GlossaryCore.Years: self.total_gdp_per_group_df[GlossaryCore.Years]})
+            # compute GDP for each year using the percentage and GDP Value of the correspondant group
+            df_temp['gdp'] = row['mean_percentage'] * self.total_gdp_per_group_df[row['group']] / 100
+            # Add the country name
+            df_temp['country_name'] = row['country_name']
+            # Add the country group
+            df_temp['group'] = row['group']
+            # concatenate with the result dataframe
+            self.df_gdp_per_country = pd.concat([self.df_gdp_per_country, df_temp])
+        # rest index
+        self.df_gdp_per_country.reset_index(drop=True, inplace=True)
 
     def compute(self, inputs: dict):
         """
@@ -792,7 +807,8 @@ class MacroEconomics:
 
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
-            self.capital_df, self.sector_gdp_df, self.energy_wasted_objective, self.total_gdp_per_group_df, self.percentage_gdp_per_group_df
+            self.capital_df, self.sector_gdp_df, self.energy_wasted_objective, self.total_gdp_per_group_df,\
+            self.percentage_gdp_per_group_df, self.df_gdp_per_country
 
 
     """-------------------Gradient functions-------------------"""

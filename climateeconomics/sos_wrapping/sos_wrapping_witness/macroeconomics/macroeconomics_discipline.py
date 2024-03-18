@@ -148,7 +148,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
         GlossaryCore.UsableCapitalObjectiveName: GlossaryCore.UsableCapitalObjective,
         GlossaryCore.TotalGDPGroupDFName: GlossaryCore.TotalGDPGroupDF,
-        GlossaryCore.PercentageGDPGroupDFName: GlossaryCore.PercentageGDPGroupDF
+        GlossaryCore.PercentageGDPGroupDFName: GlossaryCore.PercentageGDPGroupDF,
+        GlossaryCore.GDPCountryDFName: GlossaryCore.GDPCountryDF
     }
 
     def setup_sos_disciplines(self):
@@ -274,8 +275,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # Model execution
         economics_detail_df, economics_df, damage_df, energy_investment, energy_investment_wo_renewable, \
-            workforce_df, capital_df, sector_gdp_df, energy_wasted_objective, total_gdp_per_group_df, percentage_gdp_group_df = \
-            self.macro_model.compute(param)
+            workforce_df, capital_df, sector_gdp_df, energy_wasted_objective, total_gdp_per_group_df, \
+            percentage_gdp_group_df, gdp_per_country_df = self.macro_model.compute(param)
 
 
         # Store output data
@@ -295,7 +296,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed,
                        GlossaryCore.UsableCapitalObjectiveName: self.macro_model.usable_capital_objective,
                        GlossaryCore.TotalGDPGroupDFName: total_gdp_per_group_df,
-                       GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df
+                       GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df,
+                       GlossaryCore.GDPCountryDFName: gdp_per_country_df
                        }
         if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
@@ -703,7 +705,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyEfficiency,
                       GlossaryCore.SectorGdpPart,
                       GlossaryCore.SectionGdpPart,
-                      GlossaryCore.ChartGDPPerRegion
+                      GlossaryCore.ChartGDPPerGroup,
+                      GlossaryCore.ChartPercentagePerGroup
                       ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -1150,7 +1153,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     fig, chart_name=chart_name,
                     default_title=True, default_legend=False))
 
-        if GlossaryCore.ChartGDPPerRegion in chart_list:
+        if GlossaryCore.ChartGDPPerGroup in chart_list:
 
             # get variable with total gdp per region
             total_gdp_per_region_df = self.get_sosdisc_outputs(GlossaryCore.TotalGDPGroupDFName)
@@ -1167,6 +1170,31 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for col in total_gdp_per_region_df.columns:
                 if col != GlossaryCore.Years:
                     ordonate_data = list(total_gdp_per_region_df[col].values)
+                    # refactor name of column (group name)
+                    column_name_updated = col.replace('_', ' ').title()
+                    # add new serie
+                    new_series = InstanciatedSeries(
+                        years, ordonate_data, f'{column_name_updated}', 'lines', visible_line)
+                    new_chart.add_series(new_series)
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.ChartPercentagePerGroup in chart_list:
+
+            # get variable with total gdp per region
+            total_percentage_per_region_df = self.get_sosdisc_outputs(GlossaryCore.PercentageGDPGroupDFName)
+
+            years = list(total_percentage_per_region_df[GlossaryCore.Years])
+
+            chart_name = 'Percentage of GDP per group of countries in [%]'
+            # create new chart
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Percentage of GDP per group of countries in [%]',
+                                                 chart_name=chart_name, y_min_zero=True)
+
+            visible_line = True
+            # loop on each column to show GDP per group of countries
+            for col in total_percentage_per_region_df.columns:
+                if col != GlossaryCore.Years:
+                    ordonate_data = list(total_percentage_per_region_df[col].values)
                     # refactor name of column (group name)
                     column_name_updated = col.replace('_', ' ').title()
                     # add new serie
