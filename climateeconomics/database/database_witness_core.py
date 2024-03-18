@@ -16,6 +16,7 @@ limitations under the License.
 from datetime import date
 from os.path import join, dirname
 import json
+import pandas as pd
 
 from climateeconomics.database.collected_data import ColectedData, HeavyCollectedData
 
@@ -286,6 +287,16 @@ class DatabaseWitnessCore:
         description="breakdown of countries according to IMF",
         link="https://www.imf.org/en/Publications/WEO/weo-database/2023/April/groups-and-aggregates",
         source="World Economic Outlook : International Monetary Fund",
+        last_update_date=date(2024, 3, 18)
+    )
+
+    gdp_percentage_per_country = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'mean_gdp_country_percentage_in_group.csv'))
+    GDPPercentagePerCountry = ColectedData(
+        value=gdp_percentage_per_country,
+        unit="%",
+        description="mean percentage GDP of each country in the group",
+        link="",
+        source="mean percentages were computed based on official GDP data from international organizations and on the IMF grouping",
         last_update_date=date(2024, 3, 18)
     )
 
