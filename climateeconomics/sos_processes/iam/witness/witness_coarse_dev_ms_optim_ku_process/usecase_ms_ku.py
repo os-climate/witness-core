@@ -18,24 +18,19 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_fossil_only_no_damage_low_tax import \
+from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2_optim_story_telling import \
     Study as Study1
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_2_fossil_only_damage_high_tax import \
+from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2b_optim_story_telling import \
     Study as Study2
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import \
+from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_4_optim_story_telling import \
     Study as Study3
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import \
+from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_7_optim_story_telling import \
     Study as Study4
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_5_no_renew_damage_high_tax import \
-    Study as Study5
+
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import Study as uc_ms_mda
 
 
 class Study(ClimateEconomicsStudyManager):
-    UC1 = "- Damage, - Tax, Fossil only"
-    UC2 = "+ Damage, + Tax, Fossil only"
-    UC3 = "+ Damage, + Tax, No CCUS"
-    UC4 = "+ Damage, + Tax, All technos"
-    UC5 = "+ Damage, + Tax, No renewables"
 
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -47,13 +42,11 @@ class Study(ClimateEconomicsStudyManager):
         scatter_scenario = 'optimization scenarios'
 
         scenario_dict = {
-            self.UC1: Study1,
-            self.UC2: Study2,
-            self.UC3: Study3,
-            self.UC4: Study4,
-            self.UC5: Study5,
+            uc_ms_mda.USECASE2: Study1,
+            uc_ms_mda.USECASE2B: Study2,
+            uc_ms_mda.USECASE4: Study3,
+            uc_ms_mda.USECASE7: Study4,
         }
-
 
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
         values_dict = {
@@ -65,13 +58,20 @@ class Study(ClimateEconomicsStudyManager):
             scenarioUseCase = studyClass(execution_engine=self.execution_engine)
             scenarioUseCase.study_name = f'{self.study_name}.{scatter_scenario}.{scenario_name}'
             scenarioData = scenarioUseCase.setup_usecase()
-            values_dict.update(scenarioData)
+            scenarioDatadict = {}
+            for data in scenarioData:
+                scenarioDatadict.update(data)
+            values_dict.update(scenarioDatadict)
 
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
+        values_dict.update(
+            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
+             scenario_dict.keys()})
 
         return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

@@ -58,6 +58,7 @@ class DamageDiscTest(unittest.TestCase):
         self.model_name = 'damage'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   'ns_dashboard': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
@@ -104,6 +105,7 @@ class DamageDiscTest(unittest.TestCase):
         self.model_name = 'damage'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   'ns_dashboard': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
