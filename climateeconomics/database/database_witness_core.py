@@ -15,6 +15,7 @@ limitations under the License.
 '''
 from datetime import date
 from os.path import join, dirname
+import json
 
 from climateeconomics.database.collected_data import ColectedData, HeavyCollectedData
 
@@ -23,7 +24,6 @@ data_folder = join(dirname(dirname(__file__)), "data")
 
 class DatabaseWitnessCore:
     '''Stocke les valeurs utilisées dans witness core'''
-
 
     FoodWastePercentage = ColectedData(
         value=30,
@@ -258,6 +258,35 @@ class DatabaseWitnessCore:
         link="https://ourworldindata.org/grapher/cumulative-co-emissions?tab=table",
         source="Our World in Data",
         last_update_date=date(2024, 2, 7),
+    )
+
+    LinearParemetersGDPperRegion = ColectedData(
+        value={'a': [[1588.20633202],
+                     [1959.02654051],
+                     [365.116917],
+                     [310.57653261],
+                     [326.54836759],
+                     [164.98219368]],
+               'b': [-3149086.04111858, -3913390.07132115, -727002.61494862,
+                     -616562.71581522, -648579.38856917, -328849.45974308]},
+        unit="$",
+        description="Linear parameters for the equation y=ax+b for each region to compute GDP share percentage for each region",
+        link="Check macroeconomics documentation and jupyter notebook",
+        source="",
+        last_update_date=date(2024, 3, 18)
+    )
+
+    # read json for countries per region
+    with open(join(dirname(dirname(__file__)) , 'data', 'countries_per_region.json'), 'r') as fp:
+        countries_per_region = json.load(fp)
+
+    CountriesPerRegionIMF = ColectedData(
+        value=countries_per_region,
+        unit="",
+        description="breakdown of countries according to IMF",
+        link="https://www.imf.org/en/Publications/WEO/weo-database/2023/April/groups-and-aggregates",
+        source="World Economic Outlook : International Monetary Fund",
+        last_update_date=date(2024, 3, 18)
     )
 
     atmosphere_total_mass_kg = 5.1480 * 10 ** 18
