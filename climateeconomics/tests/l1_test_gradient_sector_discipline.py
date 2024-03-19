@@ -27,7 +27,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
@@ -72,7 +72,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         }
         self.section_gdp_df = pd.DataFrame(subsector_share_dict)
 
-        self.energy_emission_df = pd.DataFrame({
+        self.energy_carbon_intensity = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
@@ -128,7 +128,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
-                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_carbon_intensity,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
@@ -156,13 +156,16 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}',
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     ],
                             outputs=[
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EmissionDfValue}',
                                 ])
 
     def test_gradient_withotudamagetoproductivity(self):
@@ -213,7 +216,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
-                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_carbon_intensity,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        }
 
@@ -226,13 +229,16 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}',
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     ],
                             outputs=[
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EmissionDfValue}',
                             ])
 
     def test_gradient_without_climate_impact_on_gdp(self):
@@ -283,7 +289,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
-                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_carbon_intensity,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
@@ -302,11 +308,14 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}',
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     ],
                             outputs=[
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EmissionDfValue}',
                             ])
