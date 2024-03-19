@@ -77,6 +77,8 @@ class GlossaryCore:
     SectionNonEnergyEmissionPart = "Part of the non energy emission per section [GtCO2eq]"
     SectionEnergyConsumptionPart = "Part of the energy consumption per section [PWh]"
 
+    ChartGDPPerGroup = "GDP per group [T$]"
+    ChartPercentagePerGroup = "Percentage per group [%]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
@@ -119,6 +121,9 @@ class GlossaryCore:
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
     SectorEnergy = "energy"
+    TotalGDPGroupDFName = "total_gdp_per_group_df"
+    PercentageGDPGroupDFName = "percentage_gdp_group_df"
+    GDPCountryDFName = "gdp_per_country_df"
 
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
     ConsumptionObjectiveRef = get_ref_variable(
@@ -1472,6 +1477,22 @@ class GlossaryCore:
             Years: ("float", [1900, YearEndDefault], False),
             TotalEnergyEmissions: ("float", [0.0, 1e30], True),
         },
+    }
+
+    TotalGDPGroupDF = {
+        "var_name": TotalGDPGroupDFName,
+        'type': 'dataframe',
+        'unit': 'T$',
+    }
+    PercentageGDPGroupDF = {
+        "var_name": PercentageGDPGroupDFName,
+        'type': 'dataframe',
+        'unit': '%',
+    }
+    GDPCountryDF = {
+        "var_name": GDPCountryDFName,
+        'type': 'dataframe',
+        'unit': 'T$',
     }
 
     @staticmethod
