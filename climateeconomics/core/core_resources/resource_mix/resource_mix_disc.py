@@ -331,7 +331,7 @@ class ResourceMixDiscipline(SoSWrapp):
         }
 
         
-&& g        self.store_sos_outputs_values(outputs_dict)
+        self.store_sos_outputs_values(outputs_dict)
 
     def get_chart_filter_list(self):
 
