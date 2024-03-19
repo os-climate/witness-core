@@ -73,7 +73,7 @@ class SectorModel():
         self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
         self.nb_years = len(self.years_range)
         self.sector_name = sector_name
-        self.retrieve_sections_list()
+        self.section_list = GlossaryCore.SectionDictSectors[self.sector_name]
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         # Getting the relevant years, sections and percentages for gdp
         self.gdp_percentage_per_section_df = self.check_start_end_years(self.gdp_percentage_per_section_df)
@@ -115,18 +115,6 @@ class SectorModel():
         self.sector_name = sector_name
         
         self.init_dataframes()
-
-    def retrieve_sections_list(self):
-        '''
-        Get the sections of the sector
-        :return:
-        '''
-        if self.sector_name == GlossaryCore.SectorIndustry:
-            self.section_list = GlossaryCore.SectionsIndustry
-        if self.sector_name == GlossaryCore.SectorServices:
-            self.section_list = GlossaryCore.SectionsServices
-        if self.sector_name == GlossaryCore.SectorAgriculture:
-            self.section_list = GlossaryCore.SectionsAgriculture
 
     def check_start_end_years(self, dataframe):
         '''

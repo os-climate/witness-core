@@ -144,6 +144,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.SectionNonEnergyEmissionGdpDfValue: section_non_energy_emission_gdp_df,
                 })
 
+        if GlossaryCore.SectionListValue in self.get_data_in():
+            dynamic_inputs[GlossaryCore.SectionListValue] = GlossaryCore.SectionDictSectors[self.sector_name]
 
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)

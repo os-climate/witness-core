@@ -211,6 +211,12 @@ class GlossaryCore:
         SectionS,
         SectionT,
     ]
+
+    SectionDictSectors = {
+        SectorAgriculture: SectionsAgriculture,
+        SectorIndustry: SectionsIndustry,
+        SectorServices: SectionsServices,
+    }
     SectionListValue = "section_list"
 
     SectionList = {
