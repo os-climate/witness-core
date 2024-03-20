@@ -110,7 +110,7 @@ class MacroEconomics:
         self.create_dataframe()
         self.total_gdp_per_group_df = pd.DataFrame()
         self.percentage_gdp_per_group_df = pd.DataFrame()
-        self.df_gdp_per_country = pd.DataFrame(columns=['country_name', 'years', 'gdp', 'group'])
+        self.df_gdp_per_country = pd.DataFrame(columns=[GlossaryCore.CountryName, GlossaryCore.Years, GlossaryCore.GDPName, GlossaryCore.GroupName])
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
@@ -733,11 +733,12 @@ class MacroEconomics:
             # repeat the years for each country
             df_temp = pd.DataFrame({GlossaryCore.Years: self.total_gdp_per_group_df[GlossaryCore.Years]})
             # compute GDP for each year using the percentage and GDP Value of the correspondant group
-            df_temp['gdp'] = row['mean_percentage'] * self.total_gdp_per_group_df[row['group']] / 100
+            # and convert T$ to G$
+            df_temp[GlossaryCore.GDPName] = 1000* row[GlossaryCore.MeanPercentageName] * self.total_gdp_per_group_df[row[GlossaryCore.GroupName]] / 100
             # Add the country name
-            df_temp['country_name'] = row['country_name']
+            df_temp[GlossaryCore.CountryName] = row[GlossaryCore.CountryName]
             # Add the country group
-            df_temp['group'] = row['group']
+            df_temp[GlossaryCore.GroupName] = row[GlossaryCore.GroupName]
             # concatenate with the result dataframe
             self.df_gdp_per_country = pd.concat([self.df_gdp_per_country, df_temp])
         # rest index
