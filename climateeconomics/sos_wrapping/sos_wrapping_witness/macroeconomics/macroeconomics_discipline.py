@@ -706,7 +706,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.SectorGdpPart,
                       GlossaryCore.SectionGdpPart,
                       GlossaryCore.ChartGDPPerGroup,
-                      GlossaryCore.ChartPercentagePerGroup
+                      GlossaryCore.ChartPercentagePerGroup,
+                      GlossaryCore.ChartGDPBiggestEconomies
                       ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -1202,6 +1203,35 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         years, ordonate_data, f'{column_name_updated}', 'lines', visible_line)
                     new_chart.add_series(new_series)
             instanciated_charts.append(new_chart)
+
+            # The ten of countries with the highest GDP per year
+            if GlossaryCore.ChartGDPBiggestEconomies in chart_list:
+                # get variable with total GDP per countries
+                total_gdp_per_countries_df = self.get_sosdisc_outputs(GlossaryCore.GDPCountryDFName)
+                # Take the year 2020 as a reference to determine the ten biggest countries in terms of GDP
+                # Rank GDP in descending order to select the 10 countries with the biggest GDP
+                # Find the name of the 10 countries
+                list_biggest_countries = total_gdp_per_countries_df[total_gdp_per_countries_df['years'] == 2020].sort_values(by='gdp', ascending=False)['country_name'].values[:11]
+
+                years = list(total_gdp_per_countries_df[GlossaryCore.Years].unique())
+                chart_name = 'The ten biggest countries GDP per year in [T$]'
+
+                # create new chart
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
+                                                     'The ten biggest countries GDP per year in [T$]',
+                                                     chart_name=chart_name, y_min_zero=True)
+                visible_line = True
+
+                # loop on each column to show GDP per group of countries
+                for country in list_biggest_countries:
+                    ordonate_data = list(total_gdp_per_countries_df[total_gdp_per_countries_df['country_name'] == country]['gdp'].values)
+                    # refactor name of column (group name)
+                    country_name = country.title()
+                    # add new serie
+                    new_series = InstanciatedSeries(
+                        years, ordonate_data, f'{country_name}', 'lines', visible_line)
+                    new_chart.add_series(new_series)
+                instanciated_charts.append(new_chart)
 
         return instanciated_charts
 

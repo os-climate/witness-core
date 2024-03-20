@@ -383,4 +383,7 @@ sector_list,Sectors list,,List of sectors,,
 section_list,Sub-sectors list,,List of sub-sectors,,
 section_gdp_percentage_df,Gdp percentage of sub-sectors,%,Percentage of the gdp for each sub-sector,,
 section_gdp_df,Gdp values of sub-sectors,T$,Gdp values of sub-sectors,,
+total_gdp_per_group_df, GDP per group, T$, GDP-PPP adjusted by group,,
+percentage_gdp_group_df, GDP share per group,%, GDP-PPP adjusted share percentage by group,,
+gdp_per_country_df, GDP per country, G$, GDP-PPP adjusted per country,,
 

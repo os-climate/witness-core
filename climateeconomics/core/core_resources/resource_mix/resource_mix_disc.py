@@ -190,9 +190,7 @@ class ResourceMixDiscipline(SoSWrapp):
     DESC_OUT = {
         ResourceMixModel.ALL_RESOURCE_STOCK: {
             'type': 'dataframe', 'unit': 'million_tonnes'},
-        ResourceMixModel.ALL_RESOURCE_PRICE: {
-            'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-            'namespace': 'ns_resource'},
+        GlossaryCore.ResourcesPriceValue: GlossaryCore.ResourcesPrice,
         ResourceMixModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION:  {'type': 'dataframe', 'unit': 'million_tonnes'} ,
@@ -321,7 +319,7 @@ class ResourceMixDiscipline(SoSWrapp):
 
         outputs_dict = {
             ResourceMixModel.ALL_RESOURCE_STOCK: self.all_resource_model.all_resource_stock.reset_index(),
-            ResourceMixModel.ALL_RESOURCE_PRICE: self.all_resource_model.all_resource_price.reset_index(),
+            GlossaryCore.ResourcesPriceValue: self.all_resource_model.all_resource_price.reset_index(),
             ResourceMixModel.All_RESOURCE_USE: self.all_resource_model.all_resource_use.reset_index(),
             ResourceMixModel.ALL_RESOURCE_PRODUCTION: self.all_resource_model.all_resource_production.reset_index(),
             ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION: self.all_resource_model.all_resource_recycled_production.reset_index(),
@@ -394,7 +392,7 @@ class ResourceMixDiscipline(SoSWrapp):
                 ('resources_demand', resource_type), grad_demand)
 
             self.set_partial_derivative_for_other_types(
-                (ResourceMixModel.ALL_RESOURCE_PRICE,
+                (GlossaryCore.ResourcesPriceValue,
                  resource_type), (f'{resource_type}.resource_price', 'price'),
                 grad_price)
             
@@ -402,7 +400,7 @@ class ResourceMixDiscipline(SoSWrapp):
 
         for resource_type in data_frame_other_resource_price:
             if resource_type not in resource_list and resource_type != GlossaryCore.Years:
-                self.set_partial_derivative_for_other_types((ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (
+                self.set_partial_derivative_for_other_types((GlossaryCore.ResourcesPriceValue, resource_type), (
                     ResourceMixModel.NON_MODELED_RESOURCE_PRICE, resource_type),
                     np.identity(len(data_frame_other_resource_price)))
 
@@ -422,7 +420,7 @@ class ResourceMixDiscipline(SoSWrapp):
                 ResourceMixModel.ALL_RESOURCE_STOCK)
             years = stock_df[GlossaryCore.Years].values.tolist()
             price_df = self.get_sosdisc_outputs(
-                ResourceMixModel.ALL_RESOURCE_PRICE)
+                GlossaryCore.ResourcesPriceValue)
             use_stock_df = self.get_sosdisc_outputs(
                 ResourceMixModel.All_RESOURCE_USE)
             production_df = self.get_sosdisc_outputs(
