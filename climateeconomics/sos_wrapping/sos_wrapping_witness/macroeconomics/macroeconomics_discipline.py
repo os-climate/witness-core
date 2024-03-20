@@ -1214,7 +1214,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             list_biggest_countries = total_gdp_per_countries_df[total_gdp_per_countries_df[GlossaryCore.Years] == year_start].sort_values(by='gdp', ascending=False)['country_name'].values[:NUMBERCOUNTRIESTOPLOT+1]
 
-            chart_name = 'The ten biggest countries GDP per year in [T$]'
+            chart_name = 'The ten biggest countries GDP per year in [G$]'
 
             # create new chart
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
@@ -1232,6 +1232,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_series = InstanciatedSeries(
                     years, ordonate_data, f'{country_name}', 'lines', visible_line)
                 new_chart.add_series(new_series)
+
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
