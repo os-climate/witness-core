@@ -782,7 +782,7 @@ class SectorModel():
             productivity * alpha * usable_capital ** (gamma - 1) * np.diag(d_Ku_d_E) *
             (alpha * usable_capital ** gamma + (1 - alpha) * working_pop ** gamma) ** (1. / gamma - 1.)
         )
-        dY_dE[0, 0] = 0.
+        #dY_dE[0, 0] = 0.
 
         for i in range(1, self.nb_years + 1):
             for j in range(1, i):
