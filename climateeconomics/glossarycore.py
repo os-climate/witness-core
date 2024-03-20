@@ -74,6 +74,7 @@ class GlossaryCore:
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
     ChartGDPPerGroup = "GDP per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
+    ChartGDPBiggestEconomies = "Chart of the ten biggest countries GDP per year[T$]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
