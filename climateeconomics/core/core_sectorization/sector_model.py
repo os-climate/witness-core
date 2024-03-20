@@ -105,62 +105,6 @@ class SectorModel():
         
         self.init_dataframes()
 
-    def check_start_end_years(self, dataframe):
-        '''
-        Compare the year range between the study and the dataframe
-        '''
-        # the year range for the study can differ from that stated in the csv file
-        start_year_csv = dataframe.loc[0, GlossaryCore.Years]
-        if start_year_csv > self.year_start:
-            # duplicate first row (start_year_csv - year_start) time
-            list_df_to_concat = [dataframe.iloc[0:1]] * (start_year_csv - self.year_start)
-            # add input dataframe to the list
-            list_df_to_concat.append(dataframe)
-            # concatenate the dataframes using the created list to fill the missing rows
-            dataframe = pd.concat(list_df_to_concat).reset_index(drop=True)
-            # set years of the updated dataframe
-            dataframe.iloc[0:(start_year_csv - self.year_start)][
-                GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
-        elif start_year_csv < self.year_start:
-            dataframe = dataframe[dataframe[GlossaryCore.Years] > self.year_start - 1]
-
-        end_year_csv = dataframe.loc[dataframe.index[-1], GlossaryCore.Years]
-        if end_year_csv > self.year_end:
-            dataframe = dataframe[dataframe[GlossaryCore.Years] < self.year_end + 1]
-        elif end_year_csv < self.year_end:
-            list_df_to_concat = [dataframe]
-            list_df_to_concat.extend([dataframe.iloc[-1:]] * (self.year_end - end_year_csv))
-            dataframe = pd.concat(list_df_to_concat).reset_index(drop=True)
-            # fill years with missing years (start at end_year_csv+1, and last element should be year_end)
-            dataframe.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
-                end_year_csv+1, self.year_end+1)
-
-        return dataframe
-
-    def get_sections(self, dataframe):
-        '''
-        Keep only the sections of the sector for a dataframe
-        '''
-        new_dataframe = pd.DataFrame()
-        new_dataframe[GlossaryCore.Years] = dataframe[GlossaryCore.Years]
-        for section in dataframe.columns:
-            if section in self.section_list:
-                new_dataframe[section] = dataframe[section]
-        return new_dataframe
-
-    def compute_percentage_per_section(self, dataframe):
-        '''
-        Compute percentage values for each section of a sector in a dataframe
-        '''
-        sum_sections = 0
-        for section in dataframe.columns:
-            if section != 'years':
-                sum_sections += dataframe[section].iloc[0]
-        for section in dataframe.columns:
-            if section != 'years':
-                dataframe[section] = (dataframe[section] * 100) / sum_sections
-        return dataframe
-
     def init_dataframes(self):
         '''
         Init dataframes with years
