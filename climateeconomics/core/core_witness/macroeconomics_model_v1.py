@@ -108,8 +108,8 @@ class MacroEconomics:
         self.usable_capital_objective_ref = None
         self.set_data()
         self.create_dataframe()
-        self.total_gdp_per_group_df = pd.DataFrame()
-        self.percentage_gdp_per_group_df = pd.DataFrame()
+        self.total_gdp_per_group_df = None
+        self.percentage_gdp_per_group_df = None
         self.df_gdp_per_country = pd.DataFrame(columns=[GlossaryCore.CountryName, GlossaryCore.Years, GlossaryCore.GDPName, GlossaryCore.GroupName])
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
@@ -240,6 +240,9 @@ class MacroEconomics:
         for key in self.damage_df.columns:
             self.damage_df[key] = 0
         self.damage_df[GlossaryCore.Years] = self.years_range
+        self.total_gdp_per_group_df = pd.DataFrame()
+        self.percentage_gdp_per_group_df = pd.DataFrame()
+        self.df_gdp_per_country = pd.DataFrame(columns=[GlossaryCore.CountryName, GlossaryCore.Years, GlossaryCore.GDPName, GlossaryCore.GroupName])
 
         return economics_df.fillna(0.0), energy_investment.fillna(0.0),
 
@@ -734,14 +737,14 @@ class MacroEconomics:
             df_temp = pd.DataFrame({GlossaryCore.Years: self.total_gdp_per_group_df[GlossaryCore.Years]})
             # compute GDP for each year using the percentage and GDP Value of the correspondant group
             # and convert T$ to G$
-            df_temp[GlossaryCore.GDPName] = 1000* row[GlossaryCore.MeanPercentageName] * self.total_gdp_per_group_df[row[GlossaryCore.GroupName]] / 100
+            df_temp[GlossaryCore.GDPName] = 1000 * row[GlossaryCore.MeanPercentageName] * self.total_gdp_per_group_df[row[GlossaryCore.GroupName]] / 100
             # Add the country name
             df_temp[GlossaryCore.CountryName] = row[GlossaryCore.CountryName]
             # Add the country group
             df_temp[GlossaryCore.GroupName] = row[GlossaryCore.GroupName]
             # concatenate with the result dataframe
             self.df_gdp_per_country = pd.concat([self.df_gdp_per_country, df_temp])
-        # rest index
+        # reset index
         self.df_gdp_per_country.reset_index(drop=True, inplace=True)
 
     def compute(self, inputs: dict):
