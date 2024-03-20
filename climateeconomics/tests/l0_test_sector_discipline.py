@@ -80,16 +80,6 @@ class ServicesDiscTest(unittest.TestCase):
                                                 GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),
                                                 GlossaryCore.BaseCarbonPrice: 0.})
 
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
-        weighted_average_percentage_per_sector_df = pd.read_csv(
-            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
-        subsector_share_dict = {
-            **{GlossaryCore.Years: self.years, },
-            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
-                       weighted_average_percentage_per_sector_df.values[0, 1:]))
-        }
-        self.gdp_percentage_per_section_df = pd.DataFrame(subsector_share_dict)
-
         self.energy_emission_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
@@ -120,7 +110,6 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_percentage_per_section_df,
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
@@ -169,7 +158,6 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_percentage_per_section_df,
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {

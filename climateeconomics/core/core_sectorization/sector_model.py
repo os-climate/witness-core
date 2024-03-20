@@ -76,9 +76,7 @@ class SectorModel():
         self.section_list = GlossaryCore.SectionDictSectors[self.sector_name]
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         # Getting the relevant years, sections and percentages for gdp
-        self.gdp_percentage_per_section_df = self.check_start_end_years(self.gdp_percentage_per_section_df)
-        self.gdp_percentage_per_section_df = self.get_sections(self.gdp_percentage_per_section_df)
-        self.gdp_percentage_per_section_df = self.compute_percentage_per_section(self.gdp_percentage_per_section_df)
+        self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         self.carbon_intensity_of_energy_mix = inputs_dict[GlossaryCore.EnergyCarbonIntensityDfValue]
         self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
         self.section_non_energy_emission_per_dollar_of_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]

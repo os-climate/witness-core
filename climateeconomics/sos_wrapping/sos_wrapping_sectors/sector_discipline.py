@@ -120,6 +120,16 @@ class SectorDiscipline(ClimateEcoDiscipline):
             if year_start is not None and year_end is not None:
                 # section energy consumption percentage
                 global_data_dir = join(dirname(dirname(dirname(__file__))), 'data')
+
+                section_gdp_percentage_df_default = pd.read_csv(
+                    join(global_data_dir, f'weighted_average_percentage_{self.sector_name}_sections.csv'))
+                section_gdp_percentage_dict = {
+                    **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
+                    **dict(zip(section_gdp_percentage_df_default.columns[1:],
+                               section_gdp_percentage_df_default.values[0, 1:]))
+                }
+                section_gdp_percentage_df_default = pd.DataFrame(section_gdp_percentage_dict)
+
                 section_energy_consumption_percentage_df_default = pd.read_csv(
                     join(global_data_dir, f'energy_consumption_percentage_{self.sector_name}_sections.csv'))
                 section_energy_consumption_percentage_dict = {
@@ -140,6 +150,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 section_non_energy_emission_gdp_df = pd.DataFrame(section_non_energy_emission_gdp_dict)
 
                 self.set_dynamic_default_values({
+                    GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df_default,
                     GlossaryCore.SectionEnergyConsumptionPercentageDfValue: section_energy_consumption_percentage_df_default,
                     GlossaryCore.SectionNonEnergyEmissionGdpDfValue: section_non_energy_emission_gdp_df,
                 })
