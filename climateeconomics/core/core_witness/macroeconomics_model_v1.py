@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-
+from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 
 class MacroEconomics:
     """
@@ -108,7 +108,9 @@ class MacroEconomics:
         self.usable_capital_objective_ref = None
         self.set_data()
         self.create_dataframe()
-
+        self.total_gdp_per_group_df = pd.DataFrame()
+        self.percentage_gdp_per_group_df = pd.DataFrame()
+        self.df_gdp_per_country = pd.DataFrame(columns=['country_name', 'years', 'gdp', 'group'])
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
@@ -703,6 +705,44 @@ class MacroEconomics:
         self.damage_df[GlossaryCore.EstimatedDamages] = self.damage_df[GlossaryCore.EstimatedDamagesFromClimate] + self.damage_df[GlossaryCore.EstimatedDamagesFromProductivityLoss]
         self.damage_df[GlossaryCore.Damages] = self.damage_df[GlossaryCore.DamagesFromClimate] + self.damage_df[GlossaryCore.DamagesFromProductivityLoss]
 
+    def compute_regionalised_gdp(self):
+        """
+        Compute regionalised gdp based on the economics_df dataframe computed by the model (that gives total gdp)
+        Use linear model to compute share of each region and country in the total gdp
+        Compute the gdp per region and per country
+        """
+        # import linear parameters from database: parameters are computed in the jupyter notebook in data folder
+        dict_linear_parameters = DatabaseWitnessCore.LinearParemetersGDPperRegion.value
+        breakdown_countries = DatabaseWitnessCore.CountriesPerRegionIMF.value
+        # use linear equation y=a*x+b to compute predicted gdp per group per year
+        result_total_gdp_per_group = np.array(dict_linear_parameters['a']) * self.years_range + np.array(dict_linear_parameters['b']).reshape(-1, 1)
+        gdp_predicted_per_group = result_total_gdp_per_group.T
+        # compute percentage of gdp for each group
+        percentage_gdp_per_group = gdp_predicted_per_group / gdp_predicted_per_group.sum(axis=1, keepdims=True) * 100
+        # compute total based on predicted gdp and on gdp output from model
+        total_gdp_per_group = percentage_gdp_per_group * self.economics_df[GlossaryCore.OutputNetOfDamage].values.reshape(-1,1) / 100
+        # store data in total gdp
+        self.total_gdp_per_group_df[GlossaryCore.Years] = self.years_range
+        self.total_gdp_per_group_df[list(breakdown_countries.keys())] = total_gdp_per_group
+        self.percentage_gdp_per_group_df[GlossaryCore.Years] = self.years_range
+        self.percentage_gdp_per_group_df[list(breakdown_countries.keys())] = percentage_gdp_per_group
+        # get percentage of gdp per country in each group
+        mean_percentage_gdp_country = DatabaseWitnessCore.GDPPercentagePerCountry.value
+        # Iterate over each row to compute gdp of the country
+        for _, row in mean_percentage_gdp_country.iterrows():
+            # repeat the years for each country
+            df_temp = pd.DataFrame({GlossaryCore.Years: self.total_gdp_per_group_df[GlossaryCore.Years]})
+            # compute GDP for each year using the percentage and GDP Value of the correspondant group
+            df_temp['gdp'] = row['mean_percentage'] * self.total_gdp_per_group_df[row['group']] / 100
+            # Add the country name
+            df_temp['country_name'] = row['country_name']
+            # Add the country group
+            df_temp['group'] = row['group']
+            # concatenate with the result dataframe
+            self.df_gdp_per_country = pd.concat([self.df_gdp_per_country, df_temp])
+        # rest index
+        self.df_gdp_per_country.reset_index(drop=True, inplace=True)
+
     def compute(self, inputs: dict):
         """
         Compute all models for year range
@@ -763,9 +803,13 @@ class MacroEconomics:
 
         self.prepare_outputs()
 
+        self.compute_regionalised_gdp()
+
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
-            self.capital_df, self.sector_gdp_df, self.energy_wasted_objective
+            self.capital_df, self.sector_gdp_df, self.energy_wasted_objective, self.total_gdp_per_group_df,\
+            self.percentage_gdp_per_group_df, self.df_gdp_per_country
+
 
     """-------------------Gradient functions-------------------"""
 

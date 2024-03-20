@@ -137,6 +137,35 @@ To obtain the value of the production function parameters we fitted our calculat
 -  C02 tax efficiency: how much of the co2 tax can be reinvested (\%)
 -  Employment rate recovery function parameters: $employment\_a\_param$, $employment\_power\_param$, $employment\_rate\_base\_value$
 
+### GDP per country estimation 
+The GDP distribution model is a predictive model developed to estimate the distribution of Gross Domestic Product (GDP) among different countries over time. 
+The ultimate goal of this model is to provide insights into the future GDP distribution based on the computed GDP in the macroeconomics discipline.
+
+#### Strategy :
+- **Grouping** : The model is based on the group of countries from the International Monetary Fund (IMF)[^11]. The used groups are : 
+Advanced Economies, Emerging and Developing Europe, Emerging and Developing Asia, Latin America and the Caribbean, Sub-Saharan Africa, 
+Middle East and Central Asia. 
+- **Analysis of variability** : We've computed the mean and the standard deviation of each country's GDP share within its group.
+This analysis helps determine the stability and variability of countries' contributions to their respective groups. 
+- **Linear Regression Model** : A linear model is developed to estimate the GDP for each group over time. This model utilizes 
+official GDP data spanning from 2000 to 2020 per group. Its primary purpose is to calculate the weight of each group in the total GDP.
+The linear regression model is formulated as : $$GDP_{group} = a \times Years + b$$ 
+Where : 
+  - **GDP_{group}** represents the GDP for a specific group.
+  - **Years** years for which GDP is being estimated.
+  - **a** is the slope parameter representing the change in GDP over time.
+  - **b** is the intercept parameter.
+
+This formula is used to estimate the GDP for each group over time. The primary purpose is to calculate the GDP for each group,
+which is then used to determine the percentage of GDP contributed by each group to the total GDP.
+- **Projection of GDP by Group** : Using the output from the linear regression model, the GDP share for each group is projected into the future. 
+This provides an estimate of the GDP in Trillions of dollars ($T) for each group for upcoming years using the computed GDP in macroeconomics.
+- **Allocation of GDP to countries** : Finally the GDP projected for each group is allocated among its constituent countries. 
+The allocation is based on the average weight of each country within its group. The result is the GDP for each country for each year.
+Note: Preprocessing of data and the computation of the parameters of the linear regression were calculated in a separate file. 
+These computations are available in the Jupyter Notebook in data folder "GDP_data_preprocessing_model.ipynb".
+
+
 ## References
 
 [^4]: Moyer, E. J., Woolley, M. D., Matteson, N. J., Glotter, M. J., & Weisbach, D. A. (2014). Climate impacts on economic growth as drivers of uncertainty in the social cost of carbon. The Journal of Legal Studies, 43(2), 401-425.
@@ -155,3 +184,5 @@ To obtain the value of the production function parameters we fitted our calculat
 [^9]: International Labour Organization, ILOSTAT database. Data retrieved on February 8, 2022.
 
 [^10]: IEA 2022; World total final consumption by source, https://www.iea.org/reports/key-world-energy-statistics-2020/final-consumption, License: CC BY 4.0. 
+
+[^11]: IMF World Economic Outlook, Groups and Aggregates Information https://www.imf.org/en/Publications/WEO/weo-database/2023/April/groups-and-aggregates
