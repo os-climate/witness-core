@@ -43,6 +43,10 @@ class GlossaryCore:
     # Trillion $ / T$   /   10^12
     # Giga$      / G$   /   10^9
     # Million$   / M$   /   10^6
+    # Megatons : 1e6 tons
+    # Gigatons : 1e9 tons = 1e3 Megatons
+    # PWh = 1e3 TWh
+    # 1 TWh  = 1e9 kWh
 
     Years = "years"
     YearStart = "year_start"
@@ -68,7 +72,8 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
-
+    ChartGDPPerGroup = "GDP per group [T$]"
+    ChartPercentagePerGroup = "Percentage per group [%]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
@@ -105,6 +110,9 @@ class GlossaryCore:
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
     SectorEnergy = "energy"
+    TotalGDPGroupDFName = "total_gdp_per_group_df"
+    PercentageGDPGroupDFName = "percentage_gdp_group_df"
+    GDPCountryDFName = "gdp_per_country_df"
 
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
     ConsumptionObjectiveRef = get_ref_variable(
@@ -377,7 +385,7 @@ class GlossaryCore:
     CO2Taxes = {
         "var_name": CO2TaxesValue,
         "type": "dataframe",
-        "unit": "$/tCO2",
+        "unit": "$/tCO2Eq",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
@@ -682,6 +690,27 @@ class GlossaryCore:
         },
     }
 
+    EnergyProductionDetailedDf = {
+        "var_name": EnergyProductionValue,
+        "type": "dataframe",
+        "unit": "TWh",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyCarbonIntensityDfValue = "Carbon intensity of Energy Mix"
+    EnergyCarbonIntensityDf = {
+        "var_name": EnergyProductionValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "kgCO2Eq/kWh",
+        "namespace": NS_ENERGY_MIX,
+        "description": "Total CO2 equivalent emitted by energy mix divided by total energy production of energy mix",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            EnergyCarbonIntensityDfValue: ("float", [0, 1e30], False),
+        },
+    }
+
     EnergyProductionDfSectors = {
         "var_name": EnergyProductionValue,
         "type": "dataframe",
@@ -751,6 +780,7 @@ class GlossaryCore:
     TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"
     GHGEmissionsDf = {
+        "var_name": GHGEmissionsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -1347,6 +1377,22 @@ class GlossaryCore:
             Years: ("float", [1900, YearEndDefault], False),
             TotalEnergyEmissions: ("float", [0.0, 1e30], True),
         },
+    }
+
+    TotalGDPGroupDF = {
+        "var_name": TotalGDPGroupDFName,
+        'type': 'dataframe',
+        'unit': 'T$',
+    }
+    PercentageGDPGroupDF = {
+        "var_name": PercentageGDPGroupDFName,
+        'type': 'dataframe',
+        'unit': '%',
+    }
+    GDPCountryDF = {
+        "var_name": GDPCountryDFName,
+        'type': 'dataframe',
+        'unit': 'T$',
     }
 
     @staticmethod

@@ -1,0 +1,194 @@
+,country_name,group,mean_percentage
+0,Afghanistan,middle_east_central_asia,0.4256320731909598
+1,Algeria,middle_east_central_asia,5.833361485984874
+2,Armenia,middle_east_central_asia,0.27022282647203755
+3,Azerbaijan,middle_east_central_asia,1.162080127877595
+4,Bahrain,middle_east_central_asia,0.6863814181912693
+5,Djibouti,middle_east_central_asia,0.04191160864238875
+6,Egypt,middle_east_central_asia,10.29885837379897
+7,Georgia,middle_east_central_asia,0.3788233173595546
+8,Iran,middle_east_central_asia,15.876247771669933
+9,Iraq,middle_east_central_asia,3.4733101951814165
+10,Jordan,middle_east_central_asia,0.8214476614703083
+11,Kazakhstan,middle_east_central_asia,3.6786068886382477
+12,Kuwait,middle_east_central_asia,2.7426826591457423
+13,Kyrgyz Republic,middle_east_central_asia,0.2373944181653239
+14,Lebanon,middle_east_central_asia,0.903955745011354
+15,Libya,middle_east_central_asia,2.2693859589824283
+16,Mauritania,middle_east_central_asia,0.20282945909603772
+17,Morocco,middle_east_central_asia,2.7938175457609655
+18,Oman,middle_east_central_asia,1.9067380003957055
+19,Pakistan,middle_east_central_asia,9.703947272300878
+20,Qatar,middle_east_central_asia,2.1217506090176537
+21,Saudi Arabia,middle_east_central_asia,18.519618802351186
+22,Somalia,middle_east_central_asia,0.07483476171744742
+23,Sudan,middle_east_central_asia,2.0029384950439453
+24,Syria,middle_east_central_asia,1.0992263229736445
+25,Tajikistan,middle_east_central_asia,0.21589750527664392
+26,Tunisia,middle_east_central_asia,1.3729354740617743
+27,Turkmenistan,middle_east_central_asia,0.7178081440733599
+28,United Arab Emirates,middle_east_central_asia,7.076421802967497
+29,Uzbekistan,middle_east_central_asia,1.8413010248975206
+30,West Bank and Gaza,middle_east_central_asia,0.2045580002044964
+31,Yemen,middle_east_central_asia,1.0450742500788532
+32,Albania,emerging_developing_europe,0.394419919125705
+33,Belarus,emerging_developing_europe,1.8813176431045475
+34,Bosnia and Herzegovina,emerging_developing_europe,0.5032230388905062
+35,Bulgaria,emerging_developing_europe,1.7146319136306822
+36,Hungary,emerging_developing_europe,3.6927154062095173
+37,Kosovo,emerging_developing_europe,0.15688233345300442
+38,Moldova,emerging_developing_europe,0.2960831821279287
+39,Montenegro,emerging_developing_europe,0.10409071544708556
+40,Poland,emerging_developing_europe,12.22903477522572
+41,Romania,emerging_developing_europe,5.693945205348325
+42,Russian Federation,emerging_developing_europe,45.13286407722019
+43,Serbia,emerging_developing_europe,1.301437350275217
+44,Türkiye. Republic of,emerging_developing_europe,20.846300181464116
+45,Ukraine,emerging_developing_europe,6.053054258477438
+46,Andorra,advanced_economies,0.006804037168784076
+47,Australia,advanced_economies,2.110951410484117
+48,Austria,advanced_economies,0.8678847171511456
+49,Belgium,advanced_economies,1.0463725393893535
+50,Canada,advanced_economies,3.2374377531681744
+51,Croatia,advanced_economies,0.2082170541028933
+52,Cyprus,advanced_economies,0.05973564075499056
+53,Czech Republic,advanced_economies,0.68174369462611
+54,Denmark,advanced_economies,0.5991935558913402
+55,Estonia,advanced_economies,0.0721607622329635
+56,Finland,advanced_economies,0.49490806503667906
+57,France,advanced_economies,5.715841181959629
+58,Germany,advanced_economies,8.106130567257416
+59,Greece,advanced_economies,0.7108123986848046
+60,Hong Kong SAR,advanced_economies,0.7509738789440117
+61,Iceland,advanced_economies,0.030452492490184474
+62,Ireland,advanced_economies,0.5016054185212426
+63,Israel,advanced_economies,0.5200019154394697
+64,Italy,advanced_economies,5.300986011830695
+65,Japan,advanced_economies,11.351060032659966
+66,Korea. Republic of,advanced_economies,3.301282231208382
+67,Latvia,advanced_economies,0.0915317165155479
+68,Lithuania,advanced_economies,0.15102469269135602
+69,Luxembourg,advanced_economies,0.1095706655617707
+70,Macao SAR,advanced_economies,0.0909490426914922
+71,Malta,advanced_economies,0.029295015613765116
+72,Netherlands,advanced_economies,1.795189187796952
+73,New Zealand,advanced_economies,0.3271654704611817
+74,Norway,advanced_economies,0.7056574229082971
+75,Portugal,advanced_economies,0.6840652135038598
+76,Puerto Rico,advanced_economies,0.27895274758897914
+77,San Marino,advanced_economies,0.004263287161986409
+78,Singapore,advanced_economies,0.7845437387212735
+79,Slovak Republic,advanced_economies,0.28652239969996546
+80,Slovenia,advanced_economies,0.1332981036217877
+81,Spain,advanced_economies,3.4257358558074786
+82,Sweden,advanced_economies,0.9394546987233854
+83,Switzerland,advanced_economies,1.047821086750441
+84,Taiwan Province of China,advanced_economies,1.9034446560842102
+85,United Kingdom,advanced_economies,5.6032729553406035
+86,United States,advanced_economies,35.93368668375332
+87,Angola,sub_saharan_africa,5.126974725737077
+88,Benin,sub_saharan_africa,0.8854735576416136
+89,Botswana,sub_saharan_africa,1.0731299553179665
+90,Burkina Faso,sub_saharan_africa,0.8791431306242299
+91,Burundi,sub_saharan_africa,0.23428307594541592
+92,Cabo Verde,sub_saharan_africa,0.10681455948614063
+93,Cameroon,sub_saharan_africa,2.3474314663751086
+94,Central African Republic,sub_saharan_africa,0.16700554702438417
+95,Chad,sub_saharan_africa,0.6746365641022579
+96,Comoros,sub_saharan_africa,0.06710749122510516
+97,Congo. Dem. Rep. of the,sub_saharan_africa,1.8120721066512206
+98,Côte d'Ivoire,sub_saharan_africa,3.3704184770189722
+99,Equatorial Guinea,sub_saharan_africa,0.8145159919869837
+100,Eritrea,sub_saharan_africa,0.19620997830542883
+101,Eswatini,sub_saharan_africa,0.3244065245228574
+102,Ethiopia,sub_saharan_africa,3.4153954716381505
+103,Gabon,sub_saharan_africa,1.0895685003239297
+104,Gambia. The,sub_saharan_africa,0.16083714237219016
+105,Ghana,sub_saharan_africa,3.791187073593487
+106,Guinea,sub_saharan_africa,0.7138758556771634
+107,Guinea-Bissau,sub_saharan_africa,0.09183621195478948
+108,Kenya,sub_saharan_africa,4.634309733836634
+109,Lesotho,sub_saharan_africa,0.1786339508363029
+110,Liberia,sub_saharan_africa,0.12934767002079658
+111,Madagascar,sub_saharan_africa,1.3209020415444013
+112,Malawi,sub_saharan_africa,0.7559021287436823
+113,Mali,sub_saharan_africa,1.015874283581149
+114,Mauritius,sub_saharan_africa,0.7683993837708294
+115,Mozambique,sub_saharan_africa,0.7915788377987886
+116,Namibia,sub_saharan_africa,0.7067859882354628
+117,Niger,sub_saharan_africa,0.6749833253051465
+118,Nigeria,sub_saharan_africa,24.608556743755365
+119,Rwanda,sub_saharan_africa,0.47697982818113965
+120,Senegal,sub_saharan_africa,1.36126383315271
+121,Seychelles,sub_saharan_africa,0.07348017452806674
+122,Sierra Leone,sub_saharan_africa,0.28703728655787164
+123,South Africa,sub_saharan_africa,26.075146468995563
+124,South Sudan. Republic of,sub_saharan_africa,0.1531980679050319
+125,São Tomé and Príncipe,sub_saharan_africa,0.019772616125151965
+126,Tanzania,sub_saharan_africa,3.2111692787130095
+127,Togo,sub_saharan_africa,0.4511080086554707
+128,Uganda,sub_saharan_africa,2.382174209622582
+129,Zambia,sub_saharan_africa,1.4621720502514683
+130,Zimbabwe,sub_saharan_africa,1.118900682358903
+131,Antigua and Barbuda,latin_america_caribbean,0.024312711424560263
+132,Argentina,latin_america_caribbean,9.292306205301209
+133,Bahamas. The,latin_america_caribbean,0.1537999079059526
+134,Barbados,latin_america_caribbean,0.06174597904734139
+135,Belize,latin_america_caribbean,0.037999793310480465
+136,Bolivia,latin_america_caribbean,0.7086245667070368
+137,Brazil,latin_america_caribbean,33.848428095907714
+138,Chile,latin_america_caribbean,4.038412555293785
+139,Colombia,latin_america_caribbean,6.312065862882747
+140,Costa Rica,latin_america_caribbean,0.7625547316896847
+141,Dominica,latin_america_caribbean,0.009144460806541849
+142,Dominican Republic,latin_america_caribbean,1.382244110504072
+143,Ecuador,latin_america_caribbean,1.7867359917069459
+144,El Salvador,latin_america_caribbean,0.5349651505229825
+145,Grenada,latin_america_caribbean,0.016255995631954897
+146,Guatemala,latin_america_caribbean,1.2482090586781258
+147,Guyana,latin_america_caribbean,0.08744789229110835
+148,Haiti,latin_america_caribbean,0.3675930469780435
+149,Honduras,latin_america_caribbean,0.4147374797337302
+150,Jamaica,latin_america_caribbean,0.3270981552679476
+151,Mexico,latin_america_caribbean,26.223888721181176
+152,Nicaragua,latin_america_caribbean,0.3153016622650824
+153,Panama,latin_america_caribbean,0.7818420939885431
+154,Paraguay,latin_america_caribbean,0.7958853020985558
+155,Peru,latin_america_caribbean,3.3712278353379186
+156,Saint Kitts and Nevis,latin_america_caribbean,0.014201786638225015
+157,Saint Lucia,latin_america_caribbean,0.029031097217098848
+158,Saint Vincent and the Grenadines,latin_america_caribbean,0.01571198682909571
+159,Suriname,latin_america_caribbean,0.09492769018021917
+160,Trinidad and Tobago,latin_america_caribbean,0.44843857050436603
+161,Uruguay,latin_america_caribbean,0.7760088876277775
+162,Venezuela,latin_america_caribbean,5.718852614539987
+163,Bangladesh,emerging_developing_asia,2.335279564666384
+164,Bhutan,emerging_developing_asia,0.018715038018247244
+165,Brunei Darussalam,emerging_developing_asia,0.18259097939917804
+166,Cambodia,emerging_developing_asia,0.1589569196925664
+167,China. People's Republic of,emerging_developing_asia,49.2782025485496
+168,Fiji,emerging_developing_asia,0.04622413457597964
+169,India,emerging_developing_asia,23.03284226956082
+170,Indonesia,emerging_developing_asia,10.312189502055725
+171,Kiribati,emerging_developing_asia,0.0009912026505315978
+172,Lao P.D.R.,emerging_developing_asia,0.11907876162480208
+173,Malaysia,emerging_developing_asia,2.9669818677796216
+174,Maldives,emerging_developing_asia,0.023156217808386125
+175,Marshall Islands,emerging_developing_asia,0.0008148029387893885
+176,Micronesia. Fed. States of,emerging_developing_asia,0.0018890858670832123
+177,Mongolia,emerging_developing_asia,0.10476899374568484
+178,Myanmar,emerging_developing_asia,0.5307752151332414
+179,Nauru,emerging_developing_asia,0.00016006395335367975
+180,Nepal,emerging_developing_asia,0.31015698838877936
+181,Palau,emerging_developing_asia,0.0009354138429767126
+182,Papua New Guinea,emerging_developing_asia,0.10393457802666145
+183,Philippines,emerging_developing_asia,2.7238421988322927
+184,Samoa,emerging_developing_asia,0.004754841123255133
+185,Solomon Islands,emerging_developing_asia,0.005830776698386307
+186,Sri Lanka,emerging_developing_asia,0.8614594039340109
+187,Thailand,emerging_developing_asia,4.606065865247699
+188,Timor-Leste,emerging_developing_asia,0.008421841817785047
+189,Tonga,emerging_developing_asia,0.002833781362345727
+190,Tuvalu,emerging_developing_asia,0.00013242208791781782
+191,Vanuatu,emerging_developing_asia,0.0030828614766810407
+192,Vietnam,emerging_developing_asia,2.2549318591412204

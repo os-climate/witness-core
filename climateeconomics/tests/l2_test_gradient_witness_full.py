@@ -159,11 +159,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         excluded_disc = ['WITNESS.EnergyMix.hydrogen.liquid_hydrogen']
 
         excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.{GlossaryCore.EnergyProductionDetailedValue}',
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.{GlossaryCore.EnergyProductionDetailedValue}',
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.{GlossaryCore.EnergyProductionDetailedValue}',
                             ]
 
         # optional_disciplines_list = ['WITNESS.EnergyMix.fuel.liquid_fuel']
