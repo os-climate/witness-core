@@ -52,7 +52,6 @@ class ResourceMixModel():
     YEAR_END = GlossaryCore.YearEnd
     ALL_RESOURCE_DEMAND = 'all_resource_demand'
     ALL_RESOURCE_STOCK = 'all_resource_stock'
-    ALL_RESOURCE_PRICE = 'resources_price'
     All_RESOURCE_USE = 'all_resource_use'
     ALL_RESOURCE_PRODUCTION = 'all_resource_production'
     ALL_RESOURCE_RECYCLED_PRODUCTION = 'all_resource_recycled_production'
