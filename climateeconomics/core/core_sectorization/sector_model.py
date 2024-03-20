@@ -81,10 +81,6 @@ class SectorModel():
         self.gdp_percentage_per_section_df = self.compute_percentage_per_section(self.gdp_percentage_per_section_df)
         self.carbon_intensity_of_energy_mix = inputs_dict[GlossaryCore.EnergyCarbonIntensityDfValue]
         self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
-        # Getting the relevant years, sections and percentages for energy consumption
-        self.energy_consumption_percentage_per_section_df = self.check_start_end_years(self.energy_consumption_percentage_per_section_df)
-        self.energy_consumption_percentage_per_section_df = self.get_sections(self.energy_consumption_percentage_per_section_df)
-        self.energy_consumption_percentage_per_section_df = self.compute_percentage_per_section(self.energy_consumption_percentage_per_section_df)
         self.section_non_energy_emission_per_dollar_of_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]
         # Getting the relevant years and sections for non energy emissions
         self.section_non_energy_emission_per_dollar_of_gdp_df = self.check_start_end_years(self.section_non_energy_emission_per_dollar_of_gdp_df)
@@ -927,4 +923,7 @@ class SectorModel():
         return d_damages_from_climate_d_user_input + d_damages_from_productivity_loss_d_user_input
     def d_estimated_damages_d_user_input(self, d_estimated_damages_from_climate_d_user_input, d_estimated_damages_from_productivity_loss_d_user_input):
         return d_estimated_damages_from_climate_d_user_input + d_estimated_damages_from_productivity_loss_d_user_input
+
+    def d_section_energy_consumption_d_energy_production(self, section_name: str):
+        return np.diag(self.energy_consumption_percentage_per_section_df[section_name].values / 100.)
 

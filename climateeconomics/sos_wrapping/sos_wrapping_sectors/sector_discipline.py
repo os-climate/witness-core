@@ -121,7 +121,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 # section energy consumption percentage
                 global_data_dir = join(dirname(dirname(dirname(__file__))), 'data')
                 section_energy_consumption_percentage_df_default = pd.read_csv(
-                    join(global_data_dir, 'energy_consumption_percentage_per_section_df.csv'))
+                    join(global_data_dir, f'energy_consumption_percentage_{self.sector_name}_sections.csv'))
                 section_energy_consumption_percentage_dict = {
                     **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
                     **dict(zip(section_energy_consumption_percentage_df_default.columns[1:],
@@ -143,9 +143,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.SectionEnergyConsumptionPercentageDfValue: section_energy_consumption_percentage_df_default,
                     GlossaryCore.SectionNonEnergyEmissionGdpDfValue: section_non_energy_emission_gdp_df,
                 })
-
-        if GlossaryCore.SectionListValue in self.get_data_in():
-            dynamic_inputs[GlossaryCore.SectionListValue] = GlossaryCore.SectionDictSectors[self.sector_name]
 
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
@@ -400,6 +397,12 @@ class SectorDiscipline(ClimateEcoDiscipline):
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_estimated_damages_d_energy_production)
+
+        for section in GlossaryCore.SectionDictSectors[self.sector_name]:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.SectionEnergyConsumptionDfValue, section),
+                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                self.model.d_section_energy_consumption_d_energy_production(section_name=section))
 
     def get_chart_filter_list(self):
 
