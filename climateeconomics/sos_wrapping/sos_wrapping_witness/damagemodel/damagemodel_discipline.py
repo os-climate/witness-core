@@ -49,6 +49,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)
 
     DESC_IN = {
+        'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,

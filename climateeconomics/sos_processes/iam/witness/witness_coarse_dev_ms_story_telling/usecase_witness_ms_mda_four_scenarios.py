@@ -114,7 +114,7 @@ class Study(ClimateEconomicsStudyManager):
         }
         ref_co2_2020 = 42.2
 
-        all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.energy_production_detailed')
+        all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.EnergyProductionDetailedValue}')
         ref_value_net_energy_production = {
             self.USECASE2: 338*1e3,
             self.USECASE2B: 182*1e3,
