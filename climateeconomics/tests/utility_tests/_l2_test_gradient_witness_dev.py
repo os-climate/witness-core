@@ -16,6 +16,7 @@ limitations under the License.
 '''
 from os.path import join, dirname, exists
 
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_dev_optim_process.usecase_witness_optim_invest_distrib import \
     Study as witness_usecase
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
