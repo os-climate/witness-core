@@ -516,7 +516,9 @@ class SectorModel():
         self.compute_damage_from_productivity_loss()
         self.compute_damage_from_climate()
         self.compute_total_damages()
-        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df, self.section_emission_df, self.section_energy_emission_df, self.section_non_energy_emission_df, self.emission_df, self.section_energy_consumption_df
+        
+        self.output_types_to_float()
+
     
     ### GRADIENTS ###
 
@@ -865,4 +867,25 @@ class SectorModel():
 
     def d_section_energy_consumption_d_energy_production(self, section_name: str):
         return np.diag(self.energy_consumption_percentage_per_section_df[section_name].values / 100.)
+
+    def output_types_to_float(self):
+        """make sure these dataframes columns have type float instead of object to avoid errors during
+        seting of partial derivatives"""
+        dataframes = [
+            self.production_df,
+            self.section_gdp_df,
+            self.damage_df,
+            self.section_emission_df,
+            self.section_energy_emission_df,
+            self.section_non_energy_emission_df,
+            self.section_energy_consumption_df,
+            self.capital_df,
+            self.productivity_df
+        ]
+
+        for df in dataframes:
+            columns = set(df.columns)
+            columns.remove(GlossaryCore.Years)
+            columns = list(columns)
+            df[columns] = df[columns].astype(float)
 

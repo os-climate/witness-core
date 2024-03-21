@@ -213,30 +213,29 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df, emission_df, section_energy_consumption_df = self.model.compute(
-            model_inputs)
+        self.model.compute(model_inputs)
 
         # Store output data
-        dict_values = {GlossaryCore.ProductivityDfValue: productivity_df,
-                       f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": detailed_capital_df,
-                       'growth_rate_df': growth_rate_df,
-                       f"{self.sector_name}.{GlossaryCore.DamageDfValue}": damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
-                       f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
-                       f"{self.sector_name}.{GlossaryCore.EmissionDfValue}": emission_df[GlossaryCore.EmissionDf['dataframe_descriptor'].keys()],
-                       f"{self.sector_name}.{GlossaryCore.EmissionDetailedDfValue}": emission_df[GlossaryCore.EmissionDetailedDf['dataframe_descriptor'].keys()],
-                       f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
-                       f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
-                       GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
-                       GlossaryCore.SectionGdpDfValue: self.model.section_gdp_df,
-                       GlossaryCore.SectionEmissionDfValue: self.model.section_emission_df,
-                       GlossaryCore.SectionEnergyEmissionDfValue: self.model.section_energy_emission_df,
-                       GlossaryCore.SectionNonEnergyEmissionDfValue: self.model.section_non_energy_emission_df,
-                       GlossaryCore.SectionEnergyConsumptionDfValue: self.model.section_energy_consumption_df,
-                       }
+        dict_values = {
+            GlossaryCore.ProductivityDfValue: self.model.productivity_df,
+            f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": self.model.capital_df,'growth_rate_df': self.model.growth_rate_df,
+            f"{self.sector_name}.{GlossaryCore.DamageDfValue}": self.model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+            f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": self.model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
+            f"{self.sector_name}.{GlossaryCore.EmissionDfValue}": self.model.emission_df[GlossaryCore.EmissionDf['dataframe_descriptor'].keys()],
+            f"{self.sector_name}.{GlossaryCore.EmissionDetailedDfValue}": self.model.emission_df[GlossaryCore.EmissionDetailedDf['dataframe_descriptor'].keys()],
+            f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": self.model.production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
+            f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": self.model.capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
+            GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
+            GlossaryCore.SectionGdpDfValue: self.model.section_gdp_df,
+            GlossaryCore.SectionEmissionDfValue: self.model.section_emission_df,
+            GlossaryCore.SectionEnergyEmissionDfValue: self.model.section_energy_emission_df,
+            GlossaryCore.SectionNonEnergyEmissionDfValue: self.model.section_non_energy_emission_df,
+            GlossaryCore.SectionEnergyConsumptionDfValue: self.model.section_energy_consumption_df,
+        }
 
         if prod_function_fitting:
-            dict_values['longterm_energy_efficiency'] = lt_energy_eff
-            dict_values['range_energy_eff_constraint'] = range_energy_eff_cstrt
+            dict_values['longterm_energy_efficiency'] = self.model.lt_energy_eff
+            dict_values['range_energy_eff_constraint'] = self.model.range_energy_eff_cstrt
 
         if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
