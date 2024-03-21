@@ -77,9 +77,9 @@ class GlossaryCore:
     SectionNonEnergyEmissionPart = "Part of the non energy emission per section [GtCO2eq]"
     SectionEnergyConsumptionPart = "Part of the energy consumption per section [PWh]"
 
-    ChartGDPPerGroup = "GDP per group [T$]"
+    ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
-    ChartGDPBiggestEconomies = "Chart of the ten biggest countries GDP per year[T$]"
+    ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
@@ -125,6 +125,10 @@ class GlossaryCore:
     TotalGDPGroupDFName = "total_gdp_per_group_df"
     PercentageGDPGroupDFName = "percentage_gdp_group_df"
     GDPCountryDFName = "gdp_per_country_df"
+    CountryName = "country_name"
+    GroupName = "group"
+    GDPName = "gdp"
+    MeanPercentageName = "mean_percentage"
 
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
     ConsumptionObjectiveRef = get_ref_variable(
@@ -1509,8 +1513,8 @@ class GlossaryCore:
     }
     GDPCountryDF = {
         "var_name": GDPCountryDFName,
-        "type": "dataframe",
-        "unit": "T$",
+        'type': 'dataframe',
+        'unit': 'G$',
     }
 
     @staticmethod
