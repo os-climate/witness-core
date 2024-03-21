@@ -16,7 +16,7 @@ $$Damages_t = \Omega _t. Y_t$$
 with $Y_t$ the gross economic output in trillions of dollars (see macroeconomics documentation). 
 The form of the damage fraction in the latest version of DICE (2017) is different between the documentation[^1] and the code[^3]. We chose to implement the equation from the code which is the one used to obtain the results. 
 ### Tipping point
-We use another equation for the damage model from Weitzman (2009)[^2] based on the assumption that once temperatures increase above a given point, damages may accelerate. In this version damages drastically increase after a temperature increase of 6°C. We have then:
+We use another equation for the damage model from Weitzman (2009)[^2][^4] based on the assumption that once temperatures increase above a given point, damages may accelerate. In this version damages drastically increase after a temperature increase of 6°C. We have then:
 
 $$ D_t = (\frac{T_{t\,AT}}{20.46})^2 + (\frac{T_{t\,AT}}{6.081})^{6.754} $$
 and
@@ -42,3 +42,5 @@ See the documentation of macroeconomics model.
 [^2]: Weitzman, M. L. (2009). On modeling and interpreting the economics of catastrophic climate change. The Review of Economics and Statistics, 91(1), 1-19.
 
 [^3]: Version of the code we use is "DICE-2016R-091916ap.gms" available at https://sites.google.com/site/williamdnordhaus/dice-rice. In the documentation (see [^1] ) $\Omega_t = \frac{1}{1+\pi_1 T_{t\,AT}+ \pi_2 T_{t\,AT}^\varepsilon}$. 
+
+[^4]: Weitzman, M. L. (2012). GHG targets as insurance against catastrophic climate damages, National Bureau of Economic research (https://www.nber.org/system/files/working_papers/w16136/w16136.pdf )

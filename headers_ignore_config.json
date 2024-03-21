@@ -17,7 +17,8 @@
         "ipynb",
         "zip",
         "rst",
-        "ini"
+        "ini",
+        "coveragerc"
     ],
     "files_to_ignore": [
         "climateeconomics/sos_processes/iam/witness/economics_sector_process/process.py",

@@ -17,6 +17,10 @@ import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
     Study as usecase_ms_mda
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import \
+    Study as usecase_ms_mda_tipping_point
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import \
+    Study as usecase_ms_mdo
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -36,31 +40,46 @@ CHART_NAME = 'Charts'
 END_YEAR_NAME = 'Ending year'
 SCENARIO_NAME = 'Scenarios'
 SCATTER_SCENARIO = 'mda_scenarios'
+TIPPING_POINT = usecase_ms_mda_tipping_point.TIPPING_POINT
+TIPPING_POINT_LIST = usecase_ms_mda_tipping_point.TIPPING_POINT_LIST
+SEP = usecase_ms_mda_tipping_point.SEP
+UNIT = usecase_ms_mda_tipping_point.UNIT
 # list of graphs to be plotted and filtered
-graphs_list = ['Temperature per scenario',
-               'CO2 emissions per scenario',
-               'Population per scenario',
-               'Cumulative climate deaths per scenario',
-               'GDP per scenario',
-               # 'invest per scenario',
-               'invest in energy per scenario',
-               'invest in energy and ccus per scenario',
-               'CO2 tax per scenario',
-               'Utility per scenario',
-               'Total production per scenario',
-               'Fossil production per scenario',
-               'Renewable production per scenario'
+graphs_list = ['Temperature',
+               'CO2 emissions',
+               'Population',
+               'Cumulative climate deaths',
+               'GDP',
+               'Investements in energy',
+               'Invest in Energy + CCUS',
+               'CO2 tax',
+               'Utility',
+               'Total energy production',
+               'Fossil production',
+               'Renewable production'
                ]
+
+def get_shared_value(execution_engine, short_name_var: str):
+    """returns the value of a variables common to all scenarios"""
+    var_full_name = execution_engine.dm.get_all_namespaces_from_var_name(short_name_var)[0]
+    value = execution_engine.dm.get_value(var_full_name)
+    return value, var_full_name
+
+def get_all_scenarios_values(execution_engine, short_name_var: str):
+    var_full_names = execution_engine.dm.get_all_namespaces_from_var_name(short_name_var)
+    values = {var_full_name: execution_engine.dm.get_value(var_full_name) for var_full_name in var_full_names}
+    return values
+
 def post_processing_filters(execution_engine, namespace):
 
     filters = []
 
-    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
+    samples_df, varfullname_samples_df = get_shared_value(execution_engine, 'samples_df')
+    scenario_list = samples_df['scenario_name'].tolist()
 
     # recover year start and year end arbitrarily from the first scenario
-    year_start = execution_engine.dm.get_value(f'{namespace_w}.{scenario_list[0]}.{GlossaryCore.YearStart}')
-    year_end = execution_engine.dm.get_value(f'{namespace_w}.{scenario_list[0]}.{GlossaryCore.YearEnd}')
+    year_start, _ = get_shared_value(execution_engine, GlossaryCore.YearStart)
+    year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
     years_list = np.arange(year_start, year_end + 1).tolist()
 
     filters.append(ChartFilter(CHART_NAME, graphs_list, graphs_list, CHART_NAME))
@@ -70,6 +89,10 @@ def post_processing_filters(execution_engine, namespace):
                                scenario_list, SCENARIO_NAME))
     filters.append(ChartFilter(EFFECT_NAME, effects_list,
                                ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False)) # by default shows all studies, ie does not apply any filter
+    #specific case of tipping point study => filter will apply if at least one scenario has TIPPING_POINT in its name
+    if True in [TIPPING_POINT in scenario for scenario in scenario_list]:
+        filters.append(ChartFilter(TIPPING_POINT, TIPPING_POINT_LIST,
+                                   TIPPING_POINT_LIST, TIPPING_POINT))
 
     return filters
 
@@ -78,20 +101,16 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
 
-    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
+    samples_df, _ = get_shared_value(execution_engine, 'samples_df')
+    scenario_list = samples_df['scenario_name'].tolist()
 
     selected_scenarios = scenario_list
 
-    df_paths = [f'{GlossaryCore.YearStart}',
-                f'{GlossaryCore.YearEnd}', ]
-    year_start_dict, year_end_dict = get_df_per_scenario_dict(
-        execution_engine, df_paths, scenario_list)
-    year_start, year_end = year_start_dict[scenario_list[0]
-                                           ], year_end_dict[scenario_list[0]]
+    year_start, _ = get_shared_value(execution_engine, GlossaryCore.YearStart)
+    year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
 
     damage_tax_activation_status_dict = get_scenario_damage_tax_activation_status(execution_engine, scenario_list)
-
+    #graphs_list = []
     if filters is not None:
         for chart_filter in filters: # filter on "scenarios" must occur before filter on "Effects" otherwise filter "Effects" does not work
             if chart_filter.filter_key == CHART_NAME:
@@ -112,6 +131,17 @@ def post_processings(execution_engine, namespace, filters):
                     else:
                         selected_scenarios = [scenario for scenario in selected_scenarios
                                               if damage_tax_activation_status_dict[scenario][effect]]
+            if chart_filter.filter_key == usecase_ms_mda_tipping_point.TIPPING_POINT:
+                # Keep scenarios with selected tipping points + scenarios without tipping point defined (ex: reference scenario without damage)
+                # => remove from selected scenarios the "tipping point scenarios" that do not respect the filtering condition
+                tipping_points_to_drop = [tp for tp in TIPPING_POINT_LIST if tp not in chart_filter.selected_values]
+                scenarios_to_drop = []
+                for scenario in selected_scenarios:
+                    for tipping_point in tipping_points_to_drop:
+                        # tipping point scenario name ends with the following pattern as defined in usecase_witness_ms_mda_four_scenarios_tipping_points
+                        if TIPPING_POINT + SEP + tipping_point + UNIT in scenario:
+                            scenarios_to_drop.append(scenario)
+                selected_scenarios = [scenario for scenario in selected_scenarios if scenario not in scenarios_to_drop]
 
     years = np.arange(year_start, year_end + 1).tolist()
     """
@@ -127,9 +157,9 @@ def post_processings(execution_engine, namespace, filters):
             '__ . __': 'with damage',
             }
 
-    if 'Temperature per scenario' in graphs_list:
+    if 'Temperature' in graphs_list:
 
-        chart_name = 'Atmosphere temperature evolution per scenario'
+        chart_name = 'Atmosphere temperature evolution'
         x_axis_name = 'Years'
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
@@ -153,9 +183,9 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_chart)
 
-    if 'GDP per scenario' in graphs_list:
+    if 'GDP' in graphs_list:
 
-        chart_name = 'World GDP Net of Damage over years per scenario'
+        chart_name = 'World GDP Net of Damage'
         x_axis_name = 'Years'
         y_axis_name = 'World GDP Net of Damage (Trillion $2020)'
 
@@ -176,11 +206,11 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'CO2 emissions per scenario' in graphs_list:
+    if 'CO2 emissions' in graphs_list:
 
-        chart_name = 'CO2 emissions per scenario'
+        chart_name = 'CO2 emissions'
         x_axis_name = 'Years'
-        y_axis_name = 'Carbon emissions (Gtc)'
+        y_axis_name = f'Carbon emissions [{GlossaryCore.GHGEmissionsDf["unit"]}]'
 
         df_paths = [
             GlossaryCore.GHGEmissionsDfValue]
@@ -202,9 +232,9 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
 
-    if 'Population per scenario' in graphs_list:
+    if 'Population' in graphs_list:
 
-        chart_name = 'World population over years per scenario'
+        chart_name = 'World population'
         x_axis_name = 'Years'
         y_axis_name = 'World Population'
 
@@ -225,9 +255,9 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'Cumulative climate deaths per scenario' in graphs_list:
+    if 'Cumulative climate deaths' in graphs_list:
 
-        chart_name = 'Cumulative climate deaths over years per scenario'
+        chart_name = 'Cumulative climate deaths'
         x_axis_name = 'Years'
         y_axis_name = 'Cumulative climate deaths'
 
@@ -247,10 +277,10 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'invest per scenario' in graphs_list:
-        chart_name = f'investments per scenario'
+    if 'Invesments in energy' in graphs_list:
+        chart_name = f'Energy investments'
         x_axis_name = 'Years'
-        y_axis_name = f'total energy investment'
+        y_axis_name = f'Investments [{GlossaryCore.EnergyInvestments["unit"]}]'
 
         # Get the total energy investment
 
@@ -275,11 +305,11 @@ def post_processings(execution_engine, namespace, filters):
 
 
 
-    if 'invest in energy per scenario' in graphs_list:
+    if 'Investements in energy' in graphs_list:
 
-        chart_name = 'Energy investments without tax over years per scenario'
+        chart_name = 'Energy investments without tax'
         x_axis_name = 'Years'
-        y_axis_name = 'Energy investments wo tax (Trillion $2020)'
+        y_axis_name = f'Energy investments wo tax [{GlossaryCore.EnergyInvestmentsWoTax["unit"]}]'
 
         df_paths = [GlossaryEnergy.EnergyInvestmentsWoTaxValue, ]
         (invest_df_dict,) = get_df_per_scenario_dict(
@@ -298,11 +328,10 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'invest in energy and ccus per scenario' in graphs_list:
+    if 'Invest in Energy + CCUS' in graphs_list:
 
-        namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}.{scenario_list[0]}'
-        energy_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.energy_list}')
-        ccs_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.ccs_list}')
+        energy_list, _ = get_shared_value(execution_engine, GlossaryCore.energy_list)
+        ccs_list, _ = get_shared_value(execution_engine, GlossaryCore.ccs_list)
 
         for energy in energy_list + ccs_list:
             # will sum in list_energy all the invests of all the technos of a given energy
@@ -312,7 +341,7 @@ def post_processings(execution_engine, namespace, filters):
             else:
                 energy_disc = CCUS.name
             if energy != BiomassDry.name:
-                techno_list = execution_engine.dm.get_value(f'{namespace_w}.{energy_disc}.{energy}.{GlossaryEnergy.TechnoListName}')
+                techno_list, _ = get_shared_value(execution_engine, f"{energy}.{GlossaryEnergy.TechnoListName}")
 
                 for techno in techno_list:
                     df_paths = [f'{energy_disc}.{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', ]
@@ -326,7 +355,7 @@ def post_processings(execution_engine, namespace, filters):
                 for scenario in scenario_list:
                     invest_per_energy[scenario] = list(np.sum([invest_dict[scenario] for invest_dict in list_energy], axis=0))
 
-            chart_name = f'Distribution of investments for {energy} vs years'
+            chart_name = f'Distribution of investments for {energy}'
             x_axis_name = GlossaryEnergy.Years
             y_axis_name = f'Investments in {energy} (Billion $2020)'
 
@@ -340,11 +369,11 @@ def post_processings(execution_engine, namespace, filters):
             instanciated_charts.append(new_chart)
 
 
-    if 'CO2 tax per scenario' in graphs_list:
+    if 'CO2 tax' in graphs_list:
 
-        chart_name = 'CO2 tax per scenario'
+        chart_name = 'CO2 tax'
         x_axis_name = 'Years'
-        y_axis_name = 'Price ($/tCO2)'
+        y_axis_name = f'Price [{GlossaryCore.CO2Taxes["unit"]}]'
 
         df_paths = [f'{GlossaryCore.CO2TaxesValue}', ]
         (co2_taxes_df_dict,) = get_df_per_scenario_dict(
@@ -363,9 +392,9 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'Welfare per scenario' in graphs_list:
+    if 'Welfare' in graphs_list:
 
-        chart_name = 'Welfare per scenario'
+        chart_name = 'Welfare'
         y_axis_name = f'Welfare in {year_end}'
 
         df_paths = [f'{GlossaryCore.UtilityDfValue}',
@@ -395,9 +424,9 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'Utility per scenario' in graphs_list:
+    if 'Utility' in graphs_list:
 
-        chart_name = 'Utility per scenario'
+        chart_name = 'Utility'
         x_axis_name = 'Years'
         y_axis_name = 'Discounted Utility [-]'
 
@@ -420,11 +449,11 @@ def post_processings(execution_engine, namespace, filters):
 
 
 
-    if 'ppm per scenario' in graphs_list:
+    if 'ppm' in graphs_list:
 
-        chart_name = 'Atmospheric concentrations parts per million per scenario'
+        chart_name = 'CO2 Atmospheric concentrations'
         x_axis_name = 'Years'
-        y_axis_name = 'Atmospheric concentrations parts per million'
+        y_axis_name = GlossaryCore.CO2Concentration
 
         df_paths = [
             GlossaryCore.GHGCycleDfValue]
@@ -456,14 +485,14 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_chart)
 
-    if 'Total production per scenario' in graphs_list:
+    if 'Total energy production' in graphs_list:
 
-        chart_name = 'Total Net Energy production per scenario'
+        chart_name = 'Total Net Energy production'
         x_axis_name = 'Years'
         y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
 
         df_paths = [
-            f'{EnergyMix.name}.energy_production_detailed']
+            f'{EnergyMix.name}.{GlossaryCore.EnergyProductionDetailedValue}']
         (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -483,13 +512,13 @@ def post_processings(execution_engine, namespace, filters):
 
 
 
-    if 'Fossil production per scenario' in graphs_list:
+    if 'Fossil production' in graphs_list:
 
-        chart_name = 'Total Net Fossil Energy production per scenario'
+        chart_name = 'Total Net Fossil Energy production'
         x_axis_name = 'Years'
         y_axis_name = 'Fossil energy production [TWh]'
 
-        df_paths = [f'{EnergyMix.name}.energy_production_detailed']
+        df_paths = [f'{EnergyMix.name}.{GlossaryCore.EnergyProductionDetailedValue}']
         (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
@@ -506,13 +535,13 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'Renewable production per scenario' in graphs_list:
+    if 'Renewable production' in graphs_list:
 
-        chart_name = 'Total Net Renewable Energy production per scenario'
+        chart_name = 'Total Net Renewable Energy production'
         x_axis_name = 'Years'
         y_axis_name = 'Renewable net energy production [TWh]'
 
-        df_paths = [f'{EnergyMix.name}.energy_production_detailed']
+        df_paths = [f'{EnergyMix.name}.{GlossaryCore.EnergyProductionDetailedValue}']
         (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
@@ -538,6 +567,8 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
     Determines for each scenario if the damage and the taxes are activated
     assumes that tax is activated when ccs_price_percentage > 0 and co2_damage_price_percentage > 0 in case of damage
         NB: if damage are deactivated, co2_damage_price_percentage can be set to 0 as it has no effect
+        In case there is no damage, co2_damage_price_percentage > 0 does not activate the tax but ccs_price_percentage > 0 does
+
     assumes that damage are activated when damage_to_productivity and compute_climate_impact_on_gdp and
                                           activate_climate_effect_population are true
     '''
@@ -555,9 +586,7 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
         status_dict[scenario][DAMAGE_NAME] = damage_to_productivity_dict[scenario] and \
                                           assumption_dict[scenario]['compute_climate_impact_on_gdp'] and \
                                           assumption_dict[scenario]['activate_climate_effect_population']
-        status_dict[scenario][TAX_NAME] = (ccs_price_dict[scenario] > 0. and (co2_damage_price_dict[scenario] > 0. or \
-                                                                             (co2_damage_price_dict[scenario] <= 0. and \
-                                                                              not status_dict[scenario][DAMAGE_NAME])))
+        status_dict[scenario][TAX_NAME] = ccs_price_dict[scenario] > 25. or (co2_damage_price_dict[scenario] > 0  and status_dict[scenario][DAMAGE_NAME])
 
     return status_dict
 
@@ -583,12 +612,19 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         line color is red for fossil (usecase 2 & 2b), green for NZE (usecase 6 & 7), orange for fossil + renewable 
         (usecase 3, 4, 5)
         '''
-        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B]:
+        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B, usecase_ms_mdo.UC1,  usecase_ms_mdo.UC2,
+                        usecase_ms_mda_tipping_point.USECASE2]:
             line_color = dict(color='red')
-        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5]:
+        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5, usecase_ms_mdo.UC3,
+                          usecase_ms_mda_tipping_point.USECASE4_TP_REF, usecase_ms_mda_tipping_point.USECASE4_TP1,
+                          usecase_ms_mda_tipping_point.USECASE4_TP2]:
             line_color = dict(color='orange')
-        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7]:
+        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7, usecase_ms_mdo.UC4,
+                          usecase_ms_mda_tipping_point.USECASE7_TP_REF, usecase_ms_mda_tipping_point.USECASE7_TP1,
+                          usecase_ms_mda_tipping_point.USECASE7_TP2]:
             line_color = dict(color='green')
+        elif scenario in [usecase_ms_mdo.UC5]:
+            line_color = dict(color='cyan')
         else:
             line_color = None
         marker_symbol = 'circle'
@@ -610,20 +646,21 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
     return new_chart
 
 
-def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
+def get_df_per_scenario_dict(execution_engine, var_names, scenario_list=[]):
     '''! Function to retrieve dataframes from all the scenarios given a specified path
     @param execution_engine: Execution_engine, object from which the data is gathered
-    @param df_paths: list of string, containing the paths to access the df
+    @param var_names: list of string, containing the paths to access the df
 
     @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
     '''
-    df_per_scenario_dicts = [{} for _ in df_paths]
-    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
+    df_per_scenario_dicts = [{} for _ in var_names]
     if not scenario_list:
-        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
+        samples_df, _ = get_shared_value(execution_engine, 'samples_df')
+        scenario_list = samples_df['scenario_name']
 
-    for scenario in scenario_list:
-        for i, df_path in enumerate(df_paths):
-            df_per_scenario_dicts[i][scenario] = execution_engine.dm.get_value(
-                f'{namespace_w}.{scenario}.{df_path}')
+    for i, var_name in enumerate(var_names):
+        all_scenarios_variable_values = get_all_scenarios_values(execution_engine, var_name)
+        for scenario in scenario_list:
+            scenario_var_name = list(filter(lambda x: scenario in x, all_scenarios_variable_values.keys()))[0]
+            df_per_scenario_dicts[i][scenario] = all_scenarios_variable_values[scenario_var_name]
     return df_per_scenario_dicts
