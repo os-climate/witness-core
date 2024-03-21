@@ -68,8 +68,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': GlossaryCore.EnergyProductionDf['unit'],
                                              'dataframe_descriptor': GlossaryCore.EnergyProductionDf['dataframe_descriptor'],
                                              'dataframe_edition_locked': False},
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared',
-                                             'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                   'user_level': 1, 'unit': '-'},
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
@@ -640,39 +638,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(detailed_capital_df[key])
                 new_series = InstanciatedSeries(
                     years, ordonate_data, key, 'lines', visible_line)
-                new_chart.add_series(new_series)
-
-            instanciated_charts.append(new_chart)
-
-        if 'Energy_supply' in chart_list:
-            to_plot = [GlossaryCore.TotalProductionValue]
-
-            legend = {
-                GlossaryCore.TotalProductionValue: 'energy supply with oil production from energy pyworld3'}
-
-            energy_production = deepcopy(
-                self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue))
-            scaling_factor_energy_production = self.get_sosdisc_inputs(
-                'scaling_factor_energy_production')
-            total_production = energy_production[GlossaryCore.TotalProductionValue] * \
-                               scaling_factor_energy_production
-
-            data_to_plot_dict = {
-                GlossaryCore.TotalProductionValue: total_production}
-
-            chart_name = 'Energy supply'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $]',
-                                                 chart_name=chart_name)
-
-            for key in to_plot:
-                visible_line = True
-
-                ordonate_data = list(data_to_plot_dict[key])
-
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', visible_line)
-
                 new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)

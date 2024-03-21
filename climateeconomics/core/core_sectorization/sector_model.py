@@ -34,6 +34,7 @@ class SectorModel():
         '''
         Constructor
         '''
+        self.energy_production = None
         self.productivity_df = None
         self.capital_df = None
         self.production_df = None
@@ -102,7 +103,6 @@ class SectorModel():
         self.energy_eff_max = inputs_dict['energy_eff_max']
         self.capital_utilisation_ratio = inputs_dict['capital_utilisation_ratio']
         self.max_capital_utilisation_ratio = inputs_dict['max_capital_utilisation_ratio']
-        self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.ref_emax_enet_constraint = inputs_dict['ref_emax_enet_constraint']
         self.compute_climate_impact_on_gdp = inputs_dict['assumptions_dict']['compute_climate_impact_on_gdp']
         if not self.compute_climate_impact_on_gdp:
@@ -177,21 +177,11 @@ class SectorModel():
         self.capital_df = pd.DataFrame(index=default_index, columns=GlossaryCore.CapitalDf['dataframe_descriptor'].keys())
         self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductionDf['dataframe_descriptor'].keys())
         self.section_gdp_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
-        self.section_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionEmissionDf['dataframe_descriptor'].keys())
-        self.section_energy_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionEnergyEmissionDf['dataframe_descriptor'].keys())
-        self.section_non_energy_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionNonEnergyEmissionDf['dataframe_descriptor'].keys())
-        self.emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.EmissionDetailedDf['dataframe_descriptor'].keys())
-        self.section_energy_consumption_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionEnergyConsumptionDf['dataframe_descriptor'].keys())
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years, 'net_output_growth_rate'])
         self.production_df[GlossaryCore.Years] = self.years
         self.section_gdp_df[GlossaryCore.Years] = self.years
-        self.section_emission_df[GlossaryCore.Years] = self.years
-        self.section_energy_emission_df[GlossaryCore.Years] = self.years
-        self.section_non_energy_emission_df[GlossaryCore.Years] = self.years
-        self.emission_df[GlossaryCore.Years] = self.years
-        self.section_energy_consumption_df[GlossaryCore.Years] = self.years
         self.damage_df[GlossaryCore.Years] = self.years
         self.capital_df[GlossaryCore.Years] = self.years
         self.productivity_df[GlossaryCore.Years] = self.years
@@ -210,9 +200,7 @@ class SectorModel():
             self.investment_df = inputs[GlossaryCore.InvestmentDfValue]
             self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         #scale energy production
-        self.energy_production = inputs[GlossaryCore.EnergyProductionValue].copy(deep=True)
-        self.energy_production[GlossaryCore.TotalProductionValue] *= self.scaling_factor_energy_production
-        self.energy_production.index = self.energy_production[GlossaryCore.Years].values
+        self.energy_production = inputs[GlossaryCore.EnergyProductionValue]
         self.workforce_df = inputs[GlossaryCore.WorkforceDfValue]
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
         self.damage_fraction_df = inputs[GlossaryCore.DamageFractionDfValue]
@@ -398,22 +386,22 @@ class SectorModel():
         self.capital_df[GlossaryCore.EnergyEfficiency] = energy_efficiency
 
     def compute_unbounded_usable_capital(self):
-        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]
-        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
-        usable_capital_unbounded = self.capital_utilisation_ratio * net_energy_production * energy_efficiency * 1e-3
+        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue].values
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
+        usable_capital_unbounded = self.capital_utilisation_ratio * net_energy_production * energy_efficiency
         self.capital_df[GlossaryCore.UsableCapitalUnbounded] = usable_capital_unbounded
 
     def compute_energy_usage(self):
         """Wasted energy is the overshoot of energy production not used by usable capital"""
-        capital = self.capital_df[GlossaryCore.Capital]
-        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]  # PWh
-        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
+        capital = self.capital_df[GlossaryCore.Capital].values
+        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue].values * 1e3  # PWh to TWh
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
         optimal_energy_production = self.max_capital_utilisation_ratio * capital / self.capital_utilisation_ratio / energy_efficiency * 1e3
         self.productivity_df[GlossaryCore.OptimalEnergyProduction] = optimal_energy_production
         self.productivity_df[GlossaryCore.UsedEnergy] = np.minimum(net_energy_production, optimal_energy_production)
         self.productivity_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.)
         # Energy_wasted = max((Enet - Eoptimal),0.)
-        self.productivity_df[GlossaryCore.EnergyWasted] = (net_energy_production - optimal_energy_production) * 1e3  # TWh
+        self.productivity_df[GlossaryCore.EnergyWasted] = (net_energy_production - optimal_energy_production)
         self.productivity_df.loc[self.productivity_df[GlossaryCore.EnergyWasted] < 0., GlossaryCore.EnergyWasted] = 0.
 
     def compute_energy_wasted_objective(self):
@@ -480,10 +468,13 @@ class SectorModel():
 
         section_energy_consumption (PWh) = sector_energy_production (Pwh) x section_energy_consumption_percentage (%)
         """
-        self.section_energy_consumption_df = self.energy_consumption_percentage_per_section_df.copy()
-        energy_production_df_copy = self.energy_production.copy()
-        self.section_energy_consumption_df[self.section_list] = self.section_energy_consumption_df[self.section_list].multiply(
-            energy_production_df_copy.reset_index(drop=True)[GlossaryCore.TotalProductionValue], axis='index') / 100.
+        section_energy_consumption = {
+            GlossaryCore.Years: self.years
+        }
+        sector_energy_production = self.energy_production[GlossaryCore.TotalProductionValue].values
+        for section in self.section_list:
+            section_energy_consumption[section] = sector_energy_production * self.energy_consumption_percentage_per_section_df[section].values / 100.
+        self.section_energy_consumption_df = pd.DataFrame(section_energy_consumption)
 
 
     def compute_energy_emission_per_section(self):
@@ -492,10 +483,15 @@ class SectorModel():
 
         section_energy_emission (GtCO2eq) = section_energy_consumption (PWh) x carbon_intensity (kgCO2eq/kWh)
         """
-        self.section_energy_emission_df = self.section_energy_consumption_df.copy()
-        carbon_intensity_df_copy = self.carbon_intensity_of_energy_mix.copy()
-        self.section_energy_emission_df[self.section_list] = self.section_energy_emission_df[self.section_list].multiply(
-            carbon_intensity_df_copy.reset_index(drop=True)[GlossaryCore.EnergyCarbonIntensityDfValue], axis='index')
+        section_energy_emissions = {
+            GlossaryCore.Years: self.years
+        }
+        carbon_intensity = self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue].values
+        for section in self.section_list:
+            section_energy_emissions[section] = self.section_energy_consumption_df[section].values * carbon_intensity
+
+        self.section_energy_emission_df = pd.DataFrame(section_energy_emissions)
+
 
     def compute_non_energy_emission_per_section(self):
         """
@@ -503,8 +499,14 @@ class SectorModel():
 
         section_non_energy_emission (GtCO2eq) = section_non_energy_emission_wrt_gdp (tCO2eq/M$) x section_gdp (T$) / 1000.
         """
-        self.section_non_energy_emission_df = self.section_non_energy_emission_per_dollar_of_gdp_df.copy()
-        self.section_non_energy_emission_df[self.section_list] *= self.section_gdp_df[self.section_list] / 1000.
+
+        section_non_energy_emissions = {
+            GlossaryCore.Years: self.years
+        }
+        for section in self.section_list:
+            section_non_energy_emissions[section] = self.section_non_energy_emission_per_dollar_of_gdp_df[section] * self.section_gdp_df[section] /1000.
+
+        self.section_non_energy_emission_df = pd.DataFrame(section_non_energy_emissions)
 
     def compute_total_emission_per_section(self):
         """
@@ -512,24 +514,31 @@ class SectorModel():
 
         section_emission (GtCO2eq) = section_energy_emission (GtCO2eq) + section_non_energy_emission (GtCO2eq)
         """
-        self.section_emission_df = self.section_energy_emission_df.copy()
-        self.section_emission_df[self.section_list] += self.section_non_energy_emission_df[self.section_list]
+        section_emissions = {
+            GlossaryCore.Years: self.years
+        }
+        for section in self.section_list:
+            section_emissions[section] = self.section_energy_emission_df[section] + self.section_non_energy_emission_df[section]
+
+        self.section_emission_df = pd.DataFrame(section_emissions)
 
     def compute_total_emission(self):
         """
         Computing the total emissions of the sector
         """
         # sector_emission = sum of section_emission
-        self.emission_df = self.emission_df.reset_index(drop=True)
-        section_emission_df = self.section_emission_df.copy()
-        section_emission_df = section_emission_df.drop(GlossaryCore.Years, axis=1)
-        self.emission_df[GlossaryCore.TotalEmissions] = section_emission_df.sum(axis=1)
-        section_energy_emission_df = self.section_energy_emission_df.copy()
-        section_energy_emission_df = section_energy_emission_df.drop(GlossaryCore.Years, axis=1)
-        self.emission_df[GlossaryCore.EnergyEmissions] = section_energy_emission_df.sum(axis=1)
-        section_non_energy_emission_df = self.section_non_energy_emission_df.copy()
-        section_non_energy_emission_df = section_non_energy_emission_df.drop(GlossaryCore.Years, axis=1)
-        self.emission_df[GlossaryCore.NonEnergyEmissions] = section_non_energy_emission_df.sum(axis=1)
+        emissions = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.EnergyEmissions: 0.,
+            GlossaryCore.NonEnergyEmissions: 0.,
+        })
+
+        emissions[GlossaryCore.EnergyEmissions] = self.section_energy_emission_df[self.section_list].sum(axis=1)
+        emissions[GlossaryCore.NonEnergyEmissions] = self.section_non_energy_emission_df[self.section_list].sum(axis=1)
+
+        emissions[GlossaryCore.TotalEmissions] = emissions[GlossaryCore.EnergyEmissions] + emissions[GlossaryCore.NonEnergyEmissions]
+
+        self.emission_df = emissions
 
     # RUN
     def compute(self, inputs):
@@ -552,14 +561,7 @@ class SectorModel():
             self.compute_output_growth_rate(year)
             # capital t+1 :
             self.compute_capital(year+1)
-        self.production_df = self.production_df.fillna(0.0)
-        self.section_gdp_df = self.section_gdp_df.fillna(0.0)
-        self.section_emission_df = self.section_emission_df.fillna(0.0)
-        self.section_energy_emission_df = self.section_energy_emission_df.fillna(0.0)
-        self.section_non_energy_emission_df = self.section_non_energy_emission_df.fillna(0.0)
-        self.section_energy_consumption_df = self.section_energy_consumption_df.fillna(0.0)
-        self.capital_df = self.capital_df.fillna(0.0)
-        self.productivity_df = self.productivity_df.fillna(0.0)
+
         if self.prod_function_fitting:
             self.compute_long_term_energy_efficiency()
             self.compute_energy_eff_constraints()
