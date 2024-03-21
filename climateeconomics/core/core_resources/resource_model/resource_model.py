@@ -160,6 +160,7 @@ class ResourceModel():
                 self.resource_production_data, self.production_years, self.production_start, resource_type)
 
     def compute_stock(self):
+        # pylint: disable-msg=unsubscriptable-object
         # Initialize stocks df
         for resource_type in self.sub_resource_list:
             self.resource_stock[resource_type] = np.insert(
@@ -255,6 +256,7 @@ class ResourceModel():
             recycled_production_dict)
 
     def compute_price(self):
+        # pylint: disable-msg=unsubscriptable-object
 
         # dataframe initialization
         # self.resource_price = pd.DataFrame({GlossaryCore.Years: self.years})
@@ -327,6 +329,7 @@ class ResourceModel():
     def get_derivative_resource(self):
         """ Compute derivative of stock, used stock and price regarding demand
         """
+        # pylint: disable-msg=unsubscriptable-object
         # # ------------------------------------------------
         # # gather inputs
         year_start = self.year_start
@@ -475,7 +478,7 @@ class ResourceModel():
 
 
     def get_d_price_d_demand (self, year_start, year_end, nb_years, grad_use, grad_price):
-
+        # pylint: disable-msg=unsubscriptable-object
         ascending_price_resource_list = list(
             self.resource_price_data.sort_values(by=['price'])['resource_type'])
 

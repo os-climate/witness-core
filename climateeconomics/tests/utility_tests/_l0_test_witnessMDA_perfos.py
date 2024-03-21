@@ -109,10 +109,10 @@ class TestScatter(unittest.TestCase):
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
         #
-#         with open(join(dirname(__file__), f'witness_perfos.csv'), 'w+') as f:
-#             # f = open(result.rsplit('.')[0] + '.csv', 'w')
-#             f.write(result)
-#             f.close()
+        #         with open(join(dirname(__file__), f'witness_perfos.csv'), 'w+') as f:
+        #             # f = open(result.rsplit('.')[0] + '.csv', 'w')
+        #             f.write(result)
+        #             f.close()
 
         lines = result.split('\n')
         total_time = float(lines[1].split(',')[3])
@@ -121,20 +121,20 @@ class TestScatter(unittest.TestCase):
         print('filename(function),total time, time per call, number of calls')
         for line in lines[1:200]:
             print(line.split(',')[-1].split('\\')[-3:], ',', line.split(',')
-                  [3], ',', line.split(',')[4], ',', line.split(',')[0])
+            [3], ',', line.split(',')[4], ',', line.split(',')[0])
 
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -234,17 +234,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -344,17 +344,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -450,17 +450,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -495,14 +495,14 @@ class TestScatter(unittest.TestCase):
             execute_time_list.append(execute_time)
             total_time_list.append(total_time)
 
-        fig = plt.figure()
-        plt.plot(n_proc_list, total_time_list, label='Total time')
-        plt.plot(n_proc_list, execute_time_list, label='Execute time')
-        plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
-        plt.legend()
-        fig_name = f'WITNESScoarse_{mda_class}_allprocs.png'
-        plt.savefig(
-            join(dirname(__file__), fig_name))
+        # fig = plt.figure()
+        # plt.plot(n_proc_list, total_time_list, label='Total time')
+        # plt.plot(n_proc_list, execute_time_list, label='Execute time')
+        # plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
+        # plt.legend()
+        # fig_name = f'WITNESScoarse_{mda_class}_allprocs.png'
+        # plt.savefig(
+        #     join(dirname(__file__), fig_name))
 
     def test_05_witness_perfos_multiproc(self):
 
@@ -558,17 +558,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -606,14 +606,14 @@ class TestScatter(unittest.TestCase):
                 os.system(
                     f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
 
-        fig = plt.figure()
-        plt.plot(n_proc_list, total_time_list, label='Total time')
-        plt.plot(n_proc_list, execute_time_list, label='Execute time')
-        plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
-        plt.legend()
-        fig_name = f'WITNESS_{mda_class}_allprocs.png'
-        plt.savefig(
-            join(dirname(__file__), fig_name))
+        # fig = plt.figure()
+        # plt.plot(n_proc_list, total_time_list, label='Total time')
+        # plt.plot(n_proc_list, execute_time_list, label='Execute time')
+        # plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
+        # plt.legend()
+        # fig_name = f'WITNESS_{mda_class}_allprocs.png'
+        # plt.savefig(
+        #     join(dirname(__file__), fig_name))
 
         if platform.system() == 'Windows':
             plt.show()
@@ -669,17 +669,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -775,7 +775,7 @@ class TestScatter(unittest.TestCase):
                     if y < 60:
                         text = round(y)
                     else:
-                        text = f'{round(y//60)} mn {round(y%60)} s'
+                        text = f'{round(y // 60)} mn {round(y % 60)} s'
                     ax.text(x, y, text, ha='center')
             plt.savefig('total_time_coarse.jpg')
             plt.show()
@@ -809,7 +809,7 @@ class TestScatter(unittest.TestCase):
                 for k, v in enumerate(c):
                     x = disciplines_run_time[k] + 0.005
                     y = v.get_y() + v.get_width() + 0.005
-                    text = f'{round ((disciplines_run_time[k]/total_run_time)*100)} %'
+                    text = f'{round((disciplines_run_time[k] / total_run_time) * 100)} %'
                     ax.text(x, y, text)
             plt.savefig('execution_time_per_disciplines_coarse_percent.jpg')
             plt.show()
@@ -1023,35 +1023,39 @@ class TestScatter(unittest.TestCase):
                     continue
                 try:
                     cat_times[category] = float([line for line in lines if str_to_find in line][0].split(',')[
-                                           3])
+                                                    3])
                 except:
                     cat_times[category] = 0.0
-            cat_times['Total']=total_time
-            cat_times['Others']=total_time - sum([time for key, time in cat_times.items() if key in
-                                                  ['Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build']])
+            cat_times['Total'] = total_time
+            cat_times['Others'] = total_time - sum([time for key, time in cat_times.items() if key in
+                                                    ['Linearize', 'Pre-run', 'Gauss Seidel', 'Execute',
+                                                     'Matrix Inversion', 'Matrix Build']])
             return cat_times
 
-        def get_stacked_bar_chart(labels, values_list, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
+        def get_stacked_bar_chart(labels, values_list, title='Fig Title', save=False,
+                                  filename='witness_full_MDA_parallel_perfos'):
             x = np.arange(len(labels))  # the label locations
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
-            bottom=0.0
+            bottom = 0.0
             for operation in values_list[0].keys():
                 if operation == 'Total':
                     ax.bar(x, values_list[0]['Total'], width, label=operation)
                 else:
-                    ax.bar(x+0.5, [values[operation] for values in values_list][0], width, bottom=bottom, label=operation)
-                    bottom+=[values[operation] for values in values_list][0]
+                    ax.bar(x + 0.5, [values[operation] for values in values_list][0], width, bottom=bottom,
+                           label=operation)
+                    bottom += [values[operation] for values in values_list][0]
             ax.set_xticks(x)
             ax.set_xticklabels(labels)
             ax.set_title(title)
             fig.tight_layout()
             fig.legend()
             if save:
-                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
+                fig.savefig(join(dirname(__file__), f'perfo_dir/{filename}.jpg'))
             return fig
 
-        def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
+        def get_operation_bar_chart(labels, values, title='Fig Title', save=False,
+                                    filename='witness_full_MDA_parallel_perfos'):
             x = np.arange(len(labels))  # the label locations
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
@@ -1059,10 +1063,11 @@ class TestScatter(unittest.TestCase):
             ax.set_title(title)
             fig.tight_layout()
             if save:
-                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
+                fig.savefig(join(dirname(__file__), f'perfo_dir/{filename}.jpg'))
             return fig
 
-        case_dict={'GSNR-sequential': [1,'GSNewtonMDA'], 'GSNR-10core': [10,'GSNewtonMDA'],'GSNR-64core': [64,'GSNewtonMDA']}
+        case_dict = {'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-10core': [10, 'GSNewtonMDA'],
+                     'GSNR-64core': [64, 'GSNewtonMDA']}
 
         operations_dict = {
             'Total': None,
@@ -1075,23 +1080,25 @@ class TestScatter(unittest.TestCase):
             'Threading Wait': '(wait',
             'Type Conversion': '_convert_new_type_into_array',
             'Deepcopy': '(deepcopy',
-            'Others' : None #value is found by substracting operations time to total time
+            'Others': None  # value is found by substracting operations time to total time
         }
         cat_times_list = []
         for case, (n_proc, mda_type) in case_dict.items():
             result = launch_execution(self, mda_type=mda_type, n_proc=n_proc)
             extract_profile_to_csv(result, f'witness_full_MDA_{case}_profile')
-            cat_times = get_categorized_times(result, categories_dict= operations_dict)
-            cat_times_list+=[cat_times,]
+            cat_times = get_categorized_times(result, categories_dict=operations_dict)
+            cat_times_list += [cat_times, ]
 
-        operations_fig=[]
+        operations_fig = []
         for operation in operations_dict.keys():
-            operations_fig +=[get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
-                                    title=f'{operation} time', save=True,
-                                    filename=f'witness_full_MDA_{operation}_parallel_perfos'),]
-        stacked_data=[{key: value for key, value in cat_times.items() if key in
-                       ['Total', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build']} for cat_times in cat_times_list]
-        stacked_fig=get_stacked_bar_chart(case_dict.keys(), stacked_data,
+            operations_fig += [
+                get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
+                                        title=f'{operation} time', save=True,
+                                        filename=f'witness_full_MDA_{operation}_parallel_perfos'), ]
+        stacked_data = [{key: value for key, value in cat_times.items() if key in
+                         ['Total', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion',
+                          'Matrix Build']} for cat_times in cat_times_list]
+        stacked_fig = get_stacked_bar_chart(case_dict.keys(), stacked_data,
                                             title='Stacked operations time', save=True,
                                             filename=f'witness_full_MDA_parallel_perfos')
         if platform.system() == 'Windows':
@@ -1190,35 +1197,39 @@ class TestScatter(unittest.TestCase):
                     continue
                 try:
                     cat_times[category] = float([line for line in lines if str_to_find in line][0].split(',')[
-                                           3])
+                                                    3])
                 except:
                     cat_times[category] = 0.0
-            cat_times['Total']=total_time
-            cat_times['Others']=total_time - sum([time for key, time in cat_times.items() if key in
-                                                  ['Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build']])
+            cat_times['Total'] = total_time
+            cat_times['Others'] = total_time - sum([time for key, time in cat_times.items() if key in
+                                                    ['Linearize', 'Pre-run', 'Gauss Seidel', 'Execute',
+                                                     'Matrix Inversion', 'Matrix Build']])
             return cat_times
 
-        def get_stacked_bar_chart(labels, values_list, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
+        def get_stacked_bar_chart(labels, values_list, title='Fig Title', save=False,
+                                  filename='witness_full_MDA_parallel_perfos'):
             x = np.arange(len(labels))  # the label locations
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
-            bottom=np.zeros(len(x))
+            bottom = np.zeros(len(x))
             for operation in values_list[0].keys():
                 if operation == 'Total':
                     ax.bar(x, [values['Total'] for values in values_list], width, label=operation)
                 else:
-                    ax.bar(x+0.5, [values[operation] for values in values_list], width, bottom=bottom, label=operation)
-                    bottom+=[values[operation] for values in values_list]
+                    ax.bar(x + 0.5, [values[operation] for values in values_list], width, bottom=bottom,
+                           label=operation)
+                    bottom += [values[operation] for values in values_list]
             ax.set_xticks(x)
             ax.set_xticklabels(labels)
             ax.set_title(title)
             fig.tight_layout()
             fig.legend()
             if save:
-                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
+                fig.savefig(join(dirname(__file__), f'perfo_dir/{filename}.jpg'))
             return fig
 
-        def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
+        def get_operation_bar_chart(labels, values, title='Fig Title', save=False,
+                                    filename='witness_full_MDA_parallel_perfos'):
             x = np.arange(len(labels))  # the label locations
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
@@ -1226,12 +1237,13 @@ class TestScatter(unittest.TestCase):
             ax.set_title(title)
             fig.tight_layout()
             if save:
-                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
+                fig.savefig(join(dirname(__file__), f'perfo_dir/{filename}.jpg'))
             return fig
 
-        case_dict={
-                   'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-10thread': [10, 'GSNewtonMDA'], 'GSNR-64thread': [64, 'GSNewtonMDA']
-                   }
+        case_dict = {
+            'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-10thread': [10, 'GSNewtonMDA'],
+            'GSNR-64thread': [64, 'GSNewtonMDA']
+        }
         operations_dict = {
             'Total': None,
             'Linearize': 'linearize_all_disciplines',
@@ -1243,23 +1255,25 @@ class TestScatter(unittest.TestCase):
             'Threading Wait': '(wait',
             'Type Conversion': '_convert_new_type_into_array',
             'Deepcopy': '(deepcopy',
-            'Others' : None #value is found by substracting operations time to total time
+            'Others': None  # value is found by substracting operations time to total time
         }
         cat_times_list = []
         for case, (n_proc, mda_type) in case_dict.items():
             result = launch_execution(self, mda_type=mda_type, n_proc=n_proc)
             extract_profile_to_csv(result, f'witness_coarse_MDA_{case}_profile')
-            cat_times = get_categorized_times(result, categories_dict= operations_dict)
-            cat_times_list+=[cat_times,]
+            cat_times = get_categorized_times(result, categories_dict=operations_dict)
+            cat_times_list += [cat_times, ]
 
-        operations_fig=[]
+        operations_fig = []
         for operation in operations_dict.keys():
-            operations_fig +=[get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
-                                    title=f'{operation} time', save=True,
-                                    filename=f'witness_coarse_MDA_{operation}_parallel_perfos'),]
-        stacked_data=[{key: value for key, value in cat_times.items() if key in
-                       ['Total', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build']} for cat_times in cat_times_list]
-        stacked_fig=get_stacked_bar_chart(case_dict.keys(), stacked_data,
+            operations_fig += [
+                get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
+                                        title=f'{operation} time', save=True,
+                                        filename=f'witness_coarse_MDA_{operation}_parallel_perfos'), ]
+        stacked_data = [{key: value for key, value in cat_times.items() if key in
+                         ['Total', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion',
+                          'Matrix Build']} for cat_times in cat_times_list]
+        stacked_fig = get_stacked_bar_chart(case_dict.keys(), stacked_data,
                                             title='Stacked operations time', save=True,
                                             filename=f'witness_coarse_MDA_parallel_perfos')
         if platform.system() == 'Windows':
@@ -1277,6 +1291,7 @@ class TestScatter(unittest.TestCase):
                 f'git commit -m "Add perfo MDA parallel figures"')
             os.system('git pull')
             os.system('git push')
+
 
 if '__main__' == __name__:
     cls = TestScatter()
