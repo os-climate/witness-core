@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from copy import deepcopy
-
 import pandas as pd
 from os.path import join, dirname
 import numpy as np
@@ -130,7 +128,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
                 # section energy consumption percentage
                 section_energy_consumption_percentage_df_default = pd.read_csv(
-                    join(global_data_dir, f'energy_consumption_percentage_{self.sector_name}_sections.csv'))
+                    join(global_data_dir, f'energy_consumption_percentage_{self.sector_name.lower()}_sections.csv'))
                 section_energy_consumption_percentage_dict = {
                     **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
                     **dict(zip(section_energy_consumption_percentage_df_default.columns[1:],

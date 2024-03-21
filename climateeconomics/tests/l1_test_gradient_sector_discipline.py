@@ -54,7 +54,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         })
 
         self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
-                                          GlossaryCore.InvestmentsValue: 25 * 1.02 ** np.arange(len(self.years))})
+                                          GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(len(self.years))})
 
         self.damage_fraction_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -118,7 +118,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.prod_function_fitting': False,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'productivity_start'}": 1.31162,
-                       f"{self.name}.{GlossaryCore.SectorIndustry}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{GlossaryCore.SectorIndustry}.{'capital_start'}": 100.92448579,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'productivity_gr_start'}": 0.0027844,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'decline_rate_tfp'}": 0.098585,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'energy_eff_k'}": 0.1,
@@ -191,7 +191,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
         section_list = GlossaryCore.SectionsIndustry
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
@@ -231,7 +230,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}',
                                     ],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
@@ -310,7 +308,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}',
                                     ],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
