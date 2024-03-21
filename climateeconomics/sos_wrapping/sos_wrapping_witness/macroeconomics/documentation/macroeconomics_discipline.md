@@ -159,6 +159,10 @@ Where :
 
 This formula is used to estimate the GDP-PPP adjusted for each group over time. The primary purpose is to calculate the GDP-PPP adjusted for each group,
 which is then used to determine the percentage of GDP-PPP adjusted contributed by each group to the total GDP-PPP adjusted.
+The expected is result of the model is :
+
+| ![GDPpercentageestimation.PNG](GDPpercentageestimation.PNG) | 
+
 - **Projection of GDP-PPP adjusted by Group** : Using the output from the linear regression model, the GDP-PPP adjusted share for each group is projected into the future. 
 This provides an estimate of the GDP in Trillions of dollars ($T) for each group for upcoming years using the computed GDP-PPP adjusted in macroeconomics.
 - **Allocation of GDP-PPP adjusted to countries** : Finally the GDP-PPP adjusted projected for each group is allocated among its constituent countries. 
