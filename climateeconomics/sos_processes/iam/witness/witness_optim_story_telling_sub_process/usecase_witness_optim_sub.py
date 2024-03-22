@@ -103,16 +103,15 @@ class Study(ClimateEconomicsStudyManager):
         len_var = 4
 
         # design space
-        dspace_dict = {'variable': 'percentage_gdp_invest_in_energy_array',
-                       'value': [1.] * len_var,
-                       'lower_bnd': [2e-1] * len_var,
-                       'upper_bnd': [5.] * len_var,
-                       'enable_variable': True,
-                       'activated_elem': [True] * len_var
+        dspace_dict = {'variable': ['percentage_gdp_invest_in_energy_array'],
+                       'value': [[1.] * len_var],
+                       'lower_bnd': [[2e-1] * len_var],
+                       'upper_bnd': [[5.] * len_var],
+                       'enable_variable': [True],
+                       'activated_elem': [[True] * len_var]
                        }
 
-        self.dspace = pd.DataFrame(columns=list(dspace_dict.keys()))
-        self.dspace = self.dspace.append(dspace_dict, ignore_index=True)
+        self.dspace = pd.DataFrame(dspace_dict)
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         # create func manager
         func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.NegativeWelfareObjective,

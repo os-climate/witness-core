@@ -40,9 +40,7 @@ class Study(ClimateEconomicsStudyManager):
         scatter_scenario = 'optimization scenarios'
 
         #scenarios name:
-        uc2_tp_ref = uc_ms_mda.USECASE2 + ', tipping point 6°C'
-        uc2_tp1 = uc_ms_mda.USECASE2 + ', tipping point 4°C'
-        uc2_tp2 = uc_ms_mda.USECASE2 + ', tipping point 3°C'
+        uc2 = uc_ms_mda.USECASE2
         uc4_tp_ref = uc_ms_mda.USECASE4 + ', tipping point 6°C'
         uc4_tp1 = uc_ms_mda.USECASE4 + ', tipping point 4°C'
         uc4_tp2 = uc_ms_mda.USECASE4 + ', tipping point 3°C'
@@ -51,9 +49,7 @@ class Study(ClimateEconomicsStudyManager):
         uc7_tp2 = uc_ms_mda.USECASE7 + ', tipping point 3°C'
 
         scenario_dict = {
-            uc2_tp_ref: Study1,
-            uc2_tp1: Study1,
-            uc2_tp2: Study1,
+            uc2: Study1,
             uc4_tp_ref: Study3,
             uc4_tp1: Study3,
             uc4_tp2: Study3,
@@ -78,16 +74,14 @@ class Study(ClimateEconomicsStudyManager):
                 scenarioDatadict.update(data)
             values_dict.update(scenarioDatadict)
 
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 100 for scenario_name in scenario_dict.keys()})
         values_dict.update(
             {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
              scenario_dict.keys()})
 
-        # update values dict with start temperature for the model
-        tipping_point_variable = 'damage.tp_a3'
+        # update values dict with tipping point value of the damage model
+        tipping_point_variable = 'Damage.tp_a3'
         values_dict.update({
-            f'{self.study_name}.{scatter_scenario}.{uc2_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 4.,
-            f'{self.study_name}.{scatter_scenario}.{uc2_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 3.,
             f'{self.study_name}.{scatter_scenario}.{uc4_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 4.,
             f'{self.study_name}.{scatter_scenario}.{uc4_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 3.,
             f'{self.study_name}.{scatter_scenario}.{uc7_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 4.,

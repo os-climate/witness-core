@@ -17,6 +17,8 @@ import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
     Study as usecase_ms_mda
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import \
+    Study as usecase_ms_mda_tipping_point
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import \
     Study as usecase_ms_mdo
 from energy_models.core.ccus.ccus import CCUS
@@ -38,6 +40,10 @@ CHART_NAME = 'Charts'
 END_YEAR_NAME = 'Ending year'
 SCENARIO_NAME = 'Scenarios'
 SCATTER_SCENARIO = 'mda_scenarios'
+TIPPING_POINT = usecase_ms_mda_tipping_point.TIPPING_POINT
+TIPPING_POINT_LIST = usecase_ms_mda_tipping_point.TIPPING_POINT_LIST
+SEP = usecase_ms_mda_tipping_point.SEP
+UNIT = usecase_ms_mda_tipping_point.UNIT
 # list of graphs to be plotted and filtered
 graphs_list = ['Temperature',
                'CO2 emissions',
@@ -83,6 +89,10 @@ def post_processing_filters(execution_engine, namespace):
                                scenario_list, SCENARIO_NAME))
     filters.append(ChartFilter(EFFECT_NAME, effects_list,
                                ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False)) # by default shows all studies, ie does not apply any filter
+    #specific case of tipping point study => filter will apply if at least one scenario has TIPPING_POINT in its name
+    if True in [TIPPING_POINT in scenario for scenario in scenario_list]:
+        filters.append(ChartFilter(TIPPING_POINT, TIPPING_POINT_LIST,
+                                   TIPPING_POINT_LIST, TIPPING_POINT))
 
     return filters
 
@@ -121,6 +131,17 @@ def post_processings(execution_engine, namespace, filters):
                     else:
                         selected_scenarios = [scenario for scenario in selected_scenarios
                                               if damage_tax_activation_status_dict[scenario][effect]]
+            if chart_filter.filter_key == usecase_ms_mda_tipping_point.TIPPING_POINT:
+                # Keep scenarios with selected tipping points + scenarios without tipping point defined (ex: reference scenario without damage)
+                # => remove from selected scenarios the "tipping point scenarios" that do not respect the filtering condition
+                tipping_points_to_drop = [tp for tp in TIPPING_POINT_LIST if tp not in chart_filter.selected_values]
+                scenarios_to_drop = []
+                for scenario in selected_scenarios:
+                    for tipping_point in tipping_points_to_drop:
+                        # tipping point scenario name ends with the following pattern as defined in usecase_witness_ms_mda_four_scenarios_tipping_points
+                        if TIPPING_POINT + SEP + tipping_point + UNIT in scenario:
+                            scenarios_to_drop.append(scenario)
+                selected_scenarios = [scenario for scenario in selected_scenarios if scenario not in scenarios_to_drop]
 
     years = np.arange(year_start, year_end + 1).tolist()
     """
@@ -591,11 +612,16 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         line color is red for fossil (usecase 2 & 2b), green for NZE (usecase 6 & 7), orange for fossil + renewable 
         (usecase 3, 4, 5)
         '''
-        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B, usecase_ms_mdo.UC1,  usecase_ms_mdo.UC2]:
+        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B, usecase_ms_mdo.UC1,  usecase_ms_mdo.UC2,
+                        usecase_ms_mda_tipping_point.USECASE2]:
             line_color = dict(color='red')
-        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5, usecase_ms_mdo.UC3]:
+        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5, usecase_ms_mdo.UC3,
+                          usecase_ms_mda_tipping_point.USECASE4_TP_REF, usecase_ms_mda_tipping_point.USECASE4_TP1,
+                          usecase_ms_mda_tipping_point.USECASE4_TP2]:
             line_color = dict(color='orange')
-        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7, usecase_ms_mdo.UC4]:
+        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7, usecase_ms_mdo.UC4,
+                          usecase_ms_mda_tipping_point.USECASE7_TP_REF, usecase_ms_mda_tipping_point.USECASE7_TP1,
+                          usecase_ms_mda_tipping_point.USECASE7_TP2]:
             line_color = dict(color='green')
         elif scenario in [usecase_ms_mdo.UC5]:
             line_color = dict(color='cyan')
