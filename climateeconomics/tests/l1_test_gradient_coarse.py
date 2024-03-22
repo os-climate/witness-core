@@ -516,7 +516,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd,
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart,
+                       GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -595,7 +596,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd,
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart,
+                       GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -700,7 +702,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[key]['is_coupling'] and key not in excluded_elem:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-
         energy_types = inputs_dict[f"{self.name}.{self.energy_name}.energy_list"]
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -717,7 +718,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         coupled_outputs.append(f"{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}")
-
+        coupled_outputs.remove(f"{self.name}.energymix_coarse.{GlossaryEnergy.EnergyCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -739,4 +740,4 @@ if '__main__' == __name__:
     cls = CoarseJacobianTestCase()
     cls.setUp()
     # self.launch_data_pickle_generation()
-    cls.test_05_coarse_carbon_storage_techno_discipline_jacobian()
+    cls.test_08_coarse_energymix_discipline_jacobian()

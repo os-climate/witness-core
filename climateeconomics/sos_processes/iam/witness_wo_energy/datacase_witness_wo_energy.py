@@ -20,7 +20,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from numpy import arange, asarray
-from pandas import DataFrame
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
@@ -97,12 +96,12 @@ class DataStudy():
             {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
         witness_input[f"{self.study_name}.{GlossaryCore.WorkingAgePopulationDfValue}"] = working_age_population_df
 
-        energy_investment_wo_tax = DataFrame(
+        energy_investment_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.EnergyInvestmentsWoTaxValue: asarray([1.65] * nb_per)},
             index=years)
 
-        share_non_energy_investment = DataFrame(
+        share_non_energy_investment = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 1.65] * nb_per)},
             index=years)
@@ -112,23 +111,23 @@ class DataStudy():
 
         data = arange(1.0, nb_per + 1.0, 1)
 
-        df_eco = DataFrame({GlossaryCore.Years: years,
-                            GlossaryCore.GrossOutput: data,
-                            GlossaryCore.PerCapitaConsumption: data,
-                            GlossaryCore.OutputNetOfDamage: data},
-                           index=arange(self.year_start, self.year_end + 1, self.time_step))
+        df_eco = pd.DataFrame({GlossaryCore.Years: years,
+                               GlossaryCore.GrossOutput: data,
+                               GlossaryCore.PerCapitaConsumption: data,
+                               GlossaryCore.OutputNetOfDamage: data},
+                              index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = df_eco
 
         nrj_invest = arange(1000, nb_per + 1000, 1)
 
-        df_energy_investment = DataFrame({GlossaryCore.Years: years,
-                                          GlossaryCore.EnergyInvestmentsValue: nrj_invest},
-                                         index=arange(self.year_start, self.year_end + 1, self.time_step))
-        df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
-                                                            'energy_investment_before_year_start': [1924, 1927, 1935]},
-                                                           index=[2017, 2018, 2019])
-
+        df_energy_investment = pd.DataFrame({GlossaryCore.Years: years,
+                                             GlossaryCore.EnergyInvestmentsValue: nrj_invest},
+                                            index=arange(self.year_start, self.year_end + 1, self.time_step))
+        df_energy_investment_before_year_start = pd.DataFrame({'past_years': [2017, 2018, 2019],
+                                                               'energy_investment_before_year_start': [1924, 1927,
+                                                                                                       1935]},
+                                                              index=[2017, 2018, 2019])
 
         CO2_emitted_land = pd.DataFrame()
         # GtCO2
@@ -184,12 +183,12 @@ class DataStudy():
 
         # WITNESS
         # setup objectives
-        energy_investment_wo_tax = DataFrame(
+        energy_investment_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.EnergyInvestmentsWoTaxValue: asarray([10.] * nb_per)},
             index=years)
 
-        share_non_energy_investment = DataFrame(
+        share_non_energy_investment = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 1.65] * nb_per)},
             index=years)
@@ -201,11 +200,11 @@ class DataStudy():
         witness_input[f'{self.study_name}.beta'] = 1.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
-        
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4,
+                                                                                               len(years)),
                                                    GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
 
@@ -242,22 +241,19 @@ class DataStudy():
             'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_WITNESS]
         }
 
-        func_df = DataFrame(data)
+        func_df = pd.DataFrame(data)
 
         return func_df
 
     def setup_constraints(self):
-        func_df = DataFrame(columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
-
-        data = [
-            {
-                'variable': 'rockstrom_limit_constraint',
-                'parent': 'CO2 ppm',
-                'ftype': INEQ_CONSTRAINT,
-                'weight': 0.0,
-                AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
+        data = [{
+            'variable': 'rockstrom_limit_constraint',
+            'parent': 'CO2 ppm',
+            'ftype': INEQ_CONSTRAINT,
+            'weight': 0.0,
+            AGGR_TYPE: AGGR_TYPE_SMAX,
+            'namespace': GlossaryCore.NS_FUNCTIONS,
+        },
             {
                 'variable': 'minimum_ppm_constraint',
                 'parent': 'CO2 ppm',
@@ -295,12 +291,13 @@ class DataStudy():
                 'parent': 'agriculture_constraint',
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
+                'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
                 'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
+            }
         ]
 
         # Append the data to the DataFrame
-        func_df = func_df.append(data, ignore_index=True)
+        func_df = pd.DataFrame(data)
 
         return func_df
