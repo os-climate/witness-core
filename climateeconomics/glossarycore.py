@@ -243,7 +243,7 @@ class GlossaryCore:
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
         "unit": "%",
-        "description": "Percentage of the gdp for each sub-sector",
+        "description": "Percentage of the GDP for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
@@ -261,7 +261,7 @@ class GlossaryCore:
         "var_name": SectionNonEnergyEmissionGdpDfValue,
         "type": "dataframe",
         "unit": "tCO2eq/Million $GDP",
-        "description": "Non energy CO2 emission per $GDP",
+        "description": "Non energy CO2 emission per $GDP per section",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
@@ -599,7 +599,7 @@ class GlossaryCore:
     SectionGdpDf = {
         "var_name": SectionGdpDfValue,
         "type": "dataframe",
-        "description": "",
+        "description": "GDP values of sub-sectors in a sector",
         "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -640,7 +640,7 @@ class GlossaryCore:
     SectionEmissionDf = {
         "var_name": SectionEmissionDfValue,
         "type": "dataframe",
-        "description": "",
+        "description": "Total emission per section",
         "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -650,7 +650,7 @@ class GlossaryCore:
     SectionEnergyEmissionDf = {
         "var_name": SectionEnergyEmissionDfValue,
         "type": "dataframe",
-        "description": "",
+        "description": "Energy emission per section",
         "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -660,7 +660,7 @@ class GlossaryCore:
     SectionNonEnergyEmissionDf = {
         "var_name": SectionNonEnergyEmissionDfValue,
         "type": "dataframe",
-        "description": "",
+        "description": "Non-energy emission per section",
         "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -670,7 +670,7 @@ class GlossaryCore:
     SectionEnergyConsumptionDf = {
         "var_name": SectionEnergyConsumptionDfValue,
         "type": "dataframe",
-        "description": "",
+        "description": "Energy consumption per section",
         "unit": "PWh",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -681,7 +681,7 @@ class GlossaryCore:
     SectionGdpDict = {
         "var_name": SectionGdpDictValue,
         "type": "dict",
-        "description": "Gdp values of sub-sectors",
+        "description": "GDP values of sub-sectors in all sectors",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "unit": "T$",
