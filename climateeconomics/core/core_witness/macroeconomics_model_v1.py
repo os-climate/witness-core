@@ -815,6 +815,17 @@ class MacroEconomics:
             self.percentage_gdp_per_group_df, self.df_gdp_per_country
 
 
+    def compute_energy_consumption_per_section(self):
+        """
+        Compute energy consumption per section
+        Use energy_consumption_percentage_per_sector_df to compute energy consumption per sector
+        Use energy_consumption_percentage_{sector}_sections to compute energy consumption per section per sector
+        Use carbon intensity to compute CO2 emissions per section
+        Store the data in a dictionnary : (key is sector, value is the dataframe with the co2 emissions per section for the sector)
+        """
+        pass
+
+
     """-------------------Gradient functions-------------------"""
 
     def _null_derivative(self):

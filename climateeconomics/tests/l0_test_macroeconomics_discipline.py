@@ -122,6 +122,13 @@ class MacroDiscTest(unittest.TestCase):
             GlossaryCore.Population1570: np.linspace(5490, 6061, len(self.years))
         })
 
+        self.share_energy_per_sector_percentage = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.SectorServices: 37. ,
+            GlossaryCore.SectorAgriculture: 2.13,
+            GlossaryCore.SectorIndustry: 29.
+        })
+
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
         sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
@@ -162,6 +169,8 @@ class MacroDiscTest(unittest.TestCase):
                            'invest_co2_tax_in_renewables': True
                            },
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyConsumptionPercentagePerSectorDfName}': self.share_energy_per_sector_percentage,
+
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
