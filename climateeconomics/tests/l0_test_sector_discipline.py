@@ -73,7 +73,7 @@ class ServicesDiscTest(unittest.TestCase):
         })
 
         self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
-                                          GlossaryCore.InvestmentsValue: 25 * 1.02 ** np.arange(len(self.years))})
+                                          GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(len(self.years))})
         
         #damage
         self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
@@ -101,7 +101,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': False,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
-                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 100.92448579,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'decline_rate_tfp'}": 0.098585,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_k'}": 0.1,
