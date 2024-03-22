@@ -72,8 +72,9 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
-    ChartGDPPerGroup = "GDP per group [T$]"
+    ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
+    ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
@@ -113,6 +114,10 @@ class GlossaryCore:
     TotalGDPGroupDFName = "total_gdp_per_group_df"
     PercentageGDPGroupDFName = "percentage_gdp_group_df"
     GDPCountryDFName = "gdp_per_country_df"
+    CountryName = "country_name"
+    GroupName = "group"
+    GDPName = "gdp"
+    MeanPercentageName = "mean_percentage"
 
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
     ConsumptionObjectiveRef = get_ref_variable(
@@ -651,12 +656,23 @@ class GlossaryCore:
         "unit": "-",
     }
     EnergyMeanPriceObjectiveRefValue = get_ref_var_name(EnergyMeanPriceObjectiveValue)
-    EnergyMeanPriceObjectiveRef = get_ref_variable(var_name=EnergyMeanPriceObjectiveRefValue,
-                                                   unit="$",
-                                                   default_value=100.,)
+    EnergyMeanPriceObjectiveRef = get_ref_variable(
+        var_name=EnergyMeanPriceObjectiveRefValue,
+        unit="$",
+        default_value=100.0,
+    )
 
     EnergyPricesValue = "energy_prices"
     ResourcesPriceValue = "resources_price"
+
+    ResourcesPrice = {
+        "type": "dataframe",
+        "unit": "$/t",
+        "visibility": "Shared",
+        "namespace": "ns_resource",
+        "dynamic_dataframe_columns": True,
+    }
+
     EnergyPriceValue = "energy_price"
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
@@ -1359,8 +1375,8 @@ class GlossaryCore:
     EnergyCO2EmissionsValue = "energy_CO2_emissions"
     EnergyCO2Emissions = {
         "var_name": EnergyCO2EmissionsValue,
-        'type': 'dataframe',
-        'unit': 'kg/kWh',
+        "type": "dataframe",
+        "unit": "kg/kWh",
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dynamic_dataframe_columns": True,
@@ -1369,8 +1385,8 @@ class GlossaryCore:
     TotalEnergyEmissions = "Total Energy emissions"
     TotalEnergyCO2eqEmissionsDf = {
         "var_name": TotalEnergyEmissions,
-        'type': 'dataframe',
-        'unit': 'GtCO2Eq',
+        "type": "dataframe",
+        "unit": "GtCO2Eq",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
@@ -1381,18 +1397,18 @@ class GlossaryCore:
 
     TotalGDPGroupDF = {
         "var_name": TotalGDPGroupDFName,
-        'type': 'dataframe',
-        'unit': 'T$',
+        "type": "dataframe",
+        "unit": "T$",
     }
     PercentageGDPGroupDF = {
         "var_name": PercentageGDPGroupDFName,
-        'type': 'dataframe',
-        'unit': '%',
+        "type": "dataframe",
+        "unit": "%",
     }
     GDPCountryDF = {
         "var_name": GDPCountryDFName,
         'type': 'dataframe',
-        'unit': 'T$',
+        'unit': 'G$',
     }
 
     @staticmethod

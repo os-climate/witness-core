@@ -239,7 +239,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         resource_output = [
                             f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_STOCK}',
                             f'{self.name}.{self.model_name}.{ResourceMixModel.All_RESOURCE_USE}',
-                            f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_PRICE}',
+                            f'{self.name}.{self.model_name}.{GlossaryCore.ResourcesPriceValue}',
                             f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION}',
                             f'{self.name}.{self.model_name}.{ResourceMixModel.RATIO_USABLE_DEMAND}',
                             f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_DEMAND}',
