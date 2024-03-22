@@ -819,9 +819,9 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
-    EnergyCarbonIntensityDfValue = "Carbon intensity of Energy Mix"
+    EnergyCarbonIntensityDfValue = "energy_carbon_intensity_df"
     EnergyCarbonIntensityDf = {
-        "var_name": EnergyProductionValue,
+        "var_name": EnergyCarbonIntensityDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "kgCO2Eq/kWh",

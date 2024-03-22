@@ -86,7 +86,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         GlossaryCore.SectionEmissionDfValue: GlossaryCore.SectionEmissionDf,
         GlossaryCore.SectionEnergyEmissionDfValue: GlossaryCore.SectionEnergyEmissionDf,
         GlossaryCore.SectionNonEnergyEmissionDfValue: GlossaryCore.SectionNonEnergyEmissionDf,
-        GlossaryCore.SectionEnergyConsumptionDfValue : GlossaryCore.SectionEnergyConsumptionDf,
+        GlossaryCore.SectionEnergyConsumptionDfValue: GlossaryCore.SectionEnergyConsumptionDf,
         GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf,
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
