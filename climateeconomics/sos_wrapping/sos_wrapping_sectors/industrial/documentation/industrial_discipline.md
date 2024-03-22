@@ -5,18 +5,27 @@ The industry sector represents one of the identified main economic sectors. In t
 ### Main Inputs 
 - Damage data ($damage\_df$): Dataframe with damage fraction to be applied to output 
 -  Sector workforce ($workforce_df$): Dataframe with workforce in the sector per year in million of people
-- Sector energy quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh for the sector
+- Sector energy production ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh for the sector
 - Sector investment ($sector\_investment$): Dataframe with investment in sector per year in 1e12\$
 - Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
 - Section list ($section\_list$): List of sub-sectors for the sector
-- Percentage of gdp per section ($section\_gdp\_percentage\_df$): Dataframe with the gdp percentage of all sub_sectors (for all sectors)
+- Percentage of GDP per section ($section\_gdp\_percentage\_df$): Dataframe with the GDP percentage of sub-sectors 
+- Sector carbon intensity ($energy_carbon_intensity_df$): Dataframe with the carbon intensity of the sector per year in kgCO2eq/kWh
+- Percentage of energy consumption per section ($section\_energy\_consumption\_percentage\_df$): Dataframe with the energy consumption percentage of sub-sectors
+- Section non-energy emission wrt. GDP ($section\_non\_energy\_emission\_gdp\_df$): Dataframe with the non-energy emissions wrt. GDP of sub-sectors 
 
 ### Outputs 
 - Capital detailed df ($capital\_detail\_df$): Dataframe with all variables relative to capital calculation (energy efficiency, E max, usable capital and capital) per year
 - Capital ($capital\_df$): Dataframe with coupling model outputs from previous dataframe. It contains capital and usable capital in 1e12 \$ per year
 - Production dataframe ($production\_df$): Dataframe with sector output per year in 1e12\$
 - Productivity df ($productivity\_df$): Dataframe with productivity and productivity growth rate (in case of no climate damage) per year. 
-- Section gdp ($section\_gdp\_df$): Dataframe with the gdp per sub-sector for the sector    
+- Section GDP ($section\_gdp\_df$): Dataframe with the GDP per year per sub-sector 
+- Section energy consumption ($section\_energy\_consumption\_df$): Dataframe with the energy consumption per year per sub-sector 
+- Section energy emission ($section\_energy\_emission\_df$): Dataframe with the energy emission per year per sub-sector
+- Section non-energy emission ($section\_non\_energy\_emission\_df$): Dataframe with the non-energy emission per year per sub-sector
+- Section total emission ($section\_emission\_df$): Dataframe with the total emission per year per sub-sector
+- Sector total emissions ($emission\_df$): Dataframe with the total emissions per year for the sector
+- Sector total detailed emissions ($emission\_detailed\_df$): Dataframe with the total detailed emissions (energy/non-energy/total emissions) per year for the sector
 
 ### Time Step 
 The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
@@ -45,7 +54,21 @@ $$Q_t = (1- \Omega_t )Y_t$$
 with $\Omega$ is the damage fraction of output explained in the documentation of the damage model.  
 
 ### Net output per sub-sector
-The list of sub-sectors ($section\_list$) and the gdp percentage of each sub-sector ($section\_gdp\_percentage\_df$) are used to compute the net output of each sub-sector ($section\_gdp\_df$) out of the net output of the sector.
+The section GDP ($section\_gdp\_df$) is the product of the net output of the sector with the percentage of GDP per section ($section\_gdp\_percentage\_df$).
+
+### Emissions per sub-sector
+* The section energy consumption is the product of sector energy production with the percentage of energy consumption per section:
+$$ $section\_energy\_consumption\_df$ = $energy\_production$ * $section\_energy\_consumption\_percentage\_df$ $$
+* The section energy emission is the product of section energy consumption with sector carbon intensity:
+$$ $section\_energy\_emission\_df$ = $section\_energy\_consumption\_df$ * $energy_carbon_intensity_df$ $$
+* The section non-energy emission is the product of section non-energy emission wrt. GDP with section GDP:
+$$ $section\_non\_energy\_emission\_df$ = $section\_non\_energy\_emission\_gdp\_df$ * $section\_gdp\_df$ $$
+* The section total emission is the sum of section energy emission with section non-energy emission:
+$$ $section\_emission\_df$ = $section\_energy\_emission\_df$ + $section\_non\_energy\_emission\_df$ $$
+
+### Emissions
+The emissions of the sector are, for each given emission (energy/non-energy/total) the sum of the given emission for all sub-sectors.
+The sector total emissions ($emission\_df$) only has the total emission, while the sector total detailed emissions ($emission\_detailed\_df$) has all emissions (energy/non-energy/total).
 
 ### Productivity
 The Total factor productivity (TFP) measures the efficiency of the inputs in the production process. The initial values of the productivity and productivity growth rate are obtained during the fitting of the production function. For the TFP we have 2 options: 
