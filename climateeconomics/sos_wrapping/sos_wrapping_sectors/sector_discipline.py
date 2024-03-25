@@ -116,7 +116,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
                 # section non-energy emissions per dollar of pib
                 section_non_energy_emission_gdp_df = pd.read_csv(
-                    join(global_data_dir, f'non_energy_emission_gdp_{self.sector_name}_sections.csv'))
+                    join(global_data_dir, f'non_energy_emission_gdp_{self.sector_name.lower()}_sections.csv'))
                 section_non_energy_emission_gdp_dict = {
                     **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
                     **dict(zip(section_non_energy_emission_gdp_df.columns[1:],
