@@ -201,6 +201,25 @@ class Study(StudyManager):
                                             GlossaryCore.SectorIndustry: indusshare,
                                             GlossaryCore.SectorServices: serviceshare})
 
+            CO2_emitted_land = pd.DataFrame()
+            # GtCO2
+            emission_forest = np.linspace(0.04, 0.04, len(years))
+            cum_emission = np.cumsum(emission_forest)
+            CO2_emitted_land[GlossaryCore.Years] = years
+            CO2_emitted_land['Crop'] = np.zeros(len(years))
+            CO2_emitted_land['Forest'] = cum_emission
+            GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
+                                                       GlossaryCore.TotalCO2Emissions: np.linspace(37., 10.,
+                                                                                                   len(years)),
+                                                       GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4,
+                                                                                                   len(years)),
+                                                       GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01,
+                                                                                                   len(years))})
+            CO2_indus_emissions_df = pd.DataFrame({
+                GlossaryCore.Years: years,
+                "indus_emissions": 0.
+            })
+
             cons_input.update({
                 f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}": workforce_share,
                 f"{self.study_name}.{GlossaryCore.TemperatureDfValue}": temperature_df,
@@ -216,6 +235,11 @@ class Study(StudyManager):
                 f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
                 f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
                 f"{self.study_name}.{GlossaryCore.EnergyProductionValue}": energy_production,
+                f"{self.study_name}.CO2_land_emissions": CO2_emitted_land,
+                f"{self.study_name}.CH4_land_emissions": CO2_emitted_land,
+                f"{self.study_name}.N2O_land_emissions": CO2_emitted_land,
+                f"{self.study_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
+                f"{self.study_name}.GHG_total_energy_emissions": GHG_total_energy_emissions,
             })
 
 
