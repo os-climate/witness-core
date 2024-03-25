@@ -105,20 +105,10 @@ class Study(StudyManager):
                                                  GlossaryCore.EnergyInvestmentsWoTaxValue: 1000.
                                                  })
 
-        global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
-        weighted_average_percentage_per_sector_df = pd.read_csv(
-            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
-        subsector_share_dict = {
-            **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
-            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
-                       weighted_average_percentage_per_sector_df.values[0, 1:]))
-        }
-        gdp_section_df = pd.DataFrame(subsector_share_dict)
-
-        # energy_emission_df = pd.DataFrame({
-        #     GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
-        #     GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
-        # })
+        carbon_intensity_of_energy_mix = pd.DataFrame({
+            GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
+            GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
+        })
 
 
         cons_input = {
@@ -128,8 +118,7 @@ class Study(StudyManager):
             f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}": damage_fraction_df,
             f"{self.study_name}.{GlossaryCore.EconomicsDfValue}": economics_df,
             f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
-            f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}': gdp_section_df,
-            # f'{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': energy_emission_df,
+             f'{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_of_energy_mix,
         }
 
         if self.main_study:
