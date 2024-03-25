@@ -765,7 +765,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             energy_emissions = emission_detailed_df[GlossaryCore.EnergyEmissions].values
             non_energy_emissions = emission_detailed_df[GlossaryCore.NonEnergyEmissions].values
 
-            years = list(emission_detailed_df.index)
+            years = list(production_df.index)
 
             chart_name = f'Breakdown of emissions'
 
