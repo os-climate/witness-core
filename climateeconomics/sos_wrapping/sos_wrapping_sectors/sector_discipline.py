@@ -96,7 +96,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
                 # section gdp percentage
                 section_gdp_percentage_df_default = pd.read_csv(
-                    join(global_data_dir, f'weighted_average_percentage_{self.sector_name}_sections.csv'))
+                    join(global_data_dir, f'weighted_average_percentage_{self.sector_name.lower()}_sections.csv'))
                 section_gdp_percentage_dict = {
                     **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
                     **dict(zip(section_gdp_percentage_df_default.columns[1:],
