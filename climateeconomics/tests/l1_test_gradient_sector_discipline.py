@@ -27,7 +27,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
@@ -40,7 +40,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         # -------------------------
         # input
         data_dir = join(dirname(__file__), 'data')
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
         total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
@@ -50,7 +49,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.energy_supply_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
+            GlossaryCore.TotalProductionValue: np.linspace(23, 76, len(self.years))
         })
 
         self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
@@ -127,7 +126,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_carbon_intensity,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
@@ -158,7 +156,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}',
                                     ],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
@@ -214,7 +211,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_carbon_intensity,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'depreciation_capital'}": 0.058,
                        }
@@ -286,7 +282,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_carbon_intensity,
                        f"{self.name}.{GlossaryCore.SectorIndustry}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {

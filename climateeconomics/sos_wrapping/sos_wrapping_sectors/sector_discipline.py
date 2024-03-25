@@ -34,10 +34,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$' # to overwrite if necessary
     NS_SECTORS = GlossaryCore.NS_SECTORS
     DESC_IN = {
-        GlossaryCore.SectionGdpPercentageDfValue: GlossaryCore.SectionGdpPercentageDf,
-        GlossaryCore.SectionNonEnergyEmissionGdpDfValue: GlossaryCore.SectionNonEnergyEmissionGdpDf,
         GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf,
-        GlossaryCore.SectionEnergyConsumptionPercentageDfValue: GlossaryCore.SectionEnergyConsumptionPercentageDf,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -91,26 +88,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                              'namespace': GlossaryCore.NS_FUNCTIONS}
     }
 
-    def setup_sos_disciplines(self):
-        """setup sos disciplines"""
-        dynamic_outputs = {}
-        dynamic_inputs = {}
-
-        if GlossaryCore.WorkforceDfValue in self.get_sosdisc_inputs():
-            workforce_df: pd.DataFrame = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
-            if workforce_df is not None and self.sector_name not in workforce_df.columns:
-                raise Exception(f"Data integrity : workforce_df does should have a column for sector {self.sector_name}")
-        if 'prod_function_fitting' in self.get_sosdisc_inputs():
-            prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
-            if prod_function_fitting:
-                dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 5}
-                dynamic_inputs['hist_sector_investment'] = {'type': 'dataframe', 'unit': '-',
-                                                            'dataframe_descriptor': {},
-                                                            'dynamic_dataframe_columns': True}
-                dynamic_outputs['longterm_energy_efficiency'] = {'type': 'dataframe', 'unit': '-'}
-                dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-',
-                                                                  'dataframe_descriptor': {},
-                                                                  'dynamic_dataframe_columns': True}
+    def set_default_values(self):
         if GlossaryCore.YearStart in self.get_data_in() and GlossaryCore.YearEnd in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd])
             if year_start is not None and year_end is not None:
@@ -145,12 +123,44 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                section_non_energy_emission_gdp_df.values[0, 1:]))
                 }
                 section_non_energy_emission_gdp_df = pd.DataFrame(section_non_energy_emission_gdp_dict)
-
                 self.set_dynamic_default_values({
-                    GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df_default,
-                    GlossaryCore.SectionEnergyConsumptionPercentageDfValue: section_energy_consumption_percentage_df_default,
-                    GlossaryCore.SectionNonEnergyEmissionGdpDfValue: section_non_energy_emission_gdp_df,
+                    f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}": section_gdp_percentage_df_default,
+                    f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}": section_energy_consumption_percentage_df_default,
+                    f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": section_non_energy_emission_gdp_df,
                 })
+
+
+    def setup_sos_disciplines(self):
+        """setup sos disciplines"""
+        dynamic_outputs = {}
+        dynamic_inputs = {}
+
+
+        if GlossaryCore.WorkforceDfValue in self.get_sosdisc_inputs():
+            workforce_df: pd.DataFrame = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
+            if workforce_df is not None and self.sector_name not in workforce_df.columns:
+                raise Exception(f"Data integrity : workforce_df does should have a column for sector {self.sector_name}")
+        if 'prod_function_fitting' in self.get_sosdisc_inputs():
+            prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
+            if prod_function_fitting:
+                dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 5}
+                dynamic_inputs['hist_sector_investment'] = {'type': 'dataframe', 'unit': '-',
+                                                            'dataframe_descriptor': {},
+                                                            'dynamic_dataframe_columns': True}
+                dynamic_outputs['longterm_energy_efficiency'] = {'type': 'dataframe', 'unit': '-'}
+                dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-',
+                                                                  'dataframe_descriptor': {},
+                                                                  'dynamic_dataframe_columns': True}
+
+        section_gdp_percentage_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpPercentageDf)
+        section_gdp_percentage_var.update({'namespace': GlossaryCore.NS_SECTORS})
+        dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}"] = section_gdp_percentage_var
+        section_non_energy_emissions_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionGdpDf)
+        section_non_energy_emissions_gdp_var.update({'namespace': GlossaryCore.NS_SECTORS})
+        dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emissions_gdp_var
+        section_energy_consumption_percentage_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionPercentageDf)
+        section_energy_consumption_percentage_var.update({'namespace': GlossaryCore.NS_SECTORS})
+        dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = section_energy_consumption_percentage_var
 
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
@@ -177,41 +187,24 @@ class SectorDiscipline(ClimateEcoDiscipline):
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
 
+        self.set_default_values()
+
     def init_execution(self):
-        param = self.get_sosdisc_inputs(in_dict=True)
+        param = self.get_sosdisc_inputs()
         self.model = SectorModel()
         self.model.configure_parameters(param, self.sector_name)
 
     def run(self):
         # Get inputs
-        param = self.get_sosdisc_inputs(in_dict=True)
-        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
+        inputs = self.get_sosdisc_inputs()
+        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(param, dict_ranges)
+            self.check_ranges(inputs, dict_ranges)
+        prod_function_fitting = inputs['prod_function_fitting']
         # configure param
-        self.model.configure_parameters(param, self.sector_name)
+        self.model.configure_parameters(inputs, self.sector_name)
         # coupling df
-        damage_fraction_df = param[GlossaryCore.DamageFractionDfValue]
-        energy_production = param[GlossaryCore.EnergyProductionValue]
-        sector_investment = param[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"]
-        workforce_df = param[GlossaryCore.WorkforceDfValue]
-        prod_function_fitting = param['prod_function_fitting']
-        section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
-        section_non_energy_emission_gdp_df = param[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]
-        energy_emission_df = param[GlossaryCore.EnergyCarbonIntensityDfValue]
-        section_energy_consumption_percentage_df = param[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
-
-        model_inputs = {
-            GlossaryCore.SectionNonEnergyEmissionGdpDfValue: section_non_energy_emission_gdp_df,
-            GlossaryCore.EnergyCarbonIntensityDfValue: energy_emission_df,
-            GlossaryCore.SectionEnergyConsumptionPercentageDfValue: section_energy_consumption_percentage_df,
-            GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df,
-            GlossaryCore.DamageFractionDfValue: damage_fraction_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
-            GlossaryCore.EnergyProductionValue: energy_production,
-            GlossaryCore.InvestmentDfValue: sector_investment,
-            GlossaryCore.WorkforceDfValue: workforce_df}
-        # Model execution
-        self.model.compute(model_inputs)
+        self.model.compute(inputs)
 
         # Store output data
         dict_values = {
@@ -235,7 +228,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             dict_values['longterm_energy_efficiency'] = self.model.lt_energy_eff
             dict_values['range_energy_eff_constraint'] = self.model.range_energy_eff_cstrt
 
-        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
+        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
             self.check_ranges(dict_values, dict_ranges)
 
@@ -405,11 +398,62 @@ class SectorDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_estimated_damages_d_energy_production)
 
+        d_energy_emissions_sections_d_energy_prod_list = []
+        d_energy_emissions_sections_d_carbon_intensity_list = []
+        d_non_energy_emissions_sections_d_energy_prod_list = []
+        d_non_energy_emissions_sections_d_damage_fraction_output = []
+        d_non_energy_emissions_sections_d_workforce = []
+        d_non_energy_emissions_sections_d_invests = []
+
         for section in GlossaryCore.SectionDictSectors[self.sector_name]:
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.SectionEnergyConsumptionDfValue, section),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-                self.model.d_section_energy_consumption_d_energy_production(section_name=section))
+            d_section_energy_consumption_d_energy_prod = self.model.d_section_energy_consumption_d_energy_production(section_name=section)
+            d_section_energy_emissions_d_energy_prod = self.model.d_section_energy_emissions_d_energy_production(d_section_energy_consumption_d_energy_prod)
+            d_energy_emissions_sections_d_energy_prod_list.append(d_section_energy_emissions_d_energy_prod)
+            d_section_energy_emissions_d_carbon_intensity = self.model.d_section_energy_emissions_d_carbon_intensity(section_name=section)
+            d_energy_emissions_sections_d_carbon_intensity_list.append(d_section_energy_emissions_d_carbon_intensity)
+            d_section_non_energy_emissions_d_energy_production = self.model.d_section_non_energy_emissions_d_user_input(d_net_output_d_energy_production, section_name=section)
+            d_non_energy_emissions_sections_d_energy_prod_list.append(d_section_non_energy_emissions_d_energy_production)
+            d_section_non_energy_emissions_d_damage_fraction_output = self.model.d_section_non_energy_emissions_d_user_input(d_net_output_d_damage_frac_output, section_name=section)
+            d_non_energy_emissions_sections_d_damage_fraction_output.append(d_section_non_energy_emissions_d_damage_fraction_output)
+            d_section_non_energy_emissions_d_workforce = self.model.d_section_non_energy_emissions_d_user_input(d_net_output_d_workforce, section_name=section)
+            d_non_energy_emissions_sections_d_workforce.append(d_section_non_energy_emissions_d_workforce)
+            d_section_non_energy_emissions_d_invests = self.model.d_section_non_energy_emissions_d_user_input(d_net_output_d_invests, section_name=section)
+            d_non_energy_emissions_sections_d_invests.append(d_section_non_energy_emissions_d_invests)
+
+        d_sector_energy_emissions_d_energy_prod = np.sum(d_energy_emissions_sections_d_energy_prod_list, axis=0)
+        d_sector_non_energy_emissions_d_energy_prod = np.sum(d_non_energy_emissions_sections_d_energy_prod_list, axis=0)
+        d_sector_emissions_d_energy_prod = d_sector_energy_emissions_d_energy_prod + d_sector_non_energy_emissions_d_energy_prod
+        d_sector_energy_emissions_d_carbon_intensity = np.sum(d_energy_emissions_sections_d_carbon_intensity_list, axis=0)
+        d_sector_non_energy_emissions_d_damage_fraction_output = np.sum(d_non_energy_emissions_sections_d_damage_fraction_output, axis=0)
+        d_sector_non_energy_emissions_d_workforce = np.sum(d_non_energy_emissions_sections_d_workforce, axis=0)
+        d_sector_non_energy_emissions_d_invests = np.sum(d_non_energy_emissions_sections_d_invests, axis=0)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.EmissionDfValue}", GlossaryCore.TotalEmissions),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_sector_emissions_d_energy_prod)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.EmissionDfValue}", GlossaryCore.TotalEmissions),
+            (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
+            d_sector_energy_emissions_d_carbon_intensity)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.EmissionDfValue}", GlossaryCore.TotalEmissions),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            d_sector_non_energy_emissions_d_damage_fraction_output)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.EmissionDfValue}", GlossaryCore.TotalEmissions),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            d_sector_non_energy_emissions_d_workforce)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.EmissionDfValue}", GlossaryCore.TotalEmissions),
+            (invest_df, GlossaryCore.InvestmentsValue),
+            d_sector_non_energy_emissions_d_invests)
+
+
 
     def get_chart_filter_list(self):
 
@@ -419,7 +463,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.InvestmentsValue,
                       'output growth',
                       GlossaryCore.Damages,
-                      'energy supply',
                       GlossaryCore.UsableCapital,
                       GlossaryCore.Capital,
                       GlossaryCore.EmploymentRate,

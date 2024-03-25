@@ -87,7 +87,6 @@ class ServicesDiscTest(unittest.TestCase):
 
 
     def test_execute(self):
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
         section_list = GlossaryCore.SectionsIndustry
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
@@ -128,9 +127,9 @@ class ServicesDiscTest(unittest.TestCase):
             f'{self.name}.{SectorDiscipline.sector_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
-        #     pass
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
 
     def test_execute_forfitting(self):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
