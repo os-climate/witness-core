@@ -82,7 +82,7 @@ class ServicesDiscTest(unittest.TestCase):
 
         self.energy_emission_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
+            GlossaryCore.EnergyCarbonIntensityDfValue: 1.0
         })
 
 
@@ -127,9 +127,9 @@ class ServicesDiscTest(unittest.TestCase):
             f'{self.name}.{SectorDiscipline.sector_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        for graph in graph_list:
-            #graph.to_plotly().show()
-            pass
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
+        #     pass
 
     def test_execute_forfitting(self):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
