@@ -10,7 +10,7 @@ The services sector represents one of the identified main economic sectors. In t
 - Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
 - Section list ($section\_list$): List of sub-sectors for the sector
 - Percentage of GDP per section ($section\_gdp\_percentage\_df$): Dataframe with the GDP percentage of sub-sectors 
-- Sector carbon intensity ($energy_carbon_intensity_df$): Dataframe with the carbon intensity of the sector per year in kgCO2eq/kWh
+- Sector carbon intensity ($energy\_carbon\_intensity\_df$): Dataframe with the carbon intensity of the sector per year in kgCO2eq/kWh
 - Percentage of energy consumption per section ($section\_energy\_consumption\_percentage\_df$): Dataframe with the energy consumption percentage of sub-sectors
 - Section non-energy emission wrt. GDP ($section\_non\_energy\_emission\_gdp\_df$): Dataframe with the non-energy emissions wrt. GDP of sub-sectors 
 
@@ -58,13 +58,13 @@ The section GDP ($section\_gdp\_df$) is the product of the net output of the sec
 
 ### Emissions per sub-sector
 * The section energy consumption is the product of sector energy production with the percentage of energy consumption per section:
-$$ $section\_energy\_consumption\_df$ = $energy\_production$ * $section\_energy\_consumption\_percentage\_df$ $$
+$section\_energy\_consumption\_df$ = $energy\_production$ * $section\_energy\_consumption\_percentage\_df$ 
 * The section energy emission is the product of section energy consumption with sector carbon intensity:
-$$ $section\_energy\_emission\_df$ = $section\_energy\_consumption\_df$ * $energy_carbon_intensity_df$ $$
+$section\_energy\_emission\_df$ = $section\_energy\_consumption\_df$ * $energy\_carbon\_intensity\_df$ 
 * The section non-energy emission is the product of section non-energy emission wrt. GDP with section GDP:
-$$ $section\_non\_energy\_emission\_df$ = $section\_non\_energy\_emission\_gdp\_df$ * $section\_gdp\_df$ $$
+$section\_non\_energy\_emission\_df$ = $section\_non\_energy\_emission\_gdp\_df$ * $section\_gdp\_df$
 * The section total emission is the sum of section energy emission with section non-energy emission:
-$$ $section\_emission\_df$ = $section\_energy\_emission\_df$ + $section\_non\_energy\_emission\_df$ $$
+$section\_emission\_df$ = $section\_energy\_emission\_df$ + $section\_non\_energy\_emission\_df$ 
 
 ### Emissions
 The emissions of the sector are, for each given emission (energy/non-energy/total) the sum of the given emission for all sub-sectors.
