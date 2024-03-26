@@ -76,6 +76,9 @@ class GlossaryCore:
     SectionEnergyEmissionPart = "Part of the energy emission per section [GtCO2eq]"
     SectionNonEnergyEmissionPart = "Part of the non energy emission per section [GtCO2eq]"
     SectionEnergyConsumptionPart = "Part of the energy consumption per section [PWh]"
+    SectionEnergyEmissionPartMt = "Part of the energy emission per section [MtCO2eq]"
+    SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
+    SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
 
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
@@ -274,6 +277,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Percentage of the energy consumption for each sector",
         "dynamic_dataframe_columns": True,
+        "default": DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.value
     }
 
     SectionNonEnergyEmissionGdpDf = {
@@ -641,6 +645,8 @@ class GlossaryCore:
     }
 
     TotalEmissions = "Total emissions [Gt]"
+    TotalEmissionsMt = "Total emissions [Mt]"
+
     EmissionDfValue = "emission_df"
     EmissionDf = {
         "var_name": EmissionDfValue,
