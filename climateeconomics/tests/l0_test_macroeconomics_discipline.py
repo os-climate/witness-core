@@ -180,19 +180,11 @@ class MacroDiscTest(unittest.TestCase):
                            'invest_co2_tax_in_renewables': True
                            },
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}': self.share_energy_per_sector_percentage,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Industry': energy_consumption_percentage_industry_sections,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Agriculture': energy_consumption_percentage_agriculture_sections,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Services': energy_consumption_percentage_services_sections,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_Industry': non_energy_emissions_industry,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_Agriculture': non_energy_emissions_agriculture,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_Services': non_energy_emissions_services,
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_energy
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
-
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
@@ -200,4 +192,6 @@ class MacroDiscTest(unittest.TestCase):
         for i,graph in enumerate(graph_list):
             #graph.to_plotly().show()
             pass
+        # add fake assert
+        assert 1 == 2
 
