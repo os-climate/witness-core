@@ -862,8 +862,8 @@ class MacroEconomics:
             # Create a temporary DataFrame to compute energy consumption per section
             merged_df_energy_prod = pd.merge(self.energy_production, self.sector_energy_consumption_percentage_df[[GlossaryCore.Years, sector_name]],
                                              on=GlossaryCore.Years, how='inner')
-            # 1e-3 to convert PWh to TWh, division by 100 for percentages
-            merged_df_energy_prod['energy_consumption_sector'] = merged_df_energy_prod[GlossaryCore.TotalProductionValue] * merged_df_energy_prod[sector_name] * 1e-3 / 100.
+            # 1e3 to convert PWh to TWh, division by 100 for percentages
+            merged_df_energy_prod['energy_consumption_sector'] = merged_df_energy_prod[GlossaryCore.TotalProductionValue] * merged_df_energy_prod[sector_name] * 1e3 / 100.
             merged_df_energy_prod = pd.merge(merged_df_energy_prod, percentage_sections_of_sector, on=GlossaryCore.Years, how='inner')
 
             # Extracting list of sections from DataFrame
@@ -962,19 +962,42 @@ class MacroEconomics:
     def compute_total_emissions(self):
         """
         Compute total emissions
+
+        This method computes total emissions by summing non-energy and energy emissions for each sector and aggregating
+        them into a detailed dictionary and a total emissions dataframe.
+
+        Returns:
+            None
         """
+        # Initialize dictionary to store total emissions
         self.dict_total_emissions_detailed = {}
+
+        # Create total emissions dataframe
         total_emissions_dataframe = pd.DataFrame(columns=[GlossaryCore.Years, GlossaryCore.TotalEmissionsName])
         years = self.dict_non_energy_emissions_detailed["total"][GlossaryCore.Years]
         total_emissions_dataframe[GlossaryCore.Years] = years
         total_emissions_dataframe[GlossaryCore.TotalEmissionsName] = self.dict_non_energy_emissions_detailed["total"][GlossaryCore.TotalNonEnergyEmissionsAllSectorsName] + self.dict_sector_energy_emissions_detailed["total"][GlossaryCore.TotalEnergyEmissionsAllSectorsName]
         self.dict_total_emissions_detailed["total"] = total_emissions_dataframe
         sector_list = [sector_name for sector_name in list(self.dict_non_energy_emissions_detailed.keys()) if sector_name != "total"]
+        # Iterate over sectors to compute total emissions
         for sector_name in sector_list:
+            self.dict_total_emissions_detailed[sector_name] = {}
+
+            # Compute total emissions for the sector
             dataframe_total_sector = pd.DataFrame(columns=[GlossaryCore.Years, GlossaryCore.TotalEmissionsName])
             dataframe_total_sector[GlossaryCore.Years] = years
             dataframe_total_sector[GlossaryCore.TotalEmissionsName] = self.dict_non_energy_emissions_detailed[sector_name]["total"][GlossaryCore.TotalNonEnergyEmissionsSectorName] + self.dict_sector_energy_emissions_detailed[sector_name]["total"][GlossaryCore.TotalEnergyEmissionsSectorName]
-            self.dict_total_emissions_detailed[sector_name] = dataframe_total_sector
+            self.dict_total_emissions_detailed[sector_name]["total"] = dataframe_total_sector
+
+            # Compute total emissions for each section within the sector
+            dataframe_total_sector_sections = pd.DataFrame()
+            dataframe_total_sector_sections[GlossaryCore.Years] = years
+            non_energy_emissions_df = self.dict_non_energy_emissions_detailed[sector_name]["detailed"].drop(columns=[GlossaryCore.Years])
+            energy_emissions_df = self.dict_sector_energy_emissions_detailed[sector_name]["detailed"].drop(columns=[GlossaryCore.Years])
+            columns_to_sum = energy_emissions_df.columns
+            dataframe_total_sector_sections[columns_to_sum] = non_energy_emissions_df[columns_to_sum] + energy_emissions_df[columns_to_sum]
+            self.dict_total_emissions_detailed[sector_name]["detailed"] = dataframe_total_sector_sections
+
 
     """-------------------Gradient functions-------------------"""
 
