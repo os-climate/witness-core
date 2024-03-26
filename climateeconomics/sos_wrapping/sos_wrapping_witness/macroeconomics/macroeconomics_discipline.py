@@ -126,6 +126,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.UsableCapitalObjectiveRefName: GlossaryCore.UsableCapitalObjectiveRef,
         GlossaryCore.ConsumptionObjectiveRefValue: GlossaryCore.ConsumptionObjectiveRef,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
+        GlossaryCore.SectorEnergyConsumptionPercentageDfName: GlossaryCore.SectorEnergyConsumptionPercentageDf,
+        GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf
     }
 
     DESC_OUT = {
@@ -158,7 +160,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.UsableCapitalObjectiveName: GlossaryCore.UsableCapitalObjective,
         GlossaryCore.TotalGDPGroupDFName: GlossaryCore.TotalGDPGroupDF,
         GlossaryCore.PercentageGDPGroupDFName: GlossaryCore.PercentageGDPGroupDF,
-        GlossaryCore.GDPCountryDFName: GlossaryCore.GDPCountryDF
+        GlossaryCore.GDPCountryDFName: GlossaryCore.GDPCountryDF,
+        GlossaryCore.SectionNonEnergyEmissionsDictName: GlossaryCore.SectionNonEnergyEmissionsDict,
+        GlossaryCore.SectionEnergyConsumptionDictName: GlossaryCore.SectionEnergyConsumptionDict,
+        GlossaryCore.SectionEnergyEmissionsDictName: GlossaryCore.SectionEnergyEmissionsDict,
+        GlossaryCore.SectorTotalEmissionsDictName: GlossaryCore.SectorTotalEmissionsDict
     }
 
     def setup_sos_disciplines(self):
@@ -194,6 +200,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
                 for sector in sectorlist:
                     sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
+                    dynamic_inputs.update({f'{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_{sector}': copy.deepcopy(GlossaryCore.SectorEnergyConsumptionPercentageDf)})
+                    dynamic_inputs.update({f'{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_{sector}': copy.deepcopy(GlossaryCore.SectionNonEnergyEmissionGdpDf)})
+
 
                 # make sure the namespaces references are good in case shared namespaces were reassociated
                 sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
@@ -327,7 +336,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.UsableCapitalObjectiveName: self.macro_model.usable_capital_objective,
                        GlossaryCore.TotalGDPGroupDFName: total_gdp_per_group_df,
                        GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df,
-                       GlossaryCore.GDPCountryDFName: gdp_per_country_df
+                       GlossaryCore.GDPCountryDFName: gdp_per_country_df,
+                       GlossaryCore.SectionNonEnergyEmissionsDictName: self.macro_model.dict_non_energy_emissions_detailed,
+                       GlossaryCore.SectionEnergyEmissionsDictName: self.macro_model.dict_sector_energy_emissions_detailed,
+                       GlossaryCore.SectionEnergyConsumptionDictName: self.macro_model.dict_energy_consumption_detailed,
+                       GlossaryCore.SectorTotalEmissionsDictName: self.macro_model.dict_total_emissions_detailed
                        }
         if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
@@ -755,7 +768,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.SectionGdpPart,
                       GlossaryCore.ChartGDPPerGroup,
                       GlossaryCore.ChartPercentagePerGroup,
-                      GlossaryCore.ChartGDPBiggestEconomies
+                      GlossaryCore.ChartGDPBiggestEconomies,
                       ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(

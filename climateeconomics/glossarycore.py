@@ -96,10 +96,15 @@ class GlossaryCore:
     SectionEnergyEmissionDfValue = "section_energy_emission_df"
     SectionNonEnergyEmissionDfValue = "section_non_energy_emission_df"
     SectionEnergyConsumptionDfValue = "section_energy_consumption_df"
+    SectionEnergyEmissionsDictName = "section_energy_emissions_dict"
+    SectionNonEnergyEmissionsDictName = "section_non_energy_emissions_dict"
+    SectionEnergyConsumptionDictName = "section_energy_consumption_dict"
+    SectorTotalEmissionsDictName = "sector_total_emissions_dict"
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     SectionEnergyConsumptionPercentageDfValue = 'section_energy_consumption_percentage_df'
     SectionNonEnergyEmissionGdpDfValue = 'section_non_energy_emission_gdp_df'
+    SectorEnergyConsumptionPercentageDfName = "sector_emission_consumption_percentage_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
     UtilityDfValue = "utility_df"
@@ -129,7 +134,13 @@ class GlossaryCore:
     GroupName = "group"
     GDPName = "gdp"
     MeanPercentageName = "mean_percentage"
-
+    TotalEnergyConsumptionSectorName = "total_energy_consumption_sector"
+    TotalEnergyConsumptionAllSectorsName = "total_energy_consumption_all_sectors"
+    TotalEnergyEmissionsAllSectorsName = "total_energy_emissions_all_sectors"
+    TotalNonEnergyEmissionsAllSectorsName = "total_non_energy_emissions_all_sectors"
+    TotalEnergyEmissionsSectorName = "total_energy_emissions_sector"
+    TotalNonEnergyEmissionsSectorName = "total_non_energy_emissions_sector"
+    TotalEmissionsName = "total_emissions"
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
     ConsumptionObjectiveRef = get_ref_variable(
         var_name=ConsumptionObjectiveRefValue, unit="T$", default_value=250
@@ -257,7 +268,23 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
     }
+    SectorEnergyConsumptionPercentageDf = {
+        "var_name": SectorEnergyConsumptionPercentageDfName,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Percentage of the energy consumption for each sector",
+        "dynamic_dataframe_columns": True,
+    }
+
     SectionNonEnergyEmissionGdpDf = {
+        "var_name": SectionNonEnergyEmissionGdpDfValue,
+        "type": "dataframe",
+        "unit": "tCO2eq/Million $GDP",
+        "description": "Non energy CO2 emission per $GDP",
+        "dynamic_dataframe_columns": True,
+    }
+
+    SectionNonEnergyEmissionGdpDfSector = {
         "var_name": SectionNonEnergyEmissionGdpDfValue,
         "type": "dataframe",
         "unit": "tCO2eq/Million $GDP",
@@ -265,6 +292,13 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
+    }
+
+    SectionNonEnergyEmissionGDPDfSector = {
+        "type": "dataframe",
+        "unit": "tCO2eq/Million $GDP",
+        "description": "Non energy CO2 emission per $GDP",
+        "dynamic_dataframe_columns": True,
     }
 
     SectorsPossibleValues = [
@@ -675,6 +709,35 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },
+    }
+
+    SectionEnergyConsumptionDict = {
+        "var_name": SectionEnergyConsumptionDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "TWh",
+    }
+
+    SectorTotalEmissionsDict = {
+        "var_name": SectorTotalEmissionsDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "MtCO2eq",
+    }
+
+    SectionNonEnergyEmissionsDict = {
+        "var_name": SectionNonEnergyEmissionsDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "MtCO2eq",
+
+    }
+
+    SectionEnergyEmissionsDict = {
+        "var_name": SectionEnergyEmissionsDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "MtCO2eq",
     }
 
     # The number of columns depends dynamically on SectionsList
