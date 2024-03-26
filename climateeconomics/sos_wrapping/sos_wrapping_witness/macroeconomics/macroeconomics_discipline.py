@@ -782,7 +782,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.SectionEnergyEmissionPartMt,
                       GlossaryCore.SectionNonEnergyEmissionPartMt,
                       GlossaryCore.SectionEnergyConsumptionPartTWh,
-                      GlossaryCore.SectionEmissionPart
+                      GlossaryCore.SectionEmissionPartMt,
+                      GlossaryCore.ChartTotalEmissionsMt
                       ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -1451,7 +1452,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     fig, chart_name=chart_name,
                     default_title=True, default_legend=False))
 
-        if GlossaryCore.SectionEmissionPart in chart_list:
+        if GlossaryCore.SectionEmissionPartMt in chart_list:
             total_emissions_dict = self.get_sosdisc_outputs([GlossaryCore.SectorTotalEmissionsDictName])
             # get sectors available in dictionnaries
             list_sectors_to_plot = [sector_name for sector_name in total_emissions_dict.keys() if
@@ -1462,7 +1463,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
                 chart_name = f'Breakdown of emission per section for {sector_name} sector [MtCO2eq]'
 
-                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEmissionPart,
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEmissionPartMt,
                                                          chart_name=chart_name, stacked_bar=True)
 
                 # loop on all sections of the sector
@@ -1482,6 +1483,23 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 instanciated_charts.append(InstantiatedPlotlyNativeChart(
                     fig, chart_name=chart_name,
                     default_title=True, default_legend=False))
+
+        if GlossaryCore.ChartTotalEmissionsMt in chart_list:
+            total_emissions_dict = self.get_sosdisc_outputs([GlossaryCore.SectorTotalEmissionsDictName])
+            list_sectors_to_plot = [sector_name for sector_name in total_emissions_dict.keys() if
+                                    sector_name != "total"]
+            chart_name = f'Breakdown of emissions per sector [MtCO2eq]'
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ChartTotalEmissionsMt,
+                                                         chart_name=chart_name, stacked_bar=True)
+            for sector_name in list_sectors_to_plot:
+                sector_emissions = total_emissions_dict[sector_name]["total"]
+                sector_emissions = sector_emissions.drop(GlossaryCore.Years, axis=1)
+                new_series = InstanciatedSeries(years, list(sector_emissions[GlossaryCore.TotalEmissionsName].values),
+                                                sector_name, display_type=InstanciatedSeries.BAR_DISPLAY)
+                new_chart.add_series(new_series)
+
+            instanciated_charts.append(new_chart)
+
 
 
         return instanciated_charts
