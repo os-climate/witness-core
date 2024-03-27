@@ -158,15 +158,15 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         excluded_disc = ['WITNESS.EnergyMix.hydrogen.liquid_hydrogen']
 
-        excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_production_detailed',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_production_detailed',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_production_detailed',
+        excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.liquid_fuel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.liquid_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.hydrotreated_oil_fuel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.hydrotreated_oil_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.biodiesel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.biodiesel.energy_production_detailed',
                             ]
 
-        # optional_disciplines_list = ['WITNESS.EnergyMix.fuel.liquid_fuel']
+        # optional_disciplines_list = ['WITNESS.EnergyMix.fuel_production.liquid_fuel']
 
         self.all_usecase_disciplines_jacobian_test(usecase,
                                                    directory=directory,

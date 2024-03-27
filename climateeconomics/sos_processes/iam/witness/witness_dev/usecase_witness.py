@@ -118,4 +118,6 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
+    uc_cls.load_data()
+    uc_cls.run()
     uc_cls.test()

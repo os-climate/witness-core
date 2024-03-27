@@ -62,14 +62,14 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         excluded_disc = []
 
-        excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_production_detailed',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_production_detailed',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_production_detailed',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_detailed_techno_prices',
-                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_production_detailed',
+        excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.liquid_fuel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.liquid_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.hydrotreated_oil_fuel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.hydrotreated_oil_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.biodiesel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.biodiesel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.ethanol.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel_production.ethanol.energy_production_detailed',
                             ]
         disc_to_test_list = ['WITNESS.Resources'] #'WITNESS.AgricultureMix.Forest'
                                      

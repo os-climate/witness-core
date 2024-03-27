@@ -71,7 +71,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # then % of wood for energy = 1926/(1926+1984)= 49.2 %
     total_wood_production_2020 = energy_wood_production_2020 + industry_wood_production_2020
     wood_percentage_for_energy = energy_wood_production_2020 / total_wood_production_2020
-    # FAO 2020 : Chips = 262 Mm3, Residues = 233Mm3, Total Wood fuel : 1926 Mm3
+    # FAO 2020 : Chips = 262 Mm3, Residues = 233Mm3, Total Wood fuel_production : 1926 Mm3
     # % of residues  + chips = (233+262)/1926 = 25.7%
     residues_wood_production = 233 + 262  # Mm3
     residue_percentage = residues_wood_production / energy_wood_production_2020
