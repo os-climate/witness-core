@@ -10,23 +10,17 @@ Individual processing steps are called *disciplines*.
 The diagram below shows components of a study.
 
 ```mermaid
+---
+title: Study
+---
 flowchart LR
-  subgraph Study
-    di[(Data In)]
-    subgraph ExcutionEngine
-      d1[Discipline 1]
-      d2[Discipline 2]
-      ddots([...])
-      dn[Discipline N]
+    di[(Data In)] -- data --> d1[Discipline 1]
+    subgraph ExecutionEngine
+      d1 -- data --> d2[Discipline 2]
+      d2 -- data --> ddots([...])
+      ddots -- data --> dn[Discipline N]
     end
-    do[(Data Out)]
-  end
-
-  di-->|data|d1
-  d1-->|data|d2
-  d2-->|data|ddots
-  ddots-->|data|dn
-  dn-->|data|do
+    dn -- data --> do[(Data Out)]
 ```
 
 The steps to model a study are:
@@ -157,7 +151,7 @@ processing. An example of coupling is shown on the diagram below.
 flowchart LR
   di1([ ])
   di2([ ])
-  subgraph ExcutionEngine
+  subgraph ExecutionEngine
     d1[Discipline 1]
     d2[Discipline 2]
     d3[Discipline 3]
