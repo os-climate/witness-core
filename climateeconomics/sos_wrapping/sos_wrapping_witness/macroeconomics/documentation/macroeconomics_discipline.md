@@ -137,6 +137,70 @@ To obtain the value of the production function parameters we fitted our calculat
 -  C02 tax efficiency: how much of the co2 tax can be reinvested (\%)
 -  Employment rate recovery function parameters: $employment\_a\_param$, $employment\_power\_param$, $employment\_rate\_base\_value$
 
+### GDP-PPP adjusted per country estimation 
+The GDP distribution model is a predictive model developed to estimate the distribution of Gross Domestic Product (GDP) 
+adjusted to Purchasing Power Parity (PPP) among different countries over time. 
+The ultimate goal of this model is to provide insights into the future GDP-PPP adjusted distribution based on the computed GDP-PPP adjusted in the macroeconomics discipline.
+
+#### Strategy :
+- **Grouping** : The model is based on the group of countries from the International Monetary Fund (IMF)[^11]. The used groups are : 
+Advanced Economies, Emerging and Developing Europe, Emerging and Developing Asia, Latin America and the Caribbean, Sub-Saharan Africa, 
+Middle East and Central Asia. 
+- **Analysis of variability** : We've computed the mean and the standard deviation of each country's GDP-PPP adjusted share within its group.
+This analysis helps determine the stability and variability of countries' contributions to their respective groups. 
+- **Linear Regression Model** : A linear model is developed to estimate the GDP-PPP adjusted for each group over time. This model utilizes 
+official GDP data spanning from 2000 to 2020 per group. Its primary purpose is to calculate the weight of each group in the total GDP.
+The linear regression model is formulated as : $$GDP_{group} = a \times Years + b$$ 
+Where : 
+  - **GDP_{group}** represents the GDP-PPP adjusted for a specific group.
+  - **Years** years for which GDP is being estimated.
+  - **a** is the slope parameter representing the change in GDP over time.
+  - **b** is the intercept parameter.
+
+This formula is used to estimate the GDP-PPP adjusted for each group over time. The primary purpose is to calculate the GDP-PPP adjusted for each group,
+which is then used to determine the percentage of GDP-PPP adjusted contributed by each group to the total GDP-PPP adjusted.
+The expected is result of the model is :
+
+| ![GDPpercentageestimation.PNG](GDPpercentageestimation.PNG) | 
+
+- **Projection of GDP-PPP adjusted by Group** : Using the output from the linear regression model, the GDP-PPP adjusted share for each group is projected into the future. 
+This provides an estimate of the GDP in Trillions of dollars ($T) for each group for upcoming years using the computed GDP-PPP adjusted in macroeconomics.
+- **Allocation of GDP-PPP adjusted to countries** : Finally the GDP-PPP adjusted projected for each group is allocated among its constituent countries. 
+The allocation is based on the average weight of each country within its group. The result is the GDP-PPP adjusted for each country for each year.
+Note: Preprocessing of data and the computation of the parameters of the linear regression were calculated in a separate file. 
+These computations are available in the Jupyter Notebook in data folder "GDP_data_preprocessing_model.ipynb".
+
+## Compute energy and non energy emissions per sector and section 
+
+This model provides functionality for analyzing energy consumption and both energy and non energy emissions data across different sectors of the economy. 
+It computes the energy consumption and associated emissions in addition of non energy emissions for the different sectors and the composing sections.
+
+### Used Inputs :
+- **Percentage Energy Consumption Data**: Dataframes detailing the percentage breakdown of energy consumption for each sector and then for each section in the sectors.
+- **Carbon Intensity Data**: Dataframe containing carbon intensity, value expressed in kgCO2Eq/kWh
+- **Non-energy emissions data per section** Dataframe per sector detailing non energy related emissions per section, value expressed in tCO2eq/M$ (emissions per millions dollars GDP)
+
+### Outputs:
+
+- **Detailed Energy Consumption and Emissions Data per Sector**: Dictionaries containing detailed dataframes for energy consumption and emissions per sector. These dataframes include information on energy usage and emissions for various subcategories or sections within each sector, along with the corresponding years.
+- **Total Energy Consumption and Emissions Data per Sector**: Summary dataframes providing the total energy consumption and emissions for each sector, aggregated over all subcategories or sections within the sector.
+- **Total Non-Energy Emissions Data per Sector and Section**: Summary dataframes presenting the total non-energy-related emissions for each sector and its subsections, aggregated over the corresponding economic data.
+- **Total Energy Consumption and Emissions Data Across All Sectors**: Summary dataframes presenting the total energy consumption and emissions across all sectors of the economy, aggregated from the detailed data per sector.
+
+### Formulas and Units:
+
+- **Energy Consumption**: Energy consumption per section is computed using the formula:  
+$\text{Energy Consumption} = \text{Total Production} \times \text{Percentage Energy Consumption} \times \frac{10^{12}}{1000} \, \text{kWh}$
+
+  The units for energy consumption are typically TWh (terawatt-hours).
+
+- **Energy Emissions**: Energy-related emissions are computed by multiplying energy consumption by carbon intensity values. The resulting emissions are typically in units of mega tons of CO2 (MtCO2).
+
+- **Non-Energy Emissions**: Non-energy-related emissions are calculated by multiplying emissions rates by GDP values. The emissions rates are typically expressed in tCO2eq/M$ (mega tons of CO2 equivalent per million dollars of economic output).
+
+- **Total Emissions**: Total emissions are obtained by summing energy-related and non-energy-related emissions per sector. The units for total emissions are consistent with those of energy-related and non-energy-related emissions.
+
+
 ## References
 
 [^4]: Moyer, E. J., Woolley, M. D., Matteson, N. J., Glotter, M. J., & Weisbach, D. A. (2014). Climate impacts on economic growth as drivers of uncertainty in the social cost of carbon. The Journal of Legal Studies, 43(2), 401-425.
@@ -155,3 +219,5 @@ To obtain the value of the production function parameters we fitted our calculat
 [^9]: International Labour Organization, ILOSTAT database. Data retrieved on February 8, 2022.
 
 [^10]: IEA 2022; World total final consumption by source, https://www.iea.org/reports/key-world-energy-statistics-2020/final-consumption, License: CC BY 4.0. 
+
+[^11]: IMF World Economic Outlook, Groups and Aggregates Information https://www.imf.org/en/Publications/WEO/weo-database/2023/April/groups-and-aggregates

@@ -31,6 +31,11 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
 
 
 class Study(ClimateEconomicsStudyManager):
+    UC1 = "- Damage, - Tax, Fossil only"
+    UC2 = "+ Damage, + Tax, Fossil only"
+    UC3 = "+ Damage, + Tax, No CCUS"
+    UC4 = "+ Damage, + Tax, All technos"
+    UC5 = "+ Damage, + Tax, No renewables"
 
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -42,11 +47,11 @@ class Study(ClimateEconomicsStudyManager):
         scatter_scenario = 'optimization scenarios'
 
         scenario_dict = {
-            "Fossil only, no damage,  low tax": Study1,
-            "Fossil only,    damage, high tax": Study2,
-            "no CCUS    ,    damage, high tax": Study3,
-            "All technos,    damage, high tax": Study4,
-            "No renew   ,    damage, high tax": Study5,
+            self.UC1: Study1,
+            self.UC2: Study2,
+            self.UC3: Study3,
+            self.UC4: Study4,
+            self.UC5: Study5,
         }
 
 

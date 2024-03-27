@@ -59,6 +59,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
+                   'ns_dashboard': f'{self.ee.study_name}',
                    GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    }
 

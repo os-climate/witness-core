@@ -92,14 +92,6 @@ class Study(ClimateEconomicsStudyManager):
 
         nrj_invest = arange(1000, nb_per + 1000, 1)
 
-        df_energy_investment = DataFrame({GlossaryCore.Years: years,
-                                          GlossaryCore.EnergyInvestmentsValue: nrj_invest},
-                                         index=arange(self.year_start, self.year_end + 1, self.time_step))
-        df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
-                                                            'energy_investment_before_year_start': [1924, 1927,
-                                                                                                    1935]},
-                                                           index=[2017, 2018, 2019])
-
         CO2_emitted_land = pd.DataFrame()
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
@@ -120,8 +112,6 @@ class Study(ClimateEconomicsStudyManager):
         CO2_tax_efficiency = np.concatenate(
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
-        default_co2_efficiency = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
         # -- load data from resource
         dc_resource = datacase_resource(self.year_start, self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
@@ -147,7 +137,6 @@ class Study(ClimateEconomicsStudyManager):
         setup_data_list = setup_data_list + agriculture_list
         self.dspace_size = dc_agriculture_mix.dspace.pop('dspace_size')
         self.dspace.update(dc_agriculture_mix.dspace)
-        nb_poles = 8
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
