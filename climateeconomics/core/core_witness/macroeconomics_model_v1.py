@@ -925,16 +925,15 @@ class MacroEconomics:
         # Loop through each sector
         for sector_name, emissions_df in self.dict_dataframe_non_energy_emissions_sections.items():
             # Create temporary DataFrame to compute emissions per section
-            merged_df_emissions = pd.merge(emissions_df, self.economics_detail_df[[GlossaryCore.Years, GlossaryCore.OutputNetOfDamage]],
-                                           on=GlossaryCore.Years, how='inner')
-
+            merged_df_emissions = pd.DataFrame()
+            merged_df_emissions[GlossaryCore.Years] = emissions_df[GlossaryCore.Years]
             # Extract list of sections from DataFrame
             list_sections = emissions_df.drop(columns=[GlossaryCore.Years]).columns
 
             # Multiply each section's emissions rate by GDP of the section and store in the dictionary
             # tCO2eq / M$ * T$ = 1e6 M$ * tCo2eq / M$ = 1e6 * tCO2eq = MtCO2eq
             merged_df_emissions[list_sections] = emissions_df[list_sections].apply(
-                lambda col: col * merged_df_emissions[GlossaryCore.OutputNetOfDamage])
+                lambda col: col * self.dict_sectors_detailed[sector_name][col.name], axis=0)
 
             # List of columns to store in final dictionary
             list_columns_to_store = [GlossaryCore.Years] + list_sections.to_list()

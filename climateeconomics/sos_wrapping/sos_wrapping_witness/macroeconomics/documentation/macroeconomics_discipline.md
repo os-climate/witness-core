@@ -170,6 +170,36 @@ The allocation is based on the average weight of each country within its group. 
 Note: Preprocessing of data and the computation of the parameters of the linear regression were calculated in a separate file. 
 These computations are available in the Jupyter Notebook in data folder "GDP_data_preprocessing_model.ipynb".
 
+## Compute energy and non energy emissions per sector and section 
+
+This model provides functionality for analyzing energy consumption and both energy and non energy emissions data across different sectors of the economy. 
+It computes the energy consumption and associated emissions in addition of non energy emissions for the different sectors and the composing sections.
+
+### Used Inputs :
+- **Percentage Energy Consumption Data**: Dataframes detailing the percentage breakdown of energy consumption for each sector and then for each section in the sectors.
+- **Carbon Intensity Data**: Dataframe containing carbon intensity, value expressed in kgCO2Eq/kWh
+- **Non-energy emissions data per section** Dataframe per sector detailing non energy related emissions per section, value expressed in tCO2eq/M$ (emissions per millions dollars GDP)
+
+### Outputs:
+
+- **Detailed Energy Consumption and Emissions Data per Sector**: Dictionaries containing detailed dataframes for energy consumption and emissions per sector. These dataframes include information on energy usage and emissions for various subcategories or sections within each sector, along with the corresponding years.
+- **Total Energy Consumption and Emissions Data per Sector**: Summary dataframes providing the total energy consumption and emissions for each sector, aggregated over all subcategories or sections within the sector.
+- **Total Non-Energy Emissions Data per Sector and Section**: Summary dataframes presenting the total non-energy-related emissions for each sector and its subsections, aggregated over the corresponding economic data.
+- **Total Energy Consumption and Emissions Data Across All Sectors**: Summary dataframes presenting the total energy consumption and emissions across all sectors of the economy, aggregated from the detailed data per sector.
+
+### Formulas and Units:
+
+- **Energy Consumption**: Energy consumption per section is computed using the formula:  
+$\text{Energy Consumption} = \text{Total Production} \times \text{Percentage Energy Consumption} \times \frac{10^{12}}{1000} \, \text{kWh}$
+
+  The units for energy consumption are typically TWh (terawatt-hours).
+
+- **Energy Emissions**: Energy-related emissions are computed by multiplying energy consumption by carbon intensity values. The resulting emissions are typically in units of mega tons of CO2 (MtCO2).
+
+- **Non-Energy Emissions**: Non-energy-related emissions are calculated by multiplying emissions rates by GDP values. The emissions rates are typically expressed in tCO2eq/M$ (mega tons of CO2 equivalent per million dollars of economic output).
+
+- **Total Emissions**: Total emissions are obtained by summing energy-related and non-energy-related emissions per sector. The units for total emissions are consistent with those of energy-related and non-energy-related emissions.
+
 
 ## References
 
