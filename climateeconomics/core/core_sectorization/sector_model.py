@@ -79,6 +79,14 @@ class SectorModel():
         self.gdp_percentage_per_section_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}"]
         self.energy_consumption_percentage_per_section_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"]
         self.section_non_energy_emission_per_dollar_of_gdp_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"]
+        def correct_years(df):
+
+            input_dict = {GlossaryCore.Years: self.years_range}
+            input_dict.update({section: df[section].values[0] for section in self.section_list})
+            return pd.DataFrame(input_dict)
+        self.gdp_percentage_per_section_df = correct_years(self.gdp_percentage_per_section_df)
+        self.energy_consumption_percentage_per_section_df = correct_years(self.energy_consumption_percentage_per_section_df)
+        self.section_non_energy_emission_per_dollar_of_gdp_df = correct_years(self.section_non_energy_emission_per_dollar_of_gdp_df)
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']

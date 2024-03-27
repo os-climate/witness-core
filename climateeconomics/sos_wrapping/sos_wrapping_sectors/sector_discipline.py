@@ -93,41 +93,47 @@ class SectorDiscipline(ClimateEcoDiscipline):
             year_start, year_end = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd])
             if year_start is not None and year_end is not None:
                 global_data_dir = join(dirname(dirname(dirname(__file__))), 'data')
-
-                # section gdp percentage
-                section_gdp_percentage_df_default = pd.read_csv(
-                    join(global_data_dir, f'weighted_average_percentage_{self.sector_name.lower()}_sections.csv'))
-                section_gdp_percentage_dict = {
-                    **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
-                    **dict(zip(section_gdp_percentage_df_default.columns[1:],
-                               section_gdp_percentage_df_default.values[0, 1:]))
-                }
-                section_gdp_percentage_df_default = pd.DataFrame(section_gdp_percentage_dict)
-
-                # section energy consumption percentage
-                section_energy_consumption_percentage_df_default = pd.read_csv(
-                    join(global_data_dir, f'energy_consumption_percentage_{self.sector_name.lower()}_sections.csv'))
-                section_energy_consumption_percentage_dict = {
-                    **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
-                    **dict(zip(section_energy_consumption_percentage_df_default.columns[1:],
-                               section_energy_consumption_percentage_df_default.values[0, 1:]))
-                }
-                section_energy_consumption_percentage_df_default = pd.DataFrame(section_energy_consumption_percentage_dict)
-
-                # section non-energy emissions per dollar of pib
-                section_non_energy_emission_gdp_df = pd.read_csv(
-                    join(global_data_dir, f'non_energy_emission_gdp_{self.sector_name.lower()}_sections.csv'))
-                section_non_energy_emission_gdp_dict = {
-                    **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
-                    **dict(zip(section_non_energy_emission_gdp_df.columns[1:],
-                               section_non_energy_emission_gdp_df.values[0, 1:]))
-                }
-                section_non_energy_emission_gdp_df = pd.DataFrame(section_non_energy_emission_gdp_dict)
-                self.set_dynamic_default_values({
-                    f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}": section_gdp_percentage_df_default,
-                    f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}": section_energy_consumption_percentage_df_default,
-                    f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": section_non_energy_emission_gdp_df,
-                })
+                if f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}" in self.get_data_in():
+                    variable_value = self.get_sosdisc_inputs(f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}")
+                    if variable_value is None:
+                        # section gdp percentage
+                        section_gdp_percentage_df_default = pd.read_csv(
+                            join(global_data_dir,
+                                 f'weighted_average_percentage_{self.sector_name.lower()}_sections.csv'))
+                        section_gdp_percentage_dict = {
+                            **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
+                            **dict(zip(section_gdp_percentage_df_default.columns[1:],
+                                       section_gdp_percentage_df_default.values[0, 1:]))
+                        }
+                        new_variable_value = pd.DataFrame(section_gdp_percentage_dict)
+                        self.set_dynamic_default_values({f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}": new_variable_value})
+                if f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}" in self.get_data_in():
+                    variable_value = self.get_sosdisc_inputs(f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}")
+                    if variable_value is None:
+                        # section energy consumption percentage
+                        section_energy_consumption_percentage_df_default = pd.read_csv(
+                            join(global_data_dir,
+                                 f'energy_consumption_percentage_{self.sector_name.lower()}_sections.csv'))
+                        section_energy_consumption_percentage_dict = {
+                            **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
+                            **dict(zip(section_energy_consumption_percentage_df_default.columns[1:],
+                                       section_energy_consumption_percentage_df_default.values[0, 1:]))
+                        }
+                        new_variable_value = pd.DataFrame(section_energy_consumption_percentage_dict)
+                        self.set_dynamic_default_values({f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}": new_variable_value})
+                if f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}" in self.get_data_in():
+                    variable_value = self.get_sosdisc_inputs(f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}")
+                    if variable_value is None:
+                        # section non-energy emissions per dollar of pib
+                        section_non_energy_emission_gdp_df = pd.read_csv(
+                            join(global_data_dir, f'non_energy_emission_gdp_{self.sector_name.lower()}_sections.csv'))
+                        section_non_energy_emission_gdp_dict = {
+                            **{GlossaryCore.Years: np.arange(year_start, year_end + 1), },
+                            **dict(zip(section_non_energy_emission_gdp_df.columns[1:],
+                                       section_non_energy_emission_gdp_df.values[0, 1:]))
+                        }
+                        new_variable_value = pd.DataFrame(section_non_energy_emission_gdp_dict)
+                        self.set_dynamic_default_values({f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": new_variable_value})
 
 
     def setup_sos_disciplines(self):

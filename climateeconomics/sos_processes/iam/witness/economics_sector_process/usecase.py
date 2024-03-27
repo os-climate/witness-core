@@ -144,6 +144,7 @@ class Study(StudyManager):
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
 
+
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
@@ -190,6 +191,18 @@ class Study(StudyManager):
             section_energy_consumption_percentage_df = pd.DataFrame(subsector_share_dict)
             sect_input[
                 f"{self.study_name}.{self.macro_name}.{sector}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = section_energy_consumption_percentage_df
+
+            # section non-energy emissions per dollar of pib
+            section_non_energy_emission_gdp_df = pd.read_csv(
+                join(global_data_dir, f'non_energy_emission_gdp_{sector.lower()}_sections.csv'))
+            section_non_energy_emission_gdp_dict = {
+                **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
+                **dict(zip(section_non_energy_emission_gdp_df.columns[1:],
+                           section_non_energy_emission_gdp_df.values[0, 1:]))
+            }
+            section_non_energy_emission_gdp_df = pd.DataFrame(section_non_energy_emission_gdp_dict)
+            sect_input[
+                f"{self.study_name}.{self.macro_name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emission_gdp_df
 
         if self.year_start == 2000:
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'capital_start'}"] = 31.763
