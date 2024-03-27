@@ -780,7 +780,7 @@ class Crop():
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
-        Need to take into account  CO2 from electricity/fuel production
+        Need to take into account  CO2 from electricity/fuel_production production
         '''
         return 0.0
 

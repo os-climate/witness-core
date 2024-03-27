@@ -1243,6 +1243,7 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
     }
 
+
     MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
     MaxBudgetConstraintRef = get_ref_variable(var_name=MaxBudgetConstraintRefValue,
                                               unit="T$",
