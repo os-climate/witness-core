@@ -18,7 +18,6 @@ limitations under the License.
 import cProfile
 import pstats
 from io import StringIO
-from os.path import join, dirname
 
 import pandas as pd
 from pandas import concat
@@ -34,7 +33,6 @@ from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_w
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
-from energy_models.tools.jsonhandling import convert_to_editable_json, preprocess_data_and_save_json
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
@@ -43,27 +41,10 @@ AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
-def generate_json_by_discipline(data, json_name):
-    json_data = convert_to_editable_json(data)
-    json_data_updt = create_fake_regions(json_data, ['US', 'UE'])
-    json_data_updt['id'] = json_name.split('.')[-1]
-    output_path = join(dirname(__file__), 'data', f'{json_name}.json')
-    preprocess_data_and_save_json(json_data_updt, output_path)
-
-
-def create_fake_regions(data, regions_list): 
-    """
-    Add regions 
-    """
-    data_updt = {}
-    for reg in regions_list:
-        data_updt[reg] = data 
-    return data_updt
-
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=True, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=True, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[
                      2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
@@ -78,7 +59,7 @@ class Study(ClimateEconomicsStudyManager):
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.dc_energy = datacase_energy(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            year_start=self.year_start, year_end=self.year_end, time_step=self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 

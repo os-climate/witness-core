@@ -42,6 +42,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Test'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   'ns_dashboard': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -60,10 +61,10 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YearStartDefault][[
             GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
             GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
@@ -110,6 +111,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Test'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   'ns_dashboard': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -128,7 +130,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YearStartDefault][[
             GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
         damage_df = pd.DataFrame({
@@ -137,7 +139,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y)),
         })
 
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         damage_df.index = years
         temperature_df_y.index = years
 
@@ -183,6 +185,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Test'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   'ns_dashboard': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -201,10 +204,10 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YearStartDefault][[
             GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
             GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),

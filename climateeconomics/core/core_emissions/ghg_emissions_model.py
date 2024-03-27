@@ -21,7 +21,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
-class GHGEmissions():
+class GHGEmissions:
     """
     Used to compute ghg emissions from different sectors
     """
@@ -31,12 +31,15 @@ class GHGEmissions():
         """
         Constructor
         """
+        self.carbon_intensity_of_energy_mix = None
         self.affine_co2_objective: bool = False
         self.co2_emissions_objective = None
+        self.total_energy_co2eq_emissions = None
         self.param = param
         self.configure_parameters()
         self.create_dataframe()
         self.sector_list = ['energy', 'land', 'industry']
+        self.total_energy_production = None
         self.epsilon = 1.e-5 # for the CO2 objective function
 
     def configure_parameters(self):
@@ -57,6 +60,8 @@ class GHGEmissions():
         self.gwp_100 = self.param['GHG_global_warming_potential100']
 
         self.CO2EmissionsRef = self.param[GlossaryCore.CO2EmissionsRef['var_name']]
+        self.total_energy_production = self.param[GlossaryCore.EnergyProductionValue]
+
 
     def configure_parameters_update(self, inputs_dict):
 
@@ -66,6 +71,7 @@ class GHGEmissions():
         self.CO2_indus_emissions_df = inputs_dict['CO2_indus_emissions_df']
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
         self.affine_co2_objective = inputs_dict['affine_co2_objective']
+        self.total_energy_production = inputs_dict[GlossaryCore.EnergyProductionValue]
         self.create_dataframe()
 
     def create_dataframe(self):
@@ -167,6 +173,17 @@ class GHGEmissions():
         return d_CO2_emissions_objective_d_total_co2_emissions
 
 
+    def compute_total_co2_eq_energy_emissions(self):
+        columns_to_sum = [f"Total {ghg} emissions" for ghg in self.gwp_100.keys()]
+        self.total_energy_co2eq_emissions = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.TotalEnergyEmissions: self.GHG_total_energy_emissions[columns_to_sum].multiply(self.gwp_100.values()).sum(axis=1)
+        })
+
+    def d_total_co2_eq_energy_emissions(self, d_ghg_total_emissions, ghg: str):
+        return d_ghg_total_emissions * self.gwp_100[ghg]
+
+
     def compute(self):
         """
         Compute outputs of the pyworld3
@@ -176,5 +193,27 @@ class GHGEmissions():
         self.compute_total_emissions()
         self.compute_gwp()
         self.compute_CO2_emissions_objective()
+        self.compute_total_co2_eq_energy_emissions()
+        self.compute_carbon_intensity_of_energy_mix()
 
+    def compute_carbon_intensity_of_energy_mix(self):
+        """
+        Compute the carbon intensity of energy mix defined as
+        Total Energy emissions / Total Energy production
+        """
+        total_energy_emissions = self.total_energy_co2eq_emissions[GlossaryCore.TotalEnergyEmissions].values  # GtCO2Eq : 1e12 kgCO2Eq
+        total_energy_production = self.total_energy_production[GlossaryCore.TotalProductionValue].values  # PWh : 1e12 kWh
+        carbon_intensity = total_energy_emissions / total_energy_production  # kgCO2Eq / kWh
+        self.carbon_intensity_of_energy_mix = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.EnergyCarbonIntensityDfValue: carbon_intensity
+        })
 
+    def d_carbon_intensity_of_energy_mix_d_energy_production(self):
+        total_energy_emissions = self.total_energy_co2eq_emissions[GlossaryCore.TotalEnergyEmissions].values
+        total_energy_production = self.total_energy_production[GlossaryCore.TotalProductionValue].values
+        return np.diag(- total_energy_emissions / total_energy_production ** 2)
+
+    def d_carbon_intensity_of_energy_mix_d_ghg_energy_emissions(self, ghg: str):
+        total_energy_production = self.total_energy_production[GlossaryCore.TotalProductionValue].values
+        return np.diag(self.gwp_100[ghg] / total_energy_production)

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/28-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/03/28-2024/03/05 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,12 +43,13 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
 
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     CO2_tax = np.asarray([500.] * len(years))
     default_CO2_tax = pd.DataFrame(
         {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)
 
     DESC_IN = {
+        'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -117,6 +118,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
     def run(self):
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        # todo: for sensitivity, generalise ?
+        self.model.tp_a3 = in_dict['tp_a3']
         if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_input_var()
             self.check_ranges(in_dict, dict_ranges)
@@ -228,7 +231,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%', chart_name=chart_name, y_min_zero=True)
 
             new_series = InstanciatedSeries(
-                years, list(damage_fraction_df[GlossaryCore.DamageFractionOutput]),
+                years, list(damage_fraction_df[GlossaryCore.DamageFractionOutput] * 100),
                 'Climate damage on GDP', 'lines', True)
 
             new_chart.add_series(new_series)

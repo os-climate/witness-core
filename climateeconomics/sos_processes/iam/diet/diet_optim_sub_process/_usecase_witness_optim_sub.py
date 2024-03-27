@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
+from collections import defaultdict
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 import pandas as pd
 
@@ -36,7 +37,9 @@ EXTRA_NAME = "WITNESS"
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1,
+                 bspline=False, run_usecase=False,
+
                  execution_engine=None,
                  agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='dev'):
@@ -144,7 +147,6 @@ class Study(ClimateEconomicsStudyManager):
                                                                'namespace_out': 'ns_crop'
                                                                }
 
-
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
 
@@ -161,14 +163,11 @@ class Study(ClimateEconomicsStudyManager):
         dspace = self.witness_uc.dspace
         self.dspace_size = dspace.pop('dspace_size')
 
-        dspace_df_columns = ['variable', 'value', 'lower_bnd',
-                             'upper_bnd', 'enable_variable']
-        dspace_df = pd.DataFrame(columns=dspace_df_columns)
-        for key, elem in dspace.items():
-            dict_var = {'variable': key}
-            dict_var.update(elem)
-            dspace_df = dspace_df.append(dict_var, ignore_index=True)
-
+        dspace_dict = defaultdict(list)
+        for key, elem in self.dspace.items():
+            dspace_dict['variable'].append(key)
+            for column, value in elem.items():
+                dspace_dict[column].append(value)
         self.dspace = dspace_df
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         setup_data_list.append(values_dict)

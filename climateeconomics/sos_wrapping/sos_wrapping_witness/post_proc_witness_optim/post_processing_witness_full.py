@@ -20,11 +20,10 @@ from matplotlib.pyplot import cm
 from plotly import graph_objects as go
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from energy_models.glossaryenergy import GlossaryEnergy
-from climateeconomics.core.core_forest.forest_v2 import Forest
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -259,6 +258,27 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     @param namespace: Namespace at which the data can be accessed
 
     @return multilevel_df: Dataframe
+
+    Definitions of the various levels of emissions:
+    CO2_from_production = -scope 1- (direct emissions): direct CO2 emissions during the production phase of the techno
+            ex: CO2 emitted or needed as part of the chemical reaction used to produced the techno (ex: Sabatier reaction
+            requires CO2 to produce methane from H2) + company facilities emissions + company vehicles emissions
+            + CO2 emissions of energy used for the production + ...
+    CO2_from_other_consumption = -scope 2- (indirect emissions): CO2 emissions during the production of the energies
+            used in scope 1, namely of the energies used during the production of the techno = emissions during
+            production of purchased electricity, steam, heating & cooling for own use
+            NB: in energy_models/core/techno_type/techno_type.py, CO2_from_other_consumption is referred to as
+            co2_emissions_frominput_energies
+            In https://ghgprotocol.org/sites/default/files/standards/ghg-protocol-revised.pdf p.31, scope 2 definition only accounts for
+                indirect CO2 emissions of purchased electricity
+    CO2_techno = -scope 1 + scope 2- = CO2_from_production + CO2_from_other_consumption
+    CO2_per_use = - scope 3 (partially, ie only the indirect downstream emissions)- : CO2 emitted when using the techno
+            ex: CO2 emitted when burning techno=biogas, techno=methane, etc
+    CO2_per_kWh_techno 	= scope 1 + scope 2 + scope 3 (downstream emissions only)
+                = CO2_after_use
+				= total_emissions
+				= CO2_per_use + CO2_techno
+				= CO2_from_production + CO2_from_input_energies + CO2_per_use
     '''
 
     ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
@@ -273,7 +293,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{namespace}.EnergyMix')[0]
-       
+
     # Construct a DataFrame to organize the data on two levels: energy and
     # techno
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
@@ -286,7 +306,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     years = np.arange(EnergyMix.get_sosdisc_inputs(
         GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
-    
+
     for energy in energy_list:
         if energy == 'biomass_dry':
             namespace_disc = f'{namespace}.AgricultureMix'
@@ -299,7 +319,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                 f'{namespace_disc}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
                 'techno_production')[f'{energy} (TWh)'].values * \
-                                techno_disc.get_sosdisc_inputs('scaling_factor_techno_production') #TODO: check if scaling required
+                                techno_disc.get_sosdisc_inputs(
+                                    'scaling_factor_techno_production')  # TODO: check if scaling required
             # crop had not invest_level but crop_investment. Same for Forest
             # data_fuel_dict is missing in Forest and is a copy of biomass_dry for Crop
             # no detailed CO2_emissions_df for Crop and Forest => CO2_from_other_consumption = 0
@@ -365,7 +386,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                                        CO2_per_kWh_techno, price_per_kWh_techno, price_per_kWh_wotaxes_techno,
                                        CO2_from_production, CO2_per_use, CO2_after_use, CO2_from_other_consumption)],
                                      index=idx, columns=columns_techno)
-            multilevel_df = multilevel_df.append(techno_df)
+            multilevel_df = pd.concat([multilevel_df, techno_df])
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
@@ -386,7 +407,7 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 
     # Prepare data
     columns = ['energy', 'technology', 'production', 'CO2_from_production',
-                                  'CO2_per_use', 'CO2_after_use', 'CO2_from_other_consumption']
+               'CO2_per_use', 'CO2_after_use', 'CO2_from_other_consumption']
     multilevel_df, years, namespace = get_multilevel_df(execution_engine, namespace, columns=columns)
     energy_list = list(set(multilevel_df.index.droplevel(1)))
     technologies_list = list(multilevel_df.index.droplevel(0))
@@ -620,7 +641,6 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
         fig, chart_name=chart_name, default_title=True)
     return new_chart
 
-
 # def get_chart_breakdown_price_energies(execution_engine, namespace, chart_name):
 # '''! Function to create the breakdown_prices_techno/_energy Sankey diagram with the associated scatter plot
 # @param execution_engine: Execution engine object from which the data is gathered
@@ -804,7 +824,7 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 # weighted_techno_price, weighted_stream_price,
 # invest_techno, CO2_per_kWh_techno, stream_category)],
 # index=idx, columns=columns)
-# multilevel_df = multilevel_df.append(techno_df)
+# multilevel_df = pd.concat([multilevel_df,techno_df])
 #
 # ccs_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.ccs_list)
 # for stream in ccs_list:
@@ -864,7 +884,7 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 # weighted_techno_price, weighted_stream_price,
 # invest_techno, CO2_per_kWh_techno, stream_category)],
 # index=idx, columns=columns)
-# multilevel_df = multilevel_df.append(techno_df)
+# multilevel_df = pd.concat([multilevel_df,techno_df])
 #
 # years = np.arange(EnergyMix.get_sosdisc_inputs(
 # GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)

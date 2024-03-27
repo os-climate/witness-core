@@ -17,8 +17,7 @@ import logging
 import unittest
 from tempfile import gettempdir
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_witness_coarse_fixed_gdp_wo_damage_wo_co2_tax import \
-    Study
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import Study
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -46,9 +45,7 @@ class StartPointOptimTest(unittest.TestCase):
         self.ee.display_treeview_nodes(True)
         usecase = Study(execution_engine=self.ee)
         usecase.study_name = self.name
-        values_dict = {}
-        for dict_item in usecase.setup_usecase():
-            values_dict.update(dict_item)
+        values_dict = usecase.setup_usecase()
         # we only need to configure and to set all the values
         self.ee.load_study_from_input_dict(values_dict)
         # get design space directly from data manager

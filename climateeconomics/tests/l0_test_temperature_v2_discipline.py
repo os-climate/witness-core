@@ -53,7 +53,7 @@ class TemperatureDiscTest(unittest.TestCase):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -61,11 +61,11 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
@@ -108,7 +108,7 @@ class TemperatureDiscTest(unittest.TestCase):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -116,11 +116,11 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        f'{self.name}.{self.model_name}.forcing_model': 'Etminan',
@@ -162,7 +162,7 @@ class TemperatureDiscTest(unittest.TestCase):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -170,11 +170,11 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen',
@@ -216,7 +216,7 @@ class TemperatureDiscTest(unittest.TestCase):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -225,11 +225,11 @@ class TemperatureDiscTest(unittest.TestCase):
 
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df}
@@ -270,7 +270,7 @@ class TemperatureDiscTest(unittest.TestCase):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -279,11 +279,11 @@ class TemperatureDiscTest(unittest.TestCase):
 
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
                        f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen',

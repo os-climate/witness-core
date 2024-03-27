@@ -40,7 +40,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     name = 'GHGEmissions'
     _maturity = 'Research'
 
@@ -84,6 +84,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
         'affine_co2_objective': {'type': 'bool','default': True, 'user_level': 2, 'namespace': GlossaryCore.NS_WITNESS},
+        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
 
     }
     DESC_OUT = {
@@ -92,6 +93,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
         GlossaryCore.CO2EmissionsObjectiveValue: GlossaryCore.CO2EmissionsObjective,
+        GlossaryCore.TotalEnergyEmissions: GlossaryCore.TotalEnergyCO2eqEmissionsDf,
+        GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf,
     }
 
     def init_execution(self):
@@ -118,6 +121,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.GHGEmissionsDfValue: emissions_df,
                        'GWP_emissions': self.emissions_model.gwp_emissions,
                        GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
+                       GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions,
+                       GlossaryCore.EnergyCarbonIntensityDfValue: self.emissions_model.carbon_intensity_of_energy_mix
                        }
         if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
@@ -141,20 +146,40 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             for column in ghg_land_emissions.columns:
                 if column != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'), (f'{ghg}_land_emissions', column),  np.identity(len(years)))
+                        (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'),
+                        (f'{ghg}_land_emissions', column),
+                        np.identity(len(years)))
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'), ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'),
+                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
                 np.identity(len(years)))
 
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.TotalEnergyEmissions, GlossaryCore.TotalEnergyEmissions),
+                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                np.identity(len(years))* self.emissions_model.gwp_100[ghg])
+
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
+                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                self.emissions_model.d_carbon_intensity_of_energy_mix_d_ghg_energy_emissions(ghg=ghg))
+
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),  np.identity(len(years)))
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
+            ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),  np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions), ('CO2_indus_emissions_df', 'indus_emissions'),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            ('CO2_indus_emissions_df', 'indus_emissions'),
             np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2EmissionsObjectiveValue,), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),
             self.emissions_model.d_CO2_emissions_objective_d_total_co2_emissions())
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            self.emissions_model.d_carbon_intensity_of_energy_mix_d_energy_production())
 
     def get_chart_filter_list(self):
 
@@ -163,7 +188,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['GHG emissions per sector', 'Global Warming Potential', 'Total CO2 emissions']
+        chart_list = ['GHG emissions per sector', 'Global Warming Potential', 'Total CO2 emissions', GlossaryCore.EnergyCarbonIntensityDfValue]
         #chart_list = ['sectoral energy carbon emissions cumulated']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -198,6 +223,23 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             new_chart = self.get_chart_total_CO2()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if GlossaryCore.EnergyCarbonIntensityDfValue in charts:
+            carbon_intensity_df = self.get_sosdisc_outputs(GlossaryCore.EnergyCarbonIntensityDfValue)
+
+            chart_name = GlossaryCore.EnergyCarbonIntensityDfValue
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                GlossaryCore.EnergyCarbonIntensityDf['unit'], chart_name=chart_name)
+
+
+            new_serie = InstanciatedSeries(list(carbon_intensity_df[GlossaryCore.Years].values),
+                                           list(carbon_intensity_df[GlossaryCore.EnergyCarbonIntensityDfValue].values),
+                                           GlossaryCore.EnergyCarbonIntensityDfValue,
+                                           'lines')
+
+            new_chart.series.append(new_serie)
+            instanciated_charts.append(new_chart)
 
         return instanciated_charts
 

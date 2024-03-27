@@ -259,7 +259,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         # self.ee.execute()
         full_values_dict = {}
         full_values_dict[f'{self.name}.CCUS.ccs_percentage'] = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1), 'ccs_percentage': 25})
+            {GlossaryCore.Years: np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1), 'ccs_percentage': 25})
         full_values_dict[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
@@ -321,7 +321,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                     'objective_lagrangian')[0])
             inputs = disc.get_input_data_names()
             inputs = [input for input in inputs if self.ee.dm.get_data(input, 'coupling')
-                      and not input.endswith('resources_price')
+                      and not input.endswith(GlossaryCore.ResourcesPriceValue)
                       and not input.endswith('resources_CO2_emissions')
                       and not input.endswith('all_streams_demand_ratio')]
             print(disc.name)

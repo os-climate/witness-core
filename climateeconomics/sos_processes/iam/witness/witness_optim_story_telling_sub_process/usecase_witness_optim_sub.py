@@ -19,16 +19,16 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from climateeconomics.glossarycore import GlossaryCore
-
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as witness_usecase2_story_telling
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import Study as witness_usecase7_story_telling
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
     Study as usecase2b
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
     Study as usecase4
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
+    Study as witness_usecase7_story_telling
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -42,7 +42,7 @@ EXTRA_NAME = "WITNESS"
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, run_usecase=False,
                  execution_engine=None, sub_usecase='uc2'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -103,16 +103,15 @@ class Study(ClimateEconomicsStudyManager):
         len_var = 4
 
         # design space
-        dspace_dict = {'variable': 'percentage_gdp_invest_in_energy_array',
-                       'value': [1.] * len_var,
-                       'lower_bnd': [2e-1] * len_var,
-                       'upper_bnd': [5.] * len_var,
-                       'enable_variable': True,
-                       'activated_elem': [True] * len_var
+        dspace_dict = {'variable': ['percentage_gdp_invest_in_energy_array'],
+                       'value': [[1.] * len_var],
+                       'lower_bnd': [[2e-1] * len_var],
+                       'upper_bnd': [[5.] * len_var],
+                       'enable_variable': [True],
+                       'activated_elem': [[True] * len_var]
                        }
 
-        self.dspace = pd.DataFrame(columns=list(dspace_dict.keys()))
-        self.dspace = self.dspace.append(dspace_dict, ignore_index=True)
+        self.dspace = pd.DataFrame(dspace_dict)
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         # create func manager
         func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.NegativeWelfareObjective,

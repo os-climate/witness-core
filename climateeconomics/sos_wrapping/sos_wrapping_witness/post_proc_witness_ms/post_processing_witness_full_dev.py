@@ -355,7 +355,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = GlossaryCore.TotalProductionValue
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.energy_production_detailed']
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.{GlossaryCore.EnergyProductionDetailedValue}']
         (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 

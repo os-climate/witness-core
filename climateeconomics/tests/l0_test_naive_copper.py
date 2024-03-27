@@ -28,13 +28,11 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 class TestSoSDiscipline(unittest.TestCase):
 
     def setUp(self):
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.factory = self.ee.factory
 
     def test_01_execute_process(self):
-
         model_name = 'CopperModel'
         ns_dict = {'ns_public': f'{self.name}'}
 
@@ -48,8 +46,8 @@ class TestSoSDiscipline(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        year = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault + 1
+        year = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault + 1
 
         copper_demand = pd.DataFrame(
             [(year, rd.gauss(26, 0.5), 'million_tonnes')], columns=['Year', 'Demand', 'unit'])
@@ -58,13 +56,12 @@ class TestSoSDiscipline(unittest.TestCase):
         year += 1
 
         while year < year_end:
-            copper_demand = copper_demand.append({'Year': year,
-                                                  'Demand': rd.gauss(26, 0.5) * (1.056467) ** (year - GlossaryCore.YeartStartDefault),
-                                                  'unit': 'million_tonnes'}, ignore_index=True)
-            extraction += [26 * (1.056467) ** (year - GlossaryCore.YeartStartDefault)]
+            ref_series = pd.Series({'Year': year,
+                                    'Demand': rd.gauss(26, 0.5) * (1.056467) ** (year - GlossaryCore.YearStartDefault),
+                                    'unit': 'million_tonnes'})
+            copper_demand = pd.concat([copper_demand, pd.DataFrame([ref_series])], ignore_index=True)
+            extraction += [26 * (1.056467) ** (year - GlossaryCore.YearStartDefault)]
             year += 1
-
-        print(extraction)
 
         values_dict = {'Test.CopperModel.copper_demand': copper_demand,
                        'Test.CopperModel.annual_extraction': extraction}
@@ -76,6 +73,8 @@ class TestSoSDiscipline(unittest.TestCase):
             0]
         filters = copper_model.get_chart_filter_list()
         graph_list = copper_model.get_post_processing_list(filters)
+
+
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 

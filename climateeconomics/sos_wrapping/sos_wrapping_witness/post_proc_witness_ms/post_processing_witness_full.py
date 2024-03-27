@@ -31,11 +31,8 @@ def post_processing_filters(execution_engine, namespace):
     filters = []
 
     chart_list = ['Temperature vs Utility',
-                  #'CO2 Emissions vs Welfare',
-                  'CO2 Emissions vs min(Utility)',
-                  'CO2 tax per scenario', 'Temperature per scenario', #'Welfare per scenario',
-                  'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Utility',
-                  'Total production per scenario', 'ppm per scenario', 'invest per scenario']
+                  'CO2 Emissions vs Utility min',
+                  'PPM vs Utility',]
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
@@ -58,12 +55,8 @@ def post_processings(execution_engine, namespace, filters):
 
     # Overload default value with chart filter
     graphs_list = ['Temperature vs Utility',
-                   #'CO2 Emissions vs Welfare',
-                   'CO2 Emissions vs min(Utility)'
-                                               'CO2 tax per scenario', 'Temperature per scenario',
-                   #'Welfare per scenario',
-                   'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Utility',
-                   'Total production per scenario', 'ppm per scenario', 'invest per scenario']
+                   'CO2 Emissions vs Utility min',
+                   'PPM vs Utility',]
 
     if filters is not None:
         for chart_filter in filters:
@@ -93,7 +86,7 @@ def post_processings(execution_engine, namespace, filters):
     if 'Temperature vs Utility' in graphs_list:
 
         chart_name = f'Temperature in {year_end} vs Utility'
-        x_axis_name = f'Temperature increase since industrial revolution in degree Celsius'
+        x_axis_name = f'Temperature anomaly (°C above pre-industrial)'
         y_axis_name = 'Utility'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
@@ -114,34 +107,9 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_pareto_chart)
 
-    if 'CO2 Emissions vs Welfare' in graphs_list:
+    if 'CO2 Emissions vs Utility min' in graphs_list:
 
-        chart_name = f'Sum of CO2 emissions vs Welfare'
-        x_axis_name = f'Summed CO2 emissions'
-        y_axis_name = f'Welfare in {year_end}'
-
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGEmissionsDfValue}',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
-                    ]
-        (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-
-        summed_co2_emissions_dict, welfare_dict = {}, {}
-        for scenario in scenario_list:
-            summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].sum(
-            )
-            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
-        namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
-
-        new_pareto_chart = get_chart_pareto_front(summed_co2_emissions_dict, welfare_dict, scenario_list,
-                                                  namespace_w, chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name)
-
-        instanciated_charts.append(new_pareto_chart)
-
-    if 'CO2 Emissions vs min(Utility)' in graphs_list:
-
-        chart_name = f'CO2 Emissions vs minimum of Utility'
+        chart_name = f'CO2 Emissions vs Minimum of utility'
         x_axis_name = f'Summed CO2 emissions'
         y_axis_name = 'min( Utility )'
 
@@ -165,9 +133,9 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_pareto_chart)
 
-    if 'ppm(mean) vs Utility' in graphs_list:
+    if 'PPM vs Utility' in graphs_list:
 
-        chart_name = f'mean ppm vs Welfare'
+        chart_name = f'Mean ppm vs Welfare'
         x_axis_name = f'Mean ppm'
         y_axis_name = f'Utility in {year_end}'
 
@@ -190,230 +158,7 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_pareto_chart)
 
-    """
-        -------------
-        -------------
-        SCENARIO COMPARISON CHART
-        -------------
-        -------------
-    """
-
-    if 'CO2 tax per scenario' in graphs_list:
-
-        chart_name = 'CO2 tax per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'Price ($/tCO2)'
-
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.CO2TaxesValue}', ]
-        (co2_taxes_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-        co2_tax_dict = {}
-        for scenario in scenario_list:
-            co2_tax_dict[scenario] = co2_taxes_df_dict[scenario][GlossaryCore.CO2Tax].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, co2_tax_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'Temperature per scenario' in graphs_list:
-
-        chart_name = 'Atmosphere temperature evolution per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
-
-        df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df', ]
-        (temperature_detail_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-        temperature_dict = {}
-        for scenario in scenario_list:
-            temperature_dict[scenario] = temperature_detail_df_dict[scenario][GlossaryCore.TempAtmo].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, temperature_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'Welfare per scenario' in graphs_list:
-
-        chart_name = 'Welfare per scenario'
-        y_axis_name = f'Welfare in {year_end}'
-
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
-                    ]
-        (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
-
-        welfare_dict = {}
-        for scenario in scenario_list:
-            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
-
-        min_y = min(list(welfare_dict.values()))
-        max_y = max(list(welfare_dict.values()))
-
-        new_chart = TwoAxesInstanciatedChart('', y_axis_name,
-                                             [], [
-                                                 min_y * 0.95, max_y * 1.05],
-                                             chart_name)
-
-        for scenario, welfare in welfare_dict.items():
-            if scenario in selected_scenarios:
-                serie = InstanciatedSeries(
-                    [''],
-                    [welfare], scenario, 'bar')
-
-                new_chart.series.append(serie)
-
-        instanciated_charts.append(new_chart)
-
-    if 'Utility per scenario' in graphs_list:
-
-        chart_name = 'Utility per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'Discounted Utility (trill $)'
-
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}', ]
-        (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
-
-        utility_dict = {}
-        for scenario in scenario_list:
-            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, utility_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'CO2 emissions per scenario' in graphs_list:
-
-        chart_name = 'CO2 emissions per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'Carbon emissions (Gtc)'
-
-        df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGEmissionsDfValue}']
-        (co2_emissions_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-
-        co2_emissions_dict = {}
-        for scenario in scenario_list:
-            co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, co2_emissions_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'ppm per scenario' in graphs_list:
-
-        chart_name = 'Atmospheric concentrations parts per million per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'Atmospheric concentrations parts per million'
-
-        df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGCycleDfValue}']
-        (carboncycle_detail_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-
-        co2_ppm_dict, welfare_dict = {}, {}
-        for scenario in scenario_list:
-            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario][GlossaryCore.CO2Concentration].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, co2_ppm_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        # Rockstrom Limit
-        ordonate_data = [450] * int(len(years) / 5)
-        abscisse_data = np.linspace(
-            year_start, year_end, int(len(years) / 5))
-        new_series = InstanciatedSeries(
-            abscisse_data.tolist(), ordonate_data, 'Rockstrom limit', 'scatter')
-
-        note = {'Rockstrom limit': 'Scientifical limit of the Earth'}
-        new_chart.annotation_upper_left = note
-
-        new_chart.series.append(new_series)
-
-        instanciated_charts.append(new_chart)
-
-    if 'Total production per scenario' in graphs_list:
-
-        chart_name = 'Total production per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = GlossaryCore.TotalProductionValue
-
-        df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.energy_production_detailed']
-        (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-
-        energy_production_detailed_dict = {}
-        for scenario in scenario_list:
-            energy_production_detailed_dict[scenario] = energy_production_detailed_df_dict[
-                scenario]['Total production (uncut)'].values.tolist()
-
-        new_chart = get_scenario_comparison_chart(years, energy_production_detailed_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'invest per scenario' in graphs_list:
-        chart_name = f'investments per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = f'total energy investment'
-
-        # Get the total energy investment
-
-        df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.EnergyInvestmentsValue}']
-        (energy_investment_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-
-        energy_investment_dict = {}
-        for scenario in scenario_list:
-            energy_investment_dict[scenario] = energy_investment_df_dict[
-                scenario][GlossaryCore.EnergyInvestmentsValue].values.tolist()
-
-        new_chart = get_scenario_comparison_chart(years, energy_investment_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
     return instanciated_charts
-
-
-def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios):
-
-    min_x = min(x_list)
-    max_x = max(x_list)
-    min_y = min([min(list(y)) for y in y_dict.values()])
-    max_y = max([max(list(y)) for y in y_dict.values()])
-
-    new_chart = TwoAxesInstanciatedChart(x_axis_name, y_axis_name,
-                                         [min_x - 5, max_x + 5], [
-                                             min_y - max_y * 0.05, max_y * 1.05],
-                                         chart_name)
-
-    for scenario, y_values in y_dict.items():
-        if scenario in selected_scenarios:
-            new_series = InstanciatedSeries(
-                x_list, y_values, scenario, 'lines', True)
-
-            new_chart.series.append(new_series)
-
-    return new_chart
 
 
 def get_chart_pareto_front(x_dict, y_dict, scenario_list, namespace_w, chart_name='Pareto Front',

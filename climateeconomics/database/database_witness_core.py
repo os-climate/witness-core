@@ -13,17 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
 from datetime import date
-from climateeconomics.database.collected_data import ColectedData, HeavyCollectedData
+from os.path import join, dirname
+import json
+import pandas as pd
 
+from climateeconomics.database.collected_data import ColectedData, HeavyCollectedData
 
 data_folder = join(dirname(dirname(__file__)), "data")
 
 
 class DatabaseWitnessCore:
     '''Stocke les valeurs utilisées dans witness core'''
-
 
     FoodWastePercentage = ColectedData(
         value=30,
@@ -259,6 +260,86 @@ class DatabaseWitnessCore:
         source="Our World in Data",
         last_update_date=date(2024, 2, 7),
     )
+
+    LinearParemetersGDPperRegion = ColectedData(
+        value={'a': [[1588.20633202],
+                     [1959.02654051],
+                     [365.116917],
+                     [310.57653261],
+                     [326.54836759],
+                     [164.98219368]],
+               'b': [-3149086.04111858, -3913390.07132115, -727002.61494862,
+                     -616562.71581522, -648579.38856917, -328849.45974308]},
+        unit="$",
+        description="Linear parameters for the equation y=ax+b for each region to compute GDP share percentage for each region",
+        link="Check macroeconomics documentation and jupyter notebook",
+        source="",
+        last_update_date=date(2024, 3, 18)
+    )
+
+    # read json for countries per region
+    with open(join(dirname(dirname(__file__)) , 'data', 'countries_per_region.json'), 'r') as fp:
+        countries_per_region = json.load(fp)
+
+    CountriesPerRegionIMF = ColectedData(
+        value=countries_per_region,
+        unit="",
+        description="breakdown of countries according to IMF",
+        link="https://www.imf.org/en/Publications/WEO/weo-database/2023/April/groups-and-aggregates",
+        source="World Economic Outlook : International Monetary Fund",
+        last_update_date=date(2024, 3, 18)
+    )
+
+    gdp_percentage_per_country = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'mean_gdp_country_percentage_in_group.csv'))
+    GDPPercentagePerCountry = ColectedData(
+        value=gdp_percentage_per_country,
+        unit="%",
+        description="mean percentage GDP of each country in the group",
+        link="",
+        source="mean percentages were computed based on official GDP data from international organizations and on the IMF grouping",
+        last_update_date=date(2024, 3, 18)
+    )
+    energy_consumption_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_services_sections.csv'))
+    energy_consumption_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_agriculture_sections.csv'))
+    energy_consumption_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_industry_sections.csv'))
+
+    EnergyConsumptionPercentageSectionsDict = ColectedData(
+        value= {"Agriculture": energy_consumption_agriculture,
+                 "Services": energy_consumption_services,
+                 "Industry": energy_consumption_industry},
+        unit="%",
+        description="energy consumption of each section for all sectors",
+        link="",
+        source="", # multiples sources TODO
+        last_update_date=date(2024,3,26)
+    )
+
+    non_energy_emissions_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_services_sections.csv'))
+    non_energy_emissions_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_agriculture_sections.csv'))
+    non_energy_emissions_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_industry_sections.csv'))
+
+    SectionsNonEnergyEmissionsDict = ColectedData(
+        value={"Agriculture": non_energy_emissions_agriculture,
+                 "Services": non_energy_emissions_services,
+                 "Industry": non_energy_emissions_industry},
+        unit="tCO2eq/M$",
+        description="Non energy CO2 emission per $GDP",
+        link="",
+        source="", # multiples sources TODO
+        last_update_date=date(2024,3,26)
+    )
+
+    energy_consumption_per_sector = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_per_sector.csv'))
+
+    EnergyConsumptionPercentageSectorDict = ColectedData(
+        value=energy_consumption_per_sector,
+        unit="%",
+        description="energy consumption of each sector",
+        link="",
+        source="", # multiples sources TODO
+        last_update_date=date(2024,3,26)
+    )
+
 
     atmosphere_total_mass_kg = 5.1480 * 10 ** 18
     molar_mass_atmosphere = 0.02897  # kg/mol
