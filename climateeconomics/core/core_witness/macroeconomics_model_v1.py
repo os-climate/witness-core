@@ -106,6 +106,12 @@ class MacroEconomics:
         self.dict_sectors_detailed = None
         self.usable_capital_objective = None
         self.usable_capital_objective_ref = None
+
+        # In the V1 model, we apply the two factors of the COVID pandemic
+        # (disability and mortality) to employment_rate and population death_rate individually.
+        # In a future study, we could model pandemic as part of an overall health discipline.
+        self.pandemic_disability_df = None
+        self.activate_pandemic_effects = self.param['assumptions_dict']['activate_pandemic_effects']
         self.set_data()
         self.create_dataframe()
         self.total_gdp_per_group_df = None
@@ -164,10 +170,23 @@ class MacroEconomics:
         self.co2_taxes = self.param[GlossaryCore.CO2TaxesValue]
         self.co2_tax_efficiency = self.param[GlossaryCore.CO2TaxEfficiencyValue]
         self.co2_invest_limit = self.param['co2_invest_limit']
+        df = self.param[GlossaryCore.PandemicParamDfValue]['disability']
+        self.pandemic_disability_df = pd.DataFrame.from_dict(
+            {
+                str(year): df.loc[year_range]
+                for year_range in df.index[:-1]
+                for year_start, year_end in [year_range.split('-')]
+                for year in range(int(year_start), int(year_end)+1)
+            },
+            orient='index',
+            columns=[df.name],
+        )
+
         # Employment rate param
         self.employment_a_param = self.param['employment_a_param']
         self.employment_power_param = self.param['employment_power_param']
         self.employment_rate_base_value = self.param['employment_rate_base_value']
+
         self.usable_capital_ref = self.param['usable_capital_ref']
         self.invest_co2_tax_in_renawables = self.param['assumptions_dict']['invest_co2_tax_in_renewables']
         self.compute_climate_impact_on_gdp = self.param['assumptions_dict']['compute_climate_impact_on_gdp']
@@ -306,6 +325,7 @@ class MacroEconomics:
         Compute the employment rate. based on prediction from ILO 
         We pyworld3 a recovery from 2020 crisis until 2031 where past level is reached
         For all year not in (2020,2031), value = employment_rate_base_value
+        If `activate_pandemic_effects` is True, additionally reduce by pandemic_disability factor
         """
         year_covid = 2020
         year_end_recovery = 2031
@@ -320,6 +340,8 @@ class MacroEconomics:
         employment_rate_recovery_df = pd.DataFrame(
             {GlossaryCore.Years: years_recovery, GlossaryCore.EmploymentRate: employment_rate_recovery})
         employment_rate_recovery_df.index = years_recovery
+        if self.activate_pandemic_effects:
+            employment_rate_recovery_df = employment_rate_recovery_df.mul(self.pandemic_disability_df.rsub(1.0), axis=1)
         # Then replace values in original dataframe by recoveries values
         workforce_df.update(employment_rate_recovery_df)
 
