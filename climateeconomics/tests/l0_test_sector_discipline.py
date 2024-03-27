@@ -73,27 +73,20 @@ class ServicesDiscTest(unittest.TestCase):
         })
 
         self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
-                                          GlossaryCore.InvestmentsValue: 25 * 1.02 ** np.arange(len(self.years))})
+                                          GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(len(self.years))})
         
         #damage
         self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
                                                 GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),
                                                 GlossaryCore.BaseCarbonPrice: 0.})
 
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
-        weighted_average_percentage_per_sector_df = pd.read_csv(
-            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
-        subsector_share_dict = {
-            **{GlossaryCore.Years: self.years, },
-            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
-                       weighted_average_percentage_per_sector_df.values[0, 1:]))
-        }
-        self.section_gdp_df = pd.DataFrame(subsector_share_dict)
-
+        self.energy_emission_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.EnergyCarbonIntensityDfValue: 1.0
+        })
 
 
     def test_execute(self):
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
         section_list = GlossaryCore.SectionsIndustry
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
@@ -107,7 +100,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': False,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
-                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 100.92448579,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'decline_rate_tfp'}": 0.098585,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_k'}": 0.1,
@@ -116,7 +109,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
@@ -134,9 +127,9 @@ class ServicesDiscTest(unittest.TestCase):
             f'{self.name}.{SectorDiscipline.sector_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        for graph in graph_list:
-            #graph.to_plotly().show()
-            pass
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
+        #     pass
 
     def test_execute_forfitting(self):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
@@ -164,7 +157,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,

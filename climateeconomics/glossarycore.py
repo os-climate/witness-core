@@ -72,6 +72,17 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
+    SectionEmissionPart = "Part of the total emission per section [GtCO2eq]"
+    SectionEmissionPartMt = "Part of the total emission per section [MtCO2eq]"
+    SectionEnergyEmissionPart = "Part of the energy emission per section [GtCO2eq]"
+    SectionNonEnergyEmissionPart = "Part of the non energy emission per section [GtCO2eq]"
+    SectionEnergyConsumptionPart = "Part of the energy consumption per section [PWh]"
+    SectionEnergyEmissionPartMt = "Part of the energy emission per section [MtCO2eq]"
+    SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
+    SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
+    ChartTotalEmissionsGt = "Part of total emissions per sector [GtCO2eq]"
+    ChartTotalEnergyConsumptionSector = "Part of total energy consumptions per sector [TWh]"
+
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
     ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
@@ -87,8 +98,19 @@ class GlossaryCore:
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
     SectionGdpDfValue = "section_gdp_df"
+    SectionEmissionDfValue = "section_emission_df"
+    SectionEnergyEmissionDfValue = "section_energy_emission_df"
+    SectionNonEnergyEmissionDfValue = "section_non_energy_emission_df"
+    SectionEnergyConsumptionDfValue = "section_energy_consumption_df"
+    SectionEnergyEmissionsDictName = "section_energy_emissions_dict"
+    SectionNonEnergyEmissionsDictName = "section_non_energy_emissions_dict"
+    SectionEnergyConsumptionDictName = "section_energy_consumption_dict"
+    SectorTotalEmissionsDictName = "sector_total_emissions_dict"
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
+    SectionEnergyConsumptionPercentageDfValue = 'section_energy_consumption_percentage_df'
+    SectionNonEnergyEmissionGdpDfValue = 'section_non_energy_emission_gdp_df'
+    SectorEnergyConsumptionPercentageDfName = "sector_emission_consumption_percentage_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
     UtilityDfValue = "utility_df"
@@ -118,7 +140,13 @@ class GlossaryCore:
     GroupName = "group"
     GDPName = "gdp"
     MeanPercentageName = "mean_percentage"
-
+    TotalEnergyConsumptionSectorName = "total_energy_consumption_sector"
+    TotalEnergyConsumptionAllSectorsName = "total_energy_consumption_all_sectors"
+    TotalEnergyEmissionsAllSectorsName = "total_energy_emissions_all_sectors"
+    TotalNonEnergyEmissionsAllSectorsName = "total_non_energy_emissions_all_sectors"
+    TotalEnergyEmissionsSectorName = "total_energy_emissions_sector"
+    TotalNonEnergyEmissionsSectorName = "total_non_energy_emissions_sector"
+    TotalEmissionsName = "total_emissions"
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
     ConsumptionObjectiveRef = get_ref_variable(
         var_name=ConsumptionObjectiveRefValue, unit="T$", default_value=250
@@ -205,6 +233,12 @@ class GlossaryCore:
         SectionS,
         SectionT,
     ]
+
+    SectionDictSectors = {
+        SectorAgriculture: SectionsAgriculture,
+        SectorIndustry: SectionsIndustry,
+        SectorServices: SectionsServices,
+    }
     SectionListValue = "section_list"
 
     SectionList = {
@@ -219,17 +253,59 @@ class GlossaryCore:
         "structuring": True,
     }
     df_descriptor_section_df = {
-        section: ("float", [0.0, 100.0], True) for section in SectionsPossibleValues
+        section: ("float", [0.0, 1e30], True) for section in SectionsPossibleValues
     }
     df_descriptor_section_df.update({Years: ("int", [1900, YearEndDefault], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
         "unit": "%",
-        "description": "Percentage of the gdp for each sub-sector",
+        "description": "Percentage of the GDP for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
+    }
+    SectionEnergyConsumptionPercentageDf = {
+        "var_name": SectionEnergyConsumptionPercentageDfValue,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Percentage of the energy consumption for each sub-sector",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "dataframe_descriptor": df_descriptor_section_df,
+    }
+    SectorEnergyConsumptionPercentageDf = {
+        "var_name": SectorEnergyConsumptionPercentageDfName,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Percentage of the energy consumption for each sector",
+        "dynamic_dataframe_columns": True,
+        "default": DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.value
+    }
+
+    SectionNonEnergyEmissionGdpDf = {
+        "var_name": SectionNonEnergyEmissionGdpDfValue,
+        "type": "dataframe",
+        "unit": "tCO2eq/Million $GDP",
+        "description": "Non energy CO2 emission per $GDP",
+        "dynamic_dataframe_columns": True,
+    }
+
+    SectionNonEnergyEmissionGdpDfSector = {
+        "var_name": SectionNonEnergyEmissionGdpDfValue,
+        "type": "dataframe",
+        "unit": "tCO2eq/Million $GDP",
+        "description": "Non energy CO2 emission per $GDP per section",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "dataframe_descriptor": df_descriptor_section_df,
+    }
+
+    SectionNonEnergyEmissionGDPDfSector = {
+        "type": "dataframe",
+        "unit": "tCO2eq/Million $GDP",
+        "description": "Non energy CO2 emission per $GDP",
+        "dynamic_dataframe_columns": True,
     }
 
     SectorsPossibleValues = [
@@ -564,18 +640,120 @@ class GlossaryCore:
     SectionGdpDf = {
         "var_name": SectionGdpDfValue,
         "type": "dataframe",
-        "description": "",
+        "description": "GDP values of sub-sectors in a sector",
         "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },
     }
 
+    TotalEmissions = "Total emissions [Gt]"
+    TotalEmissionsMt = "Total emissions [Mt]"
+
+    EmissionDfValue = "emission_df"
+    EmissionDf = {
+        "var_name": EmissionDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "unit": "GtCO2eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            TotalEmissions: ("float", [0, 1e30], False),
+        },
+    }
+
+    EnergyEmissions = "Energy emissions [Gt]"
+    NonEnergyEmissions = "Non energy emissions [Gt]"
+    EmissionDetailedDfValue = "emission_detailed_df"
+    EmissionDetailedDf = {
+        "var_name": EmissionDetailedDfValue,
+        "type": "dataframe",
+        "namespace": NS_MACRO,
+        "visibility": "Shared",
+        "unit": "GtCO2eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            TotalEmissions: ("float", [0, 1e30], False),
+            EnergyEmissions: ("float", [0, 1e30], False),
+            NonEnergyEmissions: ("float", [0, 1e30], False),
+        },
+    }
+
+    SectionEmissionDf = {
+        "var_name": SectionEmissionDfValue,
+        "type": "dataframe",
+        "description": "Total emission per section",
+        "unit": "GtCO2eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+        },
+    }
+
+    SectionEnergyEmissionDf = {
+        "var_name": SectionEnergyEmissionDfValue,
+        "type": "dataframe",
+        "description": "Energy emission per section",
+        "unit": "GtCO2eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+        },
+    }
+
+    SectionNonEnergyEmissionDf = {
+        "var_name": SectionNonEnergyEmissionDfValue,
+        "type": "dataframe",
+        "description": "Non-energy emission per section",
+        "unit": "GtCO2eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+        },
+    }
+
+    SectionEnergyConsumptionDf = {
+        "var_name": SectionEnergyConsumptionDfValue,
+        "type": "dataframe",
+        "description": "Energy consumption per section",
+        "unit": "PWh",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+        },
+    }
+
+    SectionEnergyConsumptionDict = {
+        "var_name": SectionEnergyConsumptionDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "TWh",
+    }
+
+    SectorTotalEmissionsDict = {
+        "var_name": SectorTotalEmissionsDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "MtCO2eq",
+    }
+
+    SectionNonEnergyEmissionsDict = {
+        "var_name": SectionNonEnergyEmissionsDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "MtCO2eq",
+
+    }
+
+    SectionEnergyEmissionsDict = {
+        "var_name": SectionEnergyEmissionsDictName,
+        "type": "dict",
+        "description": "",
+        "unit": "MtCO2eq",
+    }
+
     # The number of columns depends dynamically on SectionsList
     SectionGdpDict = {
         "var_name": SectionGdpDictValue,
         "type": "dict",
-        "description": "Gdp values of sub-sectors",
+        "description": "GDP values of sub-sectors in all sectors",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "unit": "T$",
@@ -713,9 +891,9 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
-    EnergyCarbonIntensityDfValue = "Carbon intensity of Energy Mix"
+    EnergyCarbonIntensityDfValue = "energy_carbon_intensity_df"
     EnergyCarbonIntensityDf = {
-        "var_name": EnergyProductionValue,
+        "var_name": EnergyCarbonIntensityDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "kgCO2Eq/kWh",
