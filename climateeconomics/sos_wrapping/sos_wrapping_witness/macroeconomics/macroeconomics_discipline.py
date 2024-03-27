@@ -1367,11 +1367,17 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for sector_name in list_sectors_to_plot:
                 sections_energy_emission = sections_energy_emission_dict[sector_name]["detailed"]
                 sections_energy_emission = sections_energy_emission.drop('years', axis=1)
+                energy_emissions = list(
+                    sections_energy_emission_dict[sector_name]["total"][GlossaryCore.TotalEnergyEmissionsSectorName].values / 1000)
 
                 chart_name = f'Breakdown of energy emission per section for {sector_name} sector [GtCO2eq]'
 
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyEmissionPart,
                                                          chart_name=chart_name, stacked_bar=True)
+                new_series = InstanciatedSeries(
+                    years, energy_emissions, f'Total energy emissions',
+                    display_type=InstanciatedSeries.LINES_DISPLAY)  # TODO change this and move it to model if we decide that it is in Gt
+                new_chart.add_series(new_series)
 
                 # loop on all sections of the sector
                 for section, section_value in sections_energy_emission.items():
@@ -1399,28 +1405,37 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 sections_non_energy_emission = sections_non_energy_emission_dict[sector_name]["detailed"]
                 sections_non_energy_emission = sections_non_energy_emission.drop('years', axis=1)
 
-                chart_name = f'Breakdown of non energy emission per section for {sector_name} sector [GtCO2eq]'
 
-                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionNonEnergyEmissionPart,
-                                                         chart_name=chart_name, stacked_bar=True)
+                # check sum of all values of dataframe is not equal to 0
+                if sections_non_energy_emission.sum().sum() != 0:
+                    chart_name = f'Breakdown of non energy emission per section for {sector_name} sector [GtCO2eq]'
 
-                # loop on all sections of the sector
-                for section, section_value in sections_non_energy_emission.items():
+                    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionNonEnergyEmissionPart,
+                                                             chart_name=chart_name, stacked_bar=True)
+                    non_energy_emissions = list(sections_non_energy_emission_dict[sector_name]["total"][
+                                                    GlossaryCore.TotalNonEnergyEmissionsSectorName].values / 1000)
                     new_series = InstanciatedSeries(
-                        years, list(section_value / 1000),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY) #TODO change this and move it to model if we decide that it is in Gt
+                        years, non_energy_emissions, f'Total Non energy emissions',
+                        display_type=InstanciatedSeries.LINES_DISPLAY)  # TODO change this and move it to model if we decide that it is in Gt
                     new_chart.add_series(new_series)
 
-                # have a full label on chart (for long names)
-                fig = new_chart.to_plotly()
-                fig.update_traces(hoverlabel=dict(namelength=-1))
-                # if dictionaries has big size, do not show legend, otherwise show it
-                if len(list(sections_non_energy_emission.keys())) > 5:
-                    fig.update_layout(showlegend=False)
-                else:
-                    fig.update_layout(showlegend=True)
-                instanciated_charts.append(InstantiatedPlotlyNativeChart(
-                    fig, chart_name=chart_name,
-                    default_title=True, default_legend=False))
+                    # loop on all sections of the sector
+                    for section, section_value in sections_non_energy_emission.items():
+                        new_series = InstanciatedSeries(
+                            years, list(section_value / 1000),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY) #TODO change this and move it to model if we decide that it is in Gt
+                        new_chart.add_series(new_series)
+
+                    # have a full label on chart (for long names)
+                    fig = new_chart.to_plotly()
+                    fig.update_traces(hoverlabel=dict(namelength=-1))
+                    # if dictionaries has big size, do not show legend, otherwise show it
+                    if len(list(sections_non_energy_emission.keys())) > 5:
+                        fig.update_layout(showlegend=False)
+                    else:
+                        fig.update_layout(showlegend=True)
+                    instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                        fig, chart_name=chart_name,
+                        default_title=True, default_legend=False))
 
         if GlossaryCore.SectionEnergyConsumptionPartTWh in chart_list:
             sections_energy_consumption_dict = self.get_sosdisc_outputs(GlossaryCore.SectionEnergyConsumptionDictName)
@@ -1484,6 +1499,34 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 instanciated_charts.append(InstantiatedPlotlyNativeChart(
                     fig, chart_name=chart_name,
                     default_title=True, default_legend=False))
+
+            ########## percentage chart
+            for sector_name in list_sectors_to_plot:
+                sections_emission = total_emissions_dict[sector_name]["detailed"]
+                sections_emission = sections_emission.drop('years', axis=1)
+                chart_name = f'Breakdown of emission share per section for {sector_name} sector [%]'
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, "Share percentage per section",
+                                                         chart_name=chart_name, stacked_bar=True)
+                # compute total sections_emission
+                total_emissions = sections_emission.sum(axis=1).values
+                # loop on all sections of the sector
+                for section, section_value in sections_emission.items():
+                    new_series = InstanciatedSeries(
+                        years, list(100. * section_value.values / total_emissions ),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY) #TODO change this and move it to model if we decide that it is in Gt
+                    new_chart.add_series(new_series)
+
+                # have a full label on chart (for long names)
+                fig = new_chart.to_plotly()
+                fig.update_traces(hoverlabel=dict(namelength=-1))
+                # if dictionaries has big size, do not show legend, otherwise show it
+                if len(list(sections_emission.keys())) > 5:
+                    fig.update_layout(showlegend=False)
+                else:
+                    fig.update_layout(showlegend=True)
+                instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                    fig, chart_name=chart_name,
+                    default_title=True, default_legend=False))
+
 
         if GlossaryCore.ChartTotalEmissionsGt in chart_list:
             total_emissions_dict = self.get_sosdisc_outputs([GlossaryCore.SectorTotalEmissionsDictName])

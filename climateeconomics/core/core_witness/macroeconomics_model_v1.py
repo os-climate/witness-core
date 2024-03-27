@@ -831,7 +831,7 @@ class MacroEconomics:
 
         self.compute_regionalised_gdp()
 
-        self.compute_energy_consumption_per_section()
+        self.compute_energy_consumption_and_emissions_per_section()
         self.compute_non_energy_emissions_per_section()
         self.compute_total_emissions()
 
@@ -841,9 +841,9 @@ class MacroEconomics:
             self.percentage_gdp_per_group_df, self.df_gdp_per_country
 
 
-    def compute_energy_consumption_per_section(self):
+    def compute_energy_consumption_and_emissions_per_section(self):
         """
-        Compute energy consumption per section
+        Compute energy consumption and emissions per section
         Use energy_consumption_percentage_per_sector_df to compute energy consumption per sector
         Use energy_consumption_percentage_{sector}_sections to compute energy consumption per section per sector
         Use carbon intensity to compute CO2 emissions per section
