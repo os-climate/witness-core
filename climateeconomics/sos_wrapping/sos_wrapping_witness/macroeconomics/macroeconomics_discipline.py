@@ -1511,7 +1511,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for sector_name in list_sectors_to_plot:
                 sector_emissions = total_consumption_dict[sector_name]["total"]
                 sector_emissions = sector_emissions.drop(GlossaryCore.Years, axis=1)
-                new_series = InstanciatedSeries(years, list(sector_emissions[GlossaryCore.TotalEmissionsName].values),
+                new_series = InstanciatedSeries(years, list(sector_emissions[GlossaryCore.TotalEnergyConsumptionSectorName].values),
                                                 sector_name, display_type=InstanciatedSeries.BAR_DISPLAY)
                 new_chart.add_series(new_series)
 
