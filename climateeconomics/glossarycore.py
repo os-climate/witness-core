@@ -80,7 +80,8 @@ class GlossaryCore:
     SectionEnergyEmissionPartMt = "Part of the energy emission per section [MtCO2eq]"
     SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
     SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
-    ChartTotalEmissionsMt = "Part of total emissions per sector [MtCO2eq]"
+    ChartTotalEmissionsGt = "Part of total emissions per sector [GtCO2eq]"
+    ChartTotalEnergyConsumptionSector = "Part of total energy consumptions per sector [TWh]"
 
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
