@@ -192,6 +192,4 @@ class MacroDiscTest(unittest.TestCase):
         for i,graph in enumerate(graph_list):
             #graph.to_plotly().show()
             pass
-        # add fake assert
-        assert 1 == 2
 
