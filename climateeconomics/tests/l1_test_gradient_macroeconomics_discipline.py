@@ -102,6 +102,11 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: self.years,
              GlossaryCore.TotalCO2Emissions: np.linspace(34, 55, len(self.years))})
 
+        self.carbon_intensity_energy = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.EnergyCarbonIntensityDfValue: 10.
+        })
+
     def analytic_grad_entry(self):
         return [
             self.test_macro_economics_analytic_grad,
@@ -152,7 +157,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -226,7 +232,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
 
                        }
 
@@ -295,7 +302,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
 
                        }
 
@@ -370,7 +378,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
 
                        }
 
@@ -443,7 +452,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
 
                        }
 
@@ -515,7 +525,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
 
                        }
 
@@ -584,7 +595,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
 
                        }
 
@@ -657,6 +669,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
@@ -737,6 +750,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
@@ -816,6 +830,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
                             'compute_climate_impact_on_gdp': True,
@@ -893,7 +908,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -974,8 +990,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df
-
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -1055,6 +1071,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,

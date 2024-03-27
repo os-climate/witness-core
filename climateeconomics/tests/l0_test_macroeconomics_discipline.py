@@ -141,12 +141,6 @@ class MacroDiscTest(unittest.TestCase):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         weighted_average_percentage_per_sector_df = pd.read_csv(
             join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
-        energy_consumption_percentage_agriculture_sections = pd.read_csv(join(global_data_dir, 'energy_consumption_percentage_agriculture_sections.csv'))
-        energy_consumption_percentage_industry_sections = pd.read_csv(join(global_data_dir, 'energy_consumption_percentage_industry_sections.csv'))
-        energy_consumption_percentage_services_sections = pd.read_csv(join(global_data_dir, 'energy_consumption_percentage_services_sections.csv'))
-        non_energy_emissions_services = pd.read_csv(join(global_data_dir, 'non_energy_emission_gdp_services_sections.csv'))
-        non_energy_emissions_industry = pd.read_csv(join(global_data_dir, 'non_energy_emission_gdp_industry_sections.csv'))
-        non_energy_emissions_agriculture = pd.read_csv(join(global_data_dir, 'non_energy_emission_gdp_agriculture_sections.csv'))
         subsector_share_dict = {
             **{GlossaryCore.Years: self.years, },
             **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
