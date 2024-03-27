@@ -122,6 +122,18 @@ class MacroDiscTest(unittest.TestCase):
             GlossaryCore.Population1570: np.linspace(5490, 6061, len(self.years))
         })
 
+        self.share_energy_per_sector_percentage = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.SectorServices: 37. ,
+            GlossaryCore.SectorAgriculture: 2.13,
+            GlossaryCore.SectorIndustry: 29.
+        })
+
+        carbon_intensity_energy = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.EnergyCarbonIntensityDfValue: 10.
+        })
+
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
         sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
@@ -129,6 +141,12 @@ class MacroDiscTest(unittest.TestCase):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         weighted_average_percentage_per_sector_df = pd.read_csv(
             join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        energy_consumption_percentage_agriculture_sections = pd.read_csv(join(global_data_dir, 'energy_consumption_percentage_agriculture_sections.csv'))
+        energy_consumption_percentage_industry_sections = pd.read_csv(join(global_data_dir, 'energy_consumption_percentage_industry_sections.csv'))
+        energy_consumption_percentage_services_sections = pd.read_csv(join(global_data_dir, 'energy_consumption_percentage_services_sections.csv'))
+        non_energy_emissions_services = pd.read_csv(join(global_data_dir, 'non_energy_emission_gdp_services_sections.csv'))
+        non_energy_emissions_industry = pd.read_csv(join(global_data_dir, 'non_energy_emission_gdp_industry_sections.csv'))
+        non_energy_emissions_agriculture = pd.read_csv(join(global_data_dir, 'non_energy_emission_gdp_agriculture_sections.csv'))
         subsector_share_dict = {
             **{GlossaryCore.Years: self.years, },
             **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
@@ -162,11 +180,11 @@ class MacroDiscTest(unittest.TestCase):
                            'invest_co2_tax_in_renewables': True
                            },
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
+                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_energy
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
-
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
@@ -174,4 +192,6 @@ class MacroDiscTest(unittest.TestCase):
         for i,graph in enumerate(graph_list):
             #graph.to_plotly().show()
             pass
+        # add fake assert
+        assert 1 == 2
 
