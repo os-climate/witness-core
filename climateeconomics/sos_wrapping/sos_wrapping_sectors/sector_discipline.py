@@ -473,6 +473,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.SectionGdpPart,
                       GlossaryCore.TotalEmissions,
                       GlossaryCore.SectionEmissionPart,
+                      'section emission percentage',
                       GlossaryCore.SectionEnergyEmissionPart,
                       GlossaryCore.SectionNonEnergyEmissionPart,
                       GlossaryCore.SectionEnergyConsumptionPart,
@@ -794,9 +795,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
             sections_emission = sections_emission.drop('years', axis=1)
             years = list(production_df.index)
 
-            chart_name = f'Breakdown of emission per section for {self.sector_name} sector [GtCO2eq]'
+            chart_name = f'Breakdown of emission per section for {self.sector_name} sector'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEmissionPart,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'GtCO2eq',
                                                      chart_name=chart_name, stacked_bar=True)
 
             # loop on all sections of the sector
@@ -817,14 +818,45 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 fig, chart_name=chart_name,
                 default_title=True, default_legend=False))
 
+        if 'section emission percentage' in chart_list:
+            sections_emission = self.get_sosdisc_outputs(GlossaryCore.SectionEmissionDfValue)
+            sections_emission = sections_emission.drop('years', axis=1)
+            years = list(production_df.index)
+
+            chart_name = f'Breakdown of emission percentage per section for {self.sector_name} sector'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%',
+                                                     chart_name=chart_name, stacked_bar=True)
+
+            # loop on all sections of the sector
+            total_emission = 0.0
+            for section, section_value in sections_emission.items():
+                total_emission += section_value
+            for section, section_value in sections_emission.items():
+                new_series = InstanciatedSeries(
+                    years, list((section_value*100)/total_emission),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                new_chart.add_series(new_series)
+
+            # have a full label on chart (for long names)
+            fig = new_chart.to_plotly()
+            fig.update_traces(hoverlabel=dict(namelength=-1))
+            # if dictionaries has big size, do not show legend, otherwise show it
+            if len(list(sections_emission.keys())) > 5:
+                fig.update_layout(showlegend=False)
+            else:
+                fig.update_layout(showlegend=True)
+            instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                fig, chart_name=chart_name,
+                default_title=True, default_legend=False))
+
         if GlossaryCore.SectionEnergyEmissionPart in chart_list:
             sections_energy_emission = self.get_sosdisc_outputs(GlossaryCore.SectionEnergyEmissionDfValue)
             sections_energy_emission = sections_energy_emission.drop('years', axis=1)
             years = list(production_df.index)
 
-            chart_name = f'Breakdown of energy emission per section for {self.sector_name} sector [GtCO2eq]'
+            chart_name = f'Breakdown of energy emission per section for {self.sector_name} sector'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyEmissionPart,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'GtCO2eq',
                                                      chart_name=chart_name, stacked_bar=True)
 
             # loop on all sections of the sector
@@ -850,9 +882,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
             sections_non_energy_emission = sections_non_energy_emission.drop('years', axis=1)
             years = list(production_df.index)
 
-            chart_name = f'Breakdown of non energy emission per section for {self.sector_name} sector [GtCO2eq]'
+            chart_name = f'Breakdown of non energy emission per section for {self.sector_name} sector'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionNonEnergyEmissionPart,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'GtCO2eq',
                                                      chart_name=chart_name, stacked_bar=True)
 
             # loop on all sections of the sector
@@ -878,9 +910,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
             sections_energy_consumption = sections_energy_consumption.drop('years', axis=1)
             years = list(production_df.index)
 
-            chart_name = f'Breakdown of energy consumption per section for {self.sector_name} sector [PWh]'
+            chart_name = f'Breakdown of energy consumption per section for {self.sector_name} sector'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyConsumptionPart,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'PWh',
                                                      chart_name=chart_name, stacked_bar=True)
 
             # loop on all sections of the sector
