@@ -132,6 +132,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_gdp': True,
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
+                           'activate_pandemic_effects': True,
                            'invest_co2_tax_in_renewables': True
                        }
                        }
@@ -288,6 +289,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_gdp': True,
                            'compute_climate_impact_on_gdp': False,
                            'activate_climate_effect_population': True,
+                           'activate_pandemic_effects': True,
                            'invest_co2_tax_in_renewables': True
                        }
                        }

@@ -77,6 +77,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             'compute_gdp': False,
             'compute_climate_impact_on_gdp': False,
             'activate_climate_effect_population': False,
+            'activate_pandemic_effects': False,
             'invest_co2_tax_in_renewables': False
         }
         full_values_dict[
@@ -169,6 +170,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                 'compute_gdp': False,
                 'compute_climate_impact_on_gdp': False,
                 'activate_climate_effect_population': False,
+                'activate_pandemic_effects': False,
                 'invest_co2_tax_in_renewables': False
             }
             full_values_dict[

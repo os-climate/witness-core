@@ -54,6 +54,8 @@ class Population:
         self.br_nu = inputs['birth_rate_nu']
         self.br_delta = inputs['birth_rate_delta']
         self.climate_mortality_param_df = deepcopy(inputs['climate_mortality_param_df'])
+        # Pandemic parameters
+        self.pandemic_mortality_df = deepcopy(inputs[GlossaryCore.PandemicParamDfValue]['mortality'])
         self.cal_temp_increase = inputs['calibration_temperature_increase']
         self.theta = inputs['theta']
         self.dr_param_df = deepcopy(inputs['death_rate_param'])
@@ -72,8 +74,10 @@ class Population:
         self.kcal_pc_ref = inputs['kcal_pc_ref']
         self.theta_diet = inputs['theta_diet']
         self.activate_climate_effect_on_population = inputs['assumptions_dict']['activate_climate_effect_population']
+        self.activate_pandemic_effects = inputs['assumptions_dict']['activate_pandemic_effects']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
+
 
     def create_dataframe(self):
         '''
@@ -135,13 +139,19 @@ class Population:
         self.climate_death_rate_df_dict = {}
         # DIET => calculated from kcal intake
         self.diet_death_rate_df_dict = {}
+        # PANDEMIC => calculated from pandemic parameters
+        self.pandemic_death_rate_df_dict = {}
         # TOTAL => sum of all effects
         self.death_rate_df_dict = {}
 
         # CONTAINER => dictionnary containing death rates dictionaties
 
-        self.death_rate_dict = {'base': self.base_death_rate_df_dict, 'climate': self.climate_death_rate_df_dict,
-                                'diet': self.diet_death_rate_df_dict, 'total': self.death_rate_df_dict}
+        self.death_rate_dict = {
+            'base': self.base_death_rate_df_dict,
+            'climate': self.climate_death_rate_df_dict,
+            'diet': self.diet_death_rate_df_dict,
+            'pandemic': self.pandemic_death_rate_df_dict,
+            'total': self.death_rate_df_dict}
         # DEATH NUMBER - one column per age
         # BASE => calculated from GDP
         init_dict = {GlossaryCore.Years: years_range}
@@ -272,13 +282,20 @@ class Population:
 
         for i in range(len(death_rate)):
             if diet_death_rate[i] >= 1 - death_rate[i] * (1 + climate_death_rate[i]):
-                diet_death_rate[i] =  (1 - death_rate[i] * (1 + climate_death_rate[i]))/ (1 + np.exp(-diet_death_rate[i]))
+                diet_death_rate[i] = (1 - death_rate[i] * (1 + climate_death_rate[i]))/ (1 + np.exp(-diet_death_rate[i]))
+
+        # Add pandemic impact on death rate
+        pandemic_death_rate = self.pandemic_mortality_df.values
+        if not self.activate_pandemic_effects:
+            pandemic_death_rate *= 0
 
         # Fill the year key in each death rate dict
+        # FIXME: why do we have [year] on the left and side and not also on the right hand side?
         self.base_death_rate_df_dict[year] = death_rate
         self.climate_death_rate_df_dict[year] = climate_death_rate * death_rate
         self.diet_death_rate_df_dict[year] = diet_death_rate
-        self.death_rate_df_dict[year] = death_rate * (1 + climate_death_rate) + diet_death_rate
+        self.pandemic_death_rate_df_dict[year] = pandemic_death_rate
+        self.death_rate_df_dict[year] = death_rate * (1 + climate_death_rate) + diet_death_rate + pandemic_death_rate
 
     def compute_death_number(self, year):
         """Compute number of dead people per year
@@ -372,7 +389,14 @@ class Population:
 
     def compute(self, in_dict) -> tuple[DataFrame, DataFrame, dict[str, DataFrame], DataFrame, dict, DataFrame, DataFrame]:
         """
-        Compute all
+        Compute all, returning tuple of:
+            population df,
+            birth_rate df,
+            death_rate dict,
+            birth df,
+            death dict,
+            life_expectancy df,
+            working_age_pop df,
         """
         self.create_dataframe()
         year_range = self.years_range
@@ -383,8 +407,8 @@ class Population:
         self.calories_pc_df = in_dict[GlossaryCore.CaloriesPerCapitaValue]
         self.calories_pc_df.index = self.calories_pc_df[GlossaryCore.Years].values
         self.compute_knowledge()
-        # Loop over year to compute population evolution. except last year
 
+        # Loop over year to compute population evolution. except last year
         for year in year_range:
             self.compute_birth_rate_v2(year)
             self.compute_death_rate_v2(year)
@@ -402,24 +426,30 @@ class Population:
             [np.inf, -np.inf], np.nan)
 
         # Compute working age population between 15 and 70 years
-        self.working_age_population_df[GlossaryCore.Population1570] = self.population_df[[
-            str(i) for i in np.arange(15, 71)]].sum(axis=1)
+        working_age_idx = [str(i) for i in np.arange(15, 71)]
+        self.working_age_population_df[GlossaryCore.Population1570] = (
+            self.population_df[working_age_idx]
+            .sum(axis=1)
+        )
 
         # reconstruction of the dataframes with the dictionaries
         self.climate_death_rate_df = DataFrame.from_dict(
             self.climate_death_rate_df_dict, orient='index', columns=self.column_list)
         self.diet_death_rate_df = DataFrame.from_dict(
             self.diet_death_rate_df_dict, orient='index', columns=self.column_list)
+        self.pandemic_death_rate_df = DataFrame.from_dict(
+            self.pandemic_death_rate_df_dict, orient='index', columns=self.column_list)
         self.base_death_rate_df = DataFrame.from_dict(
             self.base_death_rate_df_dict, orient='index', columns=self.column_list)
         self.death_rate_df = DataFrame.from_dict(
             self.death_rate_df_dict, orient='index', columns=self.column_list)
 
-        # recontruction of the death rate_dict with dataframes instead f
+        # recontruction of the death rate_dict with dataframes instead of
         # ditionaries at the end of the year loop
         self.death_rate_dict = {'base': self.base_death_rate_df,
                                 'climate': self.climate_death_rate_df,
                                 'diet': self.diet_death_rate_df,
+                                'pandemic': self.pandemic_death_rate_df,
                                 'total': self.death_rate_df}
         # Calculation of cumulative deaths
         for effect in self.death_rate_dict:
@@ -454,6 +484,7 @@ class Population:
         d_death_rate_climate_d_output = {}
         d_death_d_output = {}
         d_pop_1549_d_output = np.zeros((nb_years, nb_years))
+        d_pop_disabled_d_output = np.zeros((nb_years, nb_years))
 
         for year in self.years_range:
             if year == self.year_end:
@@ -583,7 +614,7 @@ class Population:
 
     def d_climate_death_rate_d_output(self, year, d_base_death_rate):
         """
-        for every columns of death rate dataframe create a dictionary that contains all derivatives wrt temp
+        for every columns of climate death rate dataframe create a dictionary that contains all derivatives wrt output
         """
         nb_years = (self.year_end - self.year_start + 1)
         iyear = year - self.year_start
