@@ -160,12 +160,20 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         section_gdp_percentage_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpPercentageDf)
         section_gdp_percentage_var.update({'namespace': GlossaryCore.NS_SECTORS})
+        section_gdp_percentage_var["dataframe_descriptor"].update({section: ("float", [0.0, 1e30], True) for section in
+                                                                    GlossaryCore.SectionDictSectors[self.sector_name]})
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}"] = section_gdp_percentage_var
+
         section_non_energy_emissions_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionGdpDf)
         section_non_energy_emissions_gdp_var.update({'namespace': GlossaryCore.NS_SECTORS})
+        #section_non_energy_emissions_gdp_var["dataframe_descriptor"].update({section: ("float", [0.0, 1e30], True) for section in
+        #                                                            GlossaryCore.SectionDictSectors[self.sector_name]})
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emissions_gdp_var
+
         section_energy_consumption_percentage_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionPercentageDf)
         section_energy_consumption_percentage_var.update({'namespace': GlossaryCore.NS_SECTORS})
+        section_energy_consumption_percentage_var["dataframe_descriptor"].update({section: ("float", [0.0, 1e30], True) for section in
+                                                                    GlossaryCore.SectionDictSectors[self.sector_name]})
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = section_energy_consumption_percentage_var
 
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
