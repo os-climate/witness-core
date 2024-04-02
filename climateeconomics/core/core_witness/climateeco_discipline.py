@@ -32,7 +32,7 @@ class ClimateEcoDiscipline(SoSWrapp):
     assumptions_dict_default = {'compute_gdp': True,
                                 'compute_climate_impact_on_gdp': True,
                                 'activate_climate_effect_population': True,
-                                'activate_pandemic_effects': True,
+                                'activate_pandemic_effects': False,
                                 'invest_co2_tax_in_renewables': True,
                                 }
 
@@ -55,11 +55,6 @@ class ClimateEcoDiscipline(SoSWrapp):
     desc_in_default_pandemic_param = GlossaryCore.PandemicParamDf
     # https://stackoverflow.com/questions/13905741/accessing-class-variables-from-a-list-comprehension-in-the-class-definition
     global_data_dir = join(Path(__file__).parents[2], 'data')
-    desc_in_default_pandemic_param['default'] = pd.read_csv(join(global_data_dir, 'pandemic_param.csv')).set_index('param', drop=False)
-    PANDEMIC_DESC_IN = {
-        GlossaryCore.PandemicParamDfValue: GlossaryCore.PandemicParamDf,
-        GlossaryCore.PandemicParamDf['var_name']: desc_in_default_pandemic_param,
-    }
 
     # ontology information
     _ontology_data = {

@@ -1325,8 +1325,7 @@ class GlossaryCore:
     PandemicParamDf = {
         "var_name": PandemicParamDfValue,
         "type": "dataframe",
-        "default": "default_pandemic_param_df",
-        # "user_level": 3,
+        "default": DatabaseWitnessCore.PandemicParamsDf.value,
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_WITNESS,

@@ -24,9 +24,6 @@ class MacroEconomics:
     """
     Economic pyworld3 that compute the evolution of capital, consumption, output...
     """
-    GDP_PERCENTAGE_PER_SECTOR_FILE = 'gdp_percentage_per_sector.csv'
-    DATA_FOLDER = 'data'
-
     def __init__(self, param):
         """
         Constructor
@@ -171,6 +168,7 @@ class MacroEconomics:
         self.co2_tax_efficiency = self.param[GlossaryCore.CO2TaxEfficiencyValue]
         self.co2_invest_limit = self.param['co2_invest_limit']
         df = self.param[GlossaryCore.PandemicParamDfValue]['disability']
+        df.index = self.param[GlossaryCore.PandemicParamDfValue]['param'].values
         self.pandemic_disability_df = pd.DataFrame.from_dict(
             {
                 str(year): df.loc[year_range]
