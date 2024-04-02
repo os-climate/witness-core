@@ -570,7 +570,8 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
         In case there is no damage, co2_damage_price_percentage > 0 does not activate the tax but ccs_price_percentage > 0 does
 
     assumes that damage are activated when damage_to_productivity and compute_climate_impact_on_gdp and
-                                          activate_climate_effect_population are true
+                                          activate_climate_effect_population and
+                                          activate_pandemic_effects are true
     '''
     df_paths = ['assumptions_dict']
     (assumption_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
