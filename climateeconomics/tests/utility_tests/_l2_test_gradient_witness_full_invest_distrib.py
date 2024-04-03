@@ -29,8 +29,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     obj_const = [GlossaryCore.WelfareObjective, 'min_utility_objective', 'temperature_objective', 'CO2_objective',
                  'ppm_objective', 'co2_emissions_objective', 'CO2_tax_minus_CO2_damage_constraint_df',
                  'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation',
@@ -139,13 +137,13 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
                     if not exists(filepath):
                         self.ee.dm.delete_complex_in_df_and_arrays()
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                        self.override_dump_jacobian = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-8, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # filepath=filepath)
+                        self.override_dump_jacobian = False
                     else:
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-8, local_data={},
                                             inputs=inputs,
@@ -154,7 +152,6 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessFullJacobianDiscTest()
     cls.test_05_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess_each_step()
     # self.test_06_gradient_each_discipline_on_dm_pkl()

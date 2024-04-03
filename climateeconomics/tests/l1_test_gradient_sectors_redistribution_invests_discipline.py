@@ -24,7 +24,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 

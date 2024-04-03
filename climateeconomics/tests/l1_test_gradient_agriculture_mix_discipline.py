@@ -30,7 +30,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
         self.test_name = 'Test'
         self.ee = ExecutionEngine(self.test_name)
