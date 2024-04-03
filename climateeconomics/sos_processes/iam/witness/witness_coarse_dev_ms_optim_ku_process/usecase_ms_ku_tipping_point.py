@@ -25,7 +25,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_opt
 from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_7_optim_story_telling import \
     Study as Study4
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import Study as uc_ms_mda
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import Study as uc_ms_mda
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -41,12 +41,12 @@ class Study(ClimateEconomicsStudyManager):
 
         #scenarios name:
         uc2 = uc_ms_mda.USECASE2
-        uc4_tp_ref = uc_ms_mda.USECASE4 + ', tipping point 6°C'
-        uc4_tp1 = uc_ms_mda.USECASE4 + ', tipping point 4°C'
-        uc4_tp2 = uc_ms_mda.USECASE4 + ', tipping point 3°C'
-        uc7_tp_ref = uc_ms_mda.USECASE7 + ', tipping point 6°C'
-        uc7_tp1 = uc_ms_mda.USECASE7 + ', tipping point 4°C'
-        uc7_tp2 = uc_ms_mda.USECASE7 + ', tipping point 3°C'
+        uc4_tp_ref = uc_ms_mda.USECASE4_TP_REF
+        uc4_tp1 = uc_ms_mda.USECASE4_TP1
+        uc4_tp2 = uc_ms_mda.USECASE4_TP2
+        uc7_tp_ref = uc_ms_mda.USECASE7_TP_REF
+        uc7_tp1 = uc_ms_mda.USECASE7_TP1
+        uc7_tp2 = uc_ms_mda.USECASE7_TP2
 
         scenario_dict = {
             uc2: Study1,

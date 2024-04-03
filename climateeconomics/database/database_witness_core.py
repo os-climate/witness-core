@@ -299,6 +299,47 @@ class DatabaseWitnessCore:
         source="mean percentages were computed based on official GDP data from international organizations and on the IMF grouping",
         last_update_date=date(2024, 3, 18)
     )
+    energy_consumption_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_services_sections.csv'))
+    energy_consumption_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_agriculture_sections.csv'))
+    energy_consumption_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_industry_sections.csv'))
+
+    EnergyConsumptionPercentageSectionsDict = ColectedData(
+        value= {"Agriculture": energy_consumption_agriculture,
+                 "Services": energy_consumption_services,
+                 "Industry": energy_consumption_industry},
+        unit="%",
+        description="energy consumption of each section for all sectors",
+        link="",
+        source="", # multiples sources TODO
+        last_update_date=date(2024,3,26)
+    )
+
+    non_energy_emissions_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_services_sections.csv'))
+    non_energy_emissions_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_agriculture_sections.csv'))
+    non_energy_emissions_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_industry_sections.csv'))
+
+    SectionsNonEnergyEmissionsDict = ColectedData(
+        value={"Agriculture": non_energy_emissions_agriculture,
+                 "Services": non_energy_emissions_services,
+                 "Industry": non_energy_emissions_industry},
+        unit="tCO2eq/M$",
+        description="Non energy CO2 emission per $GDP",
+        link="",
+        source="", # multiples sources TODO
+        last_update_date=date(2024,3,26)
+    )
+
+    energy_consumption_per_sector = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_per_sector.csv'))
+
+    EnergyConsumptionPercentageSectorDict = ColectedData(
+        value=energy_consumption_per_sector,
+        unit="%",
+        description="energy consumption of each sector",
+        link="",
+        source="", # multiples sources TODO
+        last_update_date=date(2024,3,26)
+    )
+
 
     atmosphere_total_mass_kg = 5.1480 * 10 ** 18
     molar_mass_atmosphere = 0.02897  # kg/mol
@@ -312,3 +353,12 @@ class DatabaseWitnessCore:
         "N2O": n_moles_in_atmosphere * molar_mass_n2o * kg_to_gt * 10 ** -6 * 1e-3,  # ppb
     }
     del atmosphere_total_mass_kg, molar_mass_atmosphere, n_moles_in_atmosphere, kg_to_gt, molar_mass_co2, molar_mass_ch4, molar_mass_n2o
+
+    PandemicParamsDf = HeavyCollectedData(
+        value=join(data_folder, "pandemic_param.csv"),
+        unit="%",
+        description="Pandemic Mortality Rate by Age & Rate of Excess Mortality by Age",
+        link="?",
+        source="?",
+        last_update_date=date(2023, 3, 1),
+    )

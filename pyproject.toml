@@ -1,0 +1,100 @@
+[project]
+name = "witness-core"
+version = "v0.1.0"
+description = "ClimateEconomics is the Python package to evaluate the effect of energy way of production on climate change and macro-economy."
+authors = [
+  { name = "Michael Tiemann", email = "72577720+MichaelTiemannOSC@users.noreply.github.com" },
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+keywords = ["Climate", "Finance"]
+
+classifiers = [
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: Unix",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.9",
+  "Topic :: Office/Business :: Financial",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development",
+]
+
+dependencies = [
+  "matplotlib==3.4.3",
+  "numpy==1.24.3",
+  "pandas==2.2.1",
+  "plotly==5.3.0",
+  "scipy==1.10.1",
+  "seaborn==0.9.0",
+  "tqdm==4.61.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/os-climate/witness-core"
+Repository = "https://github.com/os-climate/witness-core"
+Downloads = "https://github.com/os-climate/witness-corereleases"
+"Bug Tracker" = "https://github.com/os-climate/witness-core/issues"
+Documentation = "https://github.com/os-climate/witness-core/tree/main/docs"
+"Source Code" = "hhttps://github.com/os-climate/witness-core"
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.scripts]
+pre_release = "scripts/dev-versioning.sh"
+release = "scripts/release-versioning.sh"
+test = "pytest"
+tox = "tox"
+docs = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
+lint = "pre-commit run --all-files"
+complete = { call = "tasks.complete:main", help = "Create autocomplete files for bash and fish" }
+
+[tool.pdm.dev-dependencies]
+test = ["pdm[pytest]", "pytest-cov"]
+tox = ["tox", "tox-pdm>=0.5"]
+docs = ["sphinx>=7.2.6", "sphinx-copybutton>=0.5.2"]
+lint = ["pre-commit"]
+dev = [
+  "tox>=4.11.3",
+  "tox-pdm>=0.7.0",
+  "pytest==7.4.3",
+  "pytest-cov==4.1.0",
+  "pytest-xdist==3.4.0",
+  "pytest-durations==1.2.0"
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "test/",
+]
+addopts = "--cov --cov-report html --cov-report term-missing --cov-fail-under 70"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.flake8]
+max-line-length = "120"
+extend-ignore = [
+  "E501",
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["test/*"]
+# relative_files = true
