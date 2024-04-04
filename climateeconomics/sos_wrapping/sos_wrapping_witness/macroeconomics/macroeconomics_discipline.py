@@ -773,7 +773,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.Workforce,
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
-                      GlossaryCore.TotalEmissions,
                       ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -1191,38 +1190,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(serie)
 
             instanciated_charts.append(new_chart)
-
-        if GlossaryCore.TotalEmissions in chart_list:
-            non_energy_emissions_dict, energy_emissions_dict, total_emissions_dict = self.get_sosdisc_outputs([GlossaryCore.SectionNonEnergyEmissionsDictName,GlossaryCore.SectionEnergyEmissionsDictName,GlossaryCore.SectorTotalEmissionsDictName])
-            # get sectors available in dictionnaries
-            list_sectors_to_plot = [sector_name for sector_name in total_emissions_dict.keys() if sector_name != "total"]
-            for sector_name in list_sectors_to_plot:
-                total_emissions = list(total_emissions_dict[sector_name]["total"][GlossaryCore.TotalEmissionsName].values / 1000) #TODO change this and move it to model if we decide that it is in Gt
-                energy_emissions = list(energy_emissions_dict[sector_name]["total"][GlossaryCore.TotalEnergyEmissionsSectorName].values / 1000)
-                non_energy_emissions = list(non_energy_emissions_dict[sector_name]["total"][GlossaryCore.TotalNonEnergyEmissionsSectorName].values / 1000)
-
-
-                chart_name = f'Breakdown of emissions for sector {sector_name} [GtCO2eq]'
-
-                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Emissions [GtCO2eq]',
-                                                     chart_name=chart_name, stacked_bar=True)
-
-                new_series = InstanciatedSeries(
-                    years, total_emissions, 'Total emissions', 'lines', True)
-
-                new_chart.add_series(new_series)
-
-                new_series = InstanciatedSeries(
-                    years, energy_emissions, 'Energy emissions', 'bar', True)
-
-                new_chart.add_series(new_series)
-
-                new_series = InstanciatedSeries(
-                    years, non_energy_emissions, 'Non energy emissions', 'bar', True)
-
-                new_chart.add_series(new_series)
-
-                instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
