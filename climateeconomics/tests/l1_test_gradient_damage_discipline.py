@@ -27,8 +27,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -43,6 +41,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_dashboard': f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -112,6 +112,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_dashboard': f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -159,7 +161,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
                             'compute_climate_impact_on_gdp': False,
-                            'activate_climate_effect_population': False
+                            'activate_climate_effect_population': False,
+                            'activate_pandemic_effects': False,
                             }
                        }
 
@@ -169,7 +172,6 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_wo_damage_on_climate.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15,
@@ -186,6 +188,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_dashboard': f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)

@@ -23,7 +23,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class WitnessFullGradient(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     obj_const = [GlossaryCore.WelfareObjective, 'temperature_objective', 'CO2_objective', 'ppm_objective',
                  'co2_emissions_objective',

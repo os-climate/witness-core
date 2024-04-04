@@ -170,6 +170,8 @@ class GlossaryCore:
     NS_REFERENCE = "ns_ref"
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
+    NS_REGIONALIZED_POST_PROC = "ns_regionalized"
+    NS_SECTORS_POST_PROC = "ns_sectors_postproc"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -1319,6 +1321,21 @@ class GlossaryCore:
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
+    }
+
+    PandemicParamDfValue = "pandemic_param_df"
+    PandemicParamDf = {
+        "var_name": PandemicParamDfValue,
+        "type": "dataframe",
+        "default": DatabaseWitnessCore.PandemicParamsDf.value,
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "dataframe_descriptor": {
+            "param": ("string", None, False),
+            "disability": ("float", [0, 1e30], True),
+            "mortality": ("float", [0, 1e30], True),
+        },
     }
 
     WorkforceDfValue = "workforce_df"

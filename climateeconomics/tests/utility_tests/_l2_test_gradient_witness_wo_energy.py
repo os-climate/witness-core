@@ -32,7 +32,6 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
     """
     Design variables test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         '''
@@ -114,7 +113,6 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
                              ]
 
         disc_closed_loop = self.ee.root_process
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_witness_wo_energy_NR.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 
@@ -126,7 +124,6 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         output_full_names = [f'{self.name}.{GlossaryCore.UtilityDfValue}']
 
         disc_closed_loop = self.ee.root_process
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_witness_wo_energy.pkl', local_data = {},discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, output_column=GlossaryCore.DiscountedUtility, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 
@@ -142,7 +139,6 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
                              f'{self.name}.CO2_tax_minus_CO2_damage_constraint_df']
 
         disc_closed_loop = self.ee.root_process
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_energy_outputs_witness_wo_energy.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 
@@ -155,7 +151,6 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         output_full_names = [f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}']
 
         disc_closed_loop = self.ee.root_process
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_energy_outputs_witness_wo_energy.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 

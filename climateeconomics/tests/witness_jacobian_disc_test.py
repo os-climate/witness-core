@@ -90,19 +90,22 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                 if not exists(filepath):
                     print('Create missing pkl file')
                     self.ee.dm.delete_complex_in_df_and_arrays()
-                    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                    self.override_dump_jacobian = True
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                         step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                         inputs=inputs,
                                         outputs=outputs,
                                         directory=directory,
                                         parallel=WitnessJacobianDiscTest.PARALLEL)
+                    self.override_dump_jacobian = False
 
                 else:
                     print('Pkl file already exists')
                     try:
-                        print('Testing jacobian vs existing pkl file')
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = False
+                        if self.dump_jacobian:
+                            print('Testing with jacobian recomputation and dump')
+                        else:
+                            print('Testing jacobian vs existing pkl file')
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
@@ -113,7 +116,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                         try:
                             print('Jacobian may have changed, dumping pkl...')
                             self.ee.dm.delete_complex_in_df_and_arrays()
-                            AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                            self.override_dump_jacobian = True
                             self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                                 local_data={},
                                                 step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
@@ -121,6 +124,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                                                 outputs=outputs,
                                                 directory=directory,
                                                 parallel=WitnessJacobianDiscTest.PARALLEL)
+                            self.override_dump_jacobian = False
                         except:
                             print(f'Jacobian for {disc.name} is false')
                             excluded_disc.append(disc.name)
@@ -209,17 +213,20 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
     #             if not exists(filepath):
     #                 print('Create missing pkl file')
     #                 self.ee.dm.delete_complex_in_df_and_arrays()
-    #                 AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #                 self.override_dump_jacobian = True
     #                 self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
     #                                     step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
     #                                     inputs=inputs,
     #                                     outputs=outputs)
+    #                 self.override_dump_jacobian = False
     #
     #             else:
     #                 print('Pkl file already exists')
     #                 try:
-    #                     print('Testing jacobian vs existing pkl file')
-    #                     AbstractJacobianUnittest.DUMP_JACOBIAN = False
+#                        if self.dump_jacobian:
+#                             print('Testing with jacobian recomputation and dump')
+#                         else:
+#                             print('Testing jacobian vs existing pkl file')
     #                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
     #                                         step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
     #                                         inputs=inputs,
@@ -227,10 +234,10 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
     #                 except:
     #                     print('Jacobian may have change, dumping pkl...')
     #                     self.ee.dm.delete_complex_in_df_and_arrays()
-    #                     AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #                     self.override_dump_jacobian = True
     #                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
     #                                         step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
     #                                         inputs=inputs,
     #                                         outputs=outputs)
-    #
+    #                     self.override_dump_jacobian = False
     #     print(f'Summary: checked {counter} disciplines out of {total_disc}.')

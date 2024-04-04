@@ -32,8 +32,6 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
     """
     Design variables test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     def setUp(self):
         '''
         Initialize third data needed for testing
