@@ -38,14 +38,12 @@ class ProcessBuilder(BaseProcessBuilder):
 
     def get_builders(self):
 
-        ns_scatter = self.ee.study_name
-
-        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
-                   GlossaryCore.NS_ENERGY_MIX: ns_scatter,
-                   GlossaryCore.NS_REFERENCE: f'{ns_scatter}.NormalizationReferences',
-                   GlossaryCore.NS_MACRO: ns_scatter,
-                   'ns_agriculture': ns_scatter,
-                   'ns_forest': ns_scatter}
+        ns_dict = {GlossaryCore.NS_WITNESS: self.ee.study_name,
+                   GlossaryCore.NS_ENERGY_MIX: self.ee.study_name,
+                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
+                   GlossaryCore.NS_MACRO: self.ee.study_name,
+                   'ns_agriculture': self.ee.study_name,
+                   'ns_forest': self.ee.study_name}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'GHGCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.ghgcycle.ghgcycle_discipline.GHGCycleDiscipline',
@@ -68,10 +66,12 @@ class ProcessBuilder(BaseProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'population_process')
         builder_list.extend(chain_builders_population)
 
-        ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
-                   'ns_resource': f'{self.ee.study_name}.EnergyMix',
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences'}
+        ns_dict = {
+            'ns_land_use': f'{self.ee.study_name}.EnergyMix',
+            GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
+            'ns_resource': f'{self.ee.study_name}.EnergyMix',
+            GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -85,4 +85,10 @@ class ProcessBuilder(BaseProcessBuilder):
         non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
         builder_list.extend(non_use_capital_list)
+
+        self.ee.ns_manager.add_ns(GlossaryCore.NS_REGIONALIZED_POST_PROC, f"{self.ee.study_name}.Macroeconomics.Regions")
+        region_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_regions.post_processing_regions'
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            GlossaryCore.NS_REGIONALIZED_POST_PROC, region_post_proc_module
+        )
         return builder_list

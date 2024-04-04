@@ -35,7 +35,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
-NUMBERCOUNTRIESTOPLOT = 10
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     """Macroeconomics discipline for WITNESS"""
 
@@ -776,9 +775,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyEfficiency,
                       GlossaryCore.SectorGdpPart,
                       GlossaryCore.SectionGdpPart,
-                      GlossaryCore.ChartGDPPerGroup,
-                      GlossaryCore.ChartPercentagePerGroup,
-                      GlossaryCore.ChartGDPBiggestEconomies,
                       GlossaryCore.TotalEmissions,
                       GlossaryCore.SectionEnergyEmissionPart,
                       GlossaryCore.SectionNonEnergyEmissionPart,
@@ -1238,96 +1234,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 instanciated_charts.append(InstantiatedPlotlyNativeChart(
                     fig, chart_name=chart_name,
                     default_title=True, default_legend=False))
-
-        if GlossaryCore.ChartGDPPerGroup in chart_list:
-
-            # get variable with total gdp per region
-            total_gdp_per_region_df = self.get_sosdisc_outputs(GlossaryCore.TotalGDPGroupDFName)
-
-            years = list(total_gdp_per_region_df[GlossaryCore.Years])
-
-            chart_name = 'GDP-PPP adjusted per group of countries in T$2020'
-            # create new chart
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'GDP [trillion $2020]',
-                                                 chart_name=chart_name, y_min_zero=True)
-
-            visible_line = True
-            # loop on each column to show GDP per group of countries
-            for col in total_gdp_per_region_df.columns:
-                if col != GlossaryCore.Years:
-                    ordonate_data = list(total_gdp_per_region_df[col].values)
-                    # refactor name of column (group name)
-                    column_name_updated = col.replace('_', ' ').title()
-                    # add new serie
-                    new_series = InstanciatedSeries(
-                        years, ordonate_data, f'{column_name_updated}', InstanciatedSeries.LINES_DISPLAY, visible_line)
-                    new_chart.add_series(new_series)
-            instanciated_charts.append(new_chart)
-
-        if GlossaryCore.ChartPercentagePerGroup in chart_list:
-
-            # get variable with total gdp per region
-            total_percentage_per_region_df = self.get_sosdisc_outputs(GlossaryCore.PercentageGDPGroupDFName)
-
-
-            chart_name = 'Percentage of GDP-PPP adjusted per group of countries in [%]'
-            # create new chart
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Percentage of GDP per group of countries in [%]',
-                                                 chart_name=chart_name, stacked_bar=True)
-
-            visible_line = True
-            # loop on each column to show GDP per group of countries
-            for col in total_percentage_per_region_df.columns:
-                if col != GlossaryCore.Years:
-                    ordonate_data = list(total_percentage_per_region_df[col].values)
-                    # refactor name of column (group name)
-                    column_name_updated = col.replace('_', ' ').title()
-                    # add new serie
-                    new_series = InstanciatedSeries(
-                        years, ordonate_data, f'{column_name_updated}', display_type=InstanciatedSeries.BAR_DISPLAY)
-                    new_chart.add_series(new_series)
-
-            instanciated_charts.append(new_chart)
-
-        # The ten of countries with the highest GDP per year
-        if GlossaryCore.ChartGDPBiggestEconomies in chart_list:
-            # get variable with total GDP per countries
-            total_gdp_per_countries_df, economics_df = self.get_sosdisc_outputs([GlossaryCore.GDPCountryDFName,GlossaryCore.EconomicsDetailDfValue])
-            # Take the year 2020 as a reference to determine the ten biggest countries in terms of GDP
-            # Rank GDP in descending order to select the x countries with the biggest GDP
-            # Find the name of the x biggest  countries
-            year_start = years[0]
-            list_biggest_countries = total_gdp_per_countries_df[total_gdp_per_countries_df[GlossaryCore.Years] == year_start].sort_values(by='gdp', ascending=False)['country_name'].values[:NUMBERCOUNTRIESTOPLOT+1]
-
-            chart_name = f'The {NUMBERCOUNTRIESTOPLOT} biggest countries GDP-PPP adjusted per year in [G$]'
-
-            # create new chart
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                                 f'The {NUMBERCOUNTRIESTOPLOT} biggest countries GDP-PPP adjusted per year in [G$]',
-                                                 chart_name=chart_name, stacked_bar=True)
-            visible_line = True
-
-            # loop on each column to show GDP per group of countries
-            for country in list_biggest_countries:
-                ordonate_data = total_gdp_per_countries_df[total_gdp_per_countries_df[GlossaryCore.CountryName] == country][
-                    GlossaryCore.GDPName].to_list()
-                # refactor name of column (country name)
-                country_name = country.title()
-                # add new serie
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, f'{country_name}', display_type=InstanciatedSeries.BAR_DISPLAY)
-                new_chart.add_series(new_series)
-
-            # add total gdp line
-            # convert T$ to G$
-            gdp_net_of_damage = 1000. * economics_df[GlossaryCore.OutputNetOfDamage].values
-            new_series = InstanciatedSeries(
-                years, list(gdp_net_of_damage),
-                f"Total GDP [G$]",
-                InstanciatedSeries.LINES_DISPLAY, visible_line)
-            new_chart.add_series(new_series)
-
-            instanciated_charts.append(new_chart)
 
         if GlossaryCore.TotalEmissions in chart_list:
             non_energy_emissions_dict, energy_emissions_dict, total_emissions_dict = self.get_sosdisc_outputs([GlossaryCore.SectionNonEnergyEmissionsDictName,GlossaryCore.SectionEnergyEmissionsDictName,GlossaryCore.SectorTotalEmissionsDictName])
