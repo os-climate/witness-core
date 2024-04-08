@@ -626,8 +626,8 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
         usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
         usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
-        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#32CD32'),  # Green
-        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#7FFF00'),  # Light Green
+        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
+        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
     }
     line_color = None
 
