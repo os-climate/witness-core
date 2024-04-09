@@ -16,8 +16,8 @@ limitations under the License.
 # -- Project information
 
 project = 'witness-core'
-copyright = '2024, Capgemini'
-author = 'Capgemini'
+copyright = '2024, Witness Developers'
+author = 'Witness Developers'
 
 #release = '0.1'
 #version = '0.1.0'
