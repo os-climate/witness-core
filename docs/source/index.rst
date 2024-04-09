@@ -1,4 +1,4 @@
-.. sostrades-core documentation
+.. witness-core documentation
 
 Welcome to witness-core's documentation!
 ==========================================
