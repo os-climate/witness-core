@@ -1,6 +1,6 @@
 .. sostrades-core documentation
 
-Welcome to sostrades-core's documentation!
+Welcome to witness-core's documentation!
 ==========================================
 
 .. note::
