@@ -111,7 +111,7 @@ class MacroEconomics:
         # (disability and mortality) to employment_rate and population death_rate individually.
         # In a future study, we could model pandemic as part of an overall health discipline.
         self.pandemic_disability_df = None
-        self.activate_pandemic_effects = self.param['assumptions_dict']['activate_pandemic_effects']
+        self.activate_pandemic_effects = False #self.param['assumptions_dict']['activate_pandemic_effects']
         self.set_data()
         self.create_dataframe()
         self.total_gdp_per_group_df = None

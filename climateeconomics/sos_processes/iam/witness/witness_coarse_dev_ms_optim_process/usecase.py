@@ -49,10 +49,12 @@ class Study(ClimateEconomicsStudyManager):
         scenario_dict = {
             self.UC1: Study1,
             self.UC2: Study2,
+        }
+        """
             self.UC3: Study3,
             self.UC4: Study4,
             self.UC5: Study5,
-        }
+        }"""
 
 
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
@@ -66,12 +68,23 @@ class Study(ClimateEconomicsStudyManager):
             scenarioUseCase.study_name = f'{self.study_name}.{scatter_scenario}.{scenario_name}'
             scenarioData = scenarioUseCase.setup_usecase()
             values_dict.update(scenarioData)
-
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
+        
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 20 for scenario_name in scenario_dict.keys()})
 
         return values_dict
 
 
 if '__main__' == __name__:
+    import tracemalloc
+    tracemalloc.start()
+    
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data(display_treeview=True)
+    uc_cls.run()
+    
+    snapshot = tracemalloc.take_snapshot()
+    top_stats = snapshot.statistics('lineno')
+
+    print("[ Top 10 ]")
+    for stat in top_stats[:10]:
+        print(stat)

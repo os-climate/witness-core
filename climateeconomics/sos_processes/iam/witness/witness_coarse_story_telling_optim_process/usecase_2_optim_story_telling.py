@@ -94,7 +94,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 2,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': 'SimpleCache',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.propagate_cache_to_children': True,
                              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}

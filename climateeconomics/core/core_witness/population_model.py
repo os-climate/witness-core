@@ -74,7 +74,7 @@ class Population:
         self.kcal_pc_ref = inputs['kcal_pc_ref']
         self.theta_diet = inputs['theta_diet']
         self.activate_climate_effect_on_population = inputs['assumptions_dict']['activate_climate_effect_population']
-        self.activate_pandemic_effects = inputs['assumptions_dict']['activate_pandemic_effects']
+        self.activate_pandemic_effects = False #inputs['assumptions_dict']['activate_pandemic_effects']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
 
