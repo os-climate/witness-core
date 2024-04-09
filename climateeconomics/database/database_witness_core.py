@@ -302,11 +302,14 @@ class DatabaseWitnessCore:
     energy_consumption_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_services_sections.csv'))
     energy_consumption_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_agriculture_sections.csv'))
     energy_consumption_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_industry_sections.csv'))
+    energy_consumption_household = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'energy_consumption_percentage_household_sections.csv'))
+
 
     EnergyConsumptionPercentageSectionsDict = ColectedData(
         value= {"Agriculture": energy_consumption_agriculture,
                  "Services": energy_consumption_services,
-                 "Industry": energy_consumption_industry},
+                 "Industry": energy_consumption_industry,
+                "Household": energy_consumption_household},
         unit="%",
         description="energy consumption of each section for all sectors",
         link="",
@@ -317,11 +320,13 @@ class DatabaseWitnessCore:
     non_energy_emissions_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_services_sections.csv'))
     non_energy_emissions_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_agriculture_sections.csv'))
     non_energy_emissions_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_industry_sections.csv'))
+    non_energy_emissions_household = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'non_energy_emission_gdp_household_sections.csv'))
 
     SectionsNonEnergyEmissionsDict = ColectedData(
         value={"Agriculture": non_energy_emissions_agriculture,
                  "Services": non_energy_emissions_services,
-                 "Industry": non_energy_emissions_industry},
+                 "Industry": non_energy_emissions_industry,
+               "Household": non_energy_emissions_household},
         unit="tCO2eq/M$",
         description="Non energy CO2 emission per $GDP",
         link="",
