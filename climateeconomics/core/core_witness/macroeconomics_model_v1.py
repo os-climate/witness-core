@@ -604,11 +604,9 @@ class MacroEconomics:
         Compute gdp per sector based on gdp per section
         """
         # prepare dictionary with values for each section per sector
-        dict_sectors_sections = {
-            GlossaryCore.SectorServices: {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsServices},
-            GlossaryCore.SectorIndustry: {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsIndustry},
-            GlossaryCore.SectorAgriculture: {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsAgriculture}
-        }
+        dict_sectors_sections = {}
+        for sector, sections in GlossaryCore.SectionDictSectors.items():
+            dict_sectors_sections[sector] = {section: self.section_gdp_df[section].values for section in sections}
         # create dictionary with sector as key and sum of values for sections
         dict_sum_by_sector = {GlossaryCore.Years: self.years_range}
         dict_sum_by_sector.update({

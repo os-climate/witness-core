@@ -124,9 +124,10 @@ class MacroDiscTest(unittest.TestCase):
 
         self.share_energy_per_sector_percentage = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.SectorServices: 37. ,
+            GlossaryCore.SectorServices: 14.56,
             GlossaryCore.SectorAgriculture: 2.13,
-            GlossaryCore.SectorIndustry: 29.
+            GlossaryCore.SectorIndustry: 63.30,
+            GlossaryCore.SectorNonEco: 20.0,
         })
 
         carbon_intensity_energy = pd.DataFrame({
@@ -136,7 +137,7 @@ class MacroDiscTest(unittest.TestCase):
 
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
-        sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
+        sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry, GlossaryCore.SectorNonEco]
         section_list = GlossaryCore.SectionsPossibleValues
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         weighted_average_percentage_per_sector_df = pd.read_csv(
