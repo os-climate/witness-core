@@ -50,7 +50,7 @@ class Study(ClimateEconomicsStudyManager):
 
         scenario_dict = {
             uc2: Study1,
-            uc4_tp_ref: Study3,
+            #uc4_tp_ref: Study3,
             #uc4_tp1: Study3,
             #uc4_tp2: Study3,
             #uc7_tp_ref: Study4,
