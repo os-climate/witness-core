@@ -122,7 +122,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                             local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
                             inputs=inputs,
                             outputs=outputs)
-        # self.override_dump_jacobian = False
 
     def test_02_gradient_subprocess_objective_over_design_var_for_all_iterations(self):
         """
@@ -248,7 +247,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                     local_data=dict_values_cleaned,#coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,#design_space_values_dict,
                                     inputs=inputs,
                                     outputs=outputs)
-                self.override_dump_jacobian=False
                 test_results.append((iter, True))
                 self.ee.logger.info(f'iteration {iter} succeeded')
             except AssertionError:
