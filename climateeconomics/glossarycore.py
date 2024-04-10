@@ -237,14 +237,12 @@ class GlossaryCore:
         SectionR,
         SectionS,
         SectionT,
-        SectionHousehold,
     ]
 
     SectionDictSectors = {
         SectorAgriculture: SectionsAgriculture,
         SectorIndustry: SectionsIndustry,
         SectorServices: SectionsServices,
-        SectorNonEco: SectionsNonEco,
     }
 
     SectionListValue = "section_list"
