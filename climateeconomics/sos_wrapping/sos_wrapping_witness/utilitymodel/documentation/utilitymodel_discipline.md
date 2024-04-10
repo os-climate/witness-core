@@ -1,7 +1,7 @@
 ## Utility model
 As in DICE (Nordhaus, 2017[^1]), this model is used for the optimisation problem. Our way to compute utility per capita is slightly different from DICE. We multiply the value obtained in DICE by an energy price ratio. 
-Utility per capita is: 
-$$U_{pc}(c_t) = energy\_price\_ratio_t.(\frac{c_t^{1-\alpha}}{1-\alpha}-1)$$
+Furthermore, to avoid negative values when the capital consumption is low (in case of large damages for instance), Utility per capita is: 
+$$U_{pc}(c_t) = energy\_price\_ratio_t.c_t$$
 with 
 $$energy\_price\_ratio_t =\frac{energy\_price_{t=0}}{energy\_price_t}$$
 where $energy\_price$ is the mean price of energy in dollars per MWh and comes from the energy model, $\alpha$ is the elasticity of marginal utility ($conso\_elasticity$). We set it by default to 2. A higher $\alpha$ means that marginal utility decreases faster with increase in income. $c_t = \frac{C_t}{L_t}$ is the per capita consumption. $L_t$ is the population in millions of people.
@@ -18,7 +18,7 @@ Another objective value is calculated and set as an output of the utility model,
 
 $$ utility_{min} = \alpha \times (1 - \gamma) \times utility_{min}^{ref} / min(U_{pc}(c_t)R_tL_t)$$ 
 
-where $\gamma$ is a trade variable between the objectives based on the economy and $\alpha$ is the global tradeof variable between global warning and the economy.
+where $\gamma$ is a trade variable between the objectives based on the economy and $\alpha$ is the global tradeof variable between global warming and the economy.
 
 
 ### References

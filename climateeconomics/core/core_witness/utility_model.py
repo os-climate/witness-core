@@ -91,10 +91,11 @@ class UtilityModel():
         self.utility_df[GlossaryCore.EnergyPriceRatio] = energy_price_ratio
 
     def compute_per_capita_consumption_utility(self):
-        """Per capita consumption utilty is ((percapitaconso**(1-elasmu)-1)/(1-elasmu)-1)"""
+        """Per capita consumption utilty is ((percapitaconso**(1-elasmu)-1)/(1-elasmu)-1)
+        leads to <0 values at small pc_consumption values => keep pc_consumption only"""
         pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-        consumption_utility = (pc_consumption ** (1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
-        self.utility_df[GlossaryCore.PerCapitaConsumptionUtility] = consumption_utility
+        #consumption_utility = (pc_consumption ** (1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
+        self.utility_df[GlossaryCore.PerCapitaConsumptionUtility] = pc_consumption
 
     def compute_utility(self):
         """
@@ -158,9 +159,10 @@ class UtilityModel():
     def d_pc_consumption_utility_d_per_capita_consumption(self):
         """pass"""
         pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-        d_pc_consumption_utility_d_pc_consumption = pc_consumption ** (-self.conso_elasticity)
+        #d_pc_consumption_utility_d_pc_consumption = pc_consumption ** (-self.conso_elasticity)
+        #np.diag(d_pc_consumption_utility_d_pc_consumption)
 
-        return np.diag(d_pc_consumption_utility_d_pc_consumption)
+        return np.identity(len(pc_consumption))
 
     def d_utility_d_per_capita_consumption(self):
         """utility = utility of per capita consumption * energy price ratio"""
@@ -209,9 +211,7 @@ class UtilityModel():
     def d_pc_consumption_utility_objective_d_per_capita_consumption(self):
         """derivative of consumption utility per capita objective wrt per capita consumption"""
         pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-        d_pc_consumption_utility_d_pc_consumption = pc_consumption ** (-self.conso_elasticity)
-        d_pc_consumption_utility_d_pc_consumption_diag = np.diag(d_pc_consumption_utility_d_pc_consumption)
-        d_pc_consumption_utility_objective_d_pc_consumption = -1.0 * np.sum(d_pc_consumption_utility_d_pc_consumption_diag,
+        d_pc_consumption_utility_objective_d_pc_consumption = -1.0 * np.sum(np.identity(len(pc_consumption)),
                                                                      axis=0) / (self.n_years * self.per_capita_consumption_ref)
         return d_pc_consumption_utility_objective_d_pc_consumption
 

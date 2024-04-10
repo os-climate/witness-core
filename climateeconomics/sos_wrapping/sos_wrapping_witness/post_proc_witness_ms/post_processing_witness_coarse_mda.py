@@ -595,54 +595,60 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
 def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios, status_dict=None):
     min_x = min(x_list)
     max_x = max(x_list)
-    # graphs ordinate should start at 0, except for CO2 emissions that could go <0
+    # Graphs ordinate should start at 0, except for CO2 emissions that could go <0
     min_y = min(0, min([min(list(y)) for y in y_dict.values()]))
     max_y = max([max(list(y)) for y in y_dict.values()])
 
-    new_chart = TwoAxesInstanciatedChart(x_axis_name, y_axis_name,
-                                         [min_x - 5, max_x + 5], [
-                                             min_y - max_y * 0.05, max_y * 1.05],
-                                         chart_name)
+    # Initialize new_chart with default values
+    new_chart = TwoAxesInstanciatedChart(x_axis_name, y_axis_name, [min_x - 5, max_x + 5], [min_y - max_y * 0.05, max_y * 1.05], chart_name)
+
+    # Define colors for curves
+    color_mapping = {
+        # MDA multiscenario coarse dev:
+        usecase_ms_mda.USECASE2: dict(color='red'),
+        usecase_ms_mda.USECASE2B: dict(color='red'),
+        usecase_ms_mda.USECASE3: dict(color='orange'),
+        usecase_ms_mda.USECASE4: dict(color='orange'),
+        usecase_ms_mda.USECASE5: dict(color='orange'),
+        usecase_ms_mda.USECASE6: dict(color='green'),
+        usecase_ms_mda.USECASE7: dict(color='green'),
+
+        # MDO multiscenario coarse dev:
+        usecase_ms_mdo.UC1: dict(color='red'),
+        usecase_ms_mdo.UC2: dict(color='red'),
+        usecase_ms_mdo.UC3: dict(color='orange'),
+        usecase_ms_mdo.UC4: dict(color='green'),
+        usecase_ms_mdo.UC5: dict(color='cyan'),
+
+        # Tipping point scenarios:
+        usecase_ms_mda_tipping_point.USECASE2: dict(color='red'),  # Red
+        usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
+        usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
+        usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
+        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
+        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
+        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
+    }
+    line_color = None
 
     for scenario, y_values in y_dict.items():
-        '''
-        For ease of understanding of the plots, scenarios without damage/without tax are in dashed line, 
-        with damage are dash_dot lines, with tax are dot lines and with  damage and tax are solid lines
-        whether or not damage and taxes are activated is provided in status_dict
-        
-        line color is red for fossil (usecase 2 & 2b), green for NZE (usecase 6 & 7), orange for fossil + renewable 
-        (usecase 3, 4, 5)
-        '''
-        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B, usecase_ms_mdo.UC1,  usecase_ms_mdo.UC2,
-                        usecase_ms_mda_tipping_point.USECASE2]:
-            line_color = dict(color='red')
-        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5, usecase_ms_mdo.UC3,
-                          usecase_ms_mda_tipping_point.USECASE4_TP_REF, usecase_ms_mda_tipping_point.USECASE4_TP1,
-                          usecase_ms_mda_tipping_point.USECASE4_TP2]:
-            line_color = dict(color='orange')
-        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7, usecase_ms_mdo.UC4,
-                          usecase_ms_mda_tipping_point.USECASE7_TP_REF, usecase_ms_mda_tipping_point.USECASE7_TP1,
-                          usecase_ms_mda_tipping_point.USECASE7_TP2]:
-            line_color = dict(color='green')
-        elif scenario in [usecase_ms_mdo.UC5]:
-            line_color = dict(color='cyan')
-        else:
-            line_color = None
-        marker_symbol = 'circle'
-        lines = SeriesTemplate.LINES_DISPLAY #default value for scenario with tax and damage
-        if status_dict is not None:
-            if status_dict[scenario][TAX_NAME] is False and status_dict[scenario][DAMAGE_NAME] is False:
-                lines = SeriesTemplate.DASH_LINES_DISPLAY
-            elif status_dict[scenario][TAX_NAME] is True and status_dict[scenario][DAMAGE_NAME] is False:
-                lines = SeriesTemplate.DOT_LINES_DISPLAY
-            elif status_dict[scenario][TAX_NAME] is False and status_dict[scenario][DAMAGE_NAME] is True:
-                lines = SeriesTemplate.DASH_DOT_LINES_DISPLAY
+        if scenario in color_mapping.keys():
+            line_color = color_mapping[scenario]
 
-        if scenario in selected_scenarios:
-            new_series = InstanciatedSeries(
-                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol, line=line_color)
+        if line_color is not None:  # Check if line_color is assigned
+            marker_symbol = 'circle'
+            lines = SeriesTemplate.LINES_DISPLAY
+            if status_dict is not None:
+                if status_dict[scenario][TAX_NAME] is False and status_dict[scenario][DAMAGE_NAME] is False:
+                    lines = SeriesTemplate.DASH_LINES_DISPLAY
+                elif status_dict[scenario][TAX_NAME] is True and status_dict[scenario][DAMAGE_NAME] is False:
+                    lines = SeriesTemplate.DOT_LINES_DISPLAY
+                elif status_dict[scenario][TAX_NAME] is False and status_dict[scenario][DAMAGE_NAME] is True:
+                    lines = SeriesTemplate.DASH_DOT_LINES_DISPLAY
 
-            new_chart.series.append(new_series)
+            if scenario in selected_scenarios:
+                new_series = InstanciatedSeries(x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol, line=line_color)
+                new_chart.series.append(new_series)
 
     return new_chart
 
@@ -652,7 +658,7 @@ def get_df_per_scenario_dict(execution_engine, var_names, scenario_list=[]):
     @param execution_engine: Execution_engine, object from which the data is gathered
     @param var_names: list of string, containing the paths to access the df
 
-    @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
+    @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe}
     '''
     df_per_scenario_dicts = [{} for _ in var_names]
     if not scenario_list:

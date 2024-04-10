@@ -170,6 +170,8 @@ class GlossaryCore:
     NS_REFERENCE = "ns_ref"
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
+    NS_REGIONALIZED_POST_PROC = "ns_regionalized"
+    NS_SECTORS_POST_PROC = "ns_sectors_postproc"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
