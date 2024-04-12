@@ -51,9 +51,9 @@ class Study(ClimateEconomicsStudyManager):
                                                                },
                         f'{self.study_name}.{witness_uc.optim_name}.design_space' : dspace,
                         f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor}
-        data_witness.append(updated_data)
+        data_witness.update(updated_data)
 
-        data_witness.append({
+        data_witness.update({
             f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.ccs_price_percentage": 100.0,
             f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.co2_damage_price_percentage": 100.0,
         })
