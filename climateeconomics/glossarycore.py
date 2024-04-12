@@ -126,6 +126,7 @@ class GlossaryCore:
     SectorServices = "Services"
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
+    SectorNonEco = "Household"
     SectorEnergy = "energy"
     TotalGDPGroupDFName = "total_gdp_per_group_df"
     PercentageGDPGroupDFName = "percentage_gdp_group_df"
@@ -187,6 +188,7 @@ class GlossaryCore:
     SectionR = "Arts, entertainment and recreation"
     SectionS = "Other service activities"
     SectionT = "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
+    SectionHousehold = "Household"
 
     SectionsAgriculture = [SectionA]
     SectionsIndustry = [SectionB, SectionC, SectionD, SectionE, SectionF]
@@ -206,6 +208,7 @@ class GlossaryCore:
         SectionS,
         SectionT,
     ]
+    SectionsNonEco = [SectionHousehold]
 
     SectionsPossibleValues = [
         SectionA,
@@ -235,6 +238,7 @@ class GlossaryCore:
         SectorIndustry: SectionsIndustry,
         SectorServices: SectionsServices,
     }
+
     SectionListValue = "section_list"
 
     SectionList = {

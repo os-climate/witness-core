@@ -124,9 +124,10 @@ class MacroDiscTest(unittest.TestCase):
 
         self.share_energy_per_sector_percentage = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.SectorServices: 37. ,
+            GlossaryCore.SectorServices: 14.56,
             GlossaryCore.SectorAgriculture: 2.13,
-            GlossaryCore.SectorIndustry: 29.
+            GlossaryCore.SectorIndustry: 63.30,
+            #GlossaryCore.SectorNonEco: 20.0, # not an economic sector
         })
 
         carbon_intensity_energy = pd.DataFrame({
