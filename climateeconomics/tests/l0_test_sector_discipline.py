@@ -80,11 +80,6 @@ class ServicesDiscTest(unittest.TestCase):
                                                 GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),
                                                 GlossaryCore.BaseCarbonPrice: 0.})
 
-        self.energy_emission_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.EnergyCarbonIntensityDfValue: 1.0
-        })
-
 
     def test_execute(self):
         section_list = GlossaryCore.SectionsIndustry
@@ -109,7 +104,6 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
@@ -158,7 +152,6 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.energy_emission_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,

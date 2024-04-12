@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 from numpy import arange, asarray
 
+from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
@@ -192,6 +193,19 @@ class DataStudy():
             {GlossaryCore.Years: years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 1.65] * nb_per)},
             index=years)
+
+        # ------------------ mda initialisation data
+        co2_emissions_Gt = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.TotalCO2Emissions: 35.,
+        })
+        witness_input.update({
+            f"{self.study_name}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}": co2_emissions_Gt,
+        })
+        # ------------------ end mda initialisation
+
+        for sector in GlossaryCore.SectorsPossibleValues:
+            witness_input[f'{self.study_name}.GHGEmissions.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
 
         witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'] = energy_investment_wo_tax
         witness_input[f'{self.study_name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}'] = share_non_energy_investment

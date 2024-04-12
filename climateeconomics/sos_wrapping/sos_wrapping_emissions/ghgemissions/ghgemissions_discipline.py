@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from os.path import join, dirname
+import pandas as pd
 import numpy as np
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
@@ -85,6 +87,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
         'affine_co2_objective': {'type': 'bool','default': True, 'user_level': 2, 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
+        GlossaryCore.SectorListValue: GlossaryCore.SectorList,
 
     }
     DESC_OUT = {
@@ -95,7 +98,46 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CO2EmissionsObjectiveValue: GlossaryCore.CO2EmissionsObjective,
         GlossaryCore.TotalEnergyEmissions: GlossaryCore.TotalEnergyCO2eqEmissionsDf,
         GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf,
+        GlossaryCore.EconomicsEmissionDfValue: GlossaryCore.EmissionDf
     }
+
+    def setup_sos_disciplines(self):
+        dynamic_inputs = {}
+        dynamic_outputs = {}
+        if GlossaryCore.SectorListValue in self.get_data_in():
+            sectorlist = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
+            if sectorlist is not None:
+                for sector in sectorlist:
+                    # section energy consumption
+                    section_energy_consumption_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionDf)
+                    section_energy_consumption_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    dynamic_inputs[f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}"] = section_energy_consumption_df_variable
+
+                    section_non_energy_emissions_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionGdpDf)
+                    section_non_energy_emissions_gdp_var.update({'namespace': GlossaryCore.NS_SECTORS})
+                    dynamic_inputs[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emissions_gdp_var
+
+                    section_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpDf)
+                    section_gdp_var["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    dynamic_inputs[f"{sector}.{GlossaryCore.SectionGdpDfValue}"] = section_gdp_var
+
+                    section_energy_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyEmissionDf)
+                    section_energy_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    dynamic_outputs[f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}"] = section_energy_emissions_df_variable
+
+                    section_non_energy_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionDf)
+                    section_non_energy_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    dynamic_outputs[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}"] = section_non_energy_emissions_df_variable
+
+                    section_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEmissionDf)
+                    section_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    dynamic_outputs[f"{sector}.{GlossaryCore.SectionEmissionDfValue}"] = section_emissions_df_variable
+
+                    emission_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.EmissionDf)
+                    dynamic_outputs[f"{sector}.{GlossaryCore.EmissionsDfValue}"] = emission_df_disc
+
+        self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
@@ -109,21 +151,31 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             self.check_ranges(inputs_dict, dict_ranges)
         self.emissions_model.configure_parameters_update(inputs_dict)
         # Compute de emissions_model
-        self.emissions_model.compute()
+        self.emissions_model.compute(inputs_dict)
         # Store output data
 
+        # todo: clean next 3 lines : put it in model
         # co2_emissions_df = self.emissions_model.compute_co2_emissions_for_carbon_cycle()
         cols = [GlossaryCore.Years] + [f'Total {ghg} emissions' for ghg in self.emissions_model.GHG_TYPE_LIST]
         emissions_df = self.emissions_model.ghg_emissions_df[cols]
 
-        dict_values = {'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
-                       GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]],
-                       GlossaryCore.GHGEmissionsDfValue: emissions_df,
-                       'GWP_emissions': self.emissions_model.gwp_emissions,
-                       GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
-                       GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions,
-                       GlossaryCore.EnergyCarbonIntensityDfValue: self.emissions_model.carbon_intensity_of_energy_mix
-                       }
+        dict_values = {
+            'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
+            GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]],
+            GlossaryCore.GHGEmissionsDfValue: emissions_df,
+            'GWP_emissions': self.emissions_model.gwp_emissions,
+            GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
+            GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions,
+            GlossaryCore.EnergyCarbonIntensityDfValue: self.emissions_model.carbon_intensity_of_energy_mix,
+            GlossaryCore.EconomicsEmissionDfValue: self.emissions_model.total_economics_emisssions[GlossaryCore.EmissionDf['dataframe_descriptor'].keys()],
+        }
+
+        for sector in self.emissions_model.new_sector_list:
+            dict_values.update({f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}": self.emissions_model.dict_sector_sections_energy_emissions[sector]})
+            dict_values.update({f"{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}": self.emissions_model.dict_sector_sections_non_energy_emissions[sector]})
+            dict_values.update({f"{sector}.{GlossaryCore.SectionEmissionDfValue}": self.emissions_model.dict_sector_sections_emissions[sector]})
+            dict_values.update({f"{sector}.{GlossaryCore.EmissionsDfValue}": self.emissions_model.dict_sector_emissions[sector][GlossaryCore.EmissionDf['dataframe_descriptor'].keys()]})
+
         if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
             self.check_ranges(dict_values, dict_ranges)
@@ -141,6 +193,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1, inputs_dict[GlossaryCore.TimeStep])
 
         # land emissions
+        d_energy_carbon_intensity_d_ghg_total_emissions = {}
         for ghg in self.emissions_model.GHG_TYPE_LIST:
             ghg_land_emissions = inputs_dict[f'{ghg}_land_emissions']
             for column in ghg_land_emissions.columns:
@@ -160,10 +213,11 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
                 np.identity(len(years))* self.emissions_model.gwp_100[ghg])
 
+            d_energy_carbon_intensity_d_ghg_total_emissions[ghg] = self.emissions_model.d_carbon_intensity_of_energy_mix_d_ghg_energy_emissions(ghg=ghg)
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
                 ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
-                self.emissions_model.d_carbon_intensity_of_energy_mix_d_ghg_energy_emissions(ghg=ghg))
+                d_energy_carbon_intensity_d_ghg_total_emissions[ghg])
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
@@ -176,10 +230,139 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.CO2EmissionsObjectiveValue,), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),
             self.emissions_model.d_CO2_emissions_objective_d_total_co2_emissions())
 
+        d_carbon_intensity_d_energy_prod = self.emissions_model.d_carbon_intensity_of_energy_mix_d_energy_production()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            self.emissions_model.d_carbon_intensity_of_energy_mix_d_energy_production())
+            d_carbon_intensity_d_energy_prod)
+
+        new_sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
+        d_sector_non_energy_emissions_d_ghg_emissions = {}
+        d_sector_non_energy_emissions_d_energy_prod = {}
+        d_sector_energy_emissions_d_ghg_emissions = {}
+        d_sector_energy_emissions_d_energy_prod = {}
+        d_section_energy_emissions_d_section_energy_consumption = self.emissions_model.d_section_energy_emissions_d_section_energy_consumption()
+        for sector in new_sector_list:
+            d_sector_energy_emissions_d_ghg_emissions[sector] = {}
+            d_energy_emissions_sections_d_energy_prod_list = []
+
+            d_sections_energy_emissions_d_ghg_emisssions = {ghg: [] for ghg in GlossaryCore.GreenHouseGases}
+            #d_sections_non_energy_emissions_d_gdp_sections = {ghg: [] for ghg in GlossaryCore.GreenHouseGases}
+            for section in GlossaryCore.SectionDictSectors[sector]:
+
+                d_section_energy_emissions_d_energy_prod = self.emissions_model.d_section_energy_emissions_d_user_input(section_name=section, sector_name=sector, d_carbon_intensity_d_user_input=d_carbon_intensity_d_energy_prod)
+                d_energy_emissions_sections_d_energy_prod_list.append(d_section_energy_emissions_d_energy_prod)
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
+                    (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                    d_section_energy_emissions_d_energy_prod)
+
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
+                    (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                    d_section_energy_emissions_d_energy_prod)
+
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
+                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
+                    d_section_energy_emissions_d_section_energy_consumption)
+
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.EnergyEmissions),
+                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
+                    d_section_energy_emissions_d_section_energy_consumption)
+
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
+                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
+                    d_section_energy_emissions_d_section_energy_consumption)
+
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
+                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
+                    d_section_energy_emissions_d_section_energy_consumption)
+
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
+                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
+                    d_section_energy_emissions_d_section_energy_consumption)
+
+                d_sector_section_non_energy_emissions_d_section_gdp = self.emissions_model.d_section_non_energy_emissions_d_gdp_section(sector=sector, section=section)
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}", section),
+                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                    d_sector_section_non_energy_emissions_d_section_gdp)
+
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.NonEnergyEmissions),
+                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                    d_sector_section_non_energy_emissions_d_section_gdp)
+
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
+                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                    d_sector_section_non_energy_emissions_d_section_gdp)
+
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.NonEnergyEmissions),
+                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                    d_sector_section_non_energy_emissions_d_section_gdp)
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
+                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                    d_sector_section_non_energy_emissions_d_section_gdp)
+
+                for ghg in GlossaryCore.GreenHouseGases:
+                    d_sections_energy_emissions_d_ghg_emisssions[ghg].append(self.emissions_model.d_section_energy_emissions_d_user_input(section_name=section, sector_name=sector, d_carbon_intensity_d_user_input=d_energy_carbon_intensity_d_ghg_total_emissions[ghg]))
+                    self.set_partial_derivative_for_other_types(
+                        (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
+                        ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                        d_sections_energy_emissions_d_ghg_emisssions[ghg][-1])
+
+            d_sector_energy_emissions_d_energy_prod[sector] = np.sum(d_energy_emissions_sections_d_energy_prod_list, axis=0)
+
+            self.set_partial_derivative_for_other_types(
+                (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.EnergyEmissions),
+                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                d_sector_energy_emissions_d_energy_prod[sector])
+
+            self.set_partial_derivative_for_other_types(
+                (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
+                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                d_sector_energy_emissions_d_energy_prod[sector])
+
+            for ghg in GlossaryCore.GreenHouseGases:
+                d_sector_energy_emissions_d_ghg_emissions[sector][ghg] = np.sum(d_sections_energy_emissions_d_ghg_emisssions[ghg], axis=0)
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.EnergyEmissions),
+                    ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                    d_sector_energy_emissions_d_ghg_emissions[sector][ghg])
+
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
+                    ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                    d_sector_energy_emissions_d_ghg_emissions[sector][ghg])
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
+
+        for ghg in GlossaryCore.GreenHouseGases:
+            temp = [d_sector_energy_emissions_d_ghg_emissions[sector][ghg] for sector in new_sector_list]
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
+                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                np.sum(temp, axis=0))
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
+                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                np.sum(temp, axis=0))
 
     def get_chart_filter_list(self):
 

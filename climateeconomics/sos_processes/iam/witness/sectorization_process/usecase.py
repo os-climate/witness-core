@@ -120,6 +120,8 @@ class Study(StudyManager):
             f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
              f'{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_of_energy_mix,
         }
+        for sector in GlossaryCore.SectorsPossibleValues:
+            cons_input[f'{self.study_name}.GHGemissions.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
 
         if self.main_study:
             gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values

@@ -78,8 +78,27 @@ class GHGEmissionDiscTest(unittest.TestCase):
             GlossaryCore.TotalProductionValue: 100.
         })
 
+        def generate_energy_consumption_df_sector(sector_name):
+            out = {GlossaryCore.Years: years}
+            out.update({section: 10. for section in GlossaryCore.SectionDictSectors[sector_name]})
+            return pd.DataFrame(out)
+
+        ghg_eenergy_consumptions_sectors = {f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": generate_energy_consumption_df_sector(sector) for sector in
+                                            GlossaryCore.SectorsPossibleValues}
+
+        ghg_non_energy_emissions_sectors = {
+            f"{self.name}.{self.model_name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": generate_energy_consumption_df_sector(
+                sector) for sector in
+            GlossaryCore.SectorsPossibleValues}
+
+        ghg_sections_gdp = {
+            f"{self.name}.{sector}.{GlossaryCore.SectionGdpDfValue}": generate_energy_consumption_df_sector(
+                sector) for sector in
+            GlossaryCore.SectorsPossibleValues}
+
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
+                       f'{self.name}.{GlossaryCore.SectorListValue}': GlossaryCore.SectorsPossibleValues,
                        f'{self.name}.CO2_land_emissions': CO2_land_emissions,
                        f'{self.name}.CH4_land_emissions': CH4_land_emissions,
                        f'{self.name}.N2O_land_emissions': N2O_land_emissions,
@@ -88,6 +107,9 @@ class GHGEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
                        f"{self.name}.{GlossaryCore.EnergyProductionValue}": energy_production,
+                       **ghg_eenergy_consumptions_sectors,
+                       **ghg_non_energy_emissions_sectors,
+                       **ghg_sections_gdp
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

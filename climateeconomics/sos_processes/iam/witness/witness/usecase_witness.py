@@ -154,5 +154,5 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
 
     # TODO : careful, this usecase is quite long to test ! 800 sec
-    uc_cls = Study()
+    uc_cls = Study(run_usecase=True)
     uc_cls.test()
