@@ -257,7 +257,6 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
-                        self.override_dump_jacobian = False
                     else:
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
@@ -321,7 +320,6 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
-                        self.override_dump_jacobian = False
                     else:
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},

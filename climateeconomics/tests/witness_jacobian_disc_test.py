@@ -97,7 +97,6 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                                         outputs=outputs,
                                         directory=directory,
                                         parallel=WitnessJacobianDiscTest.PARALLEL)
-                    self.override_dump_jacobian = False
 
                 else:
                     print('Pkl file already exists')
@@ -124,7 +123,6 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                                                 outputs=outputs,
                                                 directory=directory,
                                                 parallel=WitnessJacobianDiscTest.PARALLEL)
-                            self.override_dump_jacobian = False
                         except:
                             print(f'Jacobian for {disc.name} is false')
                             excluded_disc.append(disc.name)
@@ -218,7 +216,6 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
     #                                     step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
     #                                     inputs=inputs,
     #                                     outputs=outputs)
-    #                 self.override_dump_jacobian = False
     #
     #             else:
     #                 print('Pkl file already exists')
@@ -239,5 +236,4 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
     #                                         step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
     #                                         inputs=inputs,
     #                                         outputs=outputs)
-    #                     self.override_dump_jacobian = False
     #     print(f'Summary: checked {counter} disciplines out of {total_disc}.')
