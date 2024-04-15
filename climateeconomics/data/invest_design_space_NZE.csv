@@ -1,0 +1,181 @@
+variable,value,lower_bnd,upper_bnd,enable_variable,activated_elem
+methane.FossilGas.methane_FossilGas_array_mix,"[1.85200000e+02 1.17387230e+02 6.49548105e+01 4.70628571e+01
+ 3.20304762e+01 1.69980952e+01 1.96571429e+00 1.00000000e-06]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+methane.UpgradingBiogas.methane_UpgradingBiogas_array_mix,"[ 0.87625532  4.85285508  3.37813883  4.52238784  5.96081216  7.39923647
+  8.83766079 10.27608511]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+methane.Methanation.methane_Methanation_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen.PlasmaCracking.hydrogen_gaseous_hydrogen_PlasmaCracking_array_mix,"[0.03       1.96446647 4.25311953 4.97914286 5.56352381 6.14790476
+ 6.73228571 7.31666667]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen.WaterGasShift.hydrogen_gaseous_hydrogen_WaterGasShift_array_mix,"[ 0.3        19.64466472 42.53119534 49.79142857 55.6352381  61.47904762
+ 67.32285714 73.16666667]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen.Electrolysis.SOEC.hydrogen_gaseous_hydrogen_Electrolysis_SOEC_array_mix,"[  0.89        58.27917201 126.17587949 147.71457143 165.05120635
+ 182.38784127 199.72447619 217.06111111]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen.Electrolysis.AWE.hydrogen_gaseous_hydrogen_Electrolysis_AWE_array_mix,"[  0.89        58.27917201 126.17587949 147.71457143 165.05120635
+ 182.38784127 199.72447619 217.06111111]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen.Electrolysis.PEM.hydrogen_gaseous_hydrogen_Electrolysis_PEM_array_mix,"[  0.89        58.27917201 126.17587949 147.71457143 165.05120635
+ 182.38784127 199.72447619 217.06111111]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+biogas.AnaerobicDigestion.biogas_AnaerobicDigestion_array_mix,"[ 3.432      19.00701574 13.23104373 17.71268571 23.34651429 28.98034286
+ 34.61417143 40.248     ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+syngas.BiomassGasification.syngas_BiomassGasification_array_mix,"[  98.03341046  542.92615852  377.9383278   505.95425088  666.88182338
+  827.80939588  988.73696838 1149.66454088]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+syngas.SMR.syngas_SMR_array_mix,"[ 22.94739714 127.08669541  88.4667876  118.43241067 156.10190416
+ 193.77139764 231.44089112 269.1103846 ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+syngas.Pyrolysis.syngas_Pyrolysis_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+syngas.AutothermalReforming.syngas_AutothermalReforming_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+syngas.CoElectrolysis.syngas_CoElectrolysis_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+syngas.CoalGasification.syngas_CoalGasification_array_mix,"[ 4.79430861 26.5517189  18.48301483 24.74361354 32.61375131 40.48388909
+ 48.35402686 56.22416463]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+fuel.liquid_fuel.Refinery.fuel_liquid_fuel_Refinery_array_mix,"[4.72500000e+02 2.42872070e+02 1.42462974e+02 6.65914286e+01
+ 1.00000000e-06 1.00000000e-06 1.00000000e-06 1.00000000e-06]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+fuel.liquid_fuel.FischerTropsch.fuel_liquid_fuel_FischerTropsch_array_mix,"[ 5.082      28.14500408 19.59212245 26.2284     34.5708     42.9132
+ 51.2556     59.598     ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+fuel.hydrotreated_oil_fuel.HefaDecarboxylation.fuel_hydrotreated_oil_fuel_HefaDecarboxylation_array_mix,"[ 1.2705      7.03625102  4.89803061  6.5571      8.6427     10.7283
+ 12.8139     14.8995    ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+fuel.hydrotreated_oil_fuel.HefaDeoxygenation.fuel_hydrotreated_oil_fuel_HefaDeoxygenation_array_mix,"[ 1.2705      7.03625102  4.89803061  6.5571      8.6427     10.7283
+ 12.8139     14.8995    ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+solid_fuel.CoalExtraction.solid_fuel_CoalExtraction_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+solid_fuel.Pelletizing.solid_fuel_Pelletizing_array_mix,"[  9.603       53.18309213  37.02147813  49.56145714  65.32534286
+  81.08922857  96.85311429 112.617     ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.WindOnshore.electricity_WindOnshore_array_mix,"[ 63.47442113 278.97305143 281.87733659 284.93174485 287.98615309
+ 291.04056132 294.09496956 297.14937779]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.WindOffshore.electricity_WindOffshore_array_mix,"[17.30057887 76.0368538  76.82844533 77.6609544  78.49346346 79.32597252
+ 80.15848157 80.99099063]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.SolarPv.electricity_SolarPv_array_mix,"[205.707      598.95115349 640.07000747 681.53045865 722.99090978
+ 764.45136091 805.91181204 847.37226317]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.SolarThermal.electricity_SolarThermal_array_mix,"[2.40625000e+01 7.15349624e+01 5.87453008e+01 4.59633459e+01
+ 3.31813910e+01 2.03994361e+01 7.61748120e+00 1.00000000e-06]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.Geothermal.electricity_Geothermal_array_mix,"[2.05734375e+01 6.11623929e+01 5.02272321e+01 3.92986607e+01
+ 2.83700893e+01 1.74415179e+01 6.51294643e+00 1.00000000e-06]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.Hydropower.electricity_Hydropower_array_mix,"[1.89570000e+01 4.12510487e+01 2.88318722e+01 1.64042030e+01
+ 3.97653383e+00 1.00000000e-06 1.00000000e-06 1.00000000e-06]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.Nuclear.electricity_Nuclear_array_mix,"[ 47.355      118.66699538 147.04973683 175.53394737 204.0181579
+ 232.50236842 260.98657895 289.47078948]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.CombinedCycleGasTurbine.electricity_CombinedCycleGasTurbine_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.GasTurbine.electricity_GasTurbine_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.BiogasFired.electricity_BiogasFired_array_mix,"[  9.603       53.18309213  37.02147813  49.56145714  65.32534286
+  81.08922857  96.85311429 112.617     ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.BiomassFired.electricity_BiomassFired_array_mix,"[  9.603       53.18309213  37.02147813  49.56145714  65.32534286
+  81.08922857  96.85311429 112.617     ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.CoalGen.electricity_CoalGen_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+electricity.OilGen.electricity_OilGen_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+fuel.biodiesel.Transesterification.fuel_biodiesel_Transesterification_array_mix,"[ 1.2705      7.03625102  4.89803061  6.5571      8.6427     10.7283
+ 12.8139     14.8995    ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+fuel.ethanol.BiomassFermentation.fuel_ethanol_BiomassFermentation_array_mix,"[ 1.2705      7.03625102  4.89803061  6.5571      8.6427     10.7283
+ 12.8139     14.8995    ]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+hydrogen.liquid_hydrogen.HydrogenLiquefaction.hydrogen_liquid_hydrogen_HydrogenLiquefaction_array_mix,"[ 0.2875     18.82613703 40.7590622  47.71678571 53.31710317 58.91742063
+ 64.5177381  70.11805556]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.direct_air_capture.AmineScrubbing.carbon_capture_direct_air_capture_AmineScrubbing_array_mix,"[5.00000000e-04 1.49180952e+01 2.98361905e+01 4.47542857e+01
+ 5.96723810e+01 7.45904762e+01 8.95085714e+01 1.04426667e+02]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.carbon_capture_direct_air_capture_CalciumPotassiumScrubbing_array_mix,"[1.00000000e-03 2.98361905e+01 5.96723810e+01 8.95085714e+01
+ 1.19344762e+02 1.49180952e+02 1.79017143e+02 2.08853333e+02]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.CalciumLooping.carbon_capture_flue_gas_capture_CalciumLooping_array_mix,"[1.00000000e-03 1.22351020e+02 2.44702041e+02 3.67053061e+02
+ 4.89404082e+02 6.11755102e+02 7.34106122e+02 8.56457143e+02]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.ChilledAmmoniaProcess.carbon_capture_flue_gas_capture_ChilledAmmoniaProcess_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.CO2Membranes.carbon_capture_flue_gas_capture_CO2Membranes_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.MonoEthanolAmine.carbon_capture_flue_gas_capture_MonoEthanolAmine_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.PiperazineProcess.carbon_capture_flue_gas_capture_PiperazineProcess_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.PressureSwingAdsorption.carbon_capture_flue_gas_capture_PressureSwingAdsorption_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_storage.BiomassBuryingFossilization.carbon_storage_BiomassBuryingFossilization_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_storage.DeepOceanInjection.carbon_storage_DeepOceanInjection_array_mix,"[3.00593434e-05 2.73687347e+00 5.47374694e+00 8.21062041e+00
+ 1.09474939e+01 1.36843673e+01 1.64212408e+01 1.91581143e+01]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_storage.DeepSalineFormation.carbon_storage_DeepSalineFormation_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_storage.DepletedOilGas.carbon_storage_DepletedOilGas_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_storage.EnhancedOilRecovery.carbon_storage_EnhancedOilRecovery_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_storage.GeologicMineralization.carbon_storage_GeologicMineralization_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+carbon_storage.PureCarbonSolidStorage.carbon_storage_PureCarbonSolidStorage_array_mix,[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+methane_FossilGas_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+methane_UpgradingBiogas_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+methane_Methanation_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen_WaterGasShift_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen_Electrolysis.SOEC_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen_Electrolysis.PEM_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen_Electrolysis.AWE_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+hydrogen.gaseous_hydrogen_PlasmaCracking_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+biogas_AnaerobicDigestion_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+fuel.liquid_fuel_Refinery_utilization_ratio_array,"[100.          92.25131077  84.70379385  77.55862154  71.01696615
+  65.28        60.47740308  56.45288615  52.97866769  49.82696615
+  46.77        43.64955692  40.58570154  37.76806769  35.38628923
+  33.63        32.61820923  32.18742769  32.10354154  32.13243692
+  32.04        31.64648615  30.98962769  30.16152615  29.25428308
+  28.36        27.55192615  26.82790154  26.16691385  25.54795077
+  24.95       100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.        ]","[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0.]","[100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.]",True,"[True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]"
+fuel.liquid_fuel_FischerTropsch_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+fuel.hydrotreated_oil_fuel_HefaDecarboxylation_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+fuel.hydrotreated_oil_fuel_HefaDeoxygenation_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+solid_fuel_CoalExtraction_utilization_ratio_array,"[ 98.57        95.22173662  91.69953908  87.82947323  83.43760492
+  78.35        72.48481846  66.12859692  59.65996615  53.45755692
+  47.9         43.28770954  39.60823323  36.77090215  34.68504738
+  33.26        32.45402338  32.42111015  33.36418523  35.48617354
+  38.99        43.97243692  50.10564615  56.95563692  64.08841846
+  71.07        77.55822892  83.57830523  89.24726708  94.68215262
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.         100.         100.         100.         100.
+ 100.        ]","[0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0. 0.
+ 0. 0. 0. 0. 0. 0. 0. 0. 0.]","[100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.
+ 100. 100. 100. 100. 100. 100. 100. 100. 100. 100. 100.]",True,"[True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True, True]"
+solid_fuel_Pelletizing_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_WindOffshore_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_WindOnshore_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_SolarPv_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_SolarThermal_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_Hydropower_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_Nuclear_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_CombinedCycleGasTurbine_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_GasTurbine_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_BiogasFired_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_Geothermal_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_CoalGen_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_OilGen_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+electricity_BiomassFired_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+fuel.biodiesel_Transesterification_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+fuel.ethanol_BiomassFermentation_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+hydrogen.liquid_hydrogen_HydrogenLiquefaction_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.direct_air_capture.AmineScrubbing_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.direct_air_capture.CalciumPotassiumScrubbing_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.CalciumLooping_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.ChilledAmmoniaProcess_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.CO2Membranes_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.MonoEthanolAmine_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.PiperazineProcess_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_capture.flue_gas_capture.PressureSwingAdsorption_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_storage.BiomassBuryingFossilization_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_storage.DeepOceanInjection_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_storage.DeepSalineFormation_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_storage.DepletedOilGas_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_storage.EnhancedOilRecovery_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_storage.GeologicMineralization_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+carbon_storage.PureCarbonSolidStorage_utilization_ratio_array,[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],[0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5],[100. 100. 100. 100. 100. 100. 100. 100. 100. 100.],True,"[True, True, True, True, True, True, True, True, True, True]"
+crop_investment_array_mix,[100. 100. 100. 100. 100. 100. 100. 100.],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
+managed_wood_investment_array_mix,[100. 100. 100. 100. 100. 100. 100. 100.],[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"

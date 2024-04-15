@@ -140,11 +140,27 @@ class Study(ClimateEconomicsStudyManager):
 
         # clean dspace descriptor
         dvar_descriptor = self.witness_uc.design_var_descriptor
-
+        clean_descriptor = ['syngas_BiomassGasification_utilization_ratio_array',
+                            'syngas_SMR_utilization_ratio_array',
+                            'syngas_CoalGasification_utilization_ratio_array',
+                            'syngas_Pyrolysis_utilization_ratio_array',
+                            'syngas_AutothermalReforming_utilization_ratio_array',
+                            'syngas_CoElectrolysis_utilization_ratio_array']
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
-        dspace_file_name = f'design_space_out_2.csv'
+
+        dspace_file_name = f'invest_design_space_NZE.csv'
         dspace_out = pd.read_csv(join(dirname(__file__), 'data', dspace_file_name))
+        """
+        clean_descriptor = ['syngas_BiomassGasification_utilization_ratio_array',
+                            'syngas_SMR_utilization_ratio_array',
+                            'syngas_CoalGasification_utilization_ratio_array',
+                            'syngas_Pyrolysis_utilization_ratio_array',
+                            'syngas_AutothermalReforming_utilization_ratio_array',
+                            'syngas_CoElectrolysis_utilization_ratio_array']
+        """
+        dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
+
         values_dict_updt = {}
         for index, row in dspace_df.iterrows():
             variable = row["variable"]
@@ -155,9 +171,10 @@ class Study(ClimateEconomicsStudyManager):
                 lower_bnd_str = dspace_out[dspace_out["variable"] == variable]["lower_bnd"].iloc[0]
                 activated_elem_str = dspace_out[dspace_out["variable"] == variable]["activated_elem"].iloc[0]
 
-                valeur_array = np.array(eval(valeur_str))
-                upper_bnd_array = np.array(eval(upper_bnd_str))
-                lower_bnd_array = np.array(eval(lower_bnd_str))
+                if ',' not in valeur_str: valeur_array = np.array(eval(valeur_str.replace(' ', ',')))
+                else: valeur_array = np.array(eval(valeur_str))
+                upper_bnd_array = np.array(eval(upper_bnd_str.replace(' ', ',')))
+                lower_bnd_array = np.array(eval(lower_bnd_str.replace(' ', ',')))
                 activated_elem_array = eval(activated_elem_str)
 
                 dspace_df.at[index, "value"] = valeur_array
@@ -173,6 +190,7 @@ class Study(ClimateEconomicsStudyManager):
         invest_mix = pd.read_csv(join(dirname(__file__), 'data', invest_mix_file))
         forest_invest_file = f'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), 'data', forest_invest_file))
+        #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
 
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
