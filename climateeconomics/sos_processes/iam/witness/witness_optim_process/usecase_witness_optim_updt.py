@@ -140,25 +140,14 @@ class Study(ClimateEconomicsStudyManager):
 
         # clean dspace descriptor
         dvar_descriptor = self.witness_uc.design_var_descriptor
-        clean_descriptor = ['syngas_BiomassGasification_utilization_ratio_array',
-                            'syngas_SMR_utilization_ratio_array',
-                            'syngas_CoalGasification_utilization_ratio_array',
-                            'syngas_Pyrolysis_utilization_ratio_array',
-                            'syngas_AutothermalReforming_utilization_ratio_array',
-                            'syngas_CoElectrolysis_utilization_ratio_array']
+
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
 
         dspace_file_name = f'invest_design_space_NZE.csv'
         dspace_out = pd.read_csv(join(dirname(__file__), 'data', dspace_file_name))
-        """
-        clean_descriptor = ['syngas_BiomassGasification_utilization_ratio_array',
-                            'syngas_SMR_utilization_ratio_array',
-                            'syngas_CoalGasification_utilization_ratio_array',
-                            'syngas_Pyrolysis_utilization_ratio_array',
-                            'syngas_AutothermalReforming_utilization_ratio_array',
-                            'syngas_CoElectrolysis_utilization_ratio_array']
-        """
+
+
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
 
         values_dict_updt = {}
