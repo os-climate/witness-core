@@ -27,8 +27,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     obj_const = [GlossaryCore.WelfareObjective, 'temperature_objective', 'CO2_objective', 'ppm_objective',
                  'co2_emissions_objective', 'EnergyMix.methane.demand_violation',
                  'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation',

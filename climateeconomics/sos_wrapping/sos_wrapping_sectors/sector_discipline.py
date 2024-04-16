@@ -47,7 +47,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'decline_rate_tfp': {'type': 'float', 'user_level': 3, 'unit': '-'},
         # Usable capital
         'capital_utilisation_ratio': {'type': 'float', 'default': 0.8, 'user_level': 3, 'unit': '-'},
-        'max_capital_utilisation_ratio': {'type': 'float', 'default': 0.95, 'user_level': 3, 'unit': '-'},
+        'max_capital_utilisation_ratio': {'type': 'float', 'default': 0.85, 'user_level': 3, 'unit': '-'},
         'energy_eff_k': {'type': 'float', 'user_level': 3, 'unit': '-'},
         'energy_eff_cst': {'type': 'float', 'user_level': 3, 'unit': '-'},
         'energy_eff_xzero': {'type': 'float', 'user_level': 3, 'unit': '-'},

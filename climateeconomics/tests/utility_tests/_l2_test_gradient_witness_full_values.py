@@ -26,8 +26,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     obj_const = [GlossaryCore.WelfareObjective, 'min_utility_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'co2_emissions_objective', 'CO2_tax_minus_CO2_damage_constraint_df', 'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation', 'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',
                  'EnergyMix.solid_fuel.demand_violation', 'EnergyMix.biomass_dry.demand_violation', 'EnergyMix.electricity.demand_violation', 'EnergyMix.biodiesel.demand_violation', 'EnergyMix.hydrogen.liquid_hydrogen.demand_violation', 'primary_energies_production', 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
 
@@ -76,7 +74,6 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessFullJacobianDiscTest()
     cls.test_01()
     # self.test_06_gradient_each_discipline_on_dm_pkl()

@@ -27,7 +27,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -106,7 +105,6 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         #np.set_printoptions(threshold=np.inf)
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_land_use_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,

@@ -28,7 +28,6 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
     """
     Coal resource jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [

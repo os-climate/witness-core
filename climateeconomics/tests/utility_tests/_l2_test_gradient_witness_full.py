@@ -30,7 +30,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     obj_const = [GlossaryCore.WelfareObjective, 'min_utility_objective', 'temperature_objective', 'CO2_objective',
                  'ppm_objective', 'co2_emissions_objective', 'CO2_tax_minus_CO2_damage_constraint_df',
@@ -510,13 +509,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
                     if not exists(filepath):
                         self.ee.dm.delete_complex_in_df_and_arrays()
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                        self.override_dump_jacobian = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
@@ -574,14 +572,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
                         self.ee.dm.delete_complex_in_df_and_arrays()
 
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                        self.override_dump_jacobian = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
-
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
@@ -668,7 +664,6 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         pkl_name = f'jacobian_lagrangian_objective_wrt_design_var_on_witness_full_invest_distrib_x.pkl'
         self.ee.display_treeview_nodes(display_variables=True)
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                             step=1.0e-15, derr_approx='complex_step', threshold=1e-8, local_data={},
                             inputs=input_full_names, outputs=output_full_names)
@@ -778,7 +773,6 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessFullJacobianDiscTest()
     cls.test_06_gradient_lagrangian_objective_wrt_csv_design_var_on_crashed_x()
     cls.test_07_gradient_all_disciplines_on_crashed_x()

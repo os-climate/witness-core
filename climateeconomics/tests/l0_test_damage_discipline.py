@@ -59,6 +59,8 @@ class DamageDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_dashboard': f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
@@ -77,6 +79,7 @@ class DamageDiscTest(unittest.TestCase):
                        f'{self.name}.assumptions_dict': {'compute_gdp': True,
                                 'compute_climate_impact_on_gdp': False,
                                 'activate_climate_effect_population': True,
+                                'activate_pandemic_effects': True,
                                 'invest_co2_tax_in_renewables': True,
                                 },
                        f'{self.name}.co2_damage_price_dev_formula': False,
@@ -105,6 +108,8 @@ class DamageDiscTest(unittest.TestCase):
         self.model_name = 'damage'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
                    'ns_dashboard': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
@@ -125,6 +130,7 @@ class DamageDiscTest(unittest.TestCase):
                        f'{self.name}.assumptions_dict': {'compute_gdp': True,
                                 'compute_climate_impact_on_gdp': False,
                                 'activate_climate_effect_population': True,
+                                'activate_pandemic_effects': True,
                                 'invest_co2_tax_in_renewables': True,
                                 },
                        f'{self.name}.co2_damage_price_dev_formula': True,

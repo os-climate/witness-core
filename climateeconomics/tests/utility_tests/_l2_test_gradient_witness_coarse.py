@@ -31,8 +31,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
     obj_const = [GlossaryCore.WelfareObjective, 'min_utility_objective', 'temperature_objective', 'CO2_objective',
                  'ppm_objective',
                  'total_prod_minus_min_prod_constraint_df', 'co2_emissions_objective', 'energy_production_objective',
@@ -337,13 +335,12 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
                     if not exists(filepath):
                         self.ee.dm.delete_complex_in_df_and_arrays()
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                        self.override_dump_jacobian = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)
                     else:
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
@@ -425,13 +422,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
                     if not exists(filepath):
                         self.ee.dm.delete_complex_in_df_and_arrays()
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                        self.override_dump_jacobian = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
+
                     else:
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
@@ -485,13 +482,12 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
                     if not exists(filepath):
                         self.ee.dm.delete_complex_in_df_and_arrays()
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+                        self.override_dump_jacobian = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
-                        AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,

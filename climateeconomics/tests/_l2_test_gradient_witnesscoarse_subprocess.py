@@ -77,6 +77,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             'compute_gdp': False,
             'compute_climate_impact_on_gdp': False,
             'activate_climate_effect_population': False,
+            'activate_pandemic_effects': False,
             'invest_co2_tax_in_renewables': False
         }
         full_values_dict[
@@ -114,7 +115,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
         pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
 
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # self.override_dump_jacobian = True
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                             discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                             step=1.0e-4, derr_approx='finite_differences', threshold=1e-15,
@@ -169,6 +170,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                 'compute_gdp': False,
                 'compute_climate_impact_on_gdp': False,
                 'activate_climate_effect_population': False,
+                'activate_pandemic_effects': False,
                 'invest_co2_tax_in_renewables': False
             }
             full_values_dict[
@@ -208,7 +210,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             #    'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
             pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess_iter_{iter}.pkl'
 
-            AbstractJacobianUnittest.DUMP_JACOBIAN = True
             # store all these variables for next test
             """
             var_in_to_store = [self.ee.dm.get_all_namespaces_from_var_name('Energy invest minimization objective')[0],
@@ -239,6 +240,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             dict_values_cleaned = {k: v for k, v in design_space_values_dict.items() if self.ee.dm.check_data_in_dm(k)}
 
             try:
+                self.override_dump_jacobian = True
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                                     discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                                     step=1.0e-18, derr_approx='complex_step', threshold=1e-16,

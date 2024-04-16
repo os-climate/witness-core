@@ -86,4 +86,17 @@ class ProcessBuilder(BaseProcessBuilder):
         non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
         builder_list.extend(non_use_capital_list)
+
+        self.ee.ns_manager.add_ns(GlossaryCore.NS_REGIONALIZED_POST_PROC,
+                                  f"{self.ee.study_name}.Macroeconomics.Regions")
+        region_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_regions.post_processing_regions'
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            GlossaryCore.NS_REGIONALIZED_POST_PROC, region_post_proc_module
+        )
+        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC,
+                                  f"{self.ee.study_name}.Macroeconomics.Sectors")
+        sectors_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors_witness_non_sectorized.post_processing_sectors'
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
+        )
         return builder_list

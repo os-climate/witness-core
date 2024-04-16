@@ -26,7 +26,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -388,6 +387,5 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
 if '__main__' == __name__:
     cls = TemperatureJacobianDiscTest()
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls.setUp()
     cls.test_03_temperature_discipline_analytic_grad_FUND_myhre()

@@ -124,9 +124,10 @@ class MacroDiscTest(unittest.TestCase):
 
         self.share_energy_per_sector_percentage = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.SectorServices: 37. ,
+            GlossaryCore.SectorServices: 14.56,
             GlossaryCore.SectorAgriculture: 2.13,
-            GlossaryCore.SectorIndustry: 29.
+            GlossaryCore.SectorIndustry: 63.30,
+            #GlossaryCore.SectorNonEco: 20.0, # not an economic sector
         })
 
         carbon_intensity_energy = pd.DataFrame({
@@ -171,6 +172,7 @@ class MacroDiscTest(unittest.TestCase):
                            'compute_gdp': True,
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
+                           'activate_pandemic_effects': True,
                            'invest_co2_tax_in_renewables': True
                            },
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,

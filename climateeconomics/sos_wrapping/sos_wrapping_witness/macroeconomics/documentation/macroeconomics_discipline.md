@@ -190,7 +190,7 @@ It computes the energy consumption and associated emissions in addition of non e
 ### Formulas and Units:
 
 - **Energy Consumption**: Energy consumption per section is computed using the formula:  
-$\text{Energy Consumption} = \text{Total Production} \times \text{Percentage Energy Consumption} \times \frac{10^{12}}{1000} \, \text{kWh}$
+$\text{Energy Consumption} = \text{Total Production} \times \text{Percentage Energy Consumption}$
 
   The units for energy consumption are typically TWh (terawatt-hours).
 
