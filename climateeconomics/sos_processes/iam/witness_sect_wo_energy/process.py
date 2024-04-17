@@ -19,8 +19,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.
     AgricultureEmissionsDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
     GHGemissionsDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline import \
-    IndusemissionsDiscipline
+
 # -*- coding: utf-8 -*-
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
