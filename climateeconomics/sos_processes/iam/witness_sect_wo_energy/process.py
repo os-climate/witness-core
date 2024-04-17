@@ -79,7 +79,6 @@ class ProcessBuilder(BaseProcessBuilder):
         Add emissions disciplines
         '''
         mods_dict = {
-            IndusemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline.IndusemissionsDiscipline',
             AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',
         }
         non_use_capital_list = self.create_builder_list(
