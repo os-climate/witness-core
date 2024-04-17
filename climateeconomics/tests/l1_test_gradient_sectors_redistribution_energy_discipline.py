@@ -86,7 +86,7 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
         inputs_checked += [f'{name}.{GlossaryCore.ShareResidentialEnergyDfValue}']
 
         output_checked = [f'{name}.{sector}.{GlossaryCore.EnergyProductionValue}' for sector in self.sector_list]
-        output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyProductionDfValue}']
+        output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}']
         
         disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 

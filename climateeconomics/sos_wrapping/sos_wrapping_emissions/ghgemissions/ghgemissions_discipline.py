@@ -55,7 +55,11 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
     GWP_20_default = {GlossaryCore.CO2: 1.0,
                       GlossaryCore.CH4: 85.,
                       GlossaryCore.N2O: 265.}
+
     DESC_IN = {
+        'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float', 'namespace': GlossaryCore.NS_GHGEMISSIONS,
+                                                       'visibility': 'Shared', 'default': 0.0, 'unit': '-',
+                                                       'user_level': 3},
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -73,10 +77,6 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),
                                                           'Forest': ('float', None, False),}},
-        'CO2_indus_emissions_df':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
-                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                             'indus_emissions': ('float', None, False),}
-                                    },
         'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  GlossaryCore.TotalCO2Emissions: ('float', None, False),
@@ -114,7 +114,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}"] = section_energy_consumption_df_variable
 
                     section_non_energy_emissions_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionGdpDf)
-                    section_non_energy_emissions_gdp_var.update({'namespace': GlossaryCore.NS_SECTORS})
+                    section_non_energy_emissions_gdp_var.update({'namespace': GlossaryCore.NS_GHGEMISSIONS})
+                    section_non_energy_emissions_gdp_var.update({'visibility': "Shared"})
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emissions_gdp_var
 
                     section_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpDf)
@@ -123,17 +124,25 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
                     section_energy_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyEmissionDf)
                     section_energy_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    section_energy_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
+                    section_energy_emissions_df_variable['visibility'] = "Shared"
                     dynamic_outputs[f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}"] = section_energy_emissions_df_variable
 
                     section_non_energy_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionDf)
                     section_non_energy_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    section_non_energy_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
+                    section_non_energy_emissions_df_variable['visibility'] = "Shared"
                     dynamic_outputs[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}"] = section_non_energy_emissions_df_variable
 
                     section_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEmissionDf)
+                    section_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
+                    section_emissions_df_variable['visibility'] = "Shared"
                     section_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
                     dynamic_outputs[f"{sector}.{GlossaryCore.SectionEmissionDfValue}"] = section_emissions_df_variable
 
                     emission_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.EmissionDf)
+                    emission_df_disc['namespace'] = GlossaryCore.NS_GHGEMISSIONS
+                    emission_df_disc['visibility'] = "Shared"
                     dynamic_outputs[f"{sector}.{GlossaryCore.EmissionsDfValue}"] = emission_df_disc
 
         self.add_inputs(dynamic_inputs)
@@ -222,10 +231,6 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
             ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),  np.identity(len(years)))
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
-            ('CO2_indus_emissions_df', 'indus_emissions'),
-            np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2EmissionsObjectiveValue,), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),
             self.emissions_model.d_CO2_emissions_objective_d_total_co2_emissions())

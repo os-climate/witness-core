@@ -51,9 +51,6 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})
 
-        self.CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
-                                               'indus_emissions': np.linspace(1., 2., len(years))})
-
         self.CO2_emissions_ref = 6.49  # Gt
 
         self.energy_production = pd.DataFrame({
@@ -70,7 +67,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                             GlossaryCore.SectorsPossibleValues}
 
         self.ghg_non_energy_emissions_sectors = {
-            f"{self.name}.{self.model_name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": generate_energy_consumption_df_sector(
+            f"{self.name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": generate_energy_consumption_df_sector(
                 sector) for sector in
             GlossaryCore.SectorsPossibleValues}
 
@@ -83,7 +80,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.CO2_land_emissions',
             f'{self.name}.CH4_land_emissions',
             f'{self.name}.N2O_land_emissions',
-            f'{self.name}.CO2_indus_emissions_df',
+            #f'{self.name}.CO2_indus_emissions_df',
             f'{self.name}.GHG_total_energy_emissions',
             f"{self.name}.{GlossaryCore.EnergyProductionValue}"
         ]
@@ -99,9 +96,9 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f"{self.name}.{self.model_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"
         ]
 
-        self.outputs_checked += [f"{self.name}.{self.model_name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
-        self.outputs_checked += [f"{self.name}.{self.model_name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
-        self.outputs_checked += [f"{self.name}.{self.model_name}.{sector}.{GlossaryCore.EmissionsDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.EmissionsDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
 
     def analytic_grad_entry(self):
         return [
@@ -115,6 +112,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_agriculture': f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
@@ -134,7 +132,6 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_land_emissions': self.CO2_land_emissions,
                        f'{self.name}.CH4_land_emissions': self.CH4_land_emissions,
                        f'{self.name}.N2O_land_emissions': self.N2O_land_emissions,
-                       f'{self.name}.CO2_indus_emissions_df': self.CO2_indus_emissions_df,
                        f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.{GlossaryCore.EnergyProductionValue}": self.energy_production,
@@ -160,6 +157,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_agriculture': f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
@@ -179,7 +177,6 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_land_emissions': self.CO2_land_emissions,
                        f'{self.name}.CH4_land_emissions': self.CH4_land_emissions,
                        f'{self.name}.N2O_land_emissions': self.N2O_land_emissions,
-                       f'{self.name}.CO2_indus_emissions_df': self.CO2_indus_emissions_df,
                        f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.affine_co2_objective": False,

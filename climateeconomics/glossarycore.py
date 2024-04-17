@@ -81,6 +81,7 @@ class GlossaryCore:
     SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
     SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
     ChartTotalEmissionsGt = "Part of total emissions per sector [GtCO2eq]"
+    EconomicSectors = "Economic sectors"
 
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
@@ -167,6 +168,7 @@ class GlossaryCore:
     NS_CCS = "ns_ccs"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
     NS_SECTORS_POST_PROC = "ns_sectors_postproc"
+    NS_GHGEMISSIONS = "ns_ghg_emissions"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -641,7 +643,7 @@ class GlossaryCore:
         "var_name": SectionGdpDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": NS_WITNESS,
+        "namespace": NS_GHGEMISSIONS,
         "description": "GDP values of sub-sectors in a sector",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -649,13 +651,12 @@ class GlossaryCore:
         },
     }
 
-    TotalEmissions = "Total emissions [Gt]"
-    TotalEmissionsMt = "Total emissions [Mt]"
+    TotalEmissions = "Total emissions"
 
     EmissionsDfValue = "emissions_df"
     EconomicsEmissionDfValue = "economics_emissions_df"
-    EnergyEmissions = "Energy emissions [Gt]"
-    NonEnergyEmissions = "Non energy emissions [Gt]"
+    EnergyEmissions = "Energy emissions"
+    NonEnergyEmissions = "Non energy emissions"
     EmissionDf = {
         "type": "dataframe",
         "description": "Emissions of macroeconomics (all sectors)",
@@ -704,7 +705,7 @@ class GlossaryCore:
         "description": "Energy consumption per section",
         "unit": "PWh",
         "visibility": "Shared",
-        "namespace": NS_WITNESS,
+        "namespace": NS_GHGEMISSIONS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },
@@ -1234,11 +1235,12 @@ class GlossaryCore:
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
-    ResidentialEnergyProductionDfValue = "residential_energy_production_df"
-    ResidentialEnergyProductionDf = {
+    ResidentialEnergyConsumptionDfValue = "residential_energy_production_df"
+    ResidentialEnergyConsumptionDf = {
         "var_name": RedistributionEnergyProductionDfValue,
         "type": "dataframe",
         "unit": "PWh",
+        "description": "Energy that is consumed by residential sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {

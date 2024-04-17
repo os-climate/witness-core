@@ -41,6 +41,7 @@ class ServicesDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',

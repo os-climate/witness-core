@@ -56,7 +56,6 @@ class GHGEmissions:
         self.CO2_land_emissions = self.param['CO2_land_emissions']
         self.CH4_land_emissions = self.param['CH4_land_emissions']
         self.N2O_land_emissions = self.param['N2O_land_emissions']
-        self.CO2_indus_emissions_df = self.param['CO2_indus_emissions_df']
         self.GHG_total_energy_emissions = self.param['GHG_total_energy_emissions']
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
@@ -74,7 +73,6 @@ class GHGEmissions:
         self.CO2_land_emissions = inputs_dict['CO2_land_emissions']
         self.CH4_land_emissions = inputs_dict['CH4_land_emissions']
         self.N2O_land_emissions = inputs_dict['N2O_land_emissions']
-        self.CO2_indus_emissions_df = inputs_dict['CO2_indus_emissions_df']
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
         self.affine_co2_objective = inputs_dict['affine_co2_objective']
         self.total_energy_production = inputs_dict[GlossaryCore.EnergyProductionValue]
@@ -109,8 +107,9 @@ class GHGEmissions:
     def compute_total_emissions(self):
         """
         Total emissions taking energy emissions as inputs
+        # todo: update
         """
-        self.ghg_emissions_df['CO2 industry_emissions'] = self.CO2_indus_emissions_df['indus_emissions'].values
+        self.ghg_emissions_df['CO2 industry_emissions'] = 0.
         self.ghg_emissions_df['CH4 industry_emissions'] = 0.
         self.ghg_emissions_df['N2O industry_emissions'] = 0.
 

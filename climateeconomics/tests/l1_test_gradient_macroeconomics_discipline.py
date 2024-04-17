@@ -180,6 +180,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -238,6 +239,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -307,6 +309,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -378,6 +381,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -456,6 +460,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -532,6 +537,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -607,6 +613,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -685,6 +692,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -769,6 +777,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -852,6 +861,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -930,6 +940,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -1013,6 +1024,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -1097,6 +1109,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

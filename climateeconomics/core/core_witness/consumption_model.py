@@ -89,7 +89,7 @@ class ConsumptionModel:
         self.population_df.index = self.population_df[GlossaryCore.Years].values
         self.investment_df = self.inputs[GlossaryCore.InvestmentDfValue]
         self.investment_df.index = self.investment_df[GlossaryCore.Years].values
-        self.residential_energy = self.inputs[GlossaryCore.ResidentialEnergyProductionDfValue]
+        self.residential_energy = self.inputs[GlossaryCore.ResidentialEnergyConsumptionDfValue]
         self.residential_energy.index = self.residential_energy[GlossaryCore.Years].values
  
     def compute_consumption(self, year):

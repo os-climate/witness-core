@@ -233,8 +233,7 @@ class DataStudy():
         # ------------------ end mda initialisation
 
         for sector in GlossaryCore.SectorsPossibleValues:
-            witness_input[
-                f'{self.study_name}.GHGEmissions.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
+            witness_input[f'{self.study_name}.GHGEmissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),

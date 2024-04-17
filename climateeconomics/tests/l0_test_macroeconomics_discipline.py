@@ -56,6 +56,7 @@ class MacroDiscTest(unittest.TestCase):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    'ns_energy_study': f'{self.name}',}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

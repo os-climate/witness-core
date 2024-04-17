@@ -52,7 +52,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.CH4: 85.,
                       GlossaryCore.N2O: 265.}
 
-    name = f'{GHGemissionsDiscipline.name}.Agriculture'
+    name = f'{GHGemissionsDiscipline.name}.Land Use'
     _maturity = 'Research'
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,

@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join
+from os.path import join, dirname
 from pathlib import Path
 
 import numpy as np
@@ -113,6 +113,18 @@ class DataStudy():
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = df_eco
+        for sector in GlossaryCore.SectorsPossibleValues:
+            global_data_dir = join((dirname(dirname(dirname(dirname(__file__))))), 'data')
+            section_non_energy_emission_gdp_df = pd.read_csv(
+                join(global_data_dir, f'non_energy_emission_gdp_{sector.lower()}_sections.csv'))
+            subsector_share_dict = {
+                **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
+                **dict(zip(section_non_energy_emission_gdp_df.columns[1:],
+                           section_non_energy_emission_gdp_df.values[0, 1:]))
+            }
+            section_non_energy_emission_gdp_df = pd.DataFrame(subsector_share_dict)
+            witness_input[
+                f"{self.study_name}.GHGEmissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emission_gdp_df
 
         nrj_invest = arange(1000, nb_per + 1000, 1)
 

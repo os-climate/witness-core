@@ -61,6 +61,9 @@ class DamageDiscTest(unittest.TestCase):
                    'ns_dashboard': f'{self.name}',
                    GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
+                   f'ns_{GlossaryCore.SectorIndustry.lower()}_emissions': self.name,
+                   f'ns_{GlossaryCore.SectorServices.lower()}_emissions': self.name,
+                   f'ns_{GlossaryCore.SectorAgriculture.lower()}_emissions': self.name,
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
@@ -111,6 +114,9 @@ class DamageDiscTest(unittest.TestCase):
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
                    'ns_dashboard': f'{self.name}',
+                   f'ns_{GlossaryCore.SectorIndustry.lower()}_emissions': self.name,
+                   f'ns_{GlossaryCore.SectorServices.lower()}_emissions': self.name,
+                   f'ns_{GlossaryCore.SectorAgriculture.lower()}_emissions': self.name,
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
 

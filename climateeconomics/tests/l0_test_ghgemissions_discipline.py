@@ -39,7 +39,9 @@ class GHGEmissionDiscTest(unittest.TestCase):
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
+                   }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -87,7 +89,7 @@ class GHGEmissionDiscTest(unittest.TestCase):
                                             GlossaryCore.SectorsPossibleValues}
 
         ghg_non_energy_emissions_sectors = {
-            f"{self.name}.{self.model_name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": generate_energy_consumption_df_sector(
+            f"{self.name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": generate_energy_consumption_df_sector(
                 sector) for sector in
             GlossaryCore.SectorsPossibleValues}
 
