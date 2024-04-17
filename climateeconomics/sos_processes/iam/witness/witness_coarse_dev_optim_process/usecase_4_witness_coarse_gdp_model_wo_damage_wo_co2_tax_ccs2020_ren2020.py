@@ -71,15 +71,15 @@ class Study(ClimateEconomicsStudyManager):
         ns = f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.CCUS'
         for var in carbon_capture_and_renewable_vars[:3]:
             varname_to_update = f'{ns}.{var}'
-            actual_value = data_witness[0][varname_to_update]
+            actual_value = data_witness[varname_to_update]
             new_value = np.zeros_like(actual_value) + DatabaseWitnessEnergy.InvestCCUS2020.value / 3
-            data_witness[0][varname_to_update] = new_value
+            data_witness.update({varname_to_update: new_value})
 
         # set Renewable value values :
         var_to_update = f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.EnergyMix.renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix'
-        actual_value = data_witness[0][var_to_update]
+        actual_value = data_witness[var_to_update]
         new_value = np.zeros_like(actual_value) + DatabaseWitnessEnergy.InvestCleanEnergy2020.value
-        data_witness[0][var_to_update] = new_value
+        data_witness.update({var_to_update: new_value})
 
         # clean dspace descriptor 
         dvar_descriptor = witness_uc.witness_uc.design_var_descriptor
@@ -105,18 +105,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    design_space_out_var_name = uc_cls.ee.dm.get_all_namespaces_from_var_name("design_space_out")[0]
-    dspace_end = uc_cls.ee.dm.get_value(design_space_out_var_name)
-    design_space_last_ite_var_name = uc_cls.ee.dm.get_all_namespaces_from_var_name("design_space_last_ite")[0]
-    dspace_last_ite = uc_cls.ee.dm.get_value(design_space_last_ite_var_name)
-    max_ite_varname = uc_cls.ee.dm.get_all_namespaces_from_var_name("max_iter")[0]
-    max_itee = uc_cls.ee.dm.get_value(max_ite_varname)
-    import os
-
-    path_dir = os.path.dirname(os.path.abspath(__file__))
-    path_ds_end = os.path.join(path_dir, f"{uc_cls.study_name}_design_space_out_{max_itee}_iter.csv")
-    path_ds_last_ite = os.path.join(path_dir, f"{uc_cls.study_name}_design_space_last_ite_{max_itee}_iter.csv")
-    dspace_end.to_csv(path_ds_end)
-    dspace_last_ite.to_csv(path_ds_last_ite)
+    uc_cls.test()
