@@ -48,8 +48,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
     default_CO2_tax = pd.DataFrame(
         {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)
 
-    DESC_IN = {
-        'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
+    # fixme : dict of variables used to force update of namespace used only by post-proc modules OR namespace that only belongs to dynamic variables
+    cheat_variables_dict = \
+        {'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'cheat_var_to_update_ns_regions_in_ms_mdo': {'type': 'float', 'namespace': GlossaryCore.NS_REGIONALIZED_POST_PROC,
                                                        'visibility': 'Shared', 'default': 0.0, 'unit': '-',
                                                        'user_level': 3},
@@ -66,6 +67,17 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'cheat_var13': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorAgriculture.lower()}_emissions',
                         'visibility': 'Shared', 'default': 0.0, 'unit': '-',
                         'user_level': 3},
+        'cheat_var21': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorIndustry.lower()}_gdp',
+                        'visibility': 'Shared', 'default': 0.0, 'unit': '-',
+                        'user_level': 3},
+        'cheat_var22': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorServices.lower()}_gdp',
+                        'visibility': 'Shared', 'default': 0.0, 'unit': '-',
+                        'user_level': 3},
+        'cheat_var23': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp',
+                        'visibility': 'Shared', 'default': 0.0, 'unit': '-',
+                        'user_level': 3}}
+    DESC_IN = {
+        **cheat_variables_dict,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
