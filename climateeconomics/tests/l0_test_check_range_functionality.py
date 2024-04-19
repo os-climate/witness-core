@@ -98,7 +98,7 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.energy_supply_df_all,
-                       f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
                        f'{self.name}.CO2_emissions_by_use_sinks': self.CO2_emissions_by_use_sinks,
@@ -158,7 +158,7 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.energy_supply_df_all,
-                       f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': CO2_emitted_forest,
                        f'{self.name}.{self.model_name}.min_co2_objective': min_co2_objective,
                        f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
@@ -217,7 +217,7 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.energy_supply_df_all,
-                       f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': CO2_emitted_forest,
                        f'{self.name}.{self.model_name}.min_co2_objective': min_co2_objective,
                        f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,

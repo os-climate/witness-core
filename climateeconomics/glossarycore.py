@@ -55,6 +55,7 @@ class GlossaryCore:
     YearStartDefault = 2020
     YearEnd = "year_end"
     YearEndDefault = 2100
+    YearEndDefaultTest = 2030
     YearEndVar = {
         "type": "int",
         "default": YearEndDefault,
@@ -659,6 +660,10 @@ class GlossaryCore:
     EconomicsEmissionDfValue = "economics_emissions_df"
     EnergyEmissions = "Energy emissions"
     NonEnergyEmissions = "Non energy emissions"
+    insertGHGNonEnergyEmissions = "Non energy {} emissions of economy"
+    insertGHGTotalEmissions = "Total {} emissions"
+    insertGHGEnergyEmissions = "Energy {} emissions"
+    insertGHGLandEmissions = "Land {} emissions"
     EmissionDf = {
         "type": "dataframe",
         "description": "Emissions of macroeconomics (all sectors)",
@@ -922,6 +927,7 @@ class GlossaryCore:
         },
     }
 
+    GHGEmissionsDetailedDfValue = "GHG_emissions_detail_df"
     GHGEmissionsDfValue = "GHG_emissions_df"
     TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"

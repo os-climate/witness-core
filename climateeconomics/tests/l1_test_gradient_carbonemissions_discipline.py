@@ -83,6 +83,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_carbon_emissions_analytic_grad(self):
 
+
         self.model_name = 'carbonemission'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -104,7 +105,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.energy_supply_df,
-                       f'{self.name}.CO2_land_emissions': self.CO2_emitted_forest,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': self.CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': self.CO2_emissions_by_use_sources,
                        f'{self.name}.CO2_emissions_by_use_sinks': self.CO2_emissions_by_use_sinks,
@@ -119,7 +120,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.CO2_emissions_by_use_sources',
-                                    f'{self.name}.CO2_land_emissions',
+                                    f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}',
                                      f'{self.name}.CO2_objective', f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'])
@@ -151,7 +152,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': energy_supply_df,
-                       f'{self.name}.CO2_land_emissions': self.CO2_emitted_forest,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': self.CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': self.CO2_emissions_by_use_sources,
                        f'{self.name}.CO2_emissions_by_use_sinks': self.CO2_emissions_by_use_sinks,
@@ -166,7 +167,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.CO2_emissions_by_use_sources',
-                                    f'{self.name}.CO2_land_emissions',
+                                    f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}',
                                      f'{self.name}.CO2_objective', f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'])

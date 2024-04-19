@@ -99,7 +99,7 @@ class Study(ClimateEconomicsStudyManager):
         CO2_emitted_land['Crop'] = np.zeros(len(years))
         CO2_emitted_land['Forest'] = cum_emission
 
-        witness_input[f"{self.study_name}.{'CO2_land_emissions'}"] = CO2_emitted_land
+        witness_input[f"{self.study_name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
         self.CO2_tax = np.asarray([50.] * len(years))
 

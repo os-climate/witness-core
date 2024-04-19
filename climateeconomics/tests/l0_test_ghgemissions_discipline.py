@@ -55,7 +55,7 @@ class GHGEmissionDiscTest(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         year_start = GlossaryCore.YearStartDefault
-        year_end = GlossaryCore.YearEndDefault
+        year_end = GlossaryCore.YearEndDefaultTest
         years = np.arange(year_start, year_end + 1)
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
@@ -71,13 +71,11 @@ class GHGEmissionDiscTest(unittest.TestCase):
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})
 
-        CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
-                                               'indus_emissions': np.linspace(1., 2., len(years))})
         CO2_emissions_ref = 6.49 # Gt
 
         energy_production = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.TotalProductionValue: 100.
+            GlossaryCore.TotalProductionValue: 84.
         })
 
         def generate_energy_consumption_df_sector(sector_name):
@@ -101,10 +99,9 @@ class GHGEmissionDiscTest(unittest.TestCase):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.SectorListValue}': GlossaryCore.SectorsPossibleValues,
-                       f'{self.name}.CO2_land_emissions': CO2_land_emissions,
-                       f'{self.name}.CH4_land_emissions': CH4_land_emissions,
-                       f'{self.name}.N2O_land_emissions': N2O_land_emissions,
-                       f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': CO2_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)}': CH4_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)}': N2O_land_emissions,
                        f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
@@ -122,5 +119,6 @@ class GHGEmissionDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass

@@ -65,15 +65,15 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'GHG_global_warming_potential20':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
         'GHG_global_warming_potential100':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
-        'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
+        GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2): {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Forest': ('float', None, False),
                                                           'Crop': ('float', None, False)}},
-        'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
+        GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4): {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),
                                                           'Forest': ('float', None, False),}},
-        'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
+        GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O): {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),
                                                           'Forest': ('float', None, False),}},
@@ -93,7 +93,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         GlossaryCore.GHGEmissionsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt'},
-        'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
+        GlossaryCore.GHGEmissionsDetailedDfValue: {'type': 'dataframe', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
         GlossaryCore.CO2EmissionsObjectiveValue: GlossaryCore.CO2EmissionsObjective,
         GlossaryCore.TotalEnergyEmissions: GlossaryCore.TotalEnergyCO2eqEmissionsDf,
@@ -163,15 +163,10 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         self.emissions_model.compute(inputs_dict)
         # Store output data
 
-        # todo: clean next 3 lines : put it in model
-        # co2_emissions_df = self.emissions_model.compute_co2_emissions_for_carbon_cycle()
-        cols = [GlossaryCore.Years] + [f'Total {ghg} emissions' for ghg in self.emissions_model.GHG_TYPE_LIST]
-        emissions_df = self.emissions_model.ghg_emissions_df[cols]
-
         dict_values = {
-            'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
+            GlossaryCore.GHGEmissionsDetailedDfValue: self.emissions_model.ghg_emissions_df,
             GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]],
-            GlossaryCore.GHGEmissionsDfValue: emissions_df,
+            GlossaryCore.GHGEmissionsDfValue: self.emissions_model.ghg_emissions_df[GlossaryCore.GHGEmissionsDf['dataframe_descriptor'].keys()],
             'GWP_emissions': self.emissions_model.gwp_emissions,
             GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
             GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions,
@@ -204,28 +199,28 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         # land emissions
         d_energy_carbon_intensity_d_ghg_total_emissions = {}
         for ghg in self.emissions_model.GHG_TYPE_LIST:
-            ghg_land_emissions = inputs_dict[f'{ghg}_land_emissions']
+            ghg_land_emissions = inputs_dict[GlossaryCore.insertGHGLandEmissions.format(ghg)]
             for column in ghg_land_emissions.columns:
                 if column != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'),
-                        (f'{ghg}_land_emissions', column),
+                        (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                        (GlossaryCore.insertGHGLandEmissions.format(ghg), column),
                         np.identity(len(years)))
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.GHGEmissionsDfValue, f'Total {ghg} emissions'),
-                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                 np.identity(len(years)))
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.TotalEnergyEmissions, GlossaryCore.TotalEnergyEmissions),
-                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                 np.identity(len(years))* self.emissions_model.gwp_100[ghg])
 
             d_energy_carbon_intensity_d_ghg_total_emissions[ghg] = self.emissions_model.d_carbon_intensity_of_energy_mix_d_ghg_energy_emissions(ghg=ghg)
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
-                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                 d_energy_carbon_intensity_d_ghg_total_emissions[ghg])
 
         self.set_partial_derivative_for_other_types(
@@ -241,13 +236,10 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_carbon_intensity_d_energy_prod)
 
-        new_sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
-        d_sector_non_energy_emissions_d_ghg_emissions = {}
-        d_sector_non_energy_emissions_d_energy_prod = {}
         d_sector_energy_emissions_d_ghg_emissions = {}
         d_sector_energy_emissions_d_energy_prod = {}
         d_section_energy_emissions_d_section_energy_consumption = self.emissions_model.d_section_energy_emissions_d_section_energy_consumption()
-        for sector in new_sector_list:
+        for sector in self.emissions_model.economic_sectors_except_agriculture:
             d_sector_energy_emissions_d_ghg_emissions[sector] = {}
             d_energy_emissions_sections_d_energy_prod_list = []
 
@@ -257,30 +249,6 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
                 d_section_energy_emissions_d_energy_prod = self.emissions_model.d_section_energy_emissions_d_user_input(section_name=section, sector_name=sector, d_carbon_intensity_d_user_input=d_carbon_intensity_d_energy_prod)
                 d_energy_emissions_sections_d_energy_prod_list.append(d_section_energy_emissions_d_energy_prod)
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
-                    (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-                    d_section_energy_emissions_d_energy_prod)
-
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
-                    (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-                    d_section_energy_emissions_d_energy_prod)
-
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
-                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
-                    d_section_energy_emissions_d_section_energy_consumption)
-
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.EnergyEmissions),
-                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
-                    d_section_energy_emissions_d_section_energy_consumption)
-
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
-                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
-                    d_section_energy_emissions_d_section_energy_consumption)
 
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
@@ -293,23 +261,13 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     d_section_energy_emissions_d_section_energy_consumption)
 
                 d_sector_section_non_energy_emissions_d_section_gdp = self.emissions_model.d_section_non_energy_emissions_d_gdp_section(sector=sector, section=section)
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}", section),
-                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
-                    d_sector_section_non_energy_emissions_d_section_gdp)
-
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.NonEnergyEmissions),
-                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
-                    d_sector_section_non_energy_emissions_d_section_gdp)
-
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
-                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
-                    d_sector_section_non_energy_emissions_d_section_gdp)
 
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.NonEnergyEmissions),
+                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                    d_sector_section_non_energy_emissions_d_section_gdp)
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
                     (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
                     d_sector_section_non_energy_emissions_d_section_gdp)
                 self.set_partial_derivative_for_other_types(
@@ -321,32 +279,13 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     d_sections_energy_emissions_d_ghg_emisssions[ghg].append(self.emissions_model.d_section_energy_emissions_d_user_input(section_name=section, sector_name=sector, d_carbon_intensity_d_user_input=d_energy_carbon_intensity_d_ghg_total_emissions[ghg]))
                     self.set_partial_derivative_for_other_types(
                         (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
-                        ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                        ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                         d_sections_energy_emissions_d_ghg_emisssions[ghg][-1])
 
             d_sector_energy_emissions_d_energy_prod[sector] = np.sum(d_energy_emissions_sections_d_energy_prod_list, axis=0)
 
-            self.set_partial_derivative_for_other_types(
-                (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.EnergyEmissions),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-                d_sector_energy_emissions_d_energy_prod[sector])
-
-            self.set_partial_derivative_for_other_types(
-                (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-                d_sector_energy_emissions_d_energy_prod[sector])
-
             for ghg in GlossaryCore.GreenHouseGases:
                 d_sector_energy_emissions_d_ghg_emissions[sector][ghg] = np.sum(d_sections_energy_emissions_d_ghg_emisssions[ghg], axis=0)
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.EnergyEmissions),
-                    ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
-                    d_sector_energy_emissions_d_ghg_emissions[sector][ghg])
-
-                self.set_partial_derivative_for_other_types(
-                    (f"{sector}.{GlossaryCore.EmissionsDfValue}", GlossaryCore.TotalEmissions),
-                    ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
-                    d_sector_energy_emissions_d_ghg_emissions[sector][ghg])
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
@@ -359,14 +298,14 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
 
         for ghg in GlossaryCore.GreenHouseGases:
-            temp = [d_sector_energy_emissions_d_ghg_emissions[sector][ghg] for sector in new_sector_list]
+            temp = [d_sector_energy_emissions_d_ghg_emissions[sector][ghg] for sector in self.emissions_model.economic_sectors_except_agriculture]
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
-                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                 np.sum(temp, axis=0))
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
-                ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                 np.sum(temp, axis=0))
 
     def get_chart_filter_list(self):
@@ -376,7 +315,10 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['GHG emissions per sector', 'Global Warming Potential', 'Total CO2 emissions', GlossaryCore.EnergyCarbonIntensityDfValue]
+        chart_list = ['GHG emissions per sector',
+                      'Global Warming Potential',
+                      'Total CO2 emissions',
+                      GlossaryCore.EnergyCarbonIntensityDfValue]
         #chart_list = ['sectoral energy carbon emissions cumulated']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -449,19 +391,29 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
     def get_chart_emission_per_sector(self, ghg):
         GHG_emissions_detail_df = self.get_sosdisc_outputs(
-            'GHG_emissions_detail_df')
+            GlossaryCore.GHGEmissionsDetailedDfValue)
 
         chart_name = f'{ghg} emissions per sector'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryCore.Years, f'{ghg} Emissions [Gt]', chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, f"{ghg} Emissions [{GlossaryCore.GHGEmissionsDf['unit']}]", chart_name=chart_name, stacked_bar=True)
 
-        sector_list = ['energy', 'land', 'industry']
-        for sector in sector_list:
-            if f'{ghg} {sector}_emissions' in GHG_emissions_detail_df:
-                new_serie = InstanciatedSeries(list(GHG_emissions_detail_df[GlossaryCore.Years].values), list(GHG_emissions_detail_df[f'{ghg} {sector}_emissions'].values),
-                                               sector, 'bar')
+        emission_type = [GlossaryCore.insertGHGLandEmissions,
+                         GlossaryCore.insertGHGEnergyEmissions,
+                         GlossaryCore.insertGHGNonEnergyEmissions]
+        for e_t in emission_type:
+            new_serie = InstanciatedSeries(
+                list(GHG_emissions_detail_df[GlossaryCore.Years].values),
+                list(GHG_emissions_detail_df[e_t.format(ghg)].values), e_t.format(ghg), 'bar')
 
-                new_chart.series.append(new_serie)
+            new_chart.series.append(new_serie)
+
+        new_serie = InstanciatedSeries(
+            list(GHG_emissions_detail_df[GlossaryCore.Years].values),
+            list(GHG_emissions_detail_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)].values),
+            GlossaryCore.insertGHGTotalEmissions.format(ghg),
+            'lines')
+
+        new_chart.series.append(new_serie)
 
         return new_chart
 
@@ -472,7 +424,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         total_ghg_df = self.get_sosdisc_outputs(GlossaryCore.GHGEmissionsDfValue)
         chart_name = f'Total CO2 emissions'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryCore.Years, f'Total CO2 emissions [Gt]', chart_name=chart_name)
+            GlossaryCore.Years, f"Total CO2 emissions [{GlossaryCore.GHGEmissionsDf['unit']}]", chart_name=chart_name)
         new_serie = InstanciatedSeries(list(total_ghg_df[GlossaryCore.Years].values),
                                        total_ghg_df[f'Total CO2 emissions'].to_list(),
                                        f'CO2 emissions', 'lines')
