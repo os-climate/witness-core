@@ -28,6 +28,8 @@ class MacroEconomics:
         """
         Constructor
         """
+        self.energy_consumption_households_df = None
+        self.inputs = None
         self.consommation_objective_ref = None
         self.year_start: int = 0
         self.year_end = None
@@ -274,6 +276,7 @@ class MacroEconomics:
         """
         Set couplings inputs with right index, scaling... 
         """
+        self.inputs = inputs
         self.damage_fraction_output_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_output_df.index = self.damage_fraction_output_df[GlossaryCore.Years].values
         # Scale energy production
@@ -842,6 +845,7 @@ class MacroEconomics:
         self.compute_regionalised_gdp()
 
         self.compute_energy_consumption_per_section()
+        self.compute_energy_consumption_households()
 
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
@@ -1479,3 +1483,17 @@ class MacroEconomics:
 
     def compute_consumption_objective(self):
         self.consommation_objective = np.array([self.economics_df[GlossaryCore.Consumption].mean()]) / self.consommation_objective_ref
+
+    def compute_energy_consumption_households(self):
+        """elkzjl"""
+        energy_consumption_households = (self.inputs[GlossaryCore.ShareResidentialEnergyDfValue][GlossaryCore.ShareSectorEnergy].values *
+                                              self.energy_production[GlossaryCore.TotalProductionValue].values) / 100.
+
+        self.energy_consumption_households_df = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.TotalProductionValue: energy_consumption_households
+        })
+
+
+
+
