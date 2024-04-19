@@ -149,6 +149,10 @@ class MacroDiscTest(unittest.TestCase):
                        weighted_average_percentage_per_sector_df.values[0, 1:]))
         }
         section_gdp_df = pd.DataFrame(subsector_share_dict)
+        share_residential_energy_consumption = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.ShareSectorEnergy: 10.
+        })
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
@@ -169,6 +173,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.SectorListValue}': sectors_list,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
+                       f'{self.name}.{GlossaryCore.ShareResidentialEnergyDfValue}': share_residential_energy_consumption,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
                            'compute_climate_impact_on_gdp': True,
