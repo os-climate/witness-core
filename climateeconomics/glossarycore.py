@@ -946,8 +946,8 @@ class GlossaryCore:
     }
 
     GWPEmissionsDfValue = "GWP_emissions"
+    TotalGWPEmissionsDfValue = "Total GWP emissions"
     GWPEmissionsDf = {
-        "varname": GWPEmissionsDfValue,
         "type": "dataframe",
         "description": f"Data on Global warming potential for the three main green house gases : {GreenHouseGases}",
         "unit": "GtCO2Eq",

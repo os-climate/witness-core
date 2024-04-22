@@ -18,6 +18,7 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
     Study as usecase_witness_mda
@@ -31,6 +32,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
     Study as usecase4
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
     Study as usecase7
+
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -105,14 +107,13 @@ class Study(ClimateEconomicsStudyManager):
         }
         ref_gdp_2020 = 129.9
 
-        all_co2_emissions = dm.get_all_namespaces_from_var_name(GlossaryCore.GHGEmissionsDfValue)
-        ref_value_co2_emissions = {
-            self.USECASE2: 141,
-            self.USECASE2B: 81,
-            self.USECASE4: 54,
-            self.USECASE7: -5.45
+        all_gwp_100_emissions = dm.get_all_namespaces_from_var_name(GlossaryCore.TotalGWPEmissionsDfValue)
+        ref_value_gwp_100_emissions = {
+            self.USECASE2: 139,
+            self.USECASE2B: 73,
+            self.USECASE4: 51,
+            self.USECASE7: -5.45 # todo : refit NZE scenario
         }
-        ref_co2_2020 = 42.2
 
         all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.EnergyProductionDetailedValue}')
         ref_value_net_energy_production = {
@@ -142,7 +143,7 @@ class Study(ClimateEconomicsStudyManager):
 
         tolerance_high_ref_2020 = 1.015
         tolerance_low_ref_2020 = 0.985
-
+        error_msg = ''
         for scenario in list_scenario:
             # Checking that the temperature value in 2100 is in an acceptable range for each usecase
             for scenario_temp_increase in all_temp_increase:
@@ -151,57 +152,54 @@ class Study(ClimateEconomicsStudyManager):
                     value_temp_increase = temp_increase.loc[temp_increase['years'] == 2100]['temp_atmo'].values[0]
                     # temperature year 2020
                     value_temp_2020 = temp_increase.loc[temp_increase['years'] == 2020]['temp_atmo'].values[0]
-                    assert value_temp_increase >= ref_value_temp_increase[scenario] * 0.8
-                    assert value_temp_increase <= ref_value_temp_increase[scenario] * 1.2
-                    # assert on value of start, tolerance at 1.5%
-                    assert value_temp_2020 >= ref_temperature_2020 * tolerance_low_ref_2020
-                    assert value_temp_2020 <=  ref_temperature_2020 * tolerance_high_ref_2020
+                    error_msg += self.should_be_greater(value_temp_increase, ref_value_temp_increase[scenario] * 0.8, f"{scenario_temp_increase}[2100]")
+                    error_msg += self.should_be_lower(value_temp_increase, ref_value_temp_increase[scenario] * 1.2, f"{scenario_temp_increase}[2100]")
+                    error_msg += self.should_be_greater(value_temp_2020, ref_temperature_2020 * tolerance_low_ref_2020, f"{scenario_temp_increase}[2020]")
+                    error_msg += self.should_be_lower(value_temp_2020,  ref_temperature_2020 * tolerance_high_ref_2020, f"{scenario_temp_increase}[2020]")
 
             # Checking that the CO2 tax value in 2100 is in an acceptable range for each usecase
             for scenario_co2_tax in all_co2_taxes:
                 if scenario in scenario_co2_tax:
                     co2_tax = dm.get_value(scenario_co2_tax)
                     value_co2_tax = co2_tax.loc[co2_tax['years'] == 2100]['CO2_tax'].values[0]
-                    assert value_co2_tax >= ref_value_co2_tax[scenario] * 0.8
-                    assert value_co2_tax <= ref_value_co2_tax[scenario] * 1.2
+                    error_msg += self.should_be_greater(value_co2_tax, ref_value_co2_tax[scenario] * 0.8, f"{scenario_co2_tax}[2100]")
+                    error_msg += self.should_be_lower(value_co2_tax, ref_value_co2_tax[scenario] * 1.2, f"{scenario_co2_tax}[2100]")
 
             for scenario_gdp in all_gdps:
                 if scenario in scenario_gdp:
                     gdp_df = dm.get_value(scenario_gdp)
                     value_gdp = gdp_df.loc[gdp_df['years'] == 2100][GlossaryCore.OutputNetOfDamage].values[0]
                     value_gdp_2020 = gdp_df.loc[gdp_df['years'] == 2020][GlossaryCore.OutputNetOfDamage].values[0]
-                    assert value_gdp >= ref_value_world_gdp_net_of_damage[scenario] * 0.8
-                    assert value_gdp <= ref_value_world_gdp_net_of_damage[scenario] * 1.2
+                    error_msg += self.should_be_greater(value_gdp, ref_value_world_gdp_net_of_damage[scenario] * 0.8, f"{scenario_gdp}[2100]")
+                    error_msg += self.should_be_lower(value_gdp, ref_value_world_gdp_net_of_damage[scenario] * 1.2, f"{scenario_gdp}[2100]")
                     # assert on value of start, tolerance at 1.5%
-                    assert value_gdp_2020 >= ref_gdp_2020 * tolerance_low_ref_2020
-                    assert value_gdp_2020 <= ref_gdp_2020 * tolerance_high_ref_2020
-            for scenario_emissions in all_co2_emissions:
+                    error_msg += self.should_be_greater(value_gdp_2020, ref_gdp_2020 * tolerance_low_ref_2020, f"{scenario_gdp}[2020]")
+                    error_msg += self.should_be_lower(value_gdp_2020, ref_gdp_2020 * tolerance_high_ref_2020, f"{scenario_gdp}[2020]")
+            for scenario_emissions in all_gwp_100_emissions:
                 if scenario in scenario_emissions:
                     emissions_df = dm.get_value(scenario_emissions)
-                    value_emissions = emissions_df.loc[emissions_df['years'] == 2100][GlossaryCore.TotalCO2Emissions].values[0]
-                    value_emissions_2020 = emissions_df.loc[emissions_df['years'] == 2020][GlossaryCore.TotalCO2Emissions].values[0]
+                    value_emissions = emissions_df.loc[emissions_df['years'] == 2100][f'Total GWP (100-year basis)'].values[0]
+                    value_emissions_2020 = emissions_df.loc[emissions_df['years'] == 2020][f'Total GWP (100-year basis)'].values[0]
                     if self.USECASE7 in scenario:
-                        assert value_emissions <= ref_value_co2_emissions[scenario] * 0.8
-                        assert value_emissions >= ref_value_co2_emissions[scenario] * 1.2
+                        error_msg += self.should_be_lower(value_emissions, ref_value_gwp_100_emissions[scenario] * 0.8, f"{scenario_emissions}[2100]")
+                        error_msg += self.should_be_greater(value_emissions, ref_value_gwp_100_emissions[scenario] * 1.2, f"{scenario_emissions}[2100]")
                     else:
-                        assert value_emissions >= ref_value_co2_emissions[scenario] * 0.8
-                        assert value_emissions <= ref_value_co2_emissions[scenario] * 1.2
-                    assert value_emissions_2020 >= ref_co2_2020 * tolerance_low_ref_2020
-                    assert value_emissions_2020 <= ref_co2_2020 * tolerance_high_ref_2020
+                        error_msg += self.should_be_greater(value_emissions, ref_value_gwp_100_emissions[scenario] * 0.8, f"{scenario_emissions}[2100]")
+                        error_msg += self.should_be_lower(value_emissions, ref_value_gwp_100_emissions[scenario] * 1.2, f"{scenario_emissions}[2100]")
+                    error_msg += self.should_be_greater(value_emissions_2020, DatabaseWitnessCore.GWP_2020_100_year_basis.value * tolerance_low_ref_2020, f"{scenario_emissions}[2020]")
+                    error_msg += self.should_be_lower(value_emissions_2020, DatabaseWitnessCore.GWP_2020_100_year_basis.value * tolerance_high_ref_2020, f"{scenario_emissions}[2020]")
 
             for scenario_net_energy_production in all_net_energy_productions:
                 if scenario in scenario_net_energy_production:
                     net_energy_production_df = dm.get_value(scenario_net_energy_production)
                     value_net_energy_production = \
-                    net_energy_production_df.loc[net_energy_production_df['years'] == 2100][
-                        'Total production (uncut)'].values[0]
+                    net_energy_production_df.loc[net_energy_production_df['years'] == 2100]['Total production (uncut)'].values[0]
                     value_net_energy_production_2020 = \
-                    net_energy_production_df.loc[net_energy_production_df['years'] == 2020][
-                        'Total production (uncut)'].values[0]
-                    assert value_net_energy_production >= ref_value_net_energy_production[scenario] * 0.8
-                    assert value_net_energy_production <= ref_value_net_energy_production[scenario] * 1.2
-                    assert value_net_energy_production_2020 >= ref_net_prod_2020 * tolerance_low_ref_2020
-                    assert value_net_energy_production_2020 <= ref_net_prod_2020 * tolerance_high_ref_2020
+                    net_energy_production_df.loc[net_energy_production_df['years'] == 2020]['Total production (uncut)'].values[0]
+                    error_msg += self.should_be_greater(value_net_energy_production, ref_value_net_energy_production[scenario] * 0.8, f"{scenario_net_energy_production}[2100]")
+                    error_msg += self.should_be_lower(value_net_energy_production, ref_value_net_energy_production[scenario] * 1.2, f"{scenario_net_energy_production}[2100]")
+                    error_msg += self.should_be_greater(value_net_energy_production_2020, ref_net_prod_2020 * tolerance_low_ref_2020, f"{scenario_net_energy_production}[2020]")
+                    error_msg += self.should_be_lower(value_net_energy_production_2020, ref_net_prod_2020 * tolerance_high_ref_2020, f"{scenario_net_energy_production}[2020]")
 
 
             for scenario_population in all_populations:
@@ -211,10 +209,10 @@ class Study(ClimateEconomicsStudyManager):
                         GlossaryCore.PopulationValue].values[0]
                     value_population_2020 = population_df.loc[population_df['years'] == 2020][
                         GlossaryCore.PopulationValue].values[0]
-                    assert value_population >= ref_value_populations[scenario] * 0.8
-                    assert value_population <= ref_value_populations[scenario] * 1.2
-                    assert value_population_2020 >= ref_population_2020 * tolerance_low_ref_2020
-                    assert value_population_2020 <= ref_population_2020 * tolerance_high_ref_2020
+                    error_msg += self.should_be_greater(value_population, ref_value_populations[scenario] * 0.8, f"{scenario_population}[2100]")
+                    error_msg += self.should_be_lower(value_population, ref_value_populations[scenario] * 1.2, f"{scenario_population}[2100]")
+                    error_msg += self.should_be_greater(value_population_2020, ref_population_2020 * tolerance_low_ref_2020, f"{scenario_population}[2020]")
+                    error_msg += self.should_be_lower(value_population_2020, ref_population_2020 * tolerance_high_ref_2020, f"{scenario_population}[2020]")
 
             for scenario_energy_investment_without_tax in all_energy_investment_without_tax:
                 if scenario in scenario_energy_investment_without_tax:
@@ -222,12 +220,25 @@ class Study(ClimateEconomicsStudyManager):
                     value_energy_investment_without_tax = \
                     energy_investment_without_tax_df.loc[energy_investment_without_tax_df['years'] == 2100][
                         GlossaryCore.EnergyInvestmentsWoTaxValue].values[0]
-                    assert value_energy_investment_without_tax >= ref_value_energy_investment_without_tax[
-                        scenario] * 0.8
-                    assert value_energy_investment_without_tax <= ref_value_energy_investment_without_tax[
-                        scenario] * 1.2
+                    error_msg += self.should_be_greater(value_energy_investment_without_tax, ref_value_energy_investment_without_tax[scenario] * 0.8, scenario_energy_investment_without_tax)
+                    error_msg += self.should_be_lower(value_energy_investment_without_tax, ref_value_energy_investment_without_tax[scenario] * 1.2, scenario_energy_investment_without_tax)
+
+        if error_msg:
+            raise AssertionError(f'Check range de valeurs invalide pour {self.study_name}:\n {error_msg}')
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=False)
+    uc_cls = Study(run_usecase=True)
     uc_cls.test()
+
+    '''
+    from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+    ppf = PostProcessingFactory()
+    ns = 'usecase_witness_ms_mda_four_scenarios.mda_scenarios.- damage - tax, fossil 100%.GHGEmissions'
+    filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
+
+    graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
+    for graph in graph_list:
+        graph.to_plotly().show()
+    a = 1
+    '''
