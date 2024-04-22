@@ -194,6 +194,10 @@ class DataStudy():
              GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 1.65] * nb_per)},
             index=years)
 
+        share_residential_energy = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value},)
+
         # ------------------ mda initialisation data
         co2_emissions_Gt = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -207,6 +211,7 @@ class DataStudy():
         for sector in GlossaryCore.SectorsPossibleValues:
             witness_input[f'{self.study_name}.GHGEmissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
 
+        witness_input[f'{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}'] = share_residential_energy
         witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'] = energy_investment_wo_tax
         witness_input[f'{self.study_name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}'] = share_non_energy_investment
         witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
