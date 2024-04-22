@@ -43,6 +43,11 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
         })
 
+        self.share_residential_energy_consumption = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.ShareSectorEnergy: 10.
+        })
+
         self.default_co2_efficiency = pd.DataFrame({
             GlossaryCore.Years: self.years,
             'CO2_tax_efficiency': 40.0
@@ -158,6 +163,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                 self.default_value_dict_consumption['Industry'],
             f'{self.name}.{self.model_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_Industry':
                 self.default_value_dict_emissions['Industry'],
+            f'{self.name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_residential_energy_consumption,
         }
 
     def analytic_grad_entry(self):
