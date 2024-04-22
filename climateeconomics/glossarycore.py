@@ -945,6 +945,14 @@ class GlossaryCore:
         },
     }
 
+    GWPEmissionsDfValue = "GWP_emissions"
+    GWPEmissionsDf = {
+        "varname": GWPEmissionsDfValue,
+        "type": "dataframe",
+        "description": f"Data on Global warming potential for the three main green house gases : {GreenHouseGases}",
+        "unit": "GtCO2Eq",
+    }
+
     GHGCycleDfValue = "ghg_cycle_df"
     CO2Concentration = f"{CO2} (ppm)"
     CH4Concentration = f"{CH4} (ppb)"

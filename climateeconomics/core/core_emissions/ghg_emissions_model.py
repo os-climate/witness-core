@@ -122,12 +122,15 @@ class GHGEmissions:
                 self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)].values + \
                 self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)].values
 
-    def compute_gwp(self):
+    def compute_total_gwp(self):
 
         for ghg in self.GHG_TYPE_LIST:
 
             self.gwp_emissions[f'{ghg}_20'] = self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_20[ghg]
             self.gwp_emissions[f'{ghg}_100'] = self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_100[ghg]
+
+        self.gwp_emissions[f'Total GWP (20-year basis)'] = self.gwp_emissions[[f'{ghg}_20' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
+        self.gwp_emissions[f'Total GWP (100-year basis)'] = self.gwp_emissions[[f'{ghg}_100' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
 
     def compute_co2_emissions_for_carbon_cycle(self):
         co2_emissions_df = self.ghg_emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]].rename(
@@ -288,7 +291,8 @@ class GHGEmissions:
         self.compute_total_emissions()
 
         # compute other indicators
-        self.compute_gwp()
+        self.compute_total_gwp()
+        self.compute_gwp_per_sector()
         self.compute_CO2_emissions_objective()
 
     def compute_carbon_intensity_of_energy_mix(self):
@@ -332,3 +336,27 @@ class GHGEmissions:
         for ghg in self.GHG_TYPE_LIST:
             self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)] = \
                 self.GHG_total_energy_emissions[GlossaryCore.insertGHGTotalEmissions.format(ghg)].values
+
+    def compute_gwp_per_sector(self):
+        """computes global warming potential per sector"""
+        emission_types = {'Land': GlossaryCore.insertGHGLandEmissions,
+                          'Energy': GlossaryCore.insertGHGEnergyEmissions,
+                          'Non energy': GlossaryCore.insertGHGNonEnergyEmissions}
+
+        for emission_type, column_name in emission_types.items():
+            emissions_type_gwp_20_values = []
+            emissions_type_gwp_100_values = []
+            for ghg in self.GHG_TYPE_LIST:
+                gwp_20_emission_type_ghg = self.ghg_emissions_df[column_name.format(ghg)].values * self.gwp_20[ghg]
+                gwp_100_emission_type_ghg = self.ghg_emissions_df[column_name.format(ghg)].values * self.gwp_100[ghg]
+
+                emissions_type_gwp_20_values.append(gwp_20_emission_type_ghg)
+                emissions_type_gwp_100_values.append(gwp_100_emission_type_ghg)
+
+            self.gwp_emissions[f'{emission_type}_20'] = np.sum(emissions_type_gwp_20_values, axis=0)
+            self.gwp_emissions[f'{emission_type}_100'] = np.sum(emissions_type_gwp_100_values, axis=0)
+
+
+
+
+        pass
