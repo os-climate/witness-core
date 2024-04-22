@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy, copy
+import numpy as np
+import pandas as pd
 
 from climateeconomics.database import DatabaseWitnessCore
 
@@ -53,6 +55,7 @@ class GlossaryCore:
     YearStartDefault = 2020
     YearEnd = "year_end"
     YearEndDefault = 2100
+    YearEndDefaultTest = 2030
     YearEndVar = {
         "type": "int",
         "default": YearEndDefault,
@@ -657,6 +660,10 @@ class GlossaryCore:
     EconomicsEmissionDfValue = "economics_emissions_df"
     EnergyEmissions = "Energy emissions"
     NonEnergyEmissions = "Non energy emissions"
+    insertGHGNonEnergyEmissions = "Non energy {} emissions of economy"
+    insertGHGTotalEmissions = "Total {} emissions"
+    insertGHGEnergyEmissions = "Energy {} emissions"
+    insertGHGLandEmissions = "Land {} emissions"
     EmissionDf = {
         "type": "dataframe",
         "description": "Emissions of macroeconomics (all sectors)",
@@ -920,6 +927,7 @@ class GlossaryCore:
         },
     }
 
+    GHGEmissionsDetailedDfValue = "GHG_emissions_detail_df"
     GHGEmissionsDfValue = "GHG_emissions_df"
     TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"
@@ -1576,3 +1584,20 @@ class GlossaryCore:
         out = deepcopy(variable)
         out["namespace"] = namespace
         return out
+
+    @staticmethod
+    def get_random_dataframe(years, df_variable, min_val: float = 0., max_val: float = 100.):
+        out = {}
+        for key in df_variable['dataframe_descriptor'].keys():
+            if key == GlossaryCore.Years:
+                out[key] = years
+            else:
+                out[key] = np.random.uniform(min_val, max_val)
+        return pd.DataFrame(out)
+
+    @staticmethod
+    def get_random_dataframe_columns(years, columns: list[str], min_val: float = 0., max_val: float = 100.):
+        out = {GlossaryCore.Years: years}
+        for key in columns:
+            out[key] = np.random.uniform(min_val, max_val)
+        return pd.DataFrame(out)

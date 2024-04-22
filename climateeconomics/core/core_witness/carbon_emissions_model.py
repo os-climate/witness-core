@@ -51,7 +51,7 @@ class CarbonEmissions():
         self.beta = self.param['beta']
         self.total_emissions_ref = self.param['total_emissions_ref']
         self.min_co2_objective = self.param['min_co2_objective']
-        self.CO2_land_emissions = self.param['CO2_land_emissions']
+        self.CO2_land_emissions = self.param[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)]
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
         self.gtco2_to_gtc = 44 / 12
@@ -383,7 +383,7 @@ class CarbonEmissions():
         self.co2_emissions_ccus_Gt.index = self.co2_emissions_ccus_Gt[
             GlossaryCore.Years].values
 
-        self.CO2_land_emissions = self.inputs_models['CO2_land_emissions'].copy(
+        self.CO2_land_emissions = self.inputs_models[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)].copy(
             deep=True)
         self.CO2_land_emissions.index = self.co2_emissions_ccus_Gt[GlossaryCore.Years].values
         self.compute_total_CO2_emissions()

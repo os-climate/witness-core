@@ -39,7 +39,7 @@ class Forest():
 
     FOREST_SURFACE_DF = 'forest_surface_df'
     FOREST_DETAIL_SURFACE_DF = 'forest_surface_detail_df'
-    CO2_EMITTED_FOREST_DF = 'CO2_land_emissions'
+    CO2_EMITTED_FOREST_DF = GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)
     CO2_EMITTED_DETAIL_DF = GlossaryCore.CO2EmissionsDetailDfValue
 
     def __init__(self, param):
