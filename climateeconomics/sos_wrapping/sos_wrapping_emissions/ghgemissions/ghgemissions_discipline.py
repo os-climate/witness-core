@@ -94,7 +94,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         GlossaryCore.GHGEmissionsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt'},
         GlossaryCore.GHGEmissionsDetailedDfValue: {'type': 'dataframe', 'unit': 'Gt'},
-        GlossaryCore.GWPEmissionsDfValue: GlossaryCore.GWPEmissionsDf,
+        GlossaryCore.TotalGWPEmissionsDfValue: GlossaryCore.GWPEmissionsDf,
         GlossaryCore.CO2EmissionsObjectiveValue: GlossaryCore.CO2EmissionsObjective,
         GlossaryCore.TotalEnergyEmissions: GlossaryCore.TotalEnergyCO2eqEmissionsDf,
         GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf,
@@ -167,7 +167,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.GHGEmissionsDetailedDfValue: self.emissions_model.ghg_emissions_df,
             GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]],
             GlossaryCore.GHGEmissionsDfValue: self.emissions_model.ghg_emissions_df[GlossaryCore.GHGEmissionsDf['dataframe_descriptor'].keys()],
-            GlossaryCore.GWPEmissionsDfValue: self.emissions_model.gwp_emissions,
+            GlossaryCore.TotalGWPEmissionsDfValue: self.emissions_model.gwp_emissions,
             GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
             GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions,
             GlossaryCore.EnergyCarbonIntensityDfValue: self.emissions_model.carbon_intensity_of_energy_mix,
@@ -345,11 +345,33 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         if 'GHG emissions per sector' in charts:
             gwp_year = 20
-            GWP_emissions = self.get_sosdisc_outputs(GlossaryCore.GWPEmissionsDfValue)
+            GWP_emissions = self.get_sosdisc_outputs(GlossaryCore.TotalGWPEmissionsDfValue)
 
             chart_name = f'Global warming potential ({gwp_year}-year basis) breakdown per sector'
             new_chart = TwoAxesInstanciatedChart(
                 GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
+
+            for sector in ['Land', 'Energy', 'Non energy']:
+                new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
+                                               list(GWP_emissions[f'{sector}_{gwp_year}'].values),
+                                               sector, 'bar')
+
+                new_chart.series.append(new_serie)
+
+            new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
+                                           list(GWP_emissions[f'Total GWP ({gwp_year}-year basis)'].values),
+                                           'Total', 'lines')
+            new_chart.series.append(new_serie)
+
+            instanciated_charts.append(new_chart)
+
+            gwp_year = 100
+            GWP_emissions = self.get_sosdisc_outputs(GlossaryCore.TotalGWPEmissionsDfValue)
+
+            chart_name = f'Global warming potential ({gwp_year}-year basis) breakdown per sector'
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name,
+                stacked_bar=True)
 
             for sector in ['Land', 'Energy', 'Non energy']:
                 new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
@@ -396,11 +418,11 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
     def get_chart_gwp(self, gwp_year):
         GWP_emissions = self.get_sosdisc_outputs(
-            GlossaryCore.GWPEmissionsDfValue)
+            GlossaryCore.TotalGWPEmissionsDfValue)
 
         chart_name = f'Global warming potential at {gwp_year} years'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryCore.Years, f"GWP {GWP_emissions['unit']}", chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
 
         for ghg in GHGEmissions.GHG_TYPE_LIST:
             new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values), list(GWP_emissions[f'{ghg}_{gwp_year}'].values),
