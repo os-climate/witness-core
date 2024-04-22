@@ -25,7 +25,7 @@ class GHGEmissions:
     """
     Used to compute ghg emissions from different sectors
     """
-    GHG_TYPE_LIST = [N2O.name, GlossaryCore.CO2, GlossaryCore.CH4]
+    GHG_TYPE_LIST = [GlossaryCore.CO2, GlossaryCore.CH4, N2O.name]
 
     def __init__(self, param):
         """
@@ -106,8 +106,6 @@ class GHGEmissions:
 
     def compute_total_emissions(self):
         """
-        Total emissions taking energy emissions as inputs
-
         Total emissions is defined as : land use emissions + energy mix emissions + non energy emissions from economy
         
         Note : Non energy emissions from economy are only in CO2 Equivalent
