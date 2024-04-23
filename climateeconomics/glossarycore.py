@@ -86,6 +86,8 @@ class GlossaryCore:
     EconomicSectors = "Economic sectors"
 
     AgricultureAndLandUse = "Agriculture & Land Use"
+    Energy = "Energy"
+    NonEnergy = "Non energy (from economy)"
 
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
@@ -664,7 +666,7 @@ class GlossaryCore:
     NonEnergyEmissions = "Non energy emissions"
     insertGHGNonEnergyEmissions = "Non energy {} emissions of economy"
     insertGHGTotalEmissions = "Total {} emissions"
-    insertGHGEnergyEmissions = "Energy {} emissions"
+    insertGHGEnergyEmissions = f"{Energy}" + " {} emissions"
     insertGHGAgriLandEmissions = f"{AgricultureAndLandUse}" + " {} emissions"
     EmissionDf = {
         "type": "dataframe",

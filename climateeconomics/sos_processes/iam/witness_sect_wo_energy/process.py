@@ -100,4 +100,10 @@ class ProcessBuilder(BaseProcessBuilder):
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 ns, post_proc_module
             )
+
+        # gdp for sectors post proc modules :
+        for sector in GlossaryCore.SectorsPossibleValues:
+            ns = f'ns_{sector.lower()}_gdp'
+            self.ee.ns_manager.add_ns(ns, f"{self.ee.study_name}.Macroeconomics.{sector}")
+
         return builder_list

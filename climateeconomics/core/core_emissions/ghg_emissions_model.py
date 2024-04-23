@@ -337,9 +337,9 @@ class GHGEmissions:
 
     def compute_gwp_per_sector(self):
         """computes global warming potential per sector"""
-        emission_types = {'Land': GlossaryCore.insertGHGAgriLandEmissions,
-                          'Energy': GlossaryCore.insertGHGEnergyEmissions,
-                          'Non energy': GlossaryCore.insertGHGNonEnergyEmissions}
+        emission_types = {GlossaryCore.AgricultureAndLandUse: GlossaryCore.insertGHGAgriLandEmissions,
+                          GlossaryCore.Energy: GlossaryCore.insertGHGEnergyEmissions,
+                          GlossaryCore.NonEnergy: GlossaryCore.insertGHGNonEnergyEmissions}
 
         for emission_type, column_name in emission_types.items():
             emissions_type_gwp_20_values = []
@@ -353,8 +353,3 @@ class GHGEmissions:
 
             self.gwp_emissions[f'{emission_type}_20'] = np.sum(emissions_type_gwp_20_values, axis=0)
             self.gwp_emissions[f'{emission_type}_100'] = np.sum(emissions_type_gwp_100_values, axis=0)
-
-
-
-
-        pass

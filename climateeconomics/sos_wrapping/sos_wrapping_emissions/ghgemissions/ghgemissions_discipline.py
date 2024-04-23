@@ -355,7 +355,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart(
                 GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
 
-            for sector in ['Land', 'Energy', 'Non energy']:
+            for sector in [GlossaryCore.AgricultureAndLandUse, GlossaryCore.Energy, GlossaryCore.NonEnergy]:
                 new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
                                                list(GWP_emissions[f'{sector}_{gwp_year}'].values),
                                                sector, 'bar')
@@ -377,7 +377,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name,
                 stacked_bar=True)
 
-            for sector in ['Land', 'Energy', 'Non energy']:
+            for sector in [GlossaryCore.AgricultureAndLandUse, GlossaryCore.Energy, GlossaryCore.NonEnergy]:
                 new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
                                                list(GWP_emissions[f'{sector}_{gwp_year}'].values),
                                                sector, 'bar')
@@ -432,7 +432,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
                                        list(GWP_emissions[f'Total GWP ({gwp_year}-year basis)'].values),
-                                       ghg, 'bar')
+                                       "Total", 'lines')
 
         new_chart.series.append(new_serie)
 
