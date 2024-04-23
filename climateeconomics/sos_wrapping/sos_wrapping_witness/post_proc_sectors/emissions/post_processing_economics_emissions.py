@@ -81,8 +81,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
     if GlossaryCore.TotalEmissions in chart_list:
         chart_name = f"Breakdown of emissions per sector [{GlossaryCore.EmissionDf['unit']}]"
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ChartTotalEmissionsGt, chart_name=chart_name, stacked_bar=True)
-        for sector in GlossaryCore.SectorsPossibleValues:
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.EmissionDf['unit'], chart_name=chart_name, stacked_bar=True)
+        for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             sector_emissions = get_scenario_value(execution_engine, f"{sector}.{GlossaryCore.EmissionsDfValue}", scenario_name)
             new_series = InstanciatedSeries(years,
                                             list(sector_emissions[GlossaryCore.TotalEmissions].values),
@@ -96,8 +96,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
     if GlossaryCore.EnergyEmissions in chart_list:
         chart_name = f"Breakdown of energy emissions per sector [{GlossaryCore.EmissionDf['unit']}]"
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ChartTotalEmissionsGt, chart_name=chart_name, stacked_bar=True)
-        for sector in GlossaryCore.SectorsPossibleValues:
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.EmissionDf['unit'], chart_name=chart_name, stacked_bar=True)
+        for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             sector_emissions = get_scenario_value(execution_engine, f"{sector}.{GlossaryCore.EmissionsDfValue}", scenario_name)
             new_series = InstanciatedSeries(years,
                                             list(sector_emissions[GlossaryCore.EnergyEmissions].values),
@@ -111,8 +111,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
     if GlossaryCore.NonEnergyEmissions in chart_list:
         chart_name = f"Breakdown of non-energy emissions per sector [{GlossaryCore.EmissionDf['unit']}]"
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ChartTotalEmissionsGt, chart_name=chart_name, stacked_bar=True)
-        for sector in GlossaryCore.SectorsPossibleValues:
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.EmissionDf['unit'], chart_name=chart_name, stacked_bar=True)
+        for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             sector_emissions = get_scenario_value(execution_engine, f"{sector}.{GlossaryCore.EmissionsDfValue}", scenario_name)
             new_series = InstanciatedSeries(years,
                                             list(sector_emissions[GlossaryCore.NonEnergyEmissions].values),

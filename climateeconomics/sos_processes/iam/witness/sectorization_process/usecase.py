@@ -237,9 +237,9 @@ class Study(StudyManager):
                 f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
                 f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
                 f"{self.study_name}.{GlossaryCore.EnergyProductionValue}": energy_production,
-                f"{self.study_name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}": CO2_emitted_land,
-                f"{self.study_name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)}": CO2_emitted_land,
-                f"{self.study_name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)}": CO2_emitted_land,
+                f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": CO2_emitted_land,
+                f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}": CO2_emitted_land,
+                f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": CO2_emitted_land,
                 f"{self.study_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
                 f"{self.study_name}.GHG_total_energy_emissions": GHG_total_energy_emissions,
             })

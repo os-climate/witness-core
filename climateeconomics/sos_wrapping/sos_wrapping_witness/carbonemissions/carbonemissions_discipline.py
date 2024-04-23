@@ -99,7 +99,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
-        GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2): {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
+        GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2): {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {
                                    GlossaryCore.Years: ('float', [2000, 2200], False),
                                    'emitted_CO2_evol': ('float', [-1e5, 1e7], False),
@@ -237,22 +237,22 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
 
         #land emissions
-        CO2_land_emissions = inputs_dict[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)]
+        CO2_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)]
         for column in CO2_land_emissions.columns:
             if column != GlossaryCore.Years:
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'),
-                    (GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2), column),
+                    (GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2), column),
                     np.identity(len(years)))
 
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.CO2EmissionsDfValue, 'cum_total_emissions'),
-                    (GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2), column),
+                    (GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2), column),
                     d_total_emissions_C02_emitted_land)
 
                 self.set_partial_derivative_for_other_types(
                     ('CO2_objective',),
-                    (GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2), column),
+                    (GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2), column),
                     dobjective_exp_min * d_CO2_obj_d_total_emission)
 
     def get_chart_filter_list(self):

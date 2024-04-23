@@ -53,9 +53,9 @@ class GHGEmissions:
         self.time_step = self.param[GlossaryCore.TimeStep]
         self.new_sector_list = self.param[GlossaryCore.SectorListValue]
         self.economic_sectors_except_agriculture = [sector for sector in self.new_sector_list if sector != GlossaryCore.SectorAgriculture]
-        self.CO2_land_emissions = self.param[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)]
-        self.CH4_land_emissions = self.param[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)]
-        self.N2O_land_emissions = self.param[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)]
+        self.CO2_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)]
+        self.CH4_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)]
+        self.N2O_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)]
         self.GHG_total_energy_emissions = self.param['GHG_total_energy_emissions']
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
@@ -70,9 +70,9 @@ class GHGEmissions:
 
     def configure_parameters_update(self, inputs_dict):
 
-        self.CO2_land_emissions = inputs_dict[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)]
-        self.CH4_land_emissions = inputs_dict[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)]
-        self.N2O_land_emissions = inputs_dict[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)]
+        self.CO2_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)]
+        self.CH4_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)]
+        self.N2O_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)]
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
         self.affine_co2_objective = inputs_dict['affine_co2_objective']
         self.total_energy_production = inputs_dict[GlossaryCore.EnergyProductionValue]
@@ -97,11 +97,11 @@ class GHGEmissions:
         Compute emissions from land
         """
 
-        self.ghg_emissions_df[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)] = self.CO2_land_emissions.drop(
+        self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)] = self.CO2_land_emissions.drop(
             GlossaryCore.Years, axis=1).sum(axis=1).values
-        self.ghg_emissions_df[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)] = self.CH4_land_emissions.drop(
+        self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)] = self.CH4_land_emissions.drop(
             GlossaryCore.Years, axis=1).sum(axis=1).values
-        self.ghg_emissions_df[GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)] = self.N2O_land_emissions.drop(
+        self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)] = self.N2O_land_emissions.drop(
             GlossaryCore.Years, axis=1).sum(axis=1).values
 
     def compute_total_emissions(self):
@@ -116,7 +116,7 @@ class GHGEmissions:
 
         for ghg in self.GHG_TYPE_LIST:
             self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] = \
-                self.ghg_emissions_df[GlossaryCore.insertGHGLandEmissions.format(ghg)].values + \
+                self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(ghg)].values + \
                 self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)].values + \
                 self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)].values
 
@@ -337,7 +337,7 @@ class GHGEmissions:
 
     def compute_gwp_per_sector(self):
         """computes global warming potential per sector"""
-        emission_types = {'Land': GlossaryCore.insertGHGLandEmissions,
+        emission_types = {'Land': GlossaryCore.insertGHGAgriLandEmissions,
                           'Energy': GlossaryCore.insertGHGEnergyEmissions,
                           'Non energy': GlossaryCore.insertGHGNonEnergyEmissions}
 

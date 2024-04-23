@@ -107,13 +107,13 @@ class Study(ClimateEconomicsStudyManager):
         }
         ref_gdp_2020 = 129.9
 
-        all_gwp_100_emissions = dm.get_all_namespaces_from_var_name(GlossaryCore.TotalGWPEmissionsDfValue)
-        ref_value_gwp_100_emissions = {
+        all_co2_emissions = dm.get_all_namespaces_from_var_name(GlossaryCore.TotalGWPEmissionsDfValue)
+        ref_value_co2_emissions = {
             self.USECASE2: 139,
             self.USECASE2B: 73,
             self.USECASE4: 51,
-            self.USECASE7: -5.45 # todo : refit NZE scenario
-        }
+            self.USECASE7: -2.8 # todo : refit NZE scenario
+        }  # todo : replace by GWP in future
 
         all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.EnergyProductionDetailedValue}')
         ref_value_net_energy_production = {
@@ -140,7 +140,7 @@ class Study(ClimateEconomicsStudyManager):
             self.USECASE4: 1.41,
             self.USECASE7: 3.0
         }
-
+        ref_co2_2020 = 44.05
         tolerance_high_ref_2020 = 1.015
         tolerance_low_ref_2020 = 0.985
         error_msg = ''
@@ -175,19 +175,19 @@ class Study(ClimateEconomicsStudyManager):
                     # assert on value of start, tolerance at 1.5%
                     error_msg += self.should_be_greater(value_gdp_2020, ref_gdp_2020 * tolerance_low_ref_2020, f"{scenario_gdp}[2020]")
                     error_msg += self.should_be_lower(value_gdp_2020, ref_gdp_2020 * tolerance_high_ref_2020, f"{scenario_gdp}[2020]")
-            for scenario_emissions in all_gwp_100_emissions:
+            for scenario_emissions in all_co2_emissions:
                 if scenario in scenario_emissions:
                     emissions_df = dm.get_value(scenario_emissions)
-                    value_emissions = emissions_df.loc[emissions_df['years'] == 2100][f'Total GWP (100-year basis)'].values[0]
-                    value_emissions_2020 = emissions_df.loc[emissions_df['years'] == 2020][f'Total GWP (100-year basis)'].values[0]
+                    value_emissions = emissions_df.loc[emissions_df['years'] == 2100]['CO2_20'].values[0] # todo : replace by GWP in futur
+                    value_emissions_2020 = emissions_df.loc[emissions_df['years'] == 2020]['CO2_20'].values[0] # todo : replace by GWP in futur
                     if self.USECASE7 in scenario:
-                        error_msg += self.should_be_lower(value_emissions, ref_value_gwp_100_emissions[scenario] * 0.8, f"{scenario_emissions}[2100]")
-                        error_msg += self.should_be_greater(value_emissions, ref_value_gwp_100_emissions[scenario] * 1.2, f"{scenario_emissions}[2100]")
+                        error_msg += self.should_be_lower(value_emissions, ref_value_co2_emissions[scenario] * 0.8, f"{scenario_emissions}[2100]")
+                        error_msg += self.should_be_greater(value_emissions, ref_value_co2_emissions[scenario] * 1.2, f"{scenario_emissions}[2100]")
                     else:
-                        error_msg += self.should_be_greater(value_emissions, ref_value_gwp_100_emissions[scenario] * 0.8, f"{scenario_emissions}[2100]")
-                        error_msg += self.should_be_lower(value_emissions, ref_value_gwp_100_emissions[scenario] * 1.2, f"{scenario_emissions}[2100]")
-                    error_msg += self.should_be_greater(value_emissions_2020, DatabaseWitnessCore.GWP_2020_100_year_basis.value * tolerance_low_ref_2020, f"{scenario_emissions}[2020]")
-                    error_msg += self.should_be_lower(value_emissions_2020, DatabaseWitnessCore.GWP_2020_100_year_basis.value * tolerance_high_ref_2020, f"{scenario_emissions}[2020]")
+                        error_msg += self.should_be_greater(value_emissions, ref_value_co2_emissions[scenario] * 0.8, f"{scenario_emissions}[2100]")
+                        error_msg += self.should_be_lower(value_emissions, ref_value_co2_emissions[scenario] * 1.2, f"{scenario_emissions}[2100]")
+                    error_msg += self.should_be_greater(value_emissions_2020, ref_co2_2020 * tolerance_low_ref_2020, f"{scenario_emissions}[2020]")
+                    error_msg += self.should_be_lower(value_emissions_2020, ref_co2_2020 * tolerance_high_ref_2020, f"{scenario_emissions}[2020]")
 
             for scenario_net_energy_production in all_net_energy_productions:
                 if scenario in scenario_net_energy_production:
@@ -229,16 +229,17 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
 
-    '''
+
     from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
     ppf = PostProcessingFactory()
-    ns = 'usecase_witness_ms_mda_four_scenarios.mda_scenarios.- damage - tax, fossil 100%.GHGEmissions'
+    ns = f'usecase_witness_ms_mda_four_scenarios.mda_scenarios.{Study.USECASE2}.GHGEmissions'
     filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
 
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
     for graph in graph_list:
         graph.to_plotly().show()
-    a = 1
-    '''
+
+    uc_cls.specific_check_outputs()

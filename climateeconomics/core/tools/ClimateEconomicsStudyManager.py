@@ -33,13 +33,13 @@ class ClimateEconomicsStudyManager(StudyManager):
     def should_be_lower(self, actual_value, ref_value, varname: str) -> str:
         msg = ''
         if actual_value > ref_value:
-            msg = f"{varname} should be lower than {ref_value} but is not. Value = {actual_value}"
+            msg = f"{varname>140} should be lower than {ref_value} but is not. Value = {actual_value}"
         return msg
 
     def should_be_greater(self, actual_value, ref_value, varname: str) -> str:
         msg = ''
         if actual_value < ref_value:
-            msg = f"\n{varname} should be greater than {ref_value} but is not. Value = {actual_value}"
+            msg = f"\n{varname:>140} should be greater than {ref_value} but is not. Value = {actual_value}"
         return msg
 
 

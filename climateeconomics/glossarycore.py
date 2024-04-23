@@ -83,8 +83,9 @@ class GlossaryCore:
     SectionEnergyEmissionPartMt = "Part of the energy emission per section [MtCO2eq]"
     SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
     SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
-    ChartTotalEmissionsGt = "Part of total emissions per sector [GtCO2eq]"
     EconomicSectors = "Economic sectors"
+
+    AgricultureAndLandUse = "Agriculture & Land Use"
 
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
@@ -130,6 +131,7 @@ class GlossaryCore:
     SectorServices = "Services"
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
+    DefaultSectorListGHGEmissions = [SectorServices, SectorIndustry]
     SectorNonEco = "Household"
     SectorEnergy = "energy"
     TotalGDPGroupDFName = "total_gdp_per_group_df"
@@ -663,7 +665,7 @@ class GlossaryCore:
     insertGHGNonEnergyEmissions = "Non energy {} emissions of economy"
     insertGHGTotalEmissions = "Total {} emissions"
     insertGHGEnergyEmissions = "Energy {} emissions"
-    insertGHGLandEmissions = "Land {} emissions"
+    insertGHGAgriLandEmissions = f"{AgricultureAndLandUse}" + " {} emissions"
     EmissionDf = {
         "type": "dataframe",
         "description": "Emissions of macroeconomics (all sectors)",

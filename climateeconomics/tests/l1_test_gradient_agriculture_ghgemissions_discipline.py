@@ -88,7 +88,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.Forest.CO2_land_emission_df',
                                     f'{self.name}.Crop.CH4_land_emission_df',
                                     f'{self.name}.Crop.N2O_land_emission_df'],
-                            outputs=[f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}',
-                                     f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)}',
-                                     f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)}'
+                            outputs=[f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}',
+                                     f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}',
+                                     f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}'
                                      ])

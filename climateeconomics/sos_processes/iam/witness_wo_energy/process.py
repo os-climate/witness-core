@@ -100,7 +100,7 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
         )
-        for sector in GlossaryCore.SectorsPossibleValues:
+        for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             ns = f'ns_{sector.lower()}_emissions'
             self.ee.ns_manager.add_ns(ns,
                                       f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{sector}")

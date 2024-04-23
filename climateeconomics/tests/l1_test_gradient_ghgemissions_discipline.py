@@ -77,15 +77,15 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.SectorsPossibleValues}
 
         self.inputs_cheked = [
-            f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}',
-            f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)}',
-            f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)}',
+            f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}',
+            f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}',
+            f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}',
             f'{self.name}.GHG_total_energy_emissions',
             f"{self.name}.{GlossaryCore.EnergyProductionValue}"
         ]
 
-        self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
-        self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionGdpDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}" for sector in GlossaryCore.DefaultSectorListGHGEmissions]
+        self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionGdpDfValue}" for sector in GlossaryCore.DefaultSectorListGHGEmissions]
 
         self.outputs_checked = [
             f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
@@ -128,9 +128,9 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
-                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
-                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
                        f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.{GlossaryCore.EnergyProductionValue}": self.energy_production,
@@ -173,9 +173,9 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
-                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
-                       f'{self.name}.{GlossaryCore.insertGHGLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
                        f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.affine_co2_objective": False,
