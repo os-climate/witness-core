@@ -871,8 +871,8 @@ class MacroEconomics:
             # Create a temporary DataFrame to compute energy consumption per section
             merged_df_energy_prod = pd.merge(self.energy_production, self.sector_energy_consumption_percentage_df[[GlossaryCore.Years, sector_name]],
                                              on=GlossaryCore.Years, how='inner')
-            # 1e3 to convert PWh to TWh, division by 100 for percentages
-            merged_df_energy_prod['energy_consumption_sector'] = merged_df_energy_prod[GlossaryCore.TotalProductionValue] * merged_df_energy_prod[sector_name] * 1e3 / 100.
+            # division by 100 for percentages
+            merged_df_energy_prod['energy_consumption_sector'] = merged_df_energy_prod[GlossaryCore.TotalProductionValue] * merged_df_energy_prod[sector_name] / 100.
             merged_df_energy_prod = pd.merge(merged_df_energy_prod, percentage_sections_of_sector, on=GlossaryCore.Years, how='inner')
 
             # Extracting list of sections from DataFrame
