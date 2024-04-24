@@ -25,12 +25,18 @@ class GHGEmissions:
     """
     Used to compute ghg emissions from different sectors
     """
-    GHG_TYPE_LIST = [N2O.name, GlossaryCore.CO2, GlossaryCore.CH4]
+    GHG_TYPE_LIST = [GlossaryCore.CO2, GlossaryCore.CH4, N2O.name]
 
     def __init__(self, param):
         """
         Constructor
         """
+        self.dict_sector_sections_energy_emissions = {}
+        self.dict_sector_sections_non_energy_emissions = {}
+        self.dict_sector_sections_emissions = {}
+        self.dict_sector_emissions = {}
+        self.total_economics_emisssions = None
+        self.new_sector_list = []
         self.carbon_intensity_of_energy_mix = None
         self.affine_co2_objective: bool = False
         self.co2_emissions_objective = None
@@ -38,7 +44,6 @@ class GHGEmissions:
         self.param = param
         self.configure_parameters()
         self.create_dataframe()
-        self.sector_list = ['energy', 'land', 'industry']
         self.total_energy_production = None
         self.epsilon = 1.e-5 # for the CO2 objective function
 
@@ -46,11 +51,11 @@ class GHGEmissions:
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
         self.time_step = self.param[GlossaryCore.TimeStep]
-
-        self.CO2_land_emissions = self.param['CO2_land_emissions']
-        self.CH4_land_emissions = self.param['CH4_land_emissions']
-        self.N2O_land_emissions = self.param['N2O_land_emissions']
-        self.CO2_indus_emissions_df = self.param['CO2_indus_emissions_df']
+        self.new_sector_list = self.param[GlossaryCore.SectorListValue]
+        self.economic_sectors_except_agriculture = [sector for sector in self.new_sector_list if sector != GlossaryCore.SectorAgriculture]
+        self.CO2_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)]
+        self.CH4_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)]
+        self.N2O_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)]
         self.GHG_total_energy_emissions = self.param['GHG_total_energy_emissions']
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
@@ -65,10 +70,9 @@ class GHGEmissions:
 
     def configure_parameters_update(self, inputs_dict):
 
-        self.CO2_land_emissions = inputs_dict['CO2_land_emissions']
-        self.CH4_land_emissions = inputs_dict['CH4_land_emissions']
-        self.N2O_land_emissions = inputs_dict['N2O_land_emissions']
-        self.CO2_indus_emissions_df = inputs_dict['CO2_indus_emissions_df']
+        self.CO2_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)]
+        self.CH4_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)]
+        self.N2O_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)]
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
         self.affine_co2_objective = inputs_dict['affine_co2_objective']
         self.total_energy_production = inputs_dict[GlossaryCore.EnergyProductionValue]
@@ -93,34 +97,38 @@ class GHGEmissions:
         Compute emissions from land
         """
 
-        self.ghg_emissions_df['CO2 land_emissions'] = self.CO2_land_emissions.drop(
+        self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)] = self.CO2_land_emissions.drop(
             GlossaryCore.Years, axis=1).sum(axis=1).values
-        self.ghg_emissions_df['CH4 land_emissions'] = self.CH4_land_emissions.drop(
+        self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)] = self.CH4_land_emissions.drop(
             GlossaryCore.Years, axis=1).sum(axis=1).values
-        self.ghg_emissions_df['N2O land_emissions'] = self.N2O_land_emissions.drop(
+        self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)] = self.N2O_land_emissions.drop(
             GlossaryCore.Years, axis=1).sum(axis=1).values
 
     def compute_total_emissions(self):
         """
-        Total emissions taking energy emissions as inputs
+        Total emissions is defined as : land use emissions + energy mix emissions + non energy emissions from economy
+        
+        Note : Non energy emissions from economy are only in CO2 Equivalent
         """
-        self.ghg_emissions_df['CO2 industry_emissions'] = self.CO2_indus_emissions_df['indus_emissions'].values
-        self.ghg_emissions_df['CH4 industry_emissions'] = 0.
-        self.ghg_emissions_df['N2O industry_emissions'] = 0.
+        for ghg in self.GHG_TYPE_LIST:
+            self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)] = 0.
+        self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(GlossaryCore.CO2)] = self.total_economics_emisssions[GlossaryCore.NonEnergyEmissions].values
 
         for ghg in self.GHG_TYPE_LIST:
-            self.ghg_emissions_df[f'{ghg} energy_emissions'] = self.GHG_total_energy_emissions[f'Total {ghg} emissions'].values
+            self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] = \
+                self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(ghg)].values + \
+                self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)].values + \
+                self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)].values
 
-            self.ghg_emissions_df[f'Total {ghg} emissions'] = self.ghg_emissions_df[f'{ghg} land_emissions'].values + \
-                self.ghg_emissions_df[f'{ghg} industry_emissions'].values + \
-                self.ghg_emissions_df[f'{ghg} energy_emissions'].values
-
-    def compute_gwp(self):
+    def compute_total_gwp(self):
 
         for ghg in self.GHG_TYPE_LIST:
 
-            self.gwp_emissions[f'{ghg}_20'] = self.ghg_emissions_df[f'Total {ghg} emissions'] * self.gwp_20[ghg]
-            self.gwp_emissions[f'{ghg}_100'] = self.ghg_emissions_df[f'Total {ghg} emissions'] * self.gwp_100[ghg]
+            self.gwp_emissions[f'{ghg}_20'] = self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_20[ghg]
+            self.gwp_emissions[f'{ghg}_100'] = self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_100[ghg]
+
+        self.gwp_emissions[f'Total GWP (20-year basis)'] = self.gwp_emissions[[f'{ghg}_20' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
+        self.gwp_emissions[f'Total GWP (100-year basis)'] = self.gwp_emissions[[f'{ghg}_100' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
 
     def compute_co2_emissions_for_carbon_cycle(self):
         co2_emissions_df = self.ghg_emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]].rename(
@@ -174,7 +182,7 @@ class GHGEmissions:
 
 
     def compute_total_co2_eq_energy_emissions(self):
-        columns_to_sum = [f"Total {ghg} emissions" for ghg in self.gwp_100.keys()]
+        columns_to_sum = [GlossaryCore.insertGHGTotalEmissions.format(ghg) for ghg in self.gwp_100.keys()]
         self.total_energy_co2eq_emissions = pd.DataFrame({
             GlossaryCore.Years: self.years_range,
             GlossaryCore.TotalEnergyEmissions: self.GHG_total_energy_emissions[columns_to_sum].multiply(self.gwp_100.values()).sum(axis=1)
@@ -183,18 +191,107 @@ class GHGEmissions:
     def d_total_co2_eq_energy_emissions(self, d_ghg_total_emissions, ghg: str):
         return d_ghg_total_emissions * self.gwp_100[ghg]
 
+    def compute_energy_emission_per_section(self):
+        """
+        Computing the energy emission for each section of the sector
 
-    def compute(self):
+        section_energy_emission (GtCO2eq) = section_energy_consumption (PWh) x carbon_intensity (kgCO2eq/kWh)
+        """
+        carbon_intensity = self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue].values
+        for sector in self.new_sector_list:
+            section_energy_emissions = {
+                GlossaryCore.Years: self.years_range
+            }
+            energy_sections_consumptions_consumptions_of_sector = self.param[f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}"]
+            for section in GlossaryCore.SectionDictSectors[sector]:
+                section_energy_emissions[section] = energy_sections_consumptions_consumptions_of_sector[section].values * carbon_intensity
+
+            self.dict_sector_sections_energy_emissions[sector] = pd.DataFrame(section_energy_emissions)
+
+    def compute_non_energy_emission_per_section(self):
+        """
+        Computing the energy emission for each section of the sector
+
+        section_non_energy_emission (GtCO2eq) = section_non_energy_emission_wrt_gdp (tCO2eq/M$) x section_gdp (T$) / 1000.
+        """
+
+        for sector in self.new_sector_list:
+            section_non_energy_emissions = {
+                GlossaryCore.Years: self.years_range
+            }
+            energy_sections_non_energy_emissions_gdp_of_sector = self.param[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"]
+            sector_sections_gdp = self.param[f"{sector}.{GlossaryCore.SectionGdpDfValue}"]
+            for section in GlossaryCore.SectionDictSectors[sector]:
+                section_non_energy_emissions[section] = energy_sections_non_energy_emissions_gdp_of_sector[section].values * \
+                                                        sector_sections_gdp[section].values / 1000.
+
+            self.dict_sector_sections_non_energy_emissions[sector] = pd.DataFrame(section_non_energy_emissions)
+
+    def compute_total_emission_per_section(self):
+        """
+        Computing the total emission for each section of the sector
+
+        section_emission (GtCO2eq) = section_energy_emission (GtCO2eq) + section_non_energy_emission (GtCO2eq)
+        """
+        for sector in self.new_sector_list:
+            sections_emissions = {
+                GlossaryCore.Years: self.years_range
+            }
+            for section in GlossaryCore.SectionDictSectors[sector]:
+                sections_emissions[section] = self.dict_sector_sections_energy_emissions[sector][section].values + \
+                                              self.dict_sector_sections_non_energy_emissions[sector][section].values
+
+            self.dict_sector_sections_emissions[sector] = pd.DataFrame(sections_emissions)
+
+    def compute_total_emission_sectors(self):
+        """
+        Computing the total emissions for each sector
+        """
+        # sector_emission = sum of section_emission
+        for sector in self.new_sector_list:
+            sector_emissions = {GlossaryCore.Years: self.years_range}
+            sector_sections = GlossaryCore.SectionDictSectors[sector]
+            sector_emissions[GlossaryCore.EnergyEmissions] = self.dict_sector_sections_energy_emissions[sector][sector_sections].values.sum(axis=1)
+            sector_emissions[GlossaryCore.NonEnergyEmissions] = self.dict_sector_sections_non_energy_emissions[sector][sector_sections].values.sum(axis=1)
+            sector_emissions[GlossaryCore.TotalEmissions] = sector_emissions[GlossaryCore.EnergyEmissions] + sector_emissions[GlossaryCore.NonEnergyEmissions]
+            self.dict_sector_emissions[sector] = pd.DataFrame(sector_emissions)
+
+    def compute_total_economics_emission(self):
+        """Compute economics emissions : sum of emissions for sectors Services and Industry"""
+        total_economics_emisssions = {GlossaryCore.Years: self.years_range}
+        total_economics_emisssions[GlossaryCore.EnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.EnergyEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.NonEnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.NonEnergyEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.TotalEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.TotalEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
+        self.total_economics_emisssions = pd.DataFrame(total_economics_emisssions)
+
+    def compute(self, inputs_dict):
         """
         Compute outputs of the pyworld3
         """
+        self.param = inputs_dict
 
+        # compute land emissions
         self.compute_land_emissions()
-        self.compute_total_emissions()
-        self.compute_gwp()
-        self.compute_CO2_emissions_objective()
+
+        # compute energy emissions
         self.compute_total_co2_eq_energy_emissions()
+        self.compute_energy_mix_total_emissions()
+
+        # compute emissions from economy
         self.compute_carbon_intensity_of_energy_mix()
+        self.compute_energy_emission_per_section()
+        self.compute_non_energy_emission_per_section()
+        self.compute_total_emission_per_section()
+        self.compute_total_emission_sectors()
+        self.compute_total_economics_emission()
+
+        # compute total emissions
+        self.compute_total_emissions()
+
+        # compute other indicators
+        self.compute_total_gwp()
+        self.compute_gwp_per_sector()
+        self.compute_CO2_emissions_objective()
 
     def compute_carbon_intensity_of_energy_mix(self):
         """
@@ -217,3 +314,42 @@ class GHGEmissions:
     def d_carbon_intensity_of_energy_mix_d_ghg_energy_emissions(self, ghg: str):
         total_energy_production = self.total_energy_production[GlossaryCore.TotalProductionValue].values
         return np.diag(self.gwp_100[ghg] / total_energy_production)
+
+    def d_section_energy_emissions_d_user_input(self, d_carbon_intensity_d_user_input, sector_name:str, section_name: str):
+        return np.diag(self.param[f"{sector_name}.{GlossaryCore.SectionEnergyConsumptionDfValue}"][section_name].values) * d_carbon_intensity_d_user_input
+
+    def d_section_non_energy_emissions_d_gdp_section(self, sector: str, section: str):
+        """
+        Derivative of section non energy emissions for section S wrt any input (named X)
+        User should provide the derivative of output net of damage wrt input variable X in order to
+        compute the chain rule
+        """
+
+        return np.diag(self.param[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"][section] / 1000.)
+
+    def d_section_energy_emissions_d_section_energy_consumption(self):
+        return np.diag(self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue].values)
+
+    def compute_energy_mix_total_emissions(self):
+        for ghg in self.GHG_TYPE_LIST:
+            self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)] = \
+                self.GHG_total_energy_emissions[GlossaryCore.insertGHGTotalEmissions.format(ghg)].values
+
+    def compute_gwp_per_sector(self):
+        """computes global warming potential per sector"""
+        emission_types = {GlossaryCore.AgricultureAndLandUse: GlossaryCore.insertGHGAgriLandEmissions,
+                          GlossaryCore.Energy: GlossaryCore.insertGHGEnergyEmissions,
+                          GlossaryCore.NonEnergy: GlossaryCore.insertGHGNonEnergyEmissions}
+
+        for emission_type, column_name in emission_types.items():
+            emissions_type_gwp_20_values = []
+            emissions_type_gwp_100_values = []
+            for ghg in self.GHG_TYPE_LIST:
+                gwp_20_emission_type_ghg = self.ghg_emissions_df[column_name.format(ghg)].values * self.gwp_20[ghg]
+                gwp_100_emission_type_ghg = self.ghg_emissions_df[column_name.format(ghg)].values * self.gwp_100[ghg]
+
+                emissions_type_gwp_20_values.append(gwp_20_emission_type_ghg)
+                emissions_type_gwp_100_values.append(gwp_100_emission_type_ghg)
+
+            self.gwp_emissions[f'{emission_type}_20'] = np.sum(emissions_type_gwp_20_values, axis=0)
+            self.gwp_emissions[f'{emission_type}_100'] = np.sum(emissions_type_gwp_100_values, axis=0)

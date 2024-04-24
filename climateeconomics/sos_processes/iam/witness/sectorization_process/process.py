@@ -38,7 +38,9 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_public': ns_scatter,
                    GlossaryCore.NS_FUNCTIONS: ns_scatter,
                    GlossaryCore.NS_REFERENCE: ns_scatter,
-                   GlossaryCore.NS_SECTORS: ns_macro
+                   GlossaryCore.NS_SECTORS: ns_macro,
+                   GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.GHGemissions.{GlossaryCore.EconomicSectors}",
+
                    }
 
         # economics sector process called here before create_builder_list to avoid process overwriting namespace

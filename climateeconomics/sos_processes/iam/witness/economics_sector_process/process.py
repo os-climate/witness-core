@@ -39,6 +39,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_REFERENCE: ns_scatter,
                    GlossaryCore.NS_SECTORS: ns_macro,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
+                   GlossaryCore.NS_GHGEMISSIONS: ns_scatter,
                    }
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',

@@ -85,11 +85,5 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-
-    ppf = PostProcessingFactory()
-    al = ppf.get_all_post_processings(uc_cls.ee, False)
-    b=1
-
+    uc_cls.test()
 

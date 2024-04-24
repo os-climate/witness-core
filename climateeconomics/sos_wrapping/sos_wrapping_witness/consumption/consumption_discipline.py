@@ -66,7 +66,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         'residential_energy_conso_ref' : {'type': 'float', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE, 'unit': 'MWh', 'default': 24.3816},
-        GlossaryCore.ResidentialEnergyProductionDfValue : GlossaryCore.ResidentialEnergyProductionDf,
+        GlossaryCore.ResidentialEnergyConsumptionDfValue : GlossaryCore.ResidentialEnergyConsumptionDf,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
@@ -97,13 +97,13 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         investment_df = inp_dict.pop(
             GlossaryCore.InvestmentDfValue)
         residential_energy = inp_dict.pop(
-            GlossaryCore.ResidentialEnergyProductionDfValue)
+            GlossaryCore.ResidentialEnergyConsumptionDfValue)
 
         utility_inputs = {GlossaryCore.EconomicsDfValue: economics_df[[GlossaryCore.Years, GlossaryCore.OutputNetOfDamage]],
                           GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
                           GlossaryCore.EnergyMeanPriceValue: energy_mean_price,
                           GlossaryCore.InvestmentDfValue: investment_df,
-                          GlossaryCore.ResidentialEnergyProductionDfValue: residential_energy
+                          GlossaryCore.ResidentialEnergyConsumptionDfValue: residential_energy
                         }
         utility_df = self.conso_m.compute(utility_inputs)
 
@@ -193,7 +193,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),  d_period_utility_d_energy_price)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), (GlossaryCore.ResidentialEnergyProductionDfValue, GlossaryCore.TotalProductionValue),  d_period_utility_d_residential_energy)
+            (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue),  d_period_utility_d_residential_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_period_utility_d_population)
 
@@ -204,7 +204,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),  d_discounted_utility_d_energy_price)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), (GlossaryCore.ResidentialEnergyProductionDfValue, GlossaryCore.TotalProductionValue),  d_discounted_utility_d_residential_energy)
+            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue),  d_discounted_utility_d_residential_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_discounted_utility_d_population)
 
@@ -217,7 +217,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.Welfare), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),  d_welfare_d_energy_price)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.Welfare), (GlossaryCore.ResidentialEnergyProductionDfValue, GlossaryCore.TotalProductionValue),  d_welfare_d_residential_energy)
+            (GlossaryCore.UtilityDfValue, GlossaryCore.Welfare), (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue),  d_welfare_d_residential_energy)
 
         if obj_option == 'last_utility':
             self.set_partial_derivative_for_other_types(
@@ -227,7 +227,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.WelfareObjective,), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), d_obj_d_period_utility_pc.dot(d_period_utility_d_energy_price))
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.WelfareObjective,), (GlossaryCore.ResidentialEnergyProductionDfValue, GlossaryCore.TotalProductionValue), d_obj_d_period_utility_pc.dot(d_period_utility_d_residential_energy))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue), d_obj_d_period_utility_pc.dot(d_period_utility_d_residential_energy))
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.WelfareObjective,), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_obj_d_period_utility_pc.dot(d_period_utility_d_population))
 
@@ -239,7 +239,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.WelfareObjective,), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), np.dot(d_obj_d_welfare, d_welfare_d_energy_price))
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.WelfareObjective,), (GlossaryCore.ResidentialEnergyProductionDfValue, GlossaryCore.TotalProductionValue), np.dot(d_obj_d_welfare, d_welfare_d_residential_energy))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue), np.dot(d_obj_d_welfare, d_welfare_d_residential_energy))
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.WelfareObjective,), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  np.dot(d_obj_d_welfare, d_welfare_d_population))
 
@@ -258,7 +258,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_energy_price))
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.ResidentialEnergyProductionDfValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_residential_energy))
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), np.dot(d_neg_obj_d_welfare, d_welfare_d_population))
@@ -273,7 +273,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('min_utility_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_energy_price))
         self.set_partial_derivative_for_other_types(
-            ('min_utility_objective',), (GlossaryCore.ResidentialEnergyProductionDfValue, GlossaryCore.TotalProductionValue), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_residential_energy))
+            ('min_utility_objective',), (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_residential_energy))
         self.set_partial_derivative_for_other_types(
             ('min_utility_objective',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_population))
     
@@ -380,7 +380,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                 'initial_raw_energy_price')
             
             
-            residential_energy = self.get_sosdisc_inputs(GlossaryCore.ResidentialEnergyProductionDfValue)[
+            residential_energy = self.get_sosdisc_inputs(GlossaryCore.ResidentialEnergyConsumptionDfValue)[
                 GlossaryCore.TotalProductionValue].values
 
             residential_energy_conso_ref = self.get_sosdisc_inputs(
@@ -426,7 +426,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                 'initial_raw_energy_price')
             
             
-            residential_energy = self.get_sosdisc_inputs(GlossaryCore.ResidentialEnergyProductionDfValue)[
+            residential_energy = self.get_sosdisc_inputs(GlossaryCore.ResidentialEnergyConsumptionDfValue)[
                 GlossaryCore.TotalProductionValue].values
 
             residential_energy_conso_ref = self.get_sosdisc_inputs(

@@ -52,7 +52,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.CH4: 85.,
                       GlossaryCore.N2O: 265.}
 
-    name = f'{GHGemissionsDiscipline.name}.Agriculture'
+    name = f'{GHGemissionsDiscipline.name}.{GlossaryCore.AgricultureAndLandUse}'
     _maturity = 'Research'
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -71,11 +71,11 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         # 0.7(crop)
     }
     DESC_OUT = {
-        'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2',
+        GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2): {'type': 'dataframe', 'unit': 'GtCO2',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
-        'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4',
+        GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4): {'type': 'dataframe', 'unit': 'GtCH4',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
-        'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O',
+        GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O): {'type': 'dataframe', 'unit': 'GtN2O',
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'co2_eq_20': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         'co2_eq_100': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
@@ -154,9 +154,9 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
         # write outputs
         outputs_dict = {
-            'CO2_land_emissions': CO2_emissions_land_use_df,
-            'CH4_land_emissions': CH4_emissions_land_use_df,
-            'N2O_land_emissions': N2O_emissions_land_use_df,
+            GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2): CO2_emissions_land_use_df,
+            GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4): CH4_emissions_land_use_df,
+            GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O): N2O_emissions_land_use_df,
             'co2_eq_20': np.array([co2_eq_20]),
             'co2_eq_100': np.array([co2_eq_100])
         }
@@ -177,15 +177,15 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
         for techno in techno_list:
             self.set_partial_derivative_for_other_types(
-                ('CO2_land_emissions', f'{techno}'), (
+                (GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2), f'{techno}'), (
                     f'{techno}.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
                 np.identity(np_years))
             if techno == 'Crop':
                 self.set_partial_derivative_for_other_types(
-                    ('CH4_land_emissions', f'{techno}'),
+                    (GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4), f'{techno}'),
                     (f'{techno}.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'), np.identity(np_years))
                 self.set_partial_derivative_for_other_types(
-                    ('N2O_land_emissions', f'{techno}'),
+                    (GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O), f'{techno}'),
                     (f'{techno}.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'), np.identity(np_years))
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
@@ -280,11 +280,11 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
 
         CO2_emissions_land_use_df = self.get_sosdisc_outputs(
-            'CO2_land_emissions')
+            GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2))
         CH4_emissions_land_use_df = self.get_sosdisc_outputs(
-            'CH4_land_emissions')
+            GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4))
         N2O_emissions_land_use_df = self.get_sosdisc_outputs(
-            'N2O_land_emissions')
+            GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O))
         year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
         year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
         year_list = np.arange(year_start, year_end + 1).tolist()
@@ -318,7 +318,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
 
         CO2_emissions_land_use_df = self.get_sosdisc_outputs(
-            'CO2_land_emissions')
+            GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2))
         year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
         year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
         year_list = np.arange(year_start, year_end + 1).tolist()
