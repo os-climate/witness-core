@@ -19,8 +19,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.
     AgricultureEmissionsDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
     GHGemissionsDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline import \
-    IndusemissionsDiscipline
+
 # -*- coding: utf-8 -*-
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
@@ -65,12 +64,12 @@ class ProcessBuilder(BaseProcessBuilder):
         chain_builders_population = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'population_process')
         builder_list.extend(chain_builders_population)
-
         ns_dict = {
             'ns_land_use': f'{self.ee.study_name}.EnergyMix',
             GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
             'ns_resource': f'{self.ee.study_name}.EnergyMix',
             GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
+            GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}",
         }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -79,7 +78,6 @@ class ProcessBuilder(BaseProcessBuilder):
         Add emissions disciplines
         '''
         mods_dict = {GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline',
-                     IndusemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline.IndusemissionsDiscipline',
                      AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',
                      }
         non_use_capital_list = self.create_builder_list(
@@ -91,11 +89,28 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             GlossaryCore.NS_REGIONALIZED_POST_PROC, region_post_proc_module
         )
-
+        # emissions post proc modules :
         self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC,
-                                  f"{self.ee.study_name}.Macroeconomics.Sectors")
-        sectors_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors_witness_non_sectorized.post_processing_sectors'
+                                  f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}")
+        sectors_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.emissions.post_processing_economics_emissions'
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
         )
+        for sector in GlossaryCore.DefaultSectorListGHGEmissions:
+            ns = f'ns_{sector.lower()}_emissions'
+            self.ee.ns_manager.add_ns(ns, f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{sector}")
+            post_proc_module = f'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.emissions.post_proc_{sector.lower()}'
+            self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                ns, post_proc_module
+            )
+
+        # gdp for sectors post proc modules :
+        for sector in GlossaryCore.SectorsPossibleValues:
+            ns = f'ns_{sector.lower()}_gdp'
+            self.ee.ns_manager.add_ns(ns,
+                                      f"{self.ee.study_name}.Macroeconomics.{GlossaryCore.EconomicSectors}.{sector}")
+            post_proc_module = f'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.gdp_non_sectorized.post_proc_{sector.lower()}'
+            self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                ns, post_proc_module
+            )
         return builder_list

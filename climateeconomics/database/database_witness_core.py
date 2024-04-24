@@ -367,3 +367,13 @@ class DatabaseWitnessCore:
         source="?",
         last_update_date=date(2023, 3, 1),
     )
+
+
+    GWP_2020_100_year_basis = ColectedData(
+        value=51.46,
+        unit="GtCO2Eq",
+        description="Global warming potential for year 2020 on 100-year basis",
+        link="https://ourworldindata.org/greenhouse-gas-emissions",
+        source="Our wourld in data",
+        last_update_date=date(2024,4,22)
+    )

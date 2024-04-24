@@ -47,13 +47,7 @@ class SectorModel():
         self.section_list = []
         self.section_gdp_df = None
         self.energy_consumption_percentage_per_section_df = None
-        self.section_non_energy_emission_per_dollar_of_gdp_df = None
-        self.carbon_intensity_of_energy_mix = None
-        self.section_emission_df = None
-        self.section_energy_emission_df = None
-        self.section_non_energy_emission_df = None
         self.section_energy_consumption_df = None
-        self.emission_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint = None
 
@@ -75,10 +69,8 @@ class SectorModel():
         self.nb_years = len(self.years_range)
         self.sector_name = sector_name
         self.section_list = GlossaryCore.SectionDictSectors[self.sector_name]
-        self.carbon_intensity_of_energy_mix = inputs_dict[GlossaryCore.EnergyCarbonIntensityDfValue]
         self.gdp_percentage_per_section_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}"]
         self.energy_consumption_percentage_per_section_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"]
-        self.section_non_energy_emission_per_dollar_of_gdp_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"]
         def correct_years(df):
 
             input_dict = {GlossaryCore.Years: self.years_range}
@@ -86,7 +78,6 @@ class SectorModel():
             return pd.DataFrame(input_dict)
         self.gdp_percentage_per_section_df = correct_years(self.gdp_percentage_per_section_df)
         self.energy_consumption_percentage_per_section_df = correct_years(self.energy_consumption_percentage_per_section_df)
-        self.section_non_energy_emission_per_dollar_of_gdp_df = correct_years(self.section_non_energy_emission_per_dollar_of_gdp_df)
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
@@ -150,8 +141,6 @@ class SectorModel():
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
         self.damage_fraction_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_df.index = self.damage_fraction_df[GlossaryCore.Years].values
-        self.carbon_intensity_of_energy_mix = inputs[GlossaryCore.EnergyCarbonIntensityDfValue]
-        self.carbon_intensity_of_energy_mix.index = self.carbon_intensity_of_energy_mix[GlossaryCore.Years].values
 
     def compute_productivity_growthrate(self):
         """
@@ -427,69 +416,6 @@ class SectorModel():
         self.section_energy_consumption_df = pd.DataFrame(section_energy_consumption)
 
 
-    def compute_energy_emission_per_section(self):
-        """
-        Computing the energy emission for each section of the sector
-
-        section_energy_emission (GtCO2eq) = section_energy_consumption (PWh) x carbon_intensity (kgCO2eq/kWh)
-        """
-        section_energy_emissions = {
-            GlossaryCore.Years: self.years
-        }
-        carbon_intensity = self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue].values
-        for section in self.section_list:
-            section_energy_emissions[section] = self.section_energy_consumption_df[section].values * carbon_intensity
-
-        self.section_energy_emission_df = pd.DataFrame(section_energy_emissions)
-
-
-    def compute_non_energy_emission_per_section(self):
-        """
-        Computing the energy emission for each section of the sector
-
-        section_non_energy_emission (GtCO2eq) = section_non_energy_emission_wrt_gdp (tCO2eq/M$) x section_gdp (T$) / 1000.
-        """
-
-        section_non_energy_emissions = {
-            GlossaryCore.Years: self.years
-        }
-        for section in self.section_list:
-            section_non_energy_emissions[section] = self.section_gdp_df[section].values * self.section_non_energy_emission_per_dollar_of_gdp_df[section].values /1000.
-
-        self.section_non_energy_emission_df = pd.DataFrame(section_non_energy_emissions)
-
-    def compute_total_emission_per_section(self):
-        """
-        Computing the total emission for each section of the sector
-
-        section_emission (GtCO2eq) = section_energy_emission (GtCO2eq) + section_non_energy_emission (GtCO2eq)
-        """
-        section_emissions = {
-            GlossaryCore.Years: self.years
-        }
-        for section in self.section_list:
-            section_emissions[section] = self.section_energy_emission_df[section] + self.section_non_energy_emission_df[section]
-
-        self.section_emission_df = pd.DataFrame(section_emissions)
-
-    def compute_total_emission(self):
-        """
-        Computing the total emissions of the sector
-        """
-        # sector_emission = sum of section_emission
-        emissions = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.EnergyEmissions: 0.,
-            GlossaryCore.NonEnergyEmissions: 0.,
-        })
-
-        emissions[GlossaryCore.EnergyEmissions] = self.section_energy_emission_df[self.section_list].values.sum(axis=1)
-        emissions[GlossaryCore.NonEnergyEmissions] = self.section_non_energy_emission_df[self.section_list].values.sum(axis=1)
-
-        emissions[GlossaryCore.TotalEmissions] = emissions[GlossaryCore.EnergyEmissions].values + emissions[GlossaryCore.NonEnergyEmissions].values
-
-        self.emission_df = emissions
-
     # RUN
     def compute(self, inputs):
         """
@@ -518,10 +444,6 @@ class SectorModel():
         self.compute_output_net_of_damage_per_section()
 
         self.compute_energy_consumption_per_section()
-        self.compute_energy_emission_per_section()
-        self.compute_non_energy_emission_per_section()
-        self.compute_total_emission_per_section()
-        self.compute_total_emission()
 
         self.compute_energy_usage()
         self.compute_energy_wasted_objective()
@@ -872,31 +794,12 @@ class SectorModel():
 
     def d_damages_d_user_input(self, d_damages_from_climate_d_user_input, d_damages_from_productivity_loss_d_user_input):
         return d_damages_from_climate_d_user_input + d_damages_from_productivity_loss_d_user_input
+
     def d_estimated_damages_d_user_input(self, d_estimated_damages_from_climate_d_user_input, d_estimated_damages_from_productivity_loss_d_user_input):
         return d_estimated_damages_from_climate_d_user_input + d_estimated_damages_from_productivity_loss_d_user_input
 
     def d_section_energy_consumption_d_energy_production(self, section_name: str):
         return np.diag(self.energy_consumption_percentage_per_section_df[section_name].values / 100.)
-
-    def d_section_energy_emissions_d_energy_production(self, d_section_energy_consumption_d_energy_production):
-        carbon_intensity = self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue].values
-        d_section_energy_emissions_d_energy_production = d_section_energy_consumption_d_energy_production * np.diag(carbon_intensity)
-        return d_section_energy_emissions_d_energy_production
-
-    def d_section_energy_emissions_d_carbon_intensity(self, section_name: str):
-        return np.diag(self.section_energy_consumption_df[section_name])
-
-    def d_section_non_energy_emissions_d_user_input(self, d_output_net_of_damage_d_user_input, section_name: str):
-        """
-        Derivative of section non energy emissions for section S wrt any input (named X)
-        User should provide the derivative of output net of damage wrt input variable X in order to
-        compute the chain rule
-        """
-
-        d_gdp_section_d_user_input = d_output_net_of_damage_d_user_input @ np.diag(self.gdp_percentage_per_section_df[section_name] /100.)
-        d_section_non_energy_emissions_d_user_input = d_gdp_section_d_user_input @ np.diag(self.section_non_energy_emission_per_dollar_of_gdp_df[section_name] / 1000.)
-        return d_section_non_energy_emissions_d_user_input
-
 
     def output_types_to_float(self):
         """make sure these dataframes columns have type float instead of object to avoid errors during
@@ -905,10 +808,6 @@ class SectorModel():
             self.production_df,
             self.section_gdp_df,
             self.damage_df,
-            self.section_emission_df,
-            self.section_energy_emission_df,
-            self.section_non_energy_emission_df,
-            self.section_energy_consumption_df,
             self.capital_df,
             self.productivity_df
         ]

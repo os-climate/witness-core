@@ -61,7 +61,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.DamageDetailedDfValue: GlossaryCore.DamageDetailedDf,
-        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict
     }
 
     def init_execution(self):

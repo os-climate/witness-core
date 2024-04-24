@@ -56,7 +56,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         year_start = GlossaryCore.YearStartDefault
-        year_end = GlossaryCore.YearEndDefault
+        year_end = GlossaryCore.YearEndDefaultTest
         years = np.arange(year_start, year_end + 1)
 
         CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
@@ -88,7 +88,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.Forest.CO2_land_emission_df',
                                     f'{self.name}.Crop.CH4_land_emission_df',
                                     f'{self.name}.Crop.N2O_land_emission_df'],
-                            outputs=[f'{self.name}.CO2_land_emissions',
-                                     f'{self.name}.CH4_land_emissions',
-                                     f'{self.name}.N2O_land_emissions'
+                            outputs=[f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}',
+                                     f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}',
+                                     f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}'
                                      ])

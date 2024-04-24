@@ -22,6 +22,7 @@ import pandas as pd
 from numpy import arange, asarray
 from pandas import DataFrame
 
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
@@ -156,7 +157,7 @@ class DataStudy():
         CO2_emitted_land['Crop'] = np.zeros(len(years))
         CO2_emitted_land['Forest'] = cum_emission
 
-        witness_input[f"{self.study_name}.{'CO2_land_emissions'}"] = CO2_emitted_land
+        witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
         self.CO2_tax = np.asarray([50.] * len(years))
 
@@ -213,6 +214,11 @@ class DataStudy():
              GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 1.65] * nb_per)},
             index=years)
 
+        share_residential_energy = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value}, )
+
+        witness_input[f'{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}'] = share_residential_energy
         witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'] = energy_investment_wo_tax
         witness_input[f'{self.study_name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}'] = share_non_energy_investment
         witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
@@ -220,9 +226,19 @@ class DataStudy():
         witness_input[f'{self.study_name}.beta'] = 1.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
-        
 
-        # 
+        # ------------------ mda initialisation data
+        co2_emissions_Gt = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.TotalCO2Emissions: 35.,
+        })
+        witness_input.update({
+            f"{self.study_name}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}": co2_emissions_Gt,
+        })
+        # ------------------ end mda initialisation
+
+        for sector in GlossaryCore.SectorsPossibleValues:
+            witness_input[f'{self.study_name}.GHGEmissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
