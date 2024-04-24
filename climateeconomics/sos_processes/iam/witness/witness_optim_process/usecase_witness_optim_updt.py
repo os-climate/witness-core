@@ -29,6 +29,7 @@ from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from sostrades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from climateeconomics.database import DatabaseWitnessCore
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -132,7 +133,7 @@ class Study(ClimateEconomicsStudyManager):
 
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl',
                                     'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl',
-                                    'forest_investment_array_mix', 'deforestation_investment_ctrl']
+                                    'forest_investment_array_mix', 'deforestation_investment_ctrl', 'crop_investment_array_mix']
         diet_mortality_df = pd.read_csv(join(dirname(__file__), 'data', 'diet_mortality.csv'))
 
         # clean dspace
@@ -180,11 +181,12 @@ class Study(ClimateEconomicsStudyManager):
         forest_invest_file = f'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), 'data', forest_invest_file))
         #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
-
+        crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.forest_investment': forest_invest,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Crop.crop_investment': crop_investment_df_NZE,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
 
