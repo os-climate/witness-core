@@ -29,9 +29,78 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
-
+        self.model_name = 'ghgemission'
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+
+        self.year_start = GlossaryCore.YearStartDefault
+        self.year_end = self.year_start + 1
+        years = np.arange(self.year_start, self.year_end + 1)
+        self.GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
+                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4,
+                                                                                               len(years)),
+                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
+        self.CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
+                                           'Crop': np.linspace(0., 0., len(years)),
+                                           'Forest': np.linspace(3., 4., len(years))})
+        self.CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
+                                           'Crop': np.linspace(0., 0., len(years)),
+                                           'Forest': np.linspace(3., 4., len(years))})
+        self.N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
+                                           'Crop': np.linspace(0., 0., len(years)),
+                                           'Forest': np.linspace(3., 4., len(years))})
+
+        self.CO2_emissions_ref = 6.49  # Gt
+
+        self.energy_production = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.TotalProductionValue: 100.
+        })
+
+        self.residential_energy_consumption = pd.DataFrame({GlossaryCore.Years: years,
+                                                               GlossaryCore.TotalProductionValue: 1.2})
+
+        def generate_energy_consumption_df_sector(sector_name):
+            out = {GlossaryCore.Years: years}
+            out.update({section: 10. for section in GlossaryCore.SectionDictSectors[sector_name]})
+            return pd.DataFrame(out)
+
+        self.ghg_eenergy_consumptions_sectors = {f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": generate_energy_consumption_df_sector(sector) for sector in
+                                            GlossaryCore.SectorsPossibleValues}
+
+        self.ghg_non_energy_emissions_sectors = {
+            f"{self.name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}": generate_energy_consumption_df_sector(
+                sector) for sector in
+            GlossaryCore.SectorsPossibleValues}
+
+        self.ghg_sections_gdp = {
+            f"{self.name}.{sector}.{GlossaryCore.SectionGdpDfValue}": generate_energy_consumption_df_sector(
+                sector) for sector in
+            GlossaryCore.SectorsPossibleValues}
+
+        self.inputs_cheked = [
+            f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}',
+            f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}',
+            f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}',
+            f'{self.name}.GHG_total_energy_emissions',
+            f"{self.name}.{GlossaryCore.EnergyProductionValue}",
+        ]
+
+        self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}" for sector in GlossaryCore.DefaultSectorListGHGEmissions]
+        self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionGdpDfValue}" for sector in GlossaryCore.DefaultSectorListGHGEmissions]
+
+        self.outputs_checked = [
+            f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
+            f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
+            f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}",
+            f"{self.name}.{self.model_name}.{GlossaryCore.EconomicsEmissionDfValue}",
+            f"{self.name}.{self.model_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"
+        ]
+
+        #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.EmissionsDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
 
     def analytic_grad_entry(self):
         return [
@@ -40,12 +109,12 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_carbon_emissions_analytic_grad(self):
 
-        self.model_name = 'ghgemission'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_agriculture': f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
@@ -59,42 +128,19 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        year_start = GlossaryCore.YearStartDefault
-        year_end = GlossaryCore.YearEndDefault
-        years = np.arange(year_start, year_end + 1)
-        GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
-        CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
-        CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
-        N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
 
-        CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
-                                               'indus_emissions': np.linspace(1., 2., len(years))})
-
-        CO2_emissions_ref = 6.49 #Gt
-
-        energy_production = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.TotalProductionValue: 100.
-        })
-
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
-                       f'{self.name}.CO2_land_emissions': CO2_land_emissions,
-                       f'{self.name}.CH4_land_emissions': CH4_land_emissions,
-                       f'{self.name}.N2O_land_emissions': N2O_land_emissions,
-                       f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
-                       f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
-                       f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
-                       f"{self.name}.{GlossaryCore.EnergyProductionValue}": energy_production,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
+                       f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
+                       f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
+                       f"{self.name}.{GlossaryCore.EnergyProductionValue}": self.energy_production,
+                       f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
+                       **self.ghg_eenergy_consumptions_sectors,
+                       **self.ghg_sections_gdp,
+                       **self.ghg_non_energy_emissions_sectors,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -104,26 +150,17 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ghg_emission_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.CO2_land_emissions',
-                                    f'{self.name}.CH4_land_emissions',
-                                    f'{self.name}.N2O_land_emissions',
-                                    f'{self.name}.CO2_indus_emissions_df',
-                                    f'{self.name}.GHG_total_energy_emissions',
-                                    f"{self.name}.{GlossaryCore.EnergyProductionValue}"],
-                            outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                     f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
-                                     f'{self.name}.{GlossaryCore.TotalEnergyEmissions}',
-                                     f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}",
-                                     f"{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"])
+                            inputs=self.inputs_cheked,
+                            outputs=self.outputs_checked)
 
     def test_carbon_emissions_analytic_grad_affine_co2_objective(self):
 
-        self.model_name = 'ghgemission'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_agriculture': f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
@@ -137,43 +174,20 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        year_start = GlossaryCore.YearStartDefault
-        year_end = GlossaryCore.YearEndDefault
-        years = np.arange(year_start, year_end + 1)
-        GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
-        CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
-        CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
-        N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
 
-        CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
-                                               'indus_emissions': np.linspace(1., 2., len(years))})
-
-        CO2_emissions_ref = 6.49 #Gt
-
-        energy_production = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.TotalProductionValue: 100.
-        })
-
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
-                       f'{self.name}.CO2_land_emissions': CO2_land_emissions,
-                       f'{self.name}.CH4_land_emissions': CH4_land_emissions,
-                       f'{self.name}.N2O_land_emissions': N2O_land_emissions,
-                       f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
-                       f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
-                       f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
+                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
+                       f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
+                       f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.affine_co2_objective": False,
-                       f"{self.name}.{GlossaryCore.EnergyProductionValue}": energy_production,
+                       f"{self.name}.{GlossaryCore.EnergyProductionValue}": self.energy_production,
+                       f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
+                       **self.ghg_eenergy_consumptions_sectors,
+                       **self.ghg_sections_gdp,
+                       **self.ghg_non_energy_emissions_sectors,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -183,14 +197,5 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ghg_emission_discipline_affine_co2_objective.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.CO2_land_emissions',
-                                    f'{self.name}.CH4_land_emissions',
-                                    f'{self.name}.N2O_land_emissions',
-                                    f'{self.name}.CO2_indus_emissions_df',
-                                    f'{self.name}.GHG_total_energy_emissions',
-                                    f"{self.name}.{GlossaryCore.EnergyProductionValue}"],
-                            outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                     f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
-                                     f'{self.name}.{GlossaryCore.TotalEnergyEmissions}',
-                                     f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}",
-                                     f"{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"])
+                            inputs=self.inputs_cheked,
+                            outputs=self.outputs_checked)

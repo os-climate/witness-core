@@ -35,6 +35,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
+
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     """Macroeconomics discipline for WITNESS"""
 
@@ -128,7 +129,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.PandemicParamDfValue: GlossaryCore.PandemicParamDf,
         GlossaryCore.SectorEnergyConsumptionPercentageDfName: GlossaryCore.SectorEnergyConsumptionPercentageDf,
-        GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf
+        GlossaryCore.ShareResidentialEnergyDfValue: GlossaryCore.ShareResidentialEnergyDf,
     }
 
     DESC_OUT = {
@@ -138,7 +139,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.DamageDetailedDfValue: GlossaryCore.DamageDetailedDf,
         GlossaryCore.EnergyInvestmentsValue: GlossaryCore.EnergyInvestments,
         GlossaryCore.EnergyInvestmentsWoRenewable['var_name']: GlossaryCore.EnergyInvestmentsWoRenewable,
-        # todo : can be deleted
         GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'],
                                         'unit': GlossaryCore.WorkforceDf['unit']},
         GlossaryCore.CapitalDfValue: {'type': 'dataframe', 'unit': '-',
@@ -157,15 +157,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                             'unit': '-',
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': GlossaryCore.NS_FUNCTIONS},
-        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
         GlossaryCore.UsableCapitalObjectiveName: GlossaryCore.UsableCapitalObjective,
         GlossaryCore.TotalGDPGroupDFName: GlossaryCore.TotalGDPGroupDF,
         GlossaryCore.PercentageGDPGroupDFName: GlossaryCore.PercentageGDPGroupDF,
         GlossaryCore.GDPCountryDFName: GlossaryCore.GDPCountryDF,
-        GlossaryCore.SectionNonEnergyEmissionsDictName: GlossaryCore.SectionNonEnergyEmissionsDict,
-        GlossaryCore.SectionEnergyConsumptionDictName: GlossaryCore.SectionEnergyConsumptionDict,
-        GlossaryCore.SectionEnergyEmissionsDictName: GlossaryCore.SectionEnergyEmissionsDict,
-        GlossaryCore.SectorTotalEmissionsDictName: GlossaryCore.SectorTotalEmissionsDict
+        GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf
     }
 
     def setup_sos_disciplines(self):
@@ -197,21 +193,28 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
 
             if sectorlist is not None:
-                sector_gdg_desc = copy.deepcopy(
-                    GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
+                sector_gdg_desc = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorGdpDf)
                 default_value_energy_consumption_dict = DatabaseWitnessCore.EnergyConsumptionPercentageSectionsDict.value
                 default_non_energy_emissions_dict = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value
                 for sector in sectorlist:
                     sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
                     # change default value for each sector for energy consumption and non energy emissions
-                    sector_energy_consumption_percentage_dict = copy.deepcopy(GlossaryCore.SectorEnergyConsumptionPercentageDf)
+                    sector_energy_consumption_percentage_dict = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorEnergyConsumptionPercentageDf)
                     sector_energy_consumption_percentage_dict.update({"default": default_value_energy_consumption_dict[sector]})
-                    non_energy_emissions_sections_dict = copy.deepcopy(GlossaryCore.SectionNonEnergyEmissionGdpDf)
+                    non_energy_emissions_sections_dict = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionGdpDf)
                     non_energy_emissions_sections_dict.update({"default": default_non_energy_emissions_dict[sector]})
                     # add to dynamic inputs
                     dynamic_inputs.update({f'{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_{sector}': sector_energy_consumption_percentage_dict})
-                    dynamic_inputs.update({f'{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_{sector}': non_energy_emissions_sections_dict})
 
+                    # section energy consumption
+                    section_energy_consumption_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionDf)
+                    section_energy_consumption_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]}                    )
+                    dynamic_outputs.update({f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": section_energy_consumption_df_variable})
+
+                    # sections gdp value df
+                    section_gdp_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpDf)
+                    section_gdp_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    dynamic_outputs.update({f"{sector}.{GlossaryCore.SectionGdpDfValue}": section_gdp_df_variable})
 
                 # make sure the namespaces references are good in case shared namespaces were reassociated
                 sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
@@ -219,7 +222,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                         })
             # add section gdp percentage variable
             if sectionlist is not None:
-                section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
+                section_gdp_percentage = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpPercentageDf)
                 # update dataframe descriptor
                 for section in sectionlist:
                     section_gdp_percentage['dataframe_descriptor'].update({section: ('float', [1.e-8, 1e30], True)})
@@ -341,16 +344,23 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.ConstraintLowerBoundUsableCapital: self.macro_model.delta_capital_cons,
                        GlossaryCore.EnergyWastedObjective: energy_wasted_objective,
                        GlossaryCore.ConsumptionObjective: self.macro_model.consommation_objective,
-                       GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed,
                        GlossaryCore.UsableCapitalObjectiveName: self.macro_model.usable_capital_objective,
                        GlossaryCore.TotalGDPGroupDFName: total_gdp_per_group_df,
                        GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df,
                        GlossaryCore.GDPCountryDFName: gdp_per_country_df,
-                       GlossaryCore.SectionNonEnergyEmissionsDictName: self.macro_model.dict_non_energy_emissions_detailed,
-                       GlossaryCore.SectionEnergyEmissionsDictName: self.macro_model.dict_sector_energy_emissions_detailed,
-                       GlossaryCore.SectionEnergyConsumptionDictName: self.macro_model.dict_energy_consumption_detailed,
-                       GlossaryCore.SectorTotalEmissionsDictName: self.macro_model.dict_total_emissions_detailed
-                       }
+                       GlossaryCore.ResidentialEnergyConsumptionDfValue: self.macro_model.energy_consumption_households_df,
+                   }
+        dict_values.update({
+            f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.macro_model.dict_energy_consumption_detailed[sector]['detailed'] # todo : delete detailed and total
+            for sector in self.macro_model.sector_list
+        })
+
+        dict_values.update({
+            f"{sector}.{GlossaryCore.SectionGdpDfValue}":
+                self.macro_model.dict_sectors_gdp_detailed[sector]
+            for sector in self.macro_model.sector_list
+        })
+
         if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
             self.check_ranges(dict_values, dict_ranges)

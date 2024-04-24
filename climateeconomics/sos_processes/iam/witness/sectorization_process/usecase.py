@@ -120,6 +120,8 @@ class Study(StudyManager):
             f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
              f'{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_of_energy_mix,
         }
+        for sector in GlossaryCore.SectorsPossibleValues:
+            cons_input[f'{self.study_name}.GHGemissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
 
         if self.main_study:
             gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values
@@ -235,9 +237,9 @@ class Study(StudyManager):
                 f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
                 f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
                 f"{self.study_name}.{GlossaryCore.EnergyProductionValue}": energy_production,
-                f"{self.study_name}.CO2_land_emissions": CO2_emitted_land,
-                f"{self.study_name}.CH4_land_emissions": CO2_emitted_land,
-                f"{self.study_name}.N2O_land_emissions": CO2_emitted_land,
+                f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": CO2_emitted_land,
+                f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}": CO2_emitted_land,
+                f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": CO2_emitted_land,
                 f"{self.study_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
                 f"{self.study_name}.GHG_total_energy_emissions": GHG_total_energy_emissions,
             })
@@ -260,5 +262,6 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
 

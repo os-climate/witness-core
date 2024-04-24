@@ -52,7 +52,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
     DESC_OUT = {
         GlossaryCore.RedistributionEnergyProductionDfValue: GlossaryCore.RedistributionEnergyProductionDf,
-        GlossaryCore.ResidentialEnergyProductionDfValue: GlossaryCore.ResidentialEnergyProductionDf
+        GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf
     }
 
     def setup_sos_disciplines(self):
@@ -87,7 +87,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
         outputs = {
             GlossaryCore.RedistributionEnergyProductionDfValue: all_sectors_energy_df,
-            GlossaryCore.ResidentialEnergyProductionDfValue: residential_energy_df
+            GlossaryCore.ResidentialEnergyConsumptionDfValue: residential_energy_df
         }
 
         for sector in sector_list:
@@ -130,13 +130,13 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         #For residential
         res_share_energy = inputs[f'{GlossaryCore.ShareResidentialEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
         self.set_partial_derivative_for_other_types(
-            (f'{GlossaryCore.ResidentialEnergyProductionDfValue}', GlossaryCore.TotalProductionValue),
+            (f'{GlossaryCore.ResidentialEnergyConsumptionDfValue}', GlossaryCore.TotalProductionValue),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             np.diag(res_share_energy / 100.)
         )
 
         self.set_partial_derivative_for_other_types(
-            (f'{GlossaryCore.ResidentialEnergyProductionDfValue}', GlossaryCore.TotalProductionValue),
+            (f'{GlossaryCore.ResidentialEnergyConsumptionDfValue}', GlossaryCore.TotalProductionValue),
             (f'{GlossaryCore.ShareResidentialEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
             np.diag(total_energy_production / 100.)
         )

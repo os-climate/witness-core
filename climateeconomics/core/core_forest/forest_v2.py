@@ -52,7 +52,7 @@ class Forest():
 
     FOREST_SURFACE_DF = 'forest_surface_df'
     FOREST_DETAIL_SURFACE_DF = 'forest_surface_detail_df'
-    CO2_EMITTED_FOREST_DF = 'CO2_land_emissions'
+    CO2_EMITTED_FOREST_DF = GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)
     CO2_EMITTED_DETAIL_DF = GlossaryCore.CO2EmissionsDetailDfValue
     MW_DF = 'managed_wood_df'
     # UW_DF = 'unmanaged_wood_df'

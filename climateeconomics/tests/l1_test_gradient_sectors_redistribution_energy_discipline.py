@@ -62,7 +62,9 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
                    GlossaryCore.NS_ENERGY_MIX: f'{name}',
                    'ns_coal_resource': f'{name}',
                    'ns_resource': f'{name}',
-                   GlossaryCore.NS_SECTORS: f'{name}'}
+                   GlossaryCore.NS_SECTORS: f'{name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{name}'
+                   }
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_energy.sectors_redistribution_energy_discipline.SectorsRedistributionEnergyDiscipline'
@@ -86,7 +88,7 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
         inputs_checked += [f'{name}.{GlossaryCore.ShareResidentialEnergyDfValue}']
 
         output_checked = [f'{name}.{sector}.{GlossaryCore.EnergyProductionValue}' for sector in self.sector_list]
-        output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyProductionDfValue}']
+        output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}']
         
         disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 

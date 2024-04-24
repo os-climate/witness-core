@@ -55,6 +55,7 @@ class GlossaryCore:
     YearStartDefault = 2020
     YearEnd = "year_end"
     YearEndDefault = 2100
+    YearEndDefaultTest = 2030
     YearEndVar = {
         "type": "int",
         "default": YearEndDefault,
@@ -82,8 +83,11 @@ class GlossaryCore:
     SectionEnergyEmissionPartMt = "Part of the energy emission per section [MtCO2eq]"
     SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
     SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
-    ChartTotalEmissionsGt = "Part of total emissions per sector [GtCO2eq]"
-    ChartTotalEnergyConsumptionSector = "Part of total energy consumptions per sector [TWh]"
+    EconomicSectors = "Economic sectors"
+
+    AgricultureAndLandUse = "Agriculture & Land Use"
+    Energy = "Energy"
+    NonEnergy = "Non energy (from economy)"
 
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
@@ -104,11 +108,6 @@ class GlossaryCore:
     SectionEnergyEmissionDfValue = "section_energy_emission_df"
     SectionNonEnergyEmissionDfValue = "section_non_energy_emission_df"
     SectionEnergyConsumptionDfValue = "section_energy_consumption_df"
-    SectionEnergyEmissionsDictName = "section_energy_emissions_dict"
-    SectionNonEnergyEmissionsDictName = "section_non_energy_emissions_dict"
-    SectionEnergyConsumptionDictName = "section_energy_consumption_dict"
-    SectorTotalEmissionsDictName = "sector_total_emissions_dict"
-    SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     SectionEnergyConsumptionPercentageDfValue = 'section_energy_consumption_percentage_df'
     SectionNonEnergyEmissionGdpDfValue = 'section_non_energy_emission_gdp_df'
@@ -134,6 +133,7 @@ class GlossaryCore:
     SectorServices = "Services"
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
+    DefaultSectorListGHGEmissions = [SectorServices, SectorIndustry]
     SectorNonEco = "Household"
     SectorEnergy = "energy"
     TotalGDPGroupDFName = "total_gdp_per_group_df"
@@ -175,6 +175,7 @@ class GlossaryCore:
     NS_CCS = "ns_ccs"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
     NS_SECTORS_POST_PROC = "ns_sectors_postproc"
+    NS_GHGEMISSIONS = "ns_ghg_emissions"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -648,6 +649,8 @@ class GlossaryCore:
     SectionGdpDf = {
         "var_name": SectionGdpDfValue,
         "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_GHGEMISSIONS,
         "description": "GDP values of sub-sectors in a sector",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -655,30 +658,19 @@ class GlossaryCore:
         },
     }
 
-    TotalEmissions = "Total emissions [Gt]"
-    TotalEmissionsMt = "Total emissions [Mt]"
+    TotalEmissions = "Total emissions"
 
-    EmissionDfValue = "emission_df"
+    EmissionsDfValue = "emissions_df"
+    EconomicsEmissionDfValue = "economics_emissions_df"
+    EnergyEmissions = "Energy emissions"
+    NonEnergyEmissions = "Non energy emissions"
+    insertGHGNonEnergyEmissions = "Non energy {} emissions of economy"
+    insertGHGTotalEmissions = "Total {} emissions"
+    insertGHGEnergyEmissions = f"{Energy}" + " {} emissions"
+    insertGHGAgriLandEmissions = f"{AgricultureAndLandUse}" + " {} emissions"
     EmissionDf = {
-        "var_name": EmissionDfValue,
         "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": NS_WITNESS,
-        "unit": "GtCO2eq",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            TotalEmissions: ("float", [0, 1e30], False),
-        },
-    }
-
-    EnergyEmissions = "Energy emissions [Gt]"
-    NonEnergyEmissions = "Non energy emissions [Gt]"
-    EmissionDetailedDfValue = "emission_detailed_df"
-    EmissionDetailedDf = {
-        "var_name": EmissionDetailedDfValue,
-        "type": "dataframe",
-        "namespace": NS_MACRO,
-        "visibility": "Shared",
+        "description": "Emissions of macroeconomics (all sectors)",
         "unit": "GtCO2eq",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -723,48 +715,11 @@ class GlossaryCore:
         "type": "dataframe",
         "description": "Energy consumption per section",
         "unit": "PWh",
+        "visibility": "Shared",
+        "namespace": NS_GHGEMISSIONS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
         },
-    }
-
-    SectionEnergyConsumptionDict = {
-        "var_name": SectionEnergyConsumptionDictName,
-        "type": "dict",
-        "description": "",
-        "unit": "TWh",
-    }
-
-    SectorTotalEmissionsDict = {
-        "var_name": SectorTotalEmissionsDictName,
-        "type": "dict",
-        "description": "",
-        "unit": "MtCO2eq",
-    }
-
-    SectionNonEnergyEmissionsDict = {
-        "var_name": SectionNonEnergyEmissionsDictName,
-        "type": "dict",
-        "description": "",
-        "unit": "MtCO2eq",
-
-    }
-
-    SectionEnergyEmissionsDict = {
-        "var_name": SectionEnergyEmissionsDictName,
-        "type": "dict",
-        "description": "",
-        "unit": "MtCO2eq",
-    }
-
-    # The number of columns depends dynamically on SectionsList
-    SectionGdpDict = {
-        "var_name": SectionGdpDictValue,
-        "type": "dict",
-        "description": "GDP values of sub-sectors in all sectors",
-        "visibility": "Shared",
-        "namespace": NS_WITNESS,
-        "unit": "T$",
     }
 
     EconomicsDf = {
@@ -903,9 +858,7 @@ class GlossaryCore:
     EnergyCarbonIntensityDf = {
         "var_name": EnergyCarbonIntensityDfValue,
         "type": "dataframe",
-        "visibility": "Shared",
         "unit": "kgCO2Eq/kWh",
-        "namespace": NS_ENERGY_MIX,
         "description": "Total CO2 equivalent emitted by energy mix divided by total energy production of energy mix",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -978,6 +931,7 @@ class GlossaryCore:
         },
     }
 
+    GHGEmissionsDetailedDfValue = "GHG_emissions_detail_df"
     GHGEmissionsDfValue = "GHG_emissions_df"
     TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"
@@ -993,6 +947,14 @@ class GlossaryCore:
             TotalN2OEmissions: ("float", [0, 1e30], False),
             TotalCH4Emissions: ("float", [0, 1e30], False),
         },
+    }
+
+    GWPEmissionsDfValue = "GWP_emissions"
+    TotalGWPEmissionsDfValue = "Total GWP emissions"
+    GWPEmissionsDf = {
+        "type": "dataframe",
+        "description": f"Data on Global warming potential for the three main green house gases : {GreenHouseGases}",
+        "unit": "GtCO2Eq",
     }
 
     GHGCycleDfValue = "ghg_cycle_df"
@@ -1293,16 +1255,28 @@ class GlossaryCore:
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
-    ResidentialEnergyProductionDfValue = "residential_energy_production_df"
-    ResidentialEnergyProductionDf = {
+    ResidentialEnergyConsumptionDfValue = "residential_energy_production_df"
+    ResidentialEnergyConsumptionDf = {
         "var_name": RedistributionEnergyProductionDfValue,
         "type": "dataframe",
         "unit": "PWh",
+        "description": "Energy that is consumed by residential sector",
         "visibility": "Shared",
-        "namespace": NS_WITNESS,
+        "namespace": NS_GHGEMISSIONS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", None, False),
+        },
+    }
+
+    ResidentialEmissionsDfValue = "residential_emissions_df"
+    ResidentialEmissionsDf = {
+        "type": "dataframe",
+        "unit": "?",
+        "description": "Emission by residential sector (only due to energy consumption)",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            TotalEmissions: ("float", None, False),
         },
     }
 
@@ -1588,8 +1562,6 @@ class GlossaryCore:
         "var_name": TotalEnergyEmissions,
         "type": "dataframe",
         "unit": "GtCO2Eq",
-        "visibility": "Shared",
-        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("float", [1900, YearEndDefault], False),
             TotalEnergyEmissions: ("float", [0.0, 1e30], True),
