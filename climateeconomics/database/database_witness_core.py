@@ -377,3 +377,20 @@ class DatabaseWitnessCore:
         source="Our wourld in data",
         last_update_date=date(2024,4,22)
     )
+    InitialProductionCropForEnergy = ColectedData(
+        value = 3333.24,
+        unit="TWh",
+        description="Initial production of crop for energy",
+        link="https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use",
+        source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050", # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops
+        last_update_date=date(2024, 4, 24)
+    )
+
+    CropInvestmentNZE = HeavyCollectedData(
+        value=join(data_folder, "crop_investment_nze.csv"),
+        unit="G$",
+        description="Investment obtained based on the expected production in NZE scenario, production values are in the link below",
+        link="https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use",
+        source="Investments are obtained manualy based on production of IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050",
+        last_update_date=date(2024, 4, 24)
+    )

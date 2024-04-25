@@ -1263,10 +1263,21 @@ class GlossaryCore:
         "unit": "PWh",
         "description": "Energy that is consumed by residential sector",
         "visibility": "Shared",
-        "namespace": NS_WITNESS,
+        "namespace": NS_GHGEMISSIONS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", None, False),
+        },
+    }
+
+    ResidentialEmissionsDfValue = "residential_emissions_df"
+    ResidentialEmissionsDf = {
+        "type": "dataframe",
+        "unit": "?",
+        "description": "Emission by residential sector (only due to energy consumption)",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            TotalEmissions: ("float", None, False),
         },
     }
 

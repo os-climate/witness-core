@@ -44,7 +44,8 @@ class ConsumptionDiscTest(unittest.TestCase):
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
-                   GlossaryCore.NS_SECTORS: f'{self.name}'}
+                   GlossaryCore.NS_SECTORS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

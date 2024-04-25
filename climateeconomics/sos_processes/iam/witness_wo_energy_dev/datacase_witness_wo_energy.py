@@ -236,6 +236,10 @@ class DataStudy():
             f"{self.study_name}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}": co2_emissions_Gt,
         })
         # ------------------ end mda initialisation
+        share_residential_energy = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value
+        })
 
         for sector in GlossaryCore.SectorsPossibleValues:
             witness_input[f'{self.study_name}.GHGEmissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
@@ -245,6 +249,8 @@ class DataStudy():
                                                    GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
+
+        witness_input[f'{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}'] = share_residential_energy
 
         global_data_dir = join(dirname(dirname(dirname(dirname(__file__)))), 'data')
         weighted_average_percentage_per_sector_df = pd.read_csv(
