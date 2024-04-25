@@ -41,7 +41,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    GlossaryCore.NS_REFERENCE: f'{ns_scatter}.NormalizationReferences',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: ns_scatter,
-                   GlossaryCore.NS_SECTORS_POST_PROC: ns_scatter,
+                   GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: ns_scatter,
                    'ns_agriculture': ns_scatter,
                    'ns_forest': ns_scatter}
 

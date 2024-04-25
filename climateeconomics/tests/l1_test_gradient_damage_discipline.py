@@ -47,7 +47,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                    f'ns_{GlossaryCore.SectorIndustry.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorServices.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp': self.name,
-                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
@@ -124,7 +125,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                    f'ns_{GlossaryCore.SectorIndustry.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorServices.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp': self.name,
-                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
@@ -206,7 +208,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                    f'ns_{GlossaryCore.SectorIndustry.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorServices.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp': self.name,
-                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}'}
