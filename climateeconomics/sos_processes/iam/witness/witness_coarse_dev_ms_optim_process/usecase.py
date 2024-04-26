@@ -51,7 +51,7 @@ class Study(ClimateEconomicsStudyManager):
             self.UC2: Study2,
             self.UC3: Study3,
             self.UC4: Study4,
-            self.UC5: Study5,
+            # self.UC5: Study5 # deactivate usecase 5 as it is the same as the one with no CCUS
         }
 
 
@@ -67,7 +67,12 @@ class Study(ClimateEconomicsStudyManager):
             scenarioData = scenarioUseCase.setup_usecase()
             values_dict.update(scenarioData)
 
+        # override infos
+        func_df = pd.read_csv(join(self.data_dir, 'func_df_optim.csv'))
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.algo": "SLSQP" for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.FunctionsManager.function_df": func_df for scenario_name in scenario_dict.keys()})
 
         return values_dict
 
