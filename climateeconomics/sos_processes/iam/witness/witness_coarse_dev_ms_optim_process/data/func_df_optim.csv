@@ -8,7 +8,7 @@ rockstrom_limit_constraint,CO2 ppm,ineq_constraint,0.0,smax,ns_functions
 minimum_ppm_constraint,CO2 ppm,ineq_constraint,-0.0,smax,ns_functions
 calories_per_day_constraint,agriculture_constraints,ineq_constraint,0.0,smax,ns_functions
 Lower bound usable capital constraint,invests_constraints,ineq_constraint,-0.0,smax,ns_functions
-carbon_storage_constraint,,ineq_constraint,0.0,smax,ns_functions
+carbon_storage_constraint,Energy_constraints,ineq_constraint,0.0,smax,ns_functions
 total_prod_minus_min_prod_constraint_df,Energy_constraints,ineq_constraint,0.0,smax,ns_functions
 energy_production_objective,objectives,objective,0.0,sum,ns_functions
 syngas_prod_objective,objectives,objective,0.0,sum,ns_functions
