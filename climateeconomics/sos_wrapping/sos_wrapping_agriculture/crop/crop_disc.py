@@ -247,7 +247,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     # 50% of crops are left on the field,
     # 50% of the left on the field can be used as crop residue =>
     # 25% of the crops is residue
-    residue_percentage = 0.25
+    residue_percentage = 0.25 # TODO delete residue percentage from here as it'll be computed in organic waste stream
     # 23$/t for residue, 60$/t for crop
     crop_residue_price_percent_dif = 23 / 60
     # bioenergyeurope.org : Dedicated energy crops
