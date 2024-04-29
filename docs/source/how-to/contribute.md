@@ -4,19 +4,19 @@ First off, thanks for considering contributing!
 
 All types of contributions are encouraged and valued.
 
-## Summary:
-- [Quick Overview](#quick-overview)
-- [Where and How Should I Develop?](#where-and-how-should-i-develop)
-- [How Should I Develop My Ideas?](#how-should-i-develop-my-ideas)
-  - [Creating a Model & a New Discipline](#creating-a-model--a-new-discipline)
-  - [Existing Discipline Modifications](#existing-discipline-modifications)
-    - [Adding a Non-coupling Input/Output or a New Post-processing Graph](#adding-a-non-coupling-inputoutput-or-a-new-post-processing-graph)
-    - [Adding a Coupling Input/Output](#adding-a-coupling-inputoutput)
-    - [I Want to Modify How an Output Is Computed](#i-want-to-modify-how-an-output-is-computed)
-  - [New Process and/or New Usecase](#new-process-andor-new-usecase)
-  - [Existing Process Modifications](#existing-process-modifications)
+##  Summary with Navigation Links:
+- [1. Quick Overview](#1-quick-overview)
+- [2. Where and How Should I Develop?](#2-where-and-how-should-i-develop)
+- [3. How Should I Develop My Ideas?](#3-how-should-i-develop-my-ideas)
+  - [3.1. Creating a Model & a New Discipline](#31-creating-a-model--a-new-discipline)
+  - [3.2. Existing Discipline Modifications](#32-existing-discipline-modifications)
+    - [3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph](#321-adding-a-non-coupling-inputoutput-or-a-new-post-processing-graph)
+    - [3.2.2. Adding a Coupling Input/Output](#322-adding-a-coupling-inputoutput)
+    - [3.2.3. I Want to Modify How an Output Is Computed](#323-i-want-to-modify-how-an-output-is-computed)
+  - [3.3. New Process and/or New Usecase](#33-new-process-andor-new-usecase)
+  - [3.4. Existing Process Modifications](#34-existing-process-modifications)
 
-## Quick Overview
+## 1. Quick Overview
 The integration of a contribution is done in two steps:
 1. **Contributor side:** the contributor pushes its developments to a dedicated place.
 2. **Integrator side:** two validations are necessary:
@@ -25,7 +25,7 @@ The integration of a contribution is done in two steps:
 
 **Important:** If for your development, you use data found online, make sure it is open source, and when you use it, cite your sources and where you found it.
 
-## Where and How Should I Develop?
+## 2. Where and How Should I Develop?
 - Create your branch(es) from the `develop` branch and initiate development.
 - Regularly merge `develop` into your branch(es).
 - Ensure that your local tests match the test state on the `develop` branch for each repository intended for pushing. The tests to pass include:
@@ -35,12 +35,12 @@ The integration of a contribution is done in two steps:
   - Pylint
 - Create a pull request of your work to the `develop` branch(es) of the repo(s) you wish to push.
 
-## How Should I Develop My Ideas?
+## 3. How Should I Develop My Ideas?
 Depending on the nature of your contribution, here is the way of working to implement your ideas:
 
-### Creating a Model & a New Discipline
-> - [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
-> - [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
+### 3.1. Creating a Model & a New Discipline
+- [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
+- [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
 
 **Documentation:** Create a markdown file `<my_model_name>.md`, stored in a `*documentation/*` folder next to the discipline, explaining how your model works.
 
@@ -56,16 +56,16 @@ You should be testing the gradients of all coupling outputs with respect to all 
 
 *Note:* a *coupling variable* is a variable that is an output of discipline and an input for another, in a process.
 
-### Existing Discipline Modifications
+### 3.2. Existing Discipline Modifications
 
-#### Adding a Non-coupling Input/Output or a New Post-processing Graph
-> - [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
+#### 3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph
+- [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
 
 No new test creation required. Still, all tests (`l0`, `l1`, and use cases) should be OK after modifications.
 
 In the case of adding a new input, some tests might require fixes: specify values for new missing inputs.
 
-#### Adding a Coupling Input/Output
+#### 3.2.2. Adding a Coupling Input/Output
 
 **Documentation:** Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
 
@@ -73,7 +73,7 @@ In the case of adding a new input, some tests might require fixes: specify value
 - Compute its gradients in the method `compute_sos_jacobian()` of the discipline.
 - Complete its gradient test (`l1_test_gradient_<model_name>.py`) by also checking for this input/output.
 
-#### I Want to Modify How an Output Is Computed
+#### 3.2.3. I Want to Modify How an Output Is Computed
 If you want to modify the way a certain value is computed, it is better to let the possibility to use the old formula instead of losing it.
 For that, you can add a flag (a boolean) or a list of options to select how to compute the desired value in the model.
 Also, after adding this flag/option, make sure the default parameters are set to compute the value as it was before contributing.
@@ -91,12 +91,12 @@ If the output you modify is a coupling variable, also compute its gradients in a
   - Create a new test function in the test class and set values to use your new method in the model.
   - Make sure the gradients are OK with the new selected method.
 
-### New Process and/or New Usecase
-> - [Check how to create a process here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-process.html)
-> - [Check how to create a usecase here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-usecase.html)
+### 3.3. New Process and/or New Usecase
+- [Check how to create a process here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-process.html)
+- [Check how to create a usecase here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-usecase.html)
 
 You created a new process? Create a `usecase_<my_comment>.py` file that goes in the same folder as the `process.py` file.
 Your use case will rely on the process. You can test the use case by creating an instance of your `Study` class and call `my_study.test()` method.
 
-### Existing Process Modifications
+### 3.4. Existing Process Modifications
 This needs further discussions with a Witness model reviewer.
