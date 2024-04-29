@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import copy
 from copy import deepcopy
 from os.path import join, isfile
 from pathlib import Path
@@ -26,8 +25,8 @@ import plotly.graph_objects as go
 from climateeconomics.charts_tools import graph_gross_and_net_output
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
-from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \

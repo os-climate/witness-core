@@ -50,16 +50,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
     CROP_DISC = 'Crop'
-    FOREST_DISC = 'Forest'
-    AGRICULTUREMIX_DISC = 'AgricultureMix'
-    MACROECO_DISC = 'Macroeconomics'
-    TEMPCHANGE_DISC = 'Temperature_change'
-    CarbonCapture_DISC = 'carbon_capture'
-    CO2Emissions_Disc = 'CCUS'
-    POPULATION_DISC = 'Population'
     LANDUSE_DISC = 'Land_Use'
     ENERGYMIX_DISC = 'EnergyMix'
-    INVESTDISTRIB_DISC = 'InvestmentDistribution'
 
     # execution_engine.dm.get_all_namespaces_from_var_name('temperature_df')[0]
 

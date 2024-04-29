@@ -13,9 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.gdp_non_sectorized.post_processing_sector_breakdown_gdp import \
+from climateeconomics.sos_wrapping.post_procs.sectors.gdp_non_sectorized.post_processing_sector_breakdown_gdp import \
     post_processing_filters as ppf_template
-from climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.gdp_non_sectorized.post_processing_sector_breakdown_gdp import \
+from climateeconomics.sos_wrapping.post_procs.sectors.gdp_non_sectorized.post_processing_sector_breakdown_gdp import \
     post_processings as pp_template
 from energy_models.glossaryenergy import GlossaryEnergy
 
