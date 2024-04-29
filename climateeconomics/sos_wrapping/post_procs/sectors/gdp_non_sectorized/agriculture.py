@@ -13,9 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from climateeconomics.sos_wrapping.post_procs.sectors.emissions.post_processing_sector_breakdown_emissions import \
+from climateeconomics.sos_wrapping.post_procs.sectors.gdp_non_sectorized.sector_breakdown_gdp import \
     post_processing_filters as ppf_template
-from climateeconomics.sos_wrapping.post_procs.sectors.emissions.post_processing_sector_breakdown_emissions import \
+from climateeconomics.sos_wrapping.post_procs.sectors.gdp_non_sectorized.sector_breakdown_gdp import \
     post_processings as pp_template
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -24,4 +24,4 @@ def post_processing_filters(execution_engine, namespace):
     return ppf_template(execution_engine, namespace)
 
 def post_processings(execution_engine, scenario_name, chart_filters=None):
-    return pp_template(execution_engine, scenario_name, sector=GlossaryEnergy.SectorIndustry, chart_filters=chart_filters)
+    return pp_template(execution_engine, scenario_name, sector=GlossaryEnergy.SectorAgriculture, chart_filters=chart_filters)

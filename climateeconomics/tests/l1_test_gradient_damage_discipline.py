@@ -51,7 +51,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline'
@@ -129,7 +130,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline'
@@ -212,7 +214,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline'

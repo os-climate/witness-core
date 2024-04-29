@@ -40,7 +40,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_SECTORS: ns_macro,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    GlossaryCore.NS_GHGEMISSIONS: ns_scatter,
-                   }
+                   GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: self.ee.study_name}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      f'Macroeconomics.{GlossaryCore.SectorServices}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline' ,

@@ -101,7 +101,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CO2EmissionsObjectiveValue: GlossaryCore.CO2EmissionsObjective,
         GlossaryCore.TotalEnergyEmissions: GlossaryCore.TotalEnergyCO2eqEmissionsDf,
         GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf,
-        GlossaryCore.EconomicsEmissionDfValue: GlossaryCore.EmissionDf
+        GlossaryCore.EconomicsEmissionDfValue: GlossaryCore.EmissionDf,
+        GlossaryCore.ResidentialEmissionsDfValue: GlossaryCore.ResidentialEmissionsDf
     }
 
     def setup_sos_disciplines(self):
@@ -173,6 +174,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions,
             GlossaryCore.EnergyCarbonIntensityDfValue: self.emissions_model.carbon_intensity_of_energy_mix,
             GlossaryCore.EconomicsEmissionDfValue: self.emissions_model.total_economics_emisssions[GlossaryCore.EmissionDf['dataframe_descriptor'].keys()],
+            GlossaryCore.ResidentialEmissionsDfValue: self.emissions_model.energy_emission_households_df
         }
 
         for sector in self.emissions_model.new_sector_list:

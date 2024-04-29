@@ -363,12 +363,15 @@ class GHGEmissions:
             self.gwp_emissions[f'{emission_type}_20'] = np.sum(emissions_type_gwp_20_values, axis=0)
             self.gwp_emissions[f'{emission_type}_100'] = np.sum(emissions_type_gwp_100_values, axis=0)
     def compute_energy_emission_households(self):
-        # compute Households emissions : Households energy consumption X Carbon intensity
+        # compute Households emissions (Gt CO2 Eq) : Households energy consumption X Carbon intensity
+        # 1 PWh = 1 × 10e15 kWh
+        # 1 kgCO2eq = 1/10^9 GtCO2eq
 
-        energy_emission_households=(self.residential_energy_consumption[GlossaryCore.TotalProductionValue].values *
-                                    self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue].values)
+        energy_emission_households= (((self.residential_energy_consumption[GlossaryCore.TotalProductionValue].values * 1e15 ) *
+                                     self.carbon_intensity_of_energy_mix[GlossaryCore.EnergyCarbonIntensityDfValue].values) / 1e9)
+
 
         self.energy_emission_households_df = pd.DataFrame({
             GlossaryCore.Years: self.years_range,
-            GlossaryCore.TotalProductionValue: energy_emission_households
+            GlossaryCore.TotalEmissions: energy_emission_households
         })

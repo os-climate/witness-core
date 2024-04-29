@@ -87,7 +87,7 @@ class ProcessBuilder(BaseProcessBuilder):
         # emissions post proc modules :
         self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC,
                                   f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}")
-        sectors_post_proc_module = 'climateeconomics.sos_wrapping.post_procs.sectors.emissions.post_processing_economics_emissions'
+        sectors_post_proc_module = 'climateeconomics.sos_wrapping.post_procs.sectors.emissions.economics_emissions'
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
         )
@@ -96,7 +96,7 @@ class ProcessBuilder(BaseProcessBuilder):
             self.ee.ns_manager.add_ns(f'ns_{sector.lower()}_gdp', f"{self.ee.study_name}.Macroeconomics.{sector}")
             self.ee.ns_manager.add_ns(ns,
                                       f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{sector}")
-            post_proc_module = f'climateeconomics.sos_wrapping.post_procs.sectors.emissions.post_proc_{sector.lower()}'
+            post_proc_module = f'climateeconomics.sos_wrapping.post_procs.sectors.emissions.{sector.lower()}'
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 ns, post_proc_module
             )

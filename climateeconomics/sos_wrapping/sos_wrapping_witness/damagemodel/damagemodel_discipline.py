@@ -65,6 +65,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'cheat_var11': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorIndustry.lower()}_emissions',
                                                         'visibility': 'Shared', 'default': 0.0, 'unit': '-',
                                                         'user_level': 3},
+        'cheat_varHOUSE': {'type': 'float', 'namespace': f'ns_{GlossaryCore.Households.lower()}_emissions',
+                         'visibility': 'Shared', 'default': 0.0, 'unit': '-',
+                         'user_level': 3},
         'cheat_var12': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorServices.lower()}_emissions',
                         'visibility': 'Shared', 'default': 0.0, 'unit': '-',
                         'user_level': 3},
@@ -106,6 +109,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         GlossaryCore.CO2DamagePriceInitValue: GlossaryCore.CO2DamagePriceInitVar,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
+
 
     }
 
