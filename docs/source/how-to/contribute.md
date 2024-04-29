@@ -27,6 +27,9 @@ The integration of a contribution is done in two steps:
 Depending on the nature of your contribution, here is the way of working to implement your ideas:
 
 ### Creating a Model & a New Discipline
+> - [Check how to wrapp a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
+> - [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
+
 In this case, you should create a new `l0_test_<my_model_name>.py` file to test your model/discipline.
 In the `l0` test file, the test class should test at least:
 - a run of the discipline
@@ -41,6 +44,8 @@ You should be testing the gradients of all coupling outputs with respect to all 
 ### Existing Discipline Modifications
 
 #### Adding a Non-coupling Input/Output or a New Graph
+> [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
+
 No test creation/modification required. Still, all tests (`l0`, `l1`, and use cases) should be OK after modifications.
 
 #### Adding a Coupling Input/Output
@@ -63,7 +68,9 @@ If the output you modify is a coupling variable, also compute its gradients in a
   - Create a new test function in the test class and set values to use your new method in the model.
   - Make sure the gradients are OK with the new selected method.
 
-### New Process
+### New Process and/or new usecase
+> - [Check how to create a process here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-process.html)
+> - [Check how to create a usecase here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-usecase.html)
 
 You created a new process? Create a `usecase_<my_comment>.py` file that goes in the same folder as the `process.py` file.
 Your use case will rely on the process. You can test the use case by creating an instance of your `Study` class and call `my_study.test()` method.
