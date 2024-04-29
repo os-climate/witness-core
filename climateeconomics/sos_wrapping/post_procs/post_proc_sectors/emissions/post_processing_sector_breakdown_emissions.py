@@ -14,35 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-
-import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
-import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
+from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-
-
-def get_scenario_value(execution_engine, var_name, scenario_name):
-    """returns the value of a variable for the specified scenario"""
-    all_scenario_varnames = execution_engine.dm.get_all_namespaces_from_var_name(var_name)
-    if len(all_scenario_varnames) > 1:
-        # multiscenario case
-        scenario_name = scenario_name.split('.')[2]
-        selected_scenario_varname = list(filter(lambda x: scenario_name in x, all_scenario_varnames))[0]
-    else:
-        # not multiscenario case
-         selected_scenario_varname = all_scenario_varnames[0]
-    value_selected_scenario = execution_engine.dm.get_value(selected_scenario_varname)
-    return value_selected_scenario
 
 
 def post_processing_filters(execution_engine, namespace):

@@ -10,6 +10,7 @@ All types of contributions are encouraged and valued.
 - [3. How Should I Develop My Ideas?](#3-how-should-i-develop-my-ideas)
   - [3.1. Creating a Model & a New Discipline](#31-creating-a-model--a-new-discipline)
   - [3.2. Existing Discipline Modifications](#32-existing-discipline-modifications)
+    - [3.2.0. What is a coupling variable ?](#320-what-is-a-coupling-variable)
     - [3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph](#321-adding-a-non-coupling-inputoutput-or-a-new-post-processing-graph)
     - [3.2.2. Adding a Coupling Input/Output](#322-adding-a-coupling-inputoutput)
     - [3.2.3. I Want to Modify How an Output Is Computed](#323-i-want-to-modify-how-an-output-is-computed)
@@ -54,9 +55,11 @@ In the `l0` test file, the test class should test at least:
 If you also coded gradients in the discipline, create a new `l1_test_gradient_<my_model_name>.py` to test the gradients of your discipline.
 You should be testing the gradients of all coupling outputs with respect to all coupling inputs.
 
-*Note:* a *coupling variable* is a variable that is an output of discipline and an input for another, in a process.
-
 ### 3.2. Existing Discipline Modifications
+
+#### 3.2.0. What is a coupling variable ?
+
+A *coupling variable* is a variable that is an output of discipline and an input for another, in a process.
 
 #### 3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph
 > - [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
