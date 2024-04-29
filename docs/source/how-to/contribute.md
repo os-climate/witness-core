@@ -30,12 +30,15 @@ Depending on the nature of your contribution, here is the way of working to impl
 > - [Check how to wrapp a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
 > - [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
 
+__Documentation :__ Create a markdown file `<my_model_name>.md`, stored in a `*documentation/*` folder next to the discipline, explaining how your model works. 
+
+__Tests :__
 In this case, you should create a new `l0_test_<my_model_name>.py` file to test your model/discipline.
 In the `l0` test file, the test class should test at least:
 - a run of the discipline
 - a retrieval of the post-processings
 
-**I also coded gradients!**:
+**I also coded gradients !**
 If you also coded gradients in the discipline, create a new `l1_test_gradient_<my_model_name>.py` to test the gradients of your discipline.
 You should be testing the gradients of all coupling outputs with respect to all coupling inputs.
 
@@ -43,14 +46,19 @@ You should be testing the gradients of all coupling outputs with respect to all 
 
 ### Existing Discipline Modifications
 
-#### Adding a Non-coupling Input/Output or a New Graph
+#### Adding a Non-coupling Input/Output or a new post-processing graph
 > [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
 
 No test creation/modification required. Still, all tests (`l0`, `l1`, and use cases) should be OK after modifications.
 
 #### Adding a Coupling Input/Output
+
+__Documentation :__ Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
+
+__Tests:__
 - Compute its gradients in the method `compute_sos_jacobian()` of the discipline.
 - Complete its gradient test (`l1_test_gradient_<model_name>.py`) by also checking for this input/output.
+
 
 #### I Want to Modify How an Output Is Computed
 If you want to modify the way a certain value is computed, it is better to let the possibility to use the old formula instead of losing it.
@@ -59,6 +67,8 @@ Also, after adding this flag/option, make sure the default parameters are set to
 It is only later, during discussions with model reviewers, that the default settings might be changed.
 
 If the output you modify is a coupling variable, also compute its gradients in accordance with the selected option.
+
+__Documentation :__ Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
 
 **Tests:**
 - Find the existing `l0` test of the discipline.
