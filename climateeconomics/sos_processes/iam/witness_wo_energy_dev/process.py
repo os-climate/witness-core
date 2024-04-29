@@ -41,6 +41,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_ENERGY_MIX: self.ee.study_name,
                    GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    GlossaryCore.NS_MACRO: self.ee.study_name,
+                   f'ns_{GlossaryCore.Households.lower()}_emissions':f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}",
                    'ns_agriculture': self.ee.study_name,
                    'ns_forest': self.ee.study_name}
 
@@ -96,6 +97,15 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
         )
+
+        ns = f'ns_{GlossaryCore.Households.lower()}_emissions'
+        self.ee.ns_manager.add_ns(ns,
+                                  f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}")
+        post_proc_module = f'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.emissions.post_proc_{GlossaryCore.Households.lower()}'
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            ns, post_proc_module
+        )
+
         for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             ns = f'ns_{sector.lower()}_emissions'
             self.ee.ns_manager.add_ns(ns, f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{sector}")

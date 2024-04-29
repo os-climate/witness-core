@@ -84,6 +84,7 @@ class GlossaryCore:
     SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
     SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
     EconomicSectors = "Economic sectors"
+    Households = "Households"
 
     AgricultureAndLandUse = "Agriculture & Land Use"
     Energy = "Energy"
@@ -176,6 +177,7 @@ class GlossaryCore:
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
     NS_SECTORS_POST_PROC = "ns_sectors_postproc"
     NS_GHGEMISSIONS = "ns_ghg_emissions"
+    NS_HOUSEHOLDS_EMISSIONS ="ns_households_emissions"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -1272,7 +1274,7 @@ class GlossaryCore:
     ResidentialEmissionsDfValue = "residential_emissions_df"
     ResidentialEmissionsDf = {
         "type": "dataframe",
-        "unit": "?",
+        "unit": "Gt CO2 Eq",
         "description": "Emission by residential sector (only due to energy consumption)",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
