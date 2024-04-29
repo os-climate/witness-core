@@ -4,7 +4,19 @@ First off, thanks for considering contributing!
 
 All types of contributions are encouraged and valued.
 
-### Quick Overview
+## Summary:
+- [Quick Overview](#quick-overview)
+- [Where and How Should I Develop?](#where-and-how-should-i-develop)
+- [How Should I Develop My Ideas?](#how-should-i-develop-my-ideas)
+  - [Creating a Model & a New Discipline](#creating-a-model--a-new-discipline)
+  - [Existing Discipline Modifications](#existing-discipline-modifications)
+    - [Adding a Non-coupling Input/Output or a New Post-processing Graph](#adding-a-non-coupling-inputoutput-or-a-new-post-processing-graph)
+    - [Adding a Coupling Input/Output](#adding-a-coupling-inputoutput)
+    - [I Want to Modify How an Output Is Computed](#i-want-to-modify-how-an-output-is-computed)
+  - [New Process and/or New Usecase](#new-process-andor-new-usecase)
+  - [Existing Process Modifications](#existing-process-modifications)
+
+## Quick Overview
 The integration of a contribution is done in two steps:
 1. **Contributor side:** the contributor pushes its developments to a dedicated place.
 2. **Integrator side:** two validations are necessary:
@@ -27,18 +39,18 @@ The integration of a contribution is done in two steps:
 Depending on the nature of your contribution, here is the way of working to implement your ideas:
 
 ### Creating a Model & a New Discipline
-> - [Check how to wrapp a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
+> - [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
 > - [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
 
-__Documentation :__ Create a markdown file `<my_model_name>.md`, stored in a `*documentation/*` folder next to the discipline, explaining how your model works. 
+**Documentation:** Create a markdown file `<my_model_name>.md`, stored in a `*documentation/*` folder next to the discipline, explaining how your model works.
 
-__Tests :__
+**Tests:**
 In this case, you should create a new `l0_test_<my_model_name>.py` file to test your model/discipline.
 In the `l0` test file, the test class should test at least:
 - a run of the discipline
 - a retrieval of the post-processings
 
-**I also coded gradients !**
+**I also coded gradients!**
 If you also coded gradients in the discipline, create a new `l1_test_gradient_<my_model_name>.py` to test the gradients of your discipline.
 You should be testing the gradients of all coupling outputs with respect to all coupling inputs.
 
@@ -46,19 +58,20 @@ You should be testing the gradients of all coupling outputs with respect to all 
 
 ### Existing Discipline Modifications
 
-#### Adding a Non-coupling Input/Output or a new post-processing graph
-> [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
+#### Adding a Non-coupling Input/Output or a New Post-processing Graph
+> - [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
 
-No test creation/modification required. Still, all tests (`l0`, `l1`, and use cases) should be OK after modifications.
+No new test creation required. Still, all tests (`l0`, `l1`, and use cases) should be OK after modifications.
+
+In the case of adding a new input, some tests might require fixes: specify values for new missing inputs.
 
 #### Adding a Coupling Input/Output
 
-__Documentation :__ Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
+**Documentation:** Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
 
-__Tests:__
+**Tests:**
 - Compute its gradients in the method `compute_sos_jacobian()` of the discipline.
 - Complete its gradient test (`l1_test_gradient_<model_name>.py`) by also checking for this input/output.
-
 
 #### I Want to Modify How an Output Is Computed
 If you want to modify the way a certain value is computed, it is better to let the possibility to use the old formula instead of losing it.
@@ -68,7 +81,7 @@ It is only later, during discussions with model reviewers, that the default sett
 
 If the output you modify is a coupling variable, also compute its gradients in accordance with the selected option.
 
-__Documentation :__ Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
+**Documentation:** Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
 
 **Tests:**
 - Find the existing `l0` test of the discipline.
@@ -78,7 +91,7 @@ __Documentation :__ Update the markdown documentation file stored in a `*documen
   - Create a new test function in the test class and set values to use your new method in the model.
   - Make sure the gradients are OK with the new selected method.
 
-### New Process and/or new usecase
+### New Process and/or New Usecase
 > - [Check how to create a process here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-process.html)
 > - [Check how to create a usecase here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-usecase.html)
 
