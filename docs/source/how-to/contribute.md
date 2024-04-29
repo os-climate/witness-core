@@ -23,7 +23,7 @@ The integration of a contribution is done in two steps:
     - **Code Validity:** the developments haven't caused any regression of the code (assessed by a *Witness integrator*).
     - **Scientific Content Validity:** the nature of the contribution makes sense on a scientific level (assessed by *Witness model reviewer*).
 
-**Important:** If for your development, you use data found online, make sure it is open source, and when you use it, cite your sources and where you found it.
+> **Important:** If for your development, you use data found online, make sure it is open source, and when you use it, cite your sources and where you found it.
 
 ## 2. Where and How Should I Develop?
 - Create your branch(es) from the `develop` branch and initiate development.
@@ -39,8 +39,8 @@ The integration of a contribution is done in two steps:
 Depending on the nature of your contribution, here is the way of working to implement your ideas:
 
 ### 3.1. Creating a Model & a New Discipline
-- [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
-- [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
+> - [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
+> - [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
 
 **Documentation:** Create a markdown file `<my_model_name>.md`, stored in a `*documentation/*` folder next to the discipline, explaining how your model works.
 
@@ -59,7 +59,7 @@ You should be testing the gradients of all coupling outputs with respect to all 
 ### 3.2. Existing Discipline Modifications
 
 #### 3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph
-- [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
+> - [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
 
 No new test creation required. Still, all tests (`l0`, `l1`, and use cases) should be OK after modifications.
 
@@ -92,8 +92,8 @@ If the output you modify is a coupling variable, also compute its gradients in a
   - Make sure the gradients are OK with the new selected method.
 
 ### 3.3. New Process and/or New Usecase
-- [Check how to create a process here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-process.html)
-- [Check how to create a usecase here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-usecase.html)
+> - [Check how to create a process here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-process.html)
+> - [Check how to create a usecase here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-usecase.html)
 
 You created a new process? Create a `usecase_<my_comment>.py` file that goes in the same folder as the `process.py` file.
 Your use case will rely on the process. You can test the use case by creating an instance of your `Study` class and call `my_study.test()` method.
