@@ -100,6 +100,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                      'dataframe_edition_locked': False, },
                'delta_max_gdp': {'type': 'float', 'default': 1, 'user_level': 1, 'unit': '-'},
                'delta_max_energy_eff': {'type': 'float', 'default': 0.1, 'user_level': 1, 'unit': '-'},
+               GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool
                }
 
     DESC_OUT = {'error_pib_total': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,

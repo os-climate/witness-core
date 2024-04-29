@@ -161,9 +161,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         inputs_dict = self.get_sosdisc_inputs()
-        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(inputs_dict, dict_ranges)
+        
         self.emissions_model.configure_parameters_update(inputs_dict)
         # Compute de emissions_model
         self.emissions_model.compute(inputs_dict)
@@ -187,9 +185,6 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             dict_values.update({f"{sector}.{GlossaryCore.SectionEmissionDfValue}": self.emissions_model.dict_sector_sections_emissions[sector]})
             dict_values.update({f"{sector}.{GlossaryCore.EmissionsDfValue}": self.emissions_model.dict_sector_emissions[sector][GlossaryCore.EmissionDf['dataframe_descriptor'].keys()]})
 
-        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(dict_values, dict_ranges)
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
@@ -319,13 +314,18 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['GHG emissions per source',
-                      'Global Warming Potential',
+        chart_list = ['Global Warming Potential (20-year basis) emissions per GHG',
+                      'Global Warming Potential (100-year)',
+                      'Global Warming Potential (20-year)',
+
+                      'Global Warming Potential (100-year basis) emissions per source'
+                      'Global Warming Potential (20-year basis) emissions per source'
                       'Total CO2 emissions',
                       GlossaryCore.EnergyCarbonIntensityDfValue]
 
-        selected_values = ['GHG emissions per source',
-                           'Global Warming Potential',
+        selected_values = ['Global Warming Potential (20-year basis) emissions per GHG',
+                           'Global Warming Potential (100-year)',
+                           'Global Warming Potential (100-year basis) emissions per source'
                            'Total CO2 emissions', ]
 
         chart_filters.append(ChartFilter(
@@ -344,61 +344,31 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             for chart_filter in chart_filters:
                 charts = chart_filter.selected_values
 
-        if 'GHG emissions per source' in charts:
+        if 'Global Warming Potential (100-year)' in charts:
+            new_chart = self.get_chart_gwp(100)
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        if 'Global Warming Potential (20-year)' in charts:
+            new_chart = self.get_chart_gwp(20)
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        if 'Global Warming Potential (20-year basis) emissions per GHG' in charts:
             for gwp in GHGEmissions.GHG_TYPE_LIST:
                 new_chart = self.get_chart_emission_per_source(gwp)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
-        if 'GHG emissions per source' in charts:
-            gwp_year = 20
-            GWP_emissions = self.get_sosdisc_outputs(GlossaryCore.TotalGWPEmissionsDfValue)
+        if 'Global Warming Potential (100-year basis) emissions per source' in charts:
+            new_chart = self.get_chart_gwp_per_source(100)
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
-            chart_name = f'Global warming potential ({gwp_year}-year basis) breakdown per source'
-            new_chart = TwoAxesInstanciatedChart(
-                GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
-
-            for sector in [GlossaryCore.AgricultureAndLandUse, GlossaryCore.Energy, GlossaryCore.NonEnergy]:
-                new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
-                                               list(GWP_emissions[f'{sector}_{gwp_year}'].values),
-                                               sector, 'bar')
-
-                new_chart.series.append(new_serie)
-
-            new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
-                                           list(GWP_emissions[f'Total GWP ({gwp_year}-year basis)'].values),
-                                           'Total', 'lines')
-            new_chart.series.append(new_serie)
-
-            instanciated_charts.append(new_chart)
-
-            gwp_year = 100
-            GWP_emissions = self.get_sosdisc_outputs(GlossaryCore.TotalGWPEmissionsDfValue)
-
-            chart_name = f'Global warming potential ({gwp_year}-year basis) breakdown per source'
-            new_chart = TwoAxesInstanciatedChart(
-                GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name,
-                stacked_bar=True)
-
-            for sector in [GlossaryCore.AgricultureAndLandUse, GlossaryCore.Energy, GlossaryCore.NonEnergy]:
-                new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
-                                               list(GWP_emissions[f'{sector}_{gwp_year}'].values),
-                                               sector, 'bar')
-
-                new_chart.series.append(new_serie)
-
-            new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
-                                           list(GWP_emissions[f'Total GWP ({gwp_year}-year basis)'].values),
-                                           'Total', 'lines')
-            new_chart.series.append(new_serie)
-
-            instanciated_charts.append(new_chart)
-
-        if 'Global Warming Potential' in charts:
-            for gwp_year in [20, 100]:
-                new_chart = self.get_chart_gwp(gwp_year)
-                if new_chart is not None:
-                    instanciated_charts.append(new_chart)
+        if 'Global Warming Potential (20-year basis) emissions per source' in charts:
+            new_chart = self.get_chart_gwp_per_source(20)
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
         if GlossaryCore.EnergyCarbonIntensityDfValue in charts:
             carbon_intensity_df = self.get_sosdisc_outputs(GlossaryCore.EnergyCarbonIntensityDfValue)
@@ -421,7 +391,6 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
     def get_chart_gwp(self, gwp_year):
         GWP_emissions = self.get_sosdisc_outputs(
             GlossaryCore.TotalGWPEmissionsDfValue)
-
 
         chart_name = f'Global warming potential at {gwp_year} years - GHG breakdown'
         new_chart = TwoAxesInstanciatedChart(
@@ -468,3 +437,24 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         new_chart.series.append(new_serie)
 
         return new_chart
+
+    def get_chart_gwp_per_source(self, gwp_year):
+        GWP_emissions = self.get_sosdisc_outputs(GlossaryCore.TotalGWPEmissionsDfValue)
+
+        chart_name = f'Global warming potential ({gwp_year}-year basis) breakdown per source'
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
+
+        for sector in [GlossaryCore.AgricultureAndLandUse, GlossaryCore.Energy, GlossaryCore.NonEnergy]:
+            new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
+                                           list(GWP_emissions[f'{sector}_{gwp_year}'].values),
+                                           sector, 'bar')
+
+            new_chart.series.append(new_serie)
+
+        new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values),
+                                       list(GWP_emissions[f'Total GWP ({gwp_year}-year basis)'].values),
+                                       'Total', 'lines')
+        new_chart.series.append(new_serie)
+        return new_chart
+

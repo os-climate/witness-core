@@ -187,9 +187,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         inputs = self.get_sosdisc_inputs()
-        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(inputs, dict_ranges)
+        
         prod_function_fitting = inputs['prod_function_fitting']
         # configure param
         self.model.configure_parameters(inputs, self.sector_name)
@@ -214,9 +212,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             dict_values['longterm_energy_efficiency'] = self.model.lt_energy_eff
             dict_values['range_energy_eff_constraint'] = self.model.range_energy_eff_cstrt
 
-        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(dict_values, dict_ranges)
+        
 
         self.store_sos_outputs_values(dict_values)
 

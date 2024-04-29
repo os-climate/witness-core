@@ -72,6 +72,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in scenario_dict.keys()})
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.algo": "SLSQP" for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.differentiation_method": "finite_differences" for scenario_name in scenario_dict.keys()})
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.FunctionsManager.function_df": func_df for scenario_name in scenario_dict.keys()})
 
         return values_dict
@@ -79,4 +80,5 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
+    uc_cls.load_data()
     uc_cls.test()

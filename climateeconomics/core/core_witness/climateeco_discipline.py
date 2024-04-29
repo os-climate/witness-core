@@ -70,6 +70,28 @@ class ClimateEcoDiscipline(SoSWrapp):
         'version': '',
     }
 
+    def _run(self):
+        """
+        Run user-defined model.
+
+        Returns:
+            local_data (Dict): outputs of the model run
+        """
+        check_range_before_run = self.get_sosdisc_inputs(GlossaryCore.CheckRangeBeforeRunBoolName)
+        inputs = self.get_sosdisc_inputs()
+        if check_range_before_run:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs, dict_ranges)
+
+        self.run()
+
+        outputs = self.get_sosdisc_outputs()
+        if check_range_before_run:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs, dict_ranges)
+
+        return self.local_data
+
     def get_greataxisrange(self, serie):
         """
         Get the lower and upper bound of axis for graphs 

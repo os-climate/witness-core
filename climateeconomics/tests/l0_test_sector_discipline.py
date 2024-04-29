@@ -113,7 +113,6 @@ class ServicesDiscTest(unittest.TestCase):
                            'activate_pandemic_effects': True,
                            'invest_co2_tax_in_renewables': True
                        },
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

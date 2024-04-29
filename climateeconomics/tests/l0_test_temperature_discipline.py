@@ -63,7 +63,6 @@ class TemperatureDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

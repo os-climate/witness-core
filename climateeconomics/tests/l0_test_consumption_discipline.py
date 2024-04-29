@@ -90,7 +90,6 @@ class ConsumptionDiscTest(unittest.TestCase):
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,
                        f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}': residential_energy_df,
                        f'{self.name}.{GlossaryCore.InvestmentDfValue}': investment_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

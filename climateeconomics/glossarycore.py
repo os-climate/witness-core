@@ -175,7 +175,8 @@ class GlossaryCore:
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
-    NS_SECTORS_POST_PROC = "ns_sectors_postproc"
+    NS_SECTORS_POST_PROC_EMISSIONS = "ns_sectors_postproc"
+    NS_SECTORS_POST_PROC_GDP = "ns_sectors_postproc_gdp"
     NS_GHGEMISSIONS = "ns_ghg_emissions"
     NS_HOUSEHOLDS_EMISSIONS ="ns_households_emissions"
 
@@ -1523,6 +1524,8 @@ class GlossaryCore:
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
         "type": "bool",
         "default": False,
     }

@@ -92,9 +92,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         #-- compute
         in_dict = self.get_sosdisc_inputs()
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(in_dict, dict_ranges)
+        
         self.forest_model.compute(in_dict)
 
         outputs_dict = {
@@ -103,9 +101,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[[GlossaryCore.Years, 'forest_surface_evol', 'global_forest_surface']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[[GlossaryCore.Years, 'emitted_CO2_evol_cumulative']],
         }
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(outputs_dict, dict_ranges)
+        
         #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
 

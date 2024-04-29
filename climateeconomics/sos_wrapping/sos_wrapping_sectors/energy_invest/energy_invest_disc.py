@@ -53,9 +53,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
     def run(self):
         """run"""
         inputs = self.get_sosdisc_inputs()
-        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(inputs, dict_ranges)
+        
         self.model = EnergyInvestModel()
 
         self.model.compute(inputs)
@@ -64,9 +62,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
             GlossaryCore.RenewablesEnergyInvestmentsValue: self.model.added_renewables_investments,
             GlossaryCore.EnergyInvestmentsValue: self.model.energy_investments,
         }
-        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(dict_values, dict_ranges)
+        
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
