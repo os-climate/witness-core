@@ -107,7 +107,6 @@ class GHGEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': CH4_land_emissions,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': N2O_land_emissions,
                        f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
                        f"{self.name}.{GlossaryCore.EnergyProductionValue}": energy_production,
                        f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": residential_energy_consumption,

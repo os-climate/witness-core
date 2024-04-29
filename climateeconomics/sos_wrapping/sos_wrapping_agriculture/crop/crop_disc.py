@@ -525,9 +525,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     def run(self):
         # -- get inputs
         input_dict = self.get_sosdisc_inputs()
-        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(input_dict, dict_ranges)
+
         # -- configure class with inputs
         self.crop_model.configure_parameters_update(input_dict)
         # -- compute
@@ -560,9 +558,6 @@ class CropDiscipline(ClimateEcoDiscipline):
             GlossaryCore.CaloriesPerCapitaValue: self.crop_model.calories_pc_df,
             GlossaryCore.CaloriesPerCapitaBreakdownValue: self.crop_model.consumed_calories_pc_breakdown_per_day_df
         }
-        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(outputs_dict, dict_ranges)
         
         self.store_sos_outputs_values(outputs_dict)
 

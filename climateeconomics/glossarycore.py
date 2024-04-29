@@ -1522,6 +1522,8 @@ class GlossaryCore:
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
         "type": "bool",
         "default": False,
     }

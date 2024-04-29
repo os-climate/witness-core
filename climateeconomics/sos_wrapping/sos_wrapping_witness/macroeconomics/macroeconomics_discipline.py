@@ -245,7 +245,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         years = np.arange(year_start, year_end + 1)
         global_data_dir = join(Path(__file__).parents[3], 'data')
         gross_output_ssp3_file = join(global_data_dir, 'economics_df_ssp3.csv')
-        gross_output_df = None
         if isfile(gross_output_ssp3_file):
             gross_output_df = pd.read_csv(gross_output_ssp3_file)[[GlossaryCore.Years, GlossaryCore.GrossOutput]]
 
@@ -319,9 +318,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def run(self):
         param = self.get_sosdisc_inputs()
-        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(param, dict_ranges)
 
         # Model execution
         economics_detail_df, economics_df, damage_df, energy_investment, energy_investment_wo_renewable, \
@@ -361,9 +357,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for sector in self.macro_model.sector_list
         })
 
-        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(dict_values, dict_ranges)
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

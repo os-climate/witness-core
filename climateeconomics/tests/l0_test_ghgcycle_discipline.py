@@ -58,7 +58,6 @@ class GHGCycleDiscTest(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': self.ghg_emissions_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

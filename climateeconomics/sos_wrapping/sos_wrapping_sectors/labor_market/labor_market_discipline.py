@@ -88,9 +88,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
-        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(inputs_dict, dict_ranges)
+        
         # -- configure class with inputs
         self.labor_model.configure_parameters(inputs_dict)
 
@@ -100,9 +98,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         outputs_dict = {GlossaryCore.WorkforceDfValue: workforce_df,
                         'employment_df': employment_df}
 
-        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(outputs_dict, dict_ranges)
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

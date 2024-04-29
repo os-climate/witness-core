@@ -75,7 +75,6 @@ class LaborMarketTestCase(unittest.TestCase):
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.workforce_share_per_sector': self.workforce_share, 
                        f'{name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_pop_df,
-                       f'{name}.{model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

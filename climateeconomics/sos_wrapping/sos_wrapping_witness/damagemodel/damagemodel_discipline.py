@@ -152,9 +152,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         # todo: for sensitivity, generalise ?
         self.model.tp_a3 = in_dict['tp_a3']
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(in_dict, dict_ranges)
+        
         damage_df = in_dict.pop(GlossaryCore.DamageDfValue)
         temperature_df = in_dict.pop(GlossaryCore.TemperatureDfValue)
         extra_gigatons_co2_eq_df = in_dict.pop(GlossaryCore.ExtraCO2EqSincePreIndustrialValue)
@@ -169,10 +167,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.CO2DamagePrice: co2_damage_price_df,
                     GlossaryCore.ExtraCO2tDamagePrice: extra_co2_damage_price}
 
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(out_dict, dict_ranges)
-
+        
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

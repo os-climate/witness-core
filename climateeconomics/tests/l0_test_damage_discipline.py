@@ -94,7 +94,6 @@ class DamageDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': self.extra_co2_t_since_preindustrial,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': self.damage_constraint_factor,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
