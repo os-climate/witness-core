@@ -42,6 +42,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_REFERENCE: f'{ns_scatter}.NormalizationReferences',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: ns_scatter,
                    GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: ns_scatter,
+                   GlossaryCore.NS_SECTORS_POST_PROC_GDP: ns_scatter,
                    'ns_agriculture': ns_scatter,
                    'ns_forest': ns_scatter}
 
@@ -85,11 +86,11 @@ class ProcessBuilder(BaseProcessBuilder):
         builder_list.extend(non_use_capital_list)
 
         # emissions post proc modules :
-        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC,
+        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS,
                                   f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}")
         sectors_post_proc_module = 'climateeconomics.sos_wrapping.post_procs.sectors.emissions.economics_emissions'
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
+            GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS, sectors_post_proc_module
         )
         for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             ns = f'ns_{sector.lower()}_emissions'
