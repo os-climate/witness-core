@@ -43,7 +43,7 @@ Depending on the nature of your contribution, here is the way of working to impl
 > - [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
 > - [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
 
-**Documentation:** Create a markdown file `<my_model_name>.md`, stored in a `*documentation/*` folder next to the discipline, explaining how your model works.
+**Documentation:** Create a markdown file `<my_model_name>.md`, stored in a `documentation/` folder next to the discipline, explaining how your model works.
 
 **Tests:**
 In this case, you should create a new `l0_test_<my_model_name>.py` file to test your model/discipline.
@@ -70,7 +70,7 @@ In the case of adding a new input, some tests might require fixes: specify value
 
 #### 3.2.2. Adding a Coupling Input/Output
 
-**Documentation:** Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
+**Documentation:** Update the markdown documentation file stored in a `documentation/` folder next to the discipline.
 
 **Tests:**
 - Compute its gradients in the method `compute_sos_jacobian()` of the discipline.
@@ -84,7 +84,7 @@ It is only later, during discussions with model reviewers, that the default sett
 
 If the output you modify is a coupling variable, also compute its gradients in accordance with the selected option.
 
-**Documentation:** Update the markdown documentation file stored in a `*documentation/*` folder next to the discipline.
+**Documentation:** Update the markdown documentation file stored in a `documentation/` folder next to the discipline.
 
 **Tests:**
 - Find the existing `l0` test of the discipline.
