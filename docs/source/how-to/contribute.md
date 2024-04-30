@@ -6,7 +6,7 @@ All types of contributions are encouraged and valued.
 
 ##  Summary with Navigation Links:
 - [1. Quick Overview](#1-quick-overview)
-- [2. Where and How Should I Develop?](#2-where-and-how-should-i-develop)
+- [2. Github workflow](#2-github-workflow)
 - [3. How Should I Develop My Ideas?](#3-how-should-i-develop-my-ideas)
   - [3.1. Creating a Model & a New Discipline](#31-creating-a-model--a-new-discipline)
   - [3.2. Existing Discipline Modifications](#32-existing-discipline-modifications)
@@ -26,7 +26,7 @@ The integration of a contribution is done in two steps:
 
 > **Important:** If for your development, you use data found online, make sure it is open source, and when you use it, cite your sources and where you found it.
 
-## 2. Where and How Should I Develop?
+## 2. Github workflow
 - Create your branch(es) from the `develop` branch and initiate development.
 - Regularly merge `develop` into your branch(es).
 - Ensure that your local tests match the test state on the `develop` branch for each repository intended for pushing. The tests to pass include:
