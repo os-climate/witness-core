@@ -29,7 +29,7 @@ class MacroEconomics:
         Constructor
         """
         self.energy_consumption_households_df = None
-        self.inputs = None
+        self.share_residential_df = None
         self.consommation_objective_ref = None
         self.year_start: int = 0
         self.year_end = None
@@ -276,11 +276,11 @@ class MacroEconomics:
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.inputs = inputs
+        self.share_residential_df = inputs[GlossaryCore.ShareResidentialEnergyDfValue]
         self.damage_fraction_output_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_output_df.index = self.damage_fraction_output_df[GlossaryCore.Years].values
         # Scale energy production
-        self.energy_production = inputs[GlossaryCore.EnergyProductionValue].copy(deep=True)
+        self.energy_production = inputs[GlossaryCore.EnergyProductionValue]
         self.co2_emissions_Gt = pd.DataFrame({GlossaryCore.Years: inputs[GlossaryCore.CO2EmissionsGtValue][GlossaryCore.Years].values,
                                               GlossaryCore.TotalCO2Emissions: inputs[GlossaryCore.CO2EmissionsGtValue][GlossaryCore.TotalCO2Emissions].values})
         self.co2_emissions_Gt.index = self.co2_emissions_Gt[GlossaryCore.Years].values
@@ -871,8 +871,8 @@ class MacroEconomics:
             # Create a temporary DataFrame to compute energy consumption per section
             merged_df_energy_prod = pd.merge(self.energy_production, self.sector_energy_consumption_percentage_df[[GlossaryCore.Years, sector_name]],
                                              on=GlossaryCore.Years, how='inner')
-            # 1e3 to convert PWh to TWh, division by 100 for percentages
-            merged_df_energy_prod['energy_consumption_sector'] = merged_df_energy_prod[GlossaryCore.TotalProductionValue] * merged_df_energy_prod[sector_name] * 1e3 / 100.
+            # division by 100 for percentages
+            merged_df_energy_prod['energy_consumption_sector'] = merged_df_energy_prod[GlossaryCore.TotalProductionValue] * merged_df_energy_prod[sector_name] / 100.
             merged_df_energy_prod = pd.merge(merged_df_energy_prod, percentage_sections_of_sector, on=GlossaryCore.Years, how='inner')
 
             # Extracting list of sections from DataFrame
@@ -1485,9 +1485,8 @@ class MacroEconomics:
         self.consommation_objective = np.array([self.economics_df[GlossaryCore.Consumption].mean()]) / self.consommation_objective_ref
 
     def compute_energy_consumption_households(self):
-        """elkzjl"""
-        energy_consumption_households = (self.inputs[GlossaryCore.ShareResidentialEnergyDfValue][GlossaryCore.ShareSectorEnergy].values *
-                                              self.energy_production[GlossaryCore.TotalProductionValue].values) / 100.
+        energy_consumption_households = (self.share_residential_df[GlossaryCore.ShareSectorEnergy].values *
+                                         self.energy_production[GlossaryCore.TotalProductionValue].values) / 100.
 
         self.energy_consumption_households_df = pd.DataFrame({
             GlossaryCore.Years: self.years_range,

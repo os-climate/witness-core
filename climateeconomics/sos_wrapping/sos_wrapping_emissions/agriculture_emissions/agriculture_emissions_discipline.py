@@ -105,9 +105,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
     def run(self):
         in_dict = self.get_sosdisc_inputs()
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(in_dict, dict_ranges)
+        
         # -- get CO2 emissions inputs
         CO2_emitted_crop_df = self.get_sosdisc_inputs(
             'Crop.CO2_land_emission_df')
@@ -160,9 +158,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
             'co2_eq_20': np.array([co2_eq_20]),
             'co2_eq_100': np.array([co2_eq_100])
         }
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(outputs_dict, dict_ranges)
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

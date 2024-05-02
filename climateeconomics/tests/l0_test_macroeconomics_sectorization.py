@@ -148,7 +148,6 @@ class MacroeconomicsTestCase(unittest.TestCase):
                 'activate_pandemic_effects': True,
                 'invest_co2_tax_in_renewables': True
             },
-            f'{name}.{model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
         }
 
         ee.load_study_from_input_dict(inputs_dict)

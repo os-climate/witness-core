@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import copy
 from copy import deepcopy
 from os.path import join, isfile
 from pathlib import Path
@@ -26,8 +25,8 @@ import plotly.graph_objects as go
 from climateeconomics.charts_tools import graph_gross_and_net_output
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
-from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -245,7 +244,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         years = np.arange(year_start, year_end + 1)
         global_data_dir = join(Path(__file__).parents[3], 'data')
         gross_output_ssp3_file = join(global_data_dir, 'economics_df_ssp3.csv')
-        gross_output_df = None
         if isfile(gross_output_ssp3_file):
             gross_output_df = pd.read_csv(gross_output_ssp3_file)[[GlossaryCore.Years, GlossaryCore.GrossOutput]]
 
@@ -319,9 +317,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def run(self):
         param = self.get_sosdisc_inputs()
-        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(param, dict_ranges)
 
         # Model execution
         economics_detail_df, economics_df, damage_df, energy_investment, energy_investment_wo_renewable, \
@@ -348,7 +343,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.TotalGDPGroupDFName: total_gdp_per_group_df,
                        GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df,
                        GlossaryCore.GDPCountryDFName: gdp_per_country_df,
-                       GlossaryCore.ResidentialEnergyConsumptionDfValue: self.macro_model.energy_consumption_households_df
+                       GlossaryCore.ResidentialEnergyConsumptionDfValue: self.macro_model.energy_consumption_households_df,
                    }
         dict_values.update({
             f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.macro_model.dict_energy_consumption_detailed[sector]['detailed'] # todo : delete detailed and total
@@ -361,9 +356,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for sector in self.macro_model.sector_list
         })
 
-        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(dict_values, dict_ranges)
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

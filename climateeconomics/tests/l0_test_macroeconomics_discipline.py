@@ -181,7 +181,6 @@ class MacroDiscTest(unittest.TestCase):
                            'activate_pandemic_effects': True,
                            'invest_co2_tax_in_renewables': True
                            },
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_energy
                        }
 

@@ -29,7 +29,7 @@ class DamageDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-
+        
         self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
 
         self.temperature_df = pd.DataFrame({
@@ -59,7 +59,8 @@ class DamageDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_dashboard': f'{self.name}',
-                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    f'ns_{GlossaryCore.SectorIndustry.lower()}_emissions': self.name,
                    f'ns_{GlossaryCore.SectorServices.lower()}_emissions': self.name,
@@ -68,7 +69,8 @@ class DamageDiscTest(unittest.TestCase):
                    f'ns_{GlossaryCore.SectorServices.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp': self.name,
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -93,7 +95,6 @@ class DamageDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': self.extra_co2_t_since_preindustrial,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': self.damage_constraint_factor,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -115,7 +116,8 @@ class DamageDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
-                   GlossaryCore.NS_SECTORS_POST_PROC: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: f'{self.name}',
+                   GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    'ns_dashboard': f'{self.name}',
                    f'ns_{GlossaryCore.SectorIndustry.lower()}_emissions': self.name,
                    f'ns_{GlossaryCore.SectorServices.lower()}_emissions': self.name,
@@ -124,7 +126,8 @@ class DamageDiscTest(unittest.TestCase):
                    f'ns_{GlossaryCore.SectorServices.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp': self.name,
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

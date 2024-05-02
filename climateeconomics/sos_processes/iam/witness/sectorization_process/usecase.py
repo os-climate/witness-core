@@ -22,6 +22,8 @@ from scipy.interpolate import interp1d
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
 from sostrades_core.study_manager.study_manager import StudyManager
 
 
@@ -221,6 +223,18 @@ class Study(StudyManager):
                 GlossaryCore.Years: years,
                 "indus_emissions": 0.
             })
+
+            for sector in GlossaryCore.SectorsPossibleValues:
+                global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
+                section_non_energy_emission_gdp_df = pd.read_csv(
+                    join(global_data_dir, f'non_energy_emission_gdp_{sector.lower()}_sections.csv'))
+                subsector_share_dict = {
+                    **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
+                    **dict(zip(section_non_energy_emission_gdp_df.columns[1:],
+                               section_non_energy_emission_gdp_df.values[0, 1:]))
+                }
+                section_non_energy_emission_gdp_df = pd.DataFrame(subsector_share_dict)
+                cons_input[f"{self.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emission_gdp_df
 
             cons_input.update({
                 f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}": workforce_share,

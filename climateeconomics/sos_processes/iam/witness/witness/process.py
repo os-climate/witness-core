@@ -71,11 +71,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # FIXME: post_processing is broken after merge of witness-full !
         # self.ee.post_processing_manager.add_post_processing_module_to_namespace(
         #     GlossaryCore.NS_WITNESS,
-        #     'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_optim.post_processing_witness_full')
+        #     'climateeconomics.sos_wrapping.post_procs.witness_optim.post_processing_witness_full')
         for resource_namespace in ['ns_coal_resource', 'ns_oil_resource', 'ns_natural_gas_resource', 'ns_uranium_resource', 'ns_copper_resource']:
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 resource_namespace, 'climateeconomics.sos_wrapping.sos_wrapping_resources.post_proc_resource.post_processing_resource')
         
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(GlossaryCore.NS_WITNESS,
-            'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
+            'climateeconomics.sos_wrapping.post_procs.ssp_comparison.post_processing_ssp_comparison')
         return chain_builders
