@@ -51,10 +51,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             'ns_optim',
-            'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_optim.post_processing_witness_full')
+            'climateeconomics.sos_wrapping.post_procs.witness_optim.post_processing_witness_full')
 
         self.ee.ns_manager.add_ns_def({'ns_dashboard': self.ee.study_name})
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_dashboard',
-                                                                                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_dashboard.post_processing_dashboard')
+                                                                                'climateeconomics.sos_wrapping.post_procs.dashboard')
 
         return opt_builder

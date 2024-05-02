@@ -86,9 +86,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         # get inputs
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(inp_dict, dict_ranges)
+        
 
         # compute utility
         economics_df = inp_dict.pop(GlossaryCore.EconomicsDfValue)
@@ -123,9 +121,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                        'min_utility_objective': min_utility_objective,
                        GlossaryCore.NegativeWelfareObjective : negative_welfare_objective
                        }
-        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(dict_values, dict_ranges)
+        
 
         self.store_sos_outputs_values(dict_values)
 

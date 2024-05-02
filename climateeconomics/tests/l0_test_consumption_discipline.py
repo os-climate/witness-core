@@ -44,7 +44,8 @@ class ConsumptionDiscTest(unittest.TestCase):
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
-                   GlossaryCore.NS_SECTORS: f'{self.name}'}
+                   GlossaryCore.NS_SECTORS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -89,7 +90,6 @@ class ConsumptionDiscTest(unittest.TestCase):
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,
                        f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}': residential_energy_df,
                        f'{self.name}.{GlossaryCore.InvestmentDfValue}': investment_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

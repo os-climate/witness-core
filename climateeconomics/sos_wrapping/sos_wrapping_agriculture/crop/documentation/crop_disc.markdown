@@ -10,21 +10,12 @@ The area available for crops is 1.1Gha and for grazing lands 3.8 Gha for a total
 
 ## Agricultural products
 
-This model computes the biomass dry producted with crops for energy.
-
-**crop residues**
-
-In a field, 50% of the harvest is left, this is what is called crop residues. 
-The field residues are left on the field (to minimize the erosion of soil by wind and water), 
-and the process residues are from the processing of the crops in usable resources 
-(for example  husks, seeds, bagasse, molasses and roots). 25% of residues can be used as biomass for energy[^2].
-The biomass potential from crops residues for energy is high but not yet fully exploited. The residue potential is between 4900Twh (17.8EJ) 
-to 22000Twh(82.3EJ)[^3], but in reality, biomass from agriculture is around 1555Twh(5.6EJ)[^4].
-
-The removed residues from the field must be compensated with fertilizers.
+This model computes the biomass dry produced with crops for energy.
+The used initial production is 3333 TWh[^2]. We consider in the article conventional crop for energy and short-rotation woody crops are crops.
+The harvest in the model is done at the end of each year. The farms have a lifetime of 50 years.
 
 **crops**
-
+The residues are not included in crop but in organic waste in another stream.
 As most of the crops are for the food industry (human or animal), some of it is used for the energy sector, 
 it is called energy crop. Only 0.1% of the total biomass production are from energy crops[^5].
 
@@ -33,7 +24,7 @@ fields[^6] and an average crop yield of 2565.68kg/ha for 3.8Gha of grazing lands
 The total yield (crop + 25% residue) is:
 $$Y = 2903kg/ha * 1.25 = 3628.75kg/ha$$
 
-The crop energy production computed corresponds to a mix of crops and residue available for energy. 
+The crop energy production computed corresponds to a mix of conventional crops for energy and short-rotation woody crops. 
 The crop production dedicated to industry (food or other) has been removed.
 
 ## Agricultural sectors
@@ -331,7 +322,7 @@ Prices are computed with the input parameter crop_residue_price_percent_dif.
 ## References
 
 [^1]: OurWorldInData, land use over the long term, https://ourworldindata.org/land-use#agricultural-land-use-over-the-long-run
-[^2]: MDPI, Crop Residue Removal: Assessment of Future Bioenergy Generation Potential and Agro-Environmental Limitations Based on a Case Study of Ukraine, https://www.mdpi.com/1996-1073/13/20/5343/pdf
+[^2]: IEA, What does net-zero emissions by 2050 mean for bioenergy and land use?, https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use
 [^3]: World Bioenergy Association, Global Energy Statistics 2019, http://www.worldbioenergy.org/uploads/191129%20WBA%20GBS%202019_HQ.pdf
 [^4]:  World Bioenergy Association, Global biomass potential towards 2035, http://www.worldbioenergy.org/uploads/Factsheet_Biomass%20potential.pdf
 [^5]: Bioenergy Europe, Biomass for energy: agricultural residues and energy crops, https://bioenergyeurope.org/component/attachments/attachments.html?id=561&task=download

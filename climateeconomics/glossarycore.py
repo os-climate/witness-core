@@ -84,6 +84,7 @@ class GlossaryCore:
     SectionNonEnergyEmissionPartMt = "Part of the non energy emission per section [MtCO2eq]"
     SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
     EconomicSectors = "Economic sectors"
+    Households = "Households"
 
     AgricultureAndLandUse = "Agriculture & Land Use"
     Energy = "Energy"
@@ -174,8 +175,10 @@ class GlossaryCore:
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
-    NS_SECTORS_POST_PROC = "ns_sectors_postproc"
+    NS_SECTORS_POST_PROC_EMISSIONS = "ns_sectors_postproc"
+    NS_SECTORS_POST_PROC_GDP = "ns_sectors_postproc_gdp"
     NS_GHGEMISSIONS = "ns_ghg_emissions"
+    NS_HOUSEHOLDS_EMISSIONS ="ns_households_emissions"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -1262,10 +1265,21 @@ class GlossaryCore:
         "unit": "PWh",
         "description": "Energy that is consumed by residential sector",
         "visibility": "Shared",
-        "namespace": NS_WITNESS,
+        "namespace": NS_GHGEMISSIONS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", None, False),
+        },
+    }
+
+    ResidentialEmissionsDfValue = "residential_emissions_df"
+    ResidentialEmissionsDf = {
+        "type": "dataframe",
+        "unit": "Gt CO2 Eq",
+        "description": "Emission by residential sector (only due to energy consumption)",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            TotalEmissions: ("float", None, False),
         },
     }
 
@@ -1510,6 +1524,8 @@ class GlossaryCore:
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
         "type": "bool",
         "default": False,
     }

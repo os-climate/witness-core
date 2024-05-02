@@ -136,20 +136,4 @@ if '__main__' == __name__:
     #     pd.set_option('display.max_columns', None)
     #     pd.set_option('display.width', None)
 
-    uc_cls.load_data()
-    uc_cls.run()
-    """
-    ppf = PostProcessingFactory()
-    ll = ['Macroeconomics', 'FossilSimpleTechno', 'RenewableSimpleTechno']
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        for l in ll:
-            if l in disc.sos_name:
-                filters = ppf.get_post_processing_filters_by_discipline(
-                    disc)
-                graph_list = ppf.get_post_processing_by_discipline(
-                    disc, filters, as_json=False)
-
-                for graph in graph_list:
-                    graph.to_plotly().show()
-
-"""
+    uc_cls.test()

@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -39,7 +41,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_FUNCTIONS: ns_scatter,
                    GlossaryCore.NS_REFERENCE: ns_scatter,
                    GlossaryCore.NS_SECTORS: ns_macro,
-                   GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.GHGemissions.{GlossaryCore.EconomicSectors}",
+                   GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}",
 
                    }
 
@@ -53,7 +55,7 @@ class ProcessBuilder(BaseProcessBuilder):
                      'SectorsDemand':'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_discipline.DemandDiscipline',
                      'SectorsInvestDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invest_discipline.SectorsRedistributionInvestsDiscipline',
                      'SectorsEnergyDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_energy.sectors_redistribution_energy_discipline.SectorsRedistributionEnergyDiscipline',
-                     'GHGemissions': 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline'}
+                     GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline'}
                            
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 

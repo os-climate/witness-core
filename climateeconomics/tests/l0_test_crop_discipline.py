@@ -285,7 +285,6 @@ class CropTestCase(unittest.TestCase):
                        f'{name}.{model_name}.transport_margin': self.margin,
                        f'{name}.{model_name}.transport_cost': self.transport_cost,
                        f'{name}.{model_name}.data_fuel_dict': BiomassDry.data_energy_dict,
-                       f'{name}.{model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

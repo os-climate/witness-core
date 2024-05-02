@@ -153,9 +153,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         # todo: for sensitivity, generalise ?
         self.model.init_temp_atmo = in_dict['init_temp_atmo']
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(in_dict, dict_ranges)
+        
 
         # pyworld3 execution
         temperature_df = self.model.compute(in_dict)
@@ -166,10 +164,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],  # pylint: disable=unsubscriptable-object
                     'forcing_detail_df': self.model.forcing_df,
                     'temperature_constraint': self.model.temperature_end_constraint}
-        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(out_dict, dict_ranges)
-
+        
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

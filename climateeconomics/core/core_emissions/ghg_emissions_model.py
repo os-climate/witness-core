@@ -16,6 +16,7 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+from pandas import DataFrame
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
@@ -31,6 +32,8 @@ class GHGEmissions:
         """
         Constructor
         """
+        self.energy_emission_households_df = None
+        self.residential_energy_consumption = None
         self.dict_sector_sections_energy_emissions = {}
         self.dict_sector_sections_non_energy_emissions = {}
         self.dict_sector_sections_emissions = {}
@@ -38,6 +41,7 @@ class GHGEmissions:
         self.total_economics_emisssions = None
         self.new_sector_list = []
         self.carbon_intensity_of_energy_mix = None
+        self.get_sosdisc_inputs = None
         self.affine_co2_objective: bool = False
         self.co2_emissions_objective = None
         self.total_energy_co2eq_emissions = None
@@ -73,6 +77,7 @@ class GHGEmissions:
         self.CO2_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)]
         self.CH4_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)]
         self.N2O_land_emissions = inputs_dict[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)]
+        self.residential_energy_consumption = inputs_dict[GlossaryCore.ResidentialEnergyConsumptionDfValue]
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
         self.affine_co2_objective = inputs_dict['affine_co2_objective']
         self.total_energy_production = inputs_dict[GlossaryCore.EnergyProductionValue]
@@ -293,6 +298,10 @@ class GHGEmissions:
         self.compute_gwp_per_sector()
         self.compute_CO2_emissions_objective()
 
+        # compute emission households
+        self.compute_energy_emission_households()
+
+
     def compute_carbon_intensity_of_energy_mix(self):
         """
         Compute the carbon intensity of energy mix defined as
@@ -353,3 +362,16 @@ class GHGEmissions:
 
             self.gwp_emissions[f'{emission_type}_20'] = np.sum(emissions_type_gwp_20_values, axis=0)
             self.gwp_emissions[f'{emission_type}_100'] = np.sum(emissions_type_gwp_100_values, axis=0)
+
+    def compute_energy_emission_households(self):
+        """ Emissions (Gt CO2 Eq) : Households energy consumption (PWh) X Carbon intensity (kgCO2Eq/KWh)"""
+
+        energy_emission_households = (self.residential_energy_consumption[GlossaryCore.TotalProductionValue].values *
+                                      self.carbon_intensity_of_energy_mix[
+                                          GlossaryCore.EnergyCarbonIntensityDfValue].values)
+
+        self.energy_emission_households_df = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.TotalEmissions: energy_emission_households
+        })
+

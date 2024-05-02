@@ -207,6 +207,10 @@ class DataStudy():
             f"{self.study_name}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}": co2_emissions_Gt,
         })
         # ------------------ end mda initialisation
+        share_residential_energy = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value
+        })
 
         for sector in GlossaryCore.SectorsPossibleValues:
             witness_input[f'{self.study_name}.GHGEmissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
@@ -219,6 +223,8 @@ class DataStudy():
         witness_input[f'{self.study_name}.beta'] = 1.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
+
+        witness_input[f'{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}'] = share_residential_energy
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
@@ -237,7 +243,6 @@ class DataStudy():
         }
         section_gdp_df = pd.DataFrame(subsector_share_dict)
         witness_input[f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}'] = section_gdp_df
-
         setup_data_list.append(witness_input)
 
         return setup_data_list

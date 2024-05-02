@@ -56,7 +56,6 @@ class CarbonCycleDiscTest(unittest.TestCase):
 
 
         values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': self.CO2_emissions_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

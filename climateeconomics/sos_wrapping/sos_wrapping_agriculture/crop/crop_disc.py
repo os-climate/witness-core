@@ -247,7 +247,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     # 50% of crops are left on the field,
     # 50% of the left on the field can be used as crop residue =>
     # 25% of the crops is residue
-    residue_percentage = 0.25
+    residue_percentage = 0.25 # TODO delete residue percentage from here as it'll be computed in organic waste stream
     # 23$/t for residue, 60$/t for crop
     crop_residue_price_percent_dif = 23 / 60
     # bioenergyeurope.org : Dedicated energy crops
@@ -257,11 +257,10 @@ class CropDiscipline(ClimateEcoDiscipline):
     # average yield of switchgrass on grazing lands: 2565,67kg/ha
     # residue is 0.25 more than that
     density_per_ha = 2903 * 1.25
-    # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
-    # energy of all surfaces
-    initial_production = 4.8 * density_per_ha * \
-                         3.6 * energy_crop_percentage  # in Twh
+    # reference of the value in database
+    initial_production = DatabaseWitnessCore.InitialProductionCropForEnergy.value
     construction_delay = 1  # years
+    # defined lifetime here is the supposed lifetime of crop farm
     lifetime = 50
 
     techno_infos_dict_default = {
@@ -296,7 +295,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'density_per_ha_unit': 'kg/ha',
         'residue_density_percentage': residue_percentage,
         'crop_percentage_for_energy': energy_crop_percentage,
-        'residue_percentage_for_energy': 0.05,  # hypothesis
+        'residue_percentage_for_energy': 0.,  # TODO delete all use of residues in crop : residue will be computed in organic waste
         'efficiency': 1.0,
         'techno_evo_eff': 'no',
         'crop_residue_price_percent_dif': crop_residue_price_percent_dif,
@@ -304,6 +303,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     }
 
     # Age distribution of forests in 2008 (
+    # this is the initial distribution considered of crop farms
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.16, 0.24, 0.31, 0.39, 0.47, 0.55, 0.63, 0.71, 0.78, 0.86,
                                                          0.94, 1.02, 1.1, 1.18, 1.26, 1.33, 1.41, 1.49, 1.57, 1.65,
@@ -523,16 +523,15 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.crop_model = Crop(param)
 
     def run(self):
-
         # -- get inputs
         input_dict = self.get_sosdisc_inputs()
-        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_input_var()
-            self.check_ranges(input_dict, dict_ranges)
+
         # -- configure class with inputs
         self.crop_model.configure_parameters_update(input_dict)
         # -- compute
         self.crop_model.compute()
+
+
 
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
@@ -559,9 +558,6 @@ class CropDiscipline(ClimateEcoDiscipline):
             GlossaryCore.CaloriesPerCapitaValue: self.crop_model.calories_pc_df,
             GlossaryCore.CaloriesPerCapitaBreakdownValue: self.crop_model.consumed_calories_pc_breakdown_per_day_df
         }
-        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
-            dict_ranges = self.get_ranges_output_var()
-            self.check_ranges(outputs_dict, dict_ranges)
         
         self.store_sos_outputs_values(outputs_dict)
 

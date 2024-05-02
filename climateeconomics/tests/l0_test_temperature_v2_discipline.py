@@ -69,7 +69,6 @@ class TemperatureDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

@@ -41,7 +41,8 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    GlossaryCore.NS_REFERENCE: f'{ns_scatter}.NormalizationReferences',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: ns_scatter,
-                   GlossaryCore.NS_SECTORS_POST_PROC: ns_scatter,
+                   GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: ns_scatter,
+                   GlossaryCore.NS_SECTORS_POST_PROC_GDP: ns_scatter,
                    'ns_agriculture': ns_scatter,
                    'ns_forest': ns_scatter}
 
@@ -85,18 +86,18 @@ class ProcessBuilder(BaseProcessBuilder):
         builder_list.extend(non_use_capital_list)
 
         # emissions post proc modules :
-        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC,
+        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS,
                                   f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}")
-        sectors_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.emissions.post_processing_economics_emissions'
+        sectors_post_proc_module = 'climateeconomics.sos_wrapping.post_procs.sectors.emissions.economics_emissions'
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
+            GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS, sectors_post_proc_module
         )
         for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             ns = f'ns_{sector.lower()}_emissions'
             self.ee.ns_manager.add_ns(f'ns_{sector.lower()}_gdp', f"{self.ee.study_name}.Macroeconomics.{sector}")
             self.ee.ns_manager.add_ns(ns,
                                       f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{sector}")
-            post_proc_module = f'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.emissions.post_proc_{sector.lower()}'
+            post_proc_module = f'climateeconomics.sos_wrapping.post_procs.sectors.emissions.{sector.lower()}'
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 ns, post_proc_module
             )

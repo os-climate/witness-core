@@ -302,7 +302,6 @@ class Crop():
         self.compute_techno_consumption()
         self.rescale_production_and_consumption()
 
-
     def compute_quantity_of_food(self):
         """
         Compute the quantity of each food of the diet eaten each year
@@ -587,23 +586,20 @@ class Crop():
         '''
         Compute biomass_dry production
         '''
-        # First compute the initial aging distribution with the initial
-        # production found in the techno discipline
-        # self.compute_initial_aging_distribution()
-
         # Compute the aging distribution over the years of study to determine the total production over the years
         # This function also erase old factories from the distribution
         self.compute_aging_distribution_production()
 
         # Finally compute the production by summing all aged production for
         # each year
-
+        # Grouping the aging distribution production by year and summing up the production
         age_distrib_prod_sum = self.age_distrib_prod_df.groupby([GlossaryCore.Years], as_index=False).agg(
             {f'distrib_prod (TWh)': 'sum'}
         )
+        # Delete the 'biomass_dry (TWh)' column if it already exists in the self.production dataframe
         if 'biomass_dry (TWh)' in self.production:
             del self.production['biomass_dry (TWh)']
-
+        # Merging production data with aged distribution data
         self.production = pd.merge(self.production, age_distrib_prod_sum, how='left', on=GlossaryCore.Years).rename(
             columns={'distrib_prod (TWh)': 'biomass_dry (TWh)'}).fillna(0.0)
 
@@ -615,17 +611,20 @@ class Crop():
         All productions older than the lifetime are removed from the dataframe  
         '''
         # To break the object link with initial distrib
+        # Creating a DataFrame to separate the initial distribution of production from the rest
+
         aging_distrib_year_df = pd.DataFrame(
             {'age': self.initial_age_distrib['age'].values})
         aging_distrib_year_df[f'distrib_prod (TWh)'] = self.initial_age_distrib['distrib'] * \
                                                        self.initial_production / 100.0
-
+        # Calculating yearly production based on investment
         production_from_invest = self.compute_prod_from_invest(
             construction_delay=self.construction_delay)
 
         # get the whole dataframe for new production with one line for each
         # year at each age
         # concatenate tuple to get correct df to mimic the old year loop
+        # Creating DataFrame for new production with one line for each year at each age
         len_years = len(self.years)
         range_years = np.arange(
             self.year_start, self.year_end + len_years)
@@ -640,8 +639,7 @@ class Crop():
         new_prod_aged = pd.DataFrame(
             {GlossaryCore.Years: year_array, 'age': age_array, 'distrib_prod (TWh)': prod_array})
 
-        # get the whole dataframe for old production with one line for each
-        # year at each age
+        # Creating DataFrame for old production with one line for each year at each age
         year_array = np.array([[year] * len(aging_distrib_year_df)
                                for year in self.years]).flatten()
         age_values = aging_distrib_year_df['age'].values
@@ -653,15 +651,15 @@ class Crop():
         old_prod_aged = pd.DataFrame({GlossaryCore.Years: year_array, 'age': age_array,
                                       f'distrib_prod (TWh)': prod_array})
 
-        # Concat the two created df
+        # Concatenating the two created DataFrames
         self.age_distrib_prod_df = pd.concat(
             [new_prod_aged, old_prod_aged], ignore_index=True)
-
+        # Removing all lines where age is higher than lifetime and all-zero productions
         self.age_distrib_prod_df = self.age_distrib_prod_df.loc[
             # Suppress all lines where age is higher than lifetime
             (self.age_distrib_prod_df['age'] <
              self.techno_infos_dict['lifetime'])
-            # Suppress all lines where age is higher than lifetime
+            # delete years after year end
             & (self.age_distrib_prod_df[GlossaryCore.Years] < self.year_end + 1)
             # Fill Nan with zeros and suppress all zeros
             & (self.age_distrib_prod_df[f'distrib_prod (TWh)'] != 0.0)
@@ -671,8 +669,9 @@ class Crop():
 
     def compute_prod_from_invest(self, construction_delay):
         '''
-        Compute the crop production from investment in t
+        Compute the crop production from investment in TWh
         '''
+        # Creating a DataFrame for production before the year of study start
         prod_before_ystart = pd.DataFrame(
             {GlossaryCore.Years: np.arange(self.year_start - construction_delay, self.year_start),
              GlossaryCore.InvestmentsValue: [0.0] * (construction_delay),
@@ -680,17 +679,19 @@ class Crop():
                                                         GlossaryCore.Years] == self.year_start, 'Capex ($/MWh)'].values[
                  0]})
 
+        # Concatenating production data with production before year of study start
         production_from_invest = pd.concat(
             [self.cost_details[[GlossaryCore.Years, GlossaryCore.InvestmentsValue, 'Capex ($/MWh)']],
              prod_before_ystart], ignore_index=True)
-
+        # Sorting the production data by years
         production_from_invest.sort_values(by=[GlossaryCore.Years], inplace=True)
+        # Calculate production from investment based on Capex and InvestmentsValue
         # # Invest in M$ | Capex in $/MWh | Prod in TWh
         production_from_invest['prod_from_invest'] = production_from_invest[GlossaryCore.InvestmentsValue].values / \
                                                      production_from_invest[f'Capex ($/MWh)'].values
-
+        # Incrementing years by construction_delay (to start production at year + construction_delay)
         production_from_invest[GlossaryCore.Years] += construction_delay
-
+        # Removing data for years beyond the study period
         production_from_invest = production_from_invest[production_from_invest[GlossaryCore.Years]
                                                         <= self.year_end]
         return production_from_invest

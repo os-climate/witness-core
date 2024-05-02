@@ -37,7 +37,7 @@ class TestIPCCSSPComparison(unittest.TestCase):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         # Added directly to witness process
         # self.ee.post_processing_manager.add_post_processing_module_to_namespace(GlossaryCore.NS_WITNESS,
-        #     'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
+        #     'climateeconomics.sos_wrapping.post_procs.ssp_comparison.post_processing_ssp_comparison')
         self.ee.configure()
         self.usecase = uc()
         self.usecase.study_name = self.study_name

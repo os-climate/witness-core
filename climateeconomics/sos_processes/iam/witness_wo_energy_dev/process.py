@@ -41,6 +41,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_ENERGY_MIX: self.ee.study_name,
                    GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    GlossaryCore.NS_MACRO: self.ee.study_name,
+                   f'ns_{GlossaryCore.Households.lower()}_emissions':f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}",
                    'ns_agriculture': self.ee.study_name,
                    'ns_forest': self.ee.study_name}
 
@@ -85,21 +86,38 @@ class ProcessBuilder(BaseProcessBuilder):
         builder_list.extend(non_use_capital_list)
 
         self.ee.ns_manager.add_ns(GlossaryCore.NS_REGIONALIZED_POST_PROC, f"{self.ee.study_name}.Macroeconomics.Regions")
-        region_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_regions.post_processing_regions'
+        region_post_proc_module = 'climateeconomics.sos_wrapping.post_procs.regions'
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             GlossaryCore.NS_REGIONALIZED_POST_PROC, region_post_proc_module
         )
-        # emissions post proc modules :
-        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC,
-                                  f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}")
-        sectors_post_proc_module = 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.emissions.post_processing_economics_emissions'
+        # sector breakdown GDP post proc module :
+        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC_GDP,
+                                  f"{self.ee.study_name}.Macroeconomics.{GlossaryCore.EconomicSectors}")
+        sectors_post_proc_module = 'climateeconomics.sos_wrapping.post_procs.sectors.gdp_non_sectorized.economics_gdp'
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            GlossaryCore.NS_SECTORS_POST_PROC, sectors_post_proc_module
+            GlossaryCore.NS_SECTORS_POST_PROC_GDP, sectors_post_proc_module
         )
+
+        # emissions post proc modules :
+        self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS,
+                                  f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}")
+        sectors_post_proc_module = 'climateeconomics.sos_wrapping.post_procs.sectors.emissions.economics_emissions'
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS, sectors_post_proc_module
+        )
+
+        ns = f'ns_{GlossaryCore.Households.lower()}_emissions'
+        self.ee.ns_manager.add_ns(ns,
+                                  f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}")
+        post_proc_module = f'climateeconomics.sos_wrapping.post_procs.sectors.emissions.{GlossaryCore.Households.lower()}'
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            ns, post_proc_module
+        )
+
         for sector in GlossaryCore.DefaultSectorListGHGEmissions:
             ns = f'ns_{sector.lower()}_emissions'
             self.ee.ns_manager.add_ns(ns, f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{sector}")
-            post_proc_module = f'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.emissions.post_proc_{sector.lower()}'
+            post_proc_module = f'climateeconomics.sos_wrapping.post_procs.sectors.emissions.{sector.lower()}'
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 ns, post_proc_module
             )
@@ -109,7 +127,7 @@ class ProcessBuilder(BaseProcessBuilder):
             ns = f'ns_{sector.lower()}_gdp'
             self.ee.ns_manager.add_ns(ns,
                                       f"{self.ee.study_name}.Macroeconomics.{GlossaryCore.EconomicSectors}.{sector}")
-            post_proc_module = f'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_sectors.gdp_non_sectorized.post_proc_{sector.lower()}'
+            post_proc_module = f'climateeconomics.sos_wrapping.post_procs.sectors.gdp_non_sectorized.{sector.lower()}'
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 ns, post_proc_module
             )
