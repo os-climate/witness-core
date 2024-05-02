@@ -900,7 +900,18 @@ class MacroEconomics:
                    self.dict_energy_consumption_detailed.values()], axis=1).sum(axis=1).to_frame(
             name=GlossaryCore.TotalEnergyConsumptionAllSectorsName).reset_index()
 
+    def compute_consumption_objective(self):
+        self.consommation_objective = np.array(
+            [self.economics_df[GlossaryCore.Consumption].mean()]) / self.consommation_objective_ref
 
+    def compute_energy_consumption_households(self):
+        energy_consumption_households = (self.share_residential_df[GlossaryCore.ShareSectorEnergy].values *
+                                         self.energy_production[GlossaryCore.TotalProductionValue].values) / 100.
+
+        self.energy_consumption_households_df = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.TotalProductionValue: energy_consumption_households
+        })
 
     """-------------------Gradient functions-------------------"""
 
@@ -1480,18 +1491,6 @@ class MacroEconomics:
         return d_consumption.mean(axis=0) / self.consommation_objective_ref
 
     """-------------------END of Gradient functions-------------------"""
-
-    def compute_consumption_objective(self):
-        self.consommation_objective = np.array([self.economics_df[GlossaryCore.Consumption].mean()]) / self.consommation_objective_ref
-
-    def compute_energy_consumption_households(self):
-        energy_consumption_households = (self.share_residential_df[GlossaryCore.ShareSectorEnergy].values *
-                                         self.energy_production[GlossaryCore.TotalProductionValue].values) / 100.
-
-        self.energy_consumption_households_df = pd.DataFrame({
-            GlossaryCore.Years: self.years_range,
-            GlossaryCore.TotalProductionValue: energy_consumption_households
-        })
 
 
 
