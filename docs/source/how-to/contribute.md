@@ -8,9 +8,9 @@ All types of contributions are encouraged and valued.
 - [1. Quick Overview](#1-quick-overview)
 - [2. Github workflow](#2-github-workflow)
 - [3. How Should I Develop My Ideas?](#3-how-should-i-develop-my-ideas)
+  - [3.0. What is a coupling variable ?](#30-what-is-a-coupling-variable)
   - [3.1. Creating a Model & a New Discipline](#31-creating-a-model--a-new-discipline)
   - [3.2. Existing Discipline Modifications](#32-existing-discipline-modifications)
-    - [3.2.0. What is a coupling variable ?](#320-what-is-a-coupling-variable)
     - [3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph](#321-adding-a-non-coupling-inputoutput-or-a-new-post-processing-graph)
     - [3.2.2. Adding a Coupling Input/Output](#322-adding-a-coupling-inputoutput)
     - [3.2.3. I Want to Modify How an Output Is Computed](#323-i-want-to-modify-how-an-output-is-computed)
@@ -39,6 +39,10 @@ The integration of a contribution is done in two steps:
 ## 3. How Should I Develop My Ideas?
 Depending on the nature of your contribution, here is the way of working to implement your ideas:
 
+### 3.0. What is a coupling variable ?
+_This notion will be important for the following._
+> A **_coupling variable_** is a variable that is **an output** of discipline **and an input** for another, in a process.
+
 ### 3.1. Creating a Model & a New Discipline
 > - [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
 > - [Check how to test a discipline here](https://sostrades-core.readthedocs.io/en/latest/how-to/test-wrap.html)
@@ -56,10 +60,6 @@ If you also coded gradients in the discipline, create a new `l1_test_gradient_<m
 You should be testing the gradients of all coupling outputs with respect to all coupling inputs.
 
 ### 3.2. Existing Discipline Modifications
-
-#### 3.2.0. What is a coupling variable ?
-
-A *coupling variable* is a variable that is an output of discipline and an input for another, in a process.
 
 #### 3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph
 > - [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
