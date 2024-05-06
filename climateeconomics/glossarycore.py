@@ -934,6 +934,16 @@ class GlossaryCore:
         },
     }
 
+    OrganicWasteValue = "organic_waste"
+    OrganicWaste = {
+        "type": "dataframe",
+        "unit": "kcal",
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YearEndDefault], False),
+            "kcal": ("float", [0.0, 1e6], False),
+        },
+    }
+
     GHGEmissionsDetailedDfValue = "GHG_emissions_detail_df"
     GHGEmissionsDfValue = "GHG_emissions_df"
     TotalN2OEmissions = f"Total {N2O} emissions"

@@ -498,6 +498,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                         'namespace': GlossaryCore.NS_FUNCTIONS},
         GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
         GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
+        GlossaryCore.OrganicWasteValue: GlossaryCore.OrganicWaste,
     }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -556,7 +557,8 @@ class CropDiscipline(ClimateEcoDiscipline):
             'N2O_land_emission_detailed': self.crop_model.N2O_land_emissions_detailed,
             'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
             GlossaryCore.CaloriesPerCapitaValue: self.crop_model.calories_pc_df,
-            GlossaryCore.CaloriesPerCapitaBreakdownValue: self.crop_model.consumed_calories_pc_breakdown_per_day_df
+            GlossaryCore.CaloriesPerCapitaBreakdownValue: self.crop_model.consumed_calories_pc_breakdown_per_day_df,
+            GlossaryCore.OrganicWasteValue: self.crop_model.organic_waste_df
         }
         
         self.store_sos_outputs_values(outputs_dict)
