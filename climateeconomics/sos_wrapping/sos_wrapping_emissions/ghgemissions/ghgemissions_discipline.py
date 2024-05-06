@@ -287,26 +287,27 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             for ghg in GlossaryCore.GreenHouseGases:
                 d_sector_energy_emissions_d_ghg_emissions[sector][ghg] = np.sum(d_sections_energy_emissions_d_ghg_emisssions[ghg], axis=0)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
-
-        for ghg in GlossaryCore.GreenHouseGases:
-            temp = [d_sector_energy_emissions_d_ghg_emissions[sector][ghg] for sector in self.emissions_model.economic_sectors_except_agriculture]
+        if self.emissions_model.economic_sectors_except_agriculture:
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
-                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
-                np.sum(temp, axis=0))
+                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
+
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
-                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
-                np.sum(temp, axis=0))
+                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
+
+            for ghg in GlossaryCore.GreenHouseGases:
+                temp = [d_sector_energy_emissions_d_ghg_emissions[sector][ghg] for sector in self.emissions_model.economic_sectors_except_agriculture]
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
+                    ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                    np.sum(temp, axis=0))
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
+                    ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                    np.sum(temp, axis=0))
 
     def get_chart_filter_list(self):
 
