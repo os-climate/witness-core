@@ -48,9 +48,9 @@ class Study(ClimateEconomicsStudyManager):
 
         scenario_dict = {
             self.UC1: Study1,
-            self.UC2: Study2,
-            self.UC3: Study3,
-            self.UC4: Study4,
+            #self.UC2: Study2,
+            #self.UC3: Study3,
+            #self.UC4: Study4,
             # self.UC5: Study5 # deactivate usecase 5 as it is the same as the one with no CCUS
         }
 

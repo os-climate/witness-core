@@ -53,7 +53,7 @@ def post_processings(execution_engine, namespace, filters):
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
     selected_scenarios = scenario_list
-
+    selected_chart_list = []
     if filters is not None:
         for chart_filter in filters:
             if chart_filter.filter_key == 'Scenarios':
@@ -63,12 +63,10 @@ def post_processings(execution_engine, namespace, filters):
 
     df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.YearStart}',
                 f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.YearEnd}', ]
-    year_start_dict, year_end_dict = get_df_per_scenario_dict(
+    year_start_dict, year_end_dict = get_variables_values_per_scenario(
         execution_engine, df_paths, selected_scenarios)
     year_start, year_end = year_start_dict[selected_scenarios[0]
                                            ], year_end_dict[selected_scenarios[0]]
-    years = np.arange(year_start, year_end).tolist()
-
     """
         -------------
         -------------
@@ -86,7 +84,7 @@ def post_processings(execution_engine, namespace, filters):
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}'
                     ]
-        (temperature_df_dict, utility_df_dict) = get_df_per_scenario_dict(
+        (temperature_df_dict, utility_df_dict) = get_variables_values_per_scenario(
             execution_engine, df_paths, selected_scenarios)
 
         last_temperature_dict, welfare_dict = {}, {}
@@ -110,7 +108,7 @@ def post_processings(execution_engine, namespace, filters):
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGEmissionsDfValue}',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
-        (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
+        (co2_emissions_df_dict, utility_df_dict) = get_variables_values_per_scenario(
             execution_engine, df_paths)
 
         summed_co2_emissions_dict, min_utility_dict = {}, {}
@@ -136,7 +134,7 @@ def post_processings(execution_engine, namespace, filters):
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGCycleDfValue}',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
-        (carboncycle_detail_df_dict, utility_df_dict) = get_df_per_scenario_dict(
+        (carboncycle_detail_df_dict, utility_df_dict) = get_variables_values_per_scenario(
             execution_engine, df_paths)
 
         mean_co2_ppm_dict, welfare_dict = {}, {}
@@ -158,16 +156,16 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f"Mean Energy Price in {GlossaryCore.EnergyMeanPrice['unit']}"
         y_axis_name = f'Consumption in [G$]'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.EconomicsDetailDfValue}',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.EnergyMeanPriceValue}',
+        df_paths = [f'{GlossaryCore.EconomicsDetailDfValue}',
+                    f'{GlossaryCore.EnergyMeanPriceValue}',
                     ]
-        (consumption_df_dict, energy_detail_df_dict) = get_df_per_scenario_dict(
+        (economics_df_dict, energy_detail_df_dict) = get_variables_values_per_scenario(
             execution_engine, df_paths)
 
         mean_consumption_dict, mean_energy_dict = {}, {}
         for scenario in selected_scenarios:
-            mean_consumption_dict[scenario] = consumption_df_dict[scenario][GlossaryCore.EnergyPriceValue].mean()
-            mean_energy_dict[scenario] = energy_detail_df_dict[scenario][GlossaryCore.Consumption].mean()
+            mean_consumption_dict[scenario] = economics_df_dict[scenario][GlossaryCore.Consumption].mean()
+            mean_energy_dict[scenario] = energy_detail_df_dict[scenario][GlossaryCore.EnergyPriceValue].mean()
 
         new_pareto_chart = get_chart_pareto_front(mean_consumption_dict, mean_energy_dict, selected_scenarios,
                                                   namespace_w, chart_name=chart_name,
@@ -248,21 +246,23 @@ def get_chart_pareto_front(x_dict, y_dict, scenario_list, namespace_w, chart_nam
     return new_pareto_chart
 
 
-def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
+def get_variables_values_per_scenario(execution_engine, varnames, scenario_list=None):
     '''! Function to retrieve dataframes from all the scenarios given a specified path
     @param execution_engine: Execution_engine, object from which the data is gathered
-    @param df_paths: list of string, containing the paths to access the df
+    @param varnames: list of string, containing the paths to access the df
 
     @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
     '''
-    df_per_scenario_dicts = [{} for _ in df_paths]
+    df_per_scenario_dicts = [{} for _ in varnames]
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     if not scenario_list:
         scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
-    for scenario in scenario_list:
-        for i, df_path in enumerate(df_paths):
-            df_per_scenario_dicts[i][scenario] = execution_engine.dm.get_value(
-                f'{namespace_w}.{scenario}.{df_path}')
+    for i, variable in enumerate(varnames):
+        all_scenarios_variables_names = execution_engine.dm.get_all_namespaces_from_var_name(variable)
+        for scenario in scenario_list:
+            scenario_variable = list(filter(lambda x: scenario in x, all_scenarios_variables_names))[0]
+            scenario_variable_value = execution_engine.dm.get_value(scenario_variable)
+            df_per_scenario_dicts[i][scenario] = scenario_variable_value
     return df_per_scenario_dicts
