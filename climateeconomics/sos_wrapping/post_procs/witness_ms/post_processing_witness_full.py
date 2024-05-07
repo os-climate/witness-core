@@ -153,8 +153,8 @@ def post_processings(execution_engine, namespace, filters):
     if 'Consumption vs Mean Energy Price' in selected_chart_list:
 
         chart_name = f'Consumption vs Mean Energy Price'
-        x_axis_name = f"Mean Energy Price in {GlossaryCore.EnergyMeanPrice['unit']}"
-        y_axis_name = f'Consumption in [G$]'
+        x_axis_name = f"Mean Energy Price [{GlossaryCore.EnergyMeanPrice['unit']}]"
+        y_axis_name = f'Consumption [G$]'
 
         df_paths = [f'{GlossaryCore.EconomicsDetailDfValue}',
                     f'{GlossaryCore.EnergyMeanPriceValue}',
@@ -167,14 +167,11 @@ def post_processings(execution_engine, namespace, filters):
             mean_consumption_dict[scenario] = economics_df_dict[scenario][GlossaryCore.Consumption].mean()
             mean_energy_dict[scenario] = energy_detail_df_dict[scenario][GlossaryCore.EnergyPriceValue].mean()
 
-        new_pareto_chart = get_chart_pareto_front(mean_consumption_dict, mean_energy_dict, selected_scenarios,
+        new_pareto_chart = get_chart_pareto_front(mean_energy_dict, mean_consumption_dict, selected_scenarios,
                                                   namespace_w, chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name)
 
         instanciated_charts.append(new_pareto_chart)
-
-    for graph in instanciated_charts:
-        graph.to_plotly().show()
 
     return instanciated_charts
 
