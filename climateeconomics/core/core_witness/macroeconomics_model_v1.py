@@ -464,7 +464,13 @@ class MacroEconomics:
         self.capital_df.loc[year, GlossaryCore.UsableCapital] = usable_capital
 
     def compute_investment(self, year: int):
-        """Compute I(t) (total Investment) and Ine(t) (Investment in non-energy sectors) in trillions $USD """
+        """
+        Compute I(t) (total Investment) and Ine(t) (Investment in non-energy sectors) in trillions $USD
+        Investment Non energy (t) = Share Non Energy investment (t) * Output net of damage (t)
+        Investments energy (t) = input energy investments(t)
+
+        Investements (t) = Investments energy (t) + Investments non energy (t)
+        """
         net_output = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage]
         self.economics_df.loc[year, GlossaryCore.NonEnergyInvestmentsValue] = self.share_non_energy_investment[year] * net_output
         self.economics_df.loc[year, GlossaryCore.InvestmentsValue] = self.economics_df.loc[year, GlossaryCore.EnergyInvestmentsValue] + \
@@ -847,6 +853,8 @@ class MacroEconomics:
         self.compute_energy_consumption_per_section()
         self.compute_energy_consumption_households()
 
+        self.capital_df[GlossaryCore.GrossOutput] = self.economics_df[GlossaryCore.GrossOutput].values
+        self.capital_df[GlossaryCore.OutputNetOfDamage] = self.economics_df[GlossaryCore.OutputNetOfDamage].values
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
             self.capital_df, self.sector_gdp_df, self.energy_wasted_objective, self.total_gdp_per_group_df,\
@@ -1095,57 +1103,46 @@ class MacroEconomics:
 
         return dY_dKu
 
-    def d_lotofthings_d_share_investment_non_energy(self, d_Y_dKu):
+    def d_lotofthings_d_share_investment_non_energy(self):
         """Derivative of the list below wrt to share investments non-energy (snei below)
         - investment non energy
         - ku, kne, lower bound constraint, usable capital obj
         - net ouptut, gross output
         """
         net_output = self.economics_detail_df[GlossaryCore.OutputNetOfDamage].values
-        d_neinvest_d_snei = self._null_derivative()
-        d_neinvest_d_snei[0, 0] = 1
-        d_Y_d_snei = self._null_derivative()
-        d_netoutput_dsnei = self._null_derivative()
-
         damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
-        d_Q_d_Y = np.diag(1 - damefrac) if not self.damage_to_productivity else \
-            np.diag((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
-
-        usable_capital_unbounded = self.capital_df[GlossaryCore.UsableCapitalUnbounded].values
-        ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
-        upper_bound = self.max_capital_utilisation_ratio * ne_capital
-        index_zeros = usable_capital_unbounded <= np.real(upper_bound)
         d_Kne_d_snei = self._null_derivative()
-        d_Ku_d_snei = self._null_derivative()
+        d_KU_d_snei = self._null_derivative()
+        snei = self.share_non_energy_investment.values
 
-        alpha = self.output_alpha
-        gamma = self.output_gamma
-        working_pop = self.workforce_df[GlossaryCore.Workforce].values
-        usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
-        productivity = self.economics_detail_df[GlossaryCore.Productivity].values
-        employment_rate = self.workforce_df[GlossaryCore.EmploymentRate].values
+        dY_dKU = self.d_ygross_d_ku()
+        dY_d_snei  = self._null_derivative()
+        d_Q_d_snei = self._null_derivative()
+        d_Ine_d_snei = self._null_derivative()
 
-        for i in range(1, self.nb_per):
-            for j in range(1, i):
-                if i < self.nb_per:
-                    d_Kne_d_snei[i, j] = (1 - self.depreciation_capital) * d_Kne_d_snei[i - 1, j] + d_neinvest_d_snei[i - 1, j]
-                    d_Ku_d_snei[i, j] = index_zeros[i] * self.max_capital_utilisation_ratio * d_Kne_d_snei[i, j]
+        index_non_zeros = self.economics_detail_df[GlossaryCore.UnusedEnergy].values > 0.
+        dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
 
-                d_Y_d_snei[i, j] = d_Y_dKu[i, j] * d_Ku_d_snei[i, j]
-                d_netoutput_dsnei[i, j] = d_Q_d_Y[i,j] * d_Y_d_snei[i,j]
-                d_neinvest_d_snei[i, j] = net_output[i] / 100.0 + d_netoutput_dsnei[i, j] \
-                    if self.compute_gdp else net_output[i] / 100.0
+        for i in range(1, self.nb_years):
+            for j in range(i):
+                d_KU_d_snei[i - 1, j] = index_non_zeros[i - 1] * self.max_capital_utilisation_ratio * d_Kne_d_snei[i - 1, j]
+                dY_d_snei[i - 1, j] = dY_dKU[i - 1, i - 1] * d_KU_d_snei[i - 1, j]
+                d_Q_d_snei[i - 1, j] = dQ_dY[i - 1] * dY_d_snei[i - 1, j]
+                d_Kne_d_snei[i, j] = (1 - self.depreciation_capital) * d_Kne_d_snei[i - 1, j] + \
+                                     net_output[i - 1] * (i - 1 == j) / 100. + \
+                                     snei[i - 1] * d_Q_d_snei[i - 1, j]
 
-        d_lower_bound_constraint_d_snei = (d_Ku_d_snei - self.capital_utilisation_ratio * d_Kne_d_snei) / \
-                                          self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
+        i = self.nb_years
+        for j in range(i):
+            d_KU_d_snei[i - 1, j] = index_non_zeros[i - 1] * self.max_capital_utilisation_ratio * d_Kne_d_snei[i - 1, j]
+            dY_d_snei[i - 1, j] = dY_dKU[i - 1, i - 1] * d_KU_d_snei[i - 1, j]
+            d_Q_d_snei[i - 1, j] = dQ_dY[i - 1] * dY_d_snei[i - 1, j]
 
-        d_Ku_unbouded_d_snei = self._null_derivative()
-        d_Ku_obj_d_snei = np.sum(2 * (d_Ku_unbouded_d_snei - self.capital_utilisation_ratio * d_Kne_d_snei)
-                                 * self.usable_cap_sqrt.reshape(-1, 1) / (
-                                         self.usable_capital_objective_ref * self.nb_years), axis=0)
+        d_Ine_d_snei = np.diag(net_output) / 100. + np.diag(snei) @ d_Q_d_snei
 
-        return d_neinvest_d_snei, d_Ku_d_snei,d_lower_bound_constraint_d_snei, d_Ku_obj_d_snei, d_Kne_d_snei, \
-            d_Y_d_snei,  d_netoutput_dsnei
+        d_C_d_snei = d_Q_d_snei - d_Ine_d_snei
+
+        return d_Kne_d_snei, d_KU_d_snei, dY_d_snei, d_Q_d_snei, d_Ine_d_snei #, d_C_d_snei
 
     def d_energy_wasted_d_input(self, d_kne_d_input):
         """
