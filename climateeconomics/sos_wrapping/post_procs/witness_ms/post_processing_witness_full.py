@@ -31,12 +31,13 @@ def post_processing_filters(execution_engine, namespace):
     chart_list = ['Temperature vs Utility',
                   'CO2 Emissions vs Utility min',
                   'PPM vs Utility',]
+    selected_chart_list = []
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
-    filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
+    filters.append(ChartFilter('Charts', chart_list, selected_chart_list, 'Charts'))
     filters.append(ChartFilter('Scenarios', scenario_list,
                                scenario_list, 'Scenarios'))
 
