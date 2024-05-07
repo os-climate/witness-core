@@ -345,7 +345,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df,
                        GlossaryCore.GDPCountryDFName: gdp_per_country_df,
                        GlossaryCore.ResidentialEnergyConsumptionDfValue: self.macro_model.energy_consumption_households_df,
-                       GlossaryCore.TempOutput: self.macro_model.capital_df[[GlossaryCore.Years, GlossaryCore.NonEnergyCapital, GlossaryCore.UsableCapital, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage, GlossaryCore.NonEnergyCapital]]
+                       GlossaryCore.TempOutput: self.macro_model.capital_df[[GlossaryCore.Years, GlossaryCore.NonEnergyCapital, GlossaryCore.UsableCapital, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage, GlossaryCore.NonEnergyInvestmentsValue]]
                    }
         dict_values.update({
             f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.macro_model.dict_energy_consumption_detailed[sector]['detailed'] # todo : delete detailed and total
@@ -738,7 +738,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             d_consumption_objective_d_co2_tax)
 
         # Compute gradient WRT share investment non energy (snei)
-        d_Kne_d_snei, d_KU_d_snei, dY_d_snei, d_Q_d_snei, d_Ine_d_snei = self.macro_model.d_lotofthings_d_share_investment_non_energy()
+        d_Kne_d_snei, d_KU_d_snei, dY_d_snei, d_Q_d_snei, d_Ine_d_snei, d_C_d_snei = self.macro_model.d_lotofthings_d_share_investment_non_energy()
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.TempOutput, GlossaryCore.NonEnergyCapital),
@@ -763,14 +763,19 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_Q_d_snei)
 
-        self.macro_model.d_lotofthings_d_share_investment_non_energy()
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TempOutput, GlossaryCore.NonEnergyCapital),
+            (GlossaryCore.TempOutput, GlossaryCore.NonEnergyInvestmentsValue),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_Ine_d_snei)
 
-        ########################"
         """
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.TempOutput, GlossaryCore.Consumption),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_C_d_snei)
+
+
+        ########################"
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),

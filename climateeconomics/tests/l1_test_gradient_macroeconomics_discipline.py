@@ -365,6 +365,14 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_macroeconomics_discipline_grad_gigantic_invest.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',

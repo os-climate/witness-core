@@ -654,8 +654,8 @@ class MacroEconomics:
         investment = self.economics_df.loc[year, GlossaryCore.InvestmentsValue]
         consumption = net_output - investment
         # lower bound for conso
-        self.economics_df.loc[year, GlossaryCore.Consumption] = max(
-            consumption, self.lo_conso)
+        #self.economics_df.loc[year, GlossaryCore.Consumption] = max(consumption, self.lo_conso)
+
         return consumption
 
     def compute_consumption_pc(self, year: int):
@@ -855,6 +855,9 @@ class MacroEconomics:
 
         self.capital_df[GlossaryCore.GrossOutput] = self.economics_df[GlossaryCore.GrossOutput].values
         self.capital_df[GlossaryCore.OutputNetOfDamage] = self.economics_df[GlossaryCore.OutputNetOfDamage].values
+        self.capital_df[GlossaryCore.NonEnergyInvestmentsValue] = self.economics_detail_df[GlossaryCore.NonEnergyInvestmentsValue].values
+        self.capital_df[GlossaryCore.Consumption] = self.economics_detail_df[
+            GlossaryCore.Consumption].values
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
             self.capital_df, self.sector_gdp_df, self.energy_wasted_objective, self.total_gdp_per_group_df,\
@@ -1142,7 +1145,7 @@ class MacroEconomics:
 
         d_C_d_snei = d_Q_d_snei - d_Ine_d_snei
 
-        return d_Kne_d_snei, d_KU_d_snei, dY_d_snei, d_Q_d_snei, d_Ine_d_snei #, d_C_d_snei
+        return d_Kne_d_snei, d_KU_d_snei, dY_d_snei, d_Q_d_snei, d_Ine_d_snei, d_C_d_snei
 
     def d_energy_wasted_d_input(self, d_kne_d_input):
         """
@@ -1304,9 +1307,9 @@ class MacroEconomics:
         consumption = self.economics_detail_df[GlossaryCore.Consumption].values
         dconsumption = d_net_output_d_user_input - d_investment_d_user_input
         # find index where lower bound reached
-        theyears = np.where(consumption == self.lo_conso)[0]
+        #theyears = np.where(consumption == self.lo_conso)[0]
         # Then for these years derivative = 0
-        dconsumption[theyears] = 0
+        #dconsumption[theyears] = 0
         return dconsumption
 
     def d_consumption_per_capita_d_user_input(self, d_consumption_d_user_input):
