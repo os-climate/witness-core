@@ -63,6 +63,8 @@ class Crop():
         '''
         Constructor
         '''
+        self.produced_kcal = None
+        self.organic_waste_df = None
         self.consumed_calories_pc_breakdown_per_day_df = None
         self.techno_production = None
         self.year_start = None
@@ -277,6 +279,7 @@ class Crop():
         self.compute_updated_diet()
         self.compute_consumed_calories_per_capita_breakdown()
         self.compute_calories_per_capita()
+        self.compute_organic_waste()
         self.compute_calories_per_day_constraint()
 
         self.compute_surface_usage_by_food_type_wo_climate_impact()
@@ -1275,15 +1278,21 @@ class Crop():
 
     def compute_calories_per_capita(self):
         non_wasted_share = 1 - self.food_waste_percentage_df[GlossaryCore.FoodWastePercentageValue].values/100.
-        produced_kcal = self.red_meat_calories_per_day \
+        self.produced_kcal = self.red_meat_calories_per_day \
                                          + self.white_meat_calories_per_day \
                                          + self.vegetables_and_carbs_calories_per_day \
                                          + self.milk_and_eggs_calories_per_day \
                                          + self.fish_calories_per_day \
                                          + self.other_calories_per_day
-        self.calories_pc_df['kcal_pc'] = produced_kcal * non_wasted_share
 
+        self.calories_pc_df['kcal_pc'] = self.produced_kcal * non_wasted_share
 
+    def compute_organic_waste(self):
+        waste_share = self.food_waste_percentage_df[GlossaryCore.FoodWastePercentageValue] /100.
+        self.organic_waste_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            "kcal": self.produced_kcal * waste_share
+        })
     def compute_total_food_land_surface(self):
         self.total_food_land_surface[GlossaryCore.Years] = self.food_land_surface_df[GlossaryCore.Years]
         self.total_food_land_surface['total surface (Gha)'] = self.food_land_surface_df['total surface (Gha)']

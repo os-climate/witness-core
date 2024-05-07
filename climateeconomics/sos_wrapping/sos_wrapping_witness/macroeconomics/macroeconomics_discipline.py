@@ -735,24 +735,84 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax),
             d_consumption_objective_d_co2_tax)
 
-        # Compute gradient WRT share investment non energy
-        d_investment_d_share_investment_non_energy, d_non_energy_invest_d_share_investment_non_energy = \
-            self.macro_model.d_investment_d_share_investment_non_energy()
-        d_net_output_d_share_investment_non_energy = np.zeros((nb_years, nb_years))
-        d_consumption_d_share_investment_non_energy = self.macro_model.d_consumption_d_user_input(
-            d_net_output_d_share_investment_non_energy, d_investment_d_share_investment_non_energy)
-        dconsumption_pc_d_share_investment_non_energy = self.macro_model.d_consumption_per_capita_d_user_input(
-            d_consumption_d_share_investment_non_energy)
+        # Compute gradient WRT share investment non energy (snei)
+        d_Y_d_Ku = self.macro_model.d_ygross_d_ku()
+        d_neinvest_d_snei, d_Ku_d_snei, d_lower_bound_constraint_d_snei, d_Ku_obj_d_snei, d_Kne_d_snei,\
+            d_Y_d_snei, d_netoutput_d_snei = self.macro_model.d_lotofthings_d_share_investment_non_energy(d_Y_d_Ku)
+        d_Ew_d_snei = self.macro_model.d_energy_wasted_d_input(d_Kne_d_snei)
+        #TOCHECK
+        d_investment_d_snei = d_neinvest_d_snei
+        d_consumption_d_snei = self.macro_model.d_consumption_d_user_input(d_netoutput_d_snei, d_investment_d_snei)
+        dconsumption_pc_d_snei = self.macro_model.d_consumption_per_capita_d_user_input(d_consumption_d_snei)
+        d_consumption_objective_d_snei = self.macro_model.d_consumption_objective_d_consumption(d_consumption_d_snei)
+        # gradient of the energy_wasted_objective
+        d_sum_energy_wasted_d_snei = np.ones(nb_years) @ d_Ew_d_snei
+        d_sum_energy_total_d_snei = np.zeros(nb_years) @ np.identity(nb_years)
+        d_energy_wasted_objective_d_snei = self.macro_model.grad_energy_wasted_objective(
+            d_sum_energy_wasted_d_snei, d_sum_energy_total_d_snei)
+        #damage
+        d_damage_from_climate_d_snei = self.macro_model.d_damages_from_climate_d_user_input(d_Y_d_snei,
+                                                                                            d_netoutput_d_snei)
+        d_estimated_damage_from_climate_d_snei = self.macro_model.d_estimated_damages_from_climate_d_user_input(
+            d_Y_d_snei, d_netoutput_d_snei)
+        d_damage_from_productivity_loss_d_snei, d_estimated_damage_from_productivity_loss_d_snei = \
+            self.macro_model.d_damages_from_productivity_loss_d_user_input(d_Y_d_snei)
+        d_damages_d_snei = self.macro_model.d_damages_d_user_input(d_damage_from_productivity_loss_d_snei,
+                                                                   d_damage_from_climate_d_snei)
+        d_estimated_damages_d_snei = self.macro_model.d_estimated_damages_d_user_input(
+            d_estimated_damage_from_productivity_loss_d_snei,d_estimated_damage_from_climate_d_snei)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
-            dconsumption_pc_d_share_investment_non_energy)
+            dconsumption_pc_d_snei)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ConstraintLowerBoundUsableCapital,),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
-            npzeros)
+            d_lower_bound_constraint_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ConsumptionObjective,),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_consumption_objective_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UsableCapitalObjectiveName,),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_Ku_obj_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EnergyWastedObjective,),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_energy_wasted_objective_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_Y_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_netoutput_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            dconsumption_pc_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_damages_d_snei)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_estimated_damages_d_snei)
+
+
 
     def get_chart_filter_list(self):
 
