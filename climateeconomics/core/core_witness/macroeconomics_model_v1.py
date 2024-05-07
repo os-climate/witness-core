@@ -43,10 +43,6 @@ class MacroEconomics:
         self.depreciation_capital = None
         self.init_rate_time_pref = None
         self.conso_elasticity = None
-        self.lo_capital = None
-        self.lo_conso = None
-        self.lo_per_capita_conso = None
-        self.hi_per_capita_conso = None
         self.nb_per = None
         self.years_range: int = 0
         self.nb_years = None
@@ -135,10 +131,6 @@ class MacroEconomics:
         self.depreciation_capital = self.param['depreciation_capital']
         self.init_rate_time_pref = self.param['init_rate_time_pref']
         self.conso_elasticity = self.param['conso_elasticity']
-        self.lo_capital = self.param['lo_capital']
-        self.lo_conso = self.param['lo_conso']
-        self.lo_per_capita_conso = self.param['lo_per_capita_conso']
-        self.hi_per_capita_conso = self.param['hi_per_capita_conso']
         self.nb_per = round(
             (self.param[GlossaryCore.YearEnd] -
              self.param[GlossaryCore.YearStart]) /
@@ -404,7 +396,7 @@ class MacroEconomics:
             self.capital_df.loc[year, GlossaryCore.NonEnergyCapital] = capital_a
             # Lower bound for capital
             tot_capital = capital_a + self.energy_capital.loc[year, GlossaryCore.Capital]
-            self.capital_df.loc[year, GlossaryCore.Capital] = max(tot_capital, self.lo_capital)
+            self.capital_df.loc[year, GlossaryCore.Capital] = tot_capital
                                   
             return capital_a
 
@@ -654,7 +646,7 @@ class MacroEconomics:
         investment = self.economics_df.loc[year, GlossaryCore.InvestmentsValue]
         consumption = net_output - investment
         # lower bound for conso
-        #self.economics_df.loc[year, GlossaryCore.Consumption] = max(consumption, self.lo_conso)
+        self.economics_df.loc[year, GlossaryCore.Consumption] = consumption
 
         return consumption
 
@@ -666,8 +658,7 @@ class MacroEconomics:
         population = self.population_df.loc[year, GlossaryCore.PopulationValue]
         consumption_pc = consumption / population * 1000
         # Lower bound for pc conso
-        self.economics_df.loc[year, GlossaryCore.PerCapitaConsumption] = max(
-            consumption_pc, self.lo_per_capita_conso)
+        self.economics_df.loc[year, GlossaryCore.PerCapitaConsumption] = consumption_pc
         return consumption_pc
 
     def compute_usable_capital_lower_bound_constraint(self):
@@ -856,8 +847,8 @@ class MacroEconomics:
         self.capital_df[GlossaryCore.GrossOutput] = self.economics_df[GlossaryCore.GrossOutput].values
         self.capital_df[GlossaryCore.OutputNetOfDamage] = self.economics_df[GlossaryCore.OutputNetOfDamage].values
         self.capital_df[GlossaryCore.NonEnergyInvestmentsValue] = self.economics_detail_df[GlossaryCore.NonEnergyInvestmentsValue].values
-        self.capital_df[GlossaryCore.Consumption] = self.economics_detail_df[
-            GlossaryCore.Consumption].values
+        self.capital_df[GlossaryCore.Consumption] = self.economics_detail_df[GlossaryCore.Consumption].values
+        self.capital_df[GlossaryCore.PerCapitaConsumption] = self.economics_detail_df[GlossaryCore.PerCapitaConsumption].values
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
             self.capital_df, self.sector_gdp_df, self.energy_wasted_objective, self.total_gdp_per_group_df,\
@@ -1306,10 +1297,6 @@ class MacroEconomics:
         """derivative of consumption wrt user input"""
         consumption = self.economics_detail_df[GlossaryCore.Consumption].values
         dconsumption = d_net_output_d_user_input - d_investment_d_user_input
-        # find index where lower bound reached
-        #theyears = np.where(consumption == self.lo_conso)[0]
-        # Then for these years derivative = 0
-        #dconsumption[theyears] = 0
         return dconsumption
 
     def d_consumption_per_capita_d_user_input(self, d_consumption_d_user_input):
@@ -1318,31 +1305,19 @@ class MacroEconomics:
 
         consumption per capita = consumption / population * 1000
         """
-        pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-
         d_consumption_per_capita_d_consumption = np.diag(1 / self.population_df[GlossaryCore.PopulationValue].values * 1000)
         d_consumption_per_capita_d_user_input = d_consumption_per_capita_d_consumption @ d_consumption_d_user_input
-        # find index where lower bound reached and set it to zero
-        theyears = np.where(pc_consumption == self.lo_per_capita_conso)[0]
-        d_consumption_per_capita_d_user_input[theyears] = 0
         return d_consumption_per_capita_d_user_input
 
     def d_consumption_pc_d_population(self):
         """derivative of pc_consumption wrt population
         consumption_pc = consumption / population * 1000
 
-        # Lower bound for pc conso
-        self.economics_df.loc[year, GlossaryCore.PerCapitaConsumption] = max(
-            consumption_pc, self.lo_per_capita_conso)
         """
-        consumption_pc = self.economics_detail_df[GlossaryCore.PerCapitaConsumption].values
         consumption = self.economics_detail_df[GlossaryCore.Consumption].values
         population = self.population_df[GlossaryCore.PopulationValue].values
 
         d_consumption_pc_d_population = np.diag( - consumption * 1000 / population ** 2)
-        # find index where lower bound reached and set them to 0
-        theyears = np.where(consumption_pc == self.lo_per_capita_conso)[0]
-        d_consumption_pc_d_population[theyears] = 0
         return d_consumption_pc_d_population
 
     def d_gross_output_d_damage_frac_output(self):

@@ -345,7 +345,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df,
                        GlossaryCore.GDPCountryDFName: gdp_per_country_df,
                        GlossaryCore.ResidentialEnergyConsumptionDfValue: self.macro_model.energy_consumption_households_df,
-                       GlossaryCore.TempOutput: self.macro_model.capital_df[[GlossaryCore.Years, GlossaryCore.NonEnergyCapital, GlossaryCore.UsableCapital, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage, GlossaryCore.NonEnergyInvestmentsValue]]
+                       GlossaryCore.TempOutput: self.macro_model.capital_df[[GlossaryCore.Years, GlossaryCore.NonEnergyCapital, GlossaryCore.UsableCapital, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage, GlossaryCore.NonEnergyInvestmentsValue, GlossaryCore.Consumption, GlossaryCore.PerCapitaConsumption]]
                    }
         dict_values.update({
             f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.macro_model.dict_energy_consumption_detailed[sector]['detailed'] # todo : delete detailed and total
@@ -768,11 +768,18 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_Ine_d_snei)
 
-        """
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.TempOutput, GlossaryCore.Consumption),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_C_d_snei)
+
+        d_pcc_d_snei = self.macro_model.d_consumption_per_capita_d_user_input(d_C_d_snei)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.TempOutput, GlossaryCore.PerCapitaConsumption),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_pcc_d_snei)
+
+        """
 
 
         ########################"
