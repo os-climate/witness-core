@@ -736,7 +736,6 @@ class GlossaryCore:
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
             PerCapitaConsumption: ("float", [0, 1e30], False),
-            EnergyWasted: ("float", [0, 1e30], False),
         },
     }
 

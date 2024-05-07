@@ -460,10 +460,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             dusable_capital_obj_d_energy)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_energy_wasted_d_energy)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyWastedObjective,),
@@ -548,10 +544,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             dusable_capital_obj_d_dfo)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
-            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
-            d_Ew_d_dfo)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyWastedObjective,),
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
@@ -649,10 +641,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             dusable_capital_obj_d_wap)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
-            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
-            d_Ew_d_wap)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyWastedObjective,),
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
@@ -779,20 +767,21 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_pcc_d_snei)
 
-        """
-
-
-        ########################"
+        #########
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             dY_d_snei)
+
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_Q_d_snei)
-            
-        """
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
+            d_pcc_d_snei)
 
 
 

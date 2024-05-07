@@ -179,13 +179,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.checked_outputs = [
             f'{self.name}.{self.model_name}.{GlossaryCore.TempOutput}',
-            # f'{self.name}.{GlossaryCore.DamageDfValue}',
-            # f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-            # f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
-            # f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
-            # f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-            # f'{self.name}.{GlossaryCore.ConsumptionObjective}',
-            # f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+            f'{self.name}.{GlossaryCore.DamageDfValue}',
+            f'{self.name}.{GlossaryCore.EconomicsDfValue}',
+            f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
+            f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+            f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+            f'{self.name}.{GlossaryCore.ConsumptionObjective}',
+            f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
         ]
 
     def analytic_grad_entry(self):

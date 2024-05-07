@@ -1011,7 +1011,7 @@ class MacroEconomics:
         d_Ew_dE = self._identity_derivative() * 1.e3 - np.matmul(k, d_Kne_dE) # Enet converted from PWh to TWh
         # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
         # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
-        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        matrix_of_years_E_is_wasted = (self.economics_detail_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
         d_Ew_dE = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_dE)))
 
         return dY_dE, d_Ku_d_E, d_lower_bound_constraint_dE, d_Ew_dE, d_Ku_obj_d_E
@@ -1077,7 +1077,7 @@ class MacroEconomics:
         d_Ew_d_wap = - np.matmul(k, d_Kne_d_wap)
         # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
         # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
-        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        matrix_of_years_E_is_wasted = (self.economics_detail_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
         d_Ew_d_wap = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_d_wap)))
 
         return d_Ku_d_wap, d_Ew_d_wap, d_Y_d_wap, d_lower_bound_constraint_d_wap, d_Ku_obj_d_wap
@@ -1150,7 +1150,7 @@ class MacroEconomics:
         d_Ew_d_input = - np.matmul(k, d_kne_d_input)
         # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
         # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
-        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        matrix_of_years_E_is_wasted = (self.economics_detail_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
         d_Ew_d_input = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_d_input)))
 
         return d_Ew_d_input
@@ -1370,7 +1370,7 @@ class MacroEconomics:
         d_Ew_d_dfo = - np.matmul(k, d_Kne_d_dfo)
         # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
         # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
-        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        matrix_of_years_E_is_wasted = (self.economics_detail_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
         d_Ew_d_dfo = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_d_dfo)))
 
 
@@ -1447,7 +1447,7 @@ class MacroEconomics:
         grad(sum_year(Ewasted)) = sum_year(grad(Ewasted)) = np.ones(self.years_range) @ grad(Ewasted)
         grad(sum_year(Etotal)) = sum_year(grad(Etotal)) = np.ones(self.years_range) @ grad(Etotal)
         """
-        sum_ewasted = self.economics_df[GlossaryCore.EnergyWasted].values.sum()
+        sum_ewasted = self.economics_detail_df[GlossaryCore.EnergyWasted].values.sum()
         sum_etotal = self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
         # sumetotal is supposed > 0 otherwise no energy in the system => cannot work
         grad_energy_wasted_obj = (sum_etotal * grad_sum_energy_wasted - sum_ewasted * grad_sum_energy_total) / \
