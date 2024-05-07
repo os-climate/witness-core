@@ -56,7 +56,9 @@ graphs_list = ['Temperature',
                'Utility',
                'Total energy production',
                'Fossil production',
-               'Renewable production'
+               'Renewable production',
+               'Mean energy price',
+               'Consumption'
                ]
 
 def get_shared_value(execution_engine, short_name_var: str):
@@ -557,6 +559,52 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
+
+        if 'Mean energy price' in graphs_list:
+
+            chart_name = 'Mean Energy price'
+            x_axis_name = 'Years'
+            y_axis_name = f"[{GlossaryCore.EnergyMeanPrice['unit']}]"
+
+            df_paths = [f'{GlossaryCore.EnergyMeanPriceValue}']
+            (mean_energy_price_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+
+            mean_energy_price_dict = {}
+            for scenario in scenario_list:
+                mean_energy_price_dict[scenario] = mean_energy_price_df_dict[
+                    scenario][GlossaryCore.EnergyPriceValue].values.tolist()
+
+            new_chart = get_scenario_comparison_chart(years, mean_energy_price_dict,
+                                                      chart_name=chart_name,
+                                                      x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                      selected_scenarios=selected_scenarios,
+                                                      status_dict=damage_tax_activation_status_dict)
+
+            new_chart.annotation_upper_left = note
+            instanciated_charts.append(new_chart)
+
+        if 'Consumption' in graphs_list:
+
+            chart_name = 'Consumption'
+            x_axis_name = 'Years'
+            y_axis_name = '[G$]'
+
+            df_paths = [GlossaryCore.EconomicsDetailDfValue]
+            (economics_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+
+            consumption_dict = {}
+            for scenario in scenario_list:
+                consumption_dict[scenario] = economics_df_dict[
+                    scenario][GlossaryCore.Consumption].values.tolist()
+
+            new_chart = get_scenario_comparison_chart(years, consumption_dict,
+                                                      chart_name=chart_name,
+                                                      x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                      selected_scenarios=selected_scenarios,
+                                                      status_dict=damage_tax_activation_status_dict)
+
+            new_chart.annotation_upper_left = note
+            instanciated_charts.append(new_chart)
 
 
     return instanciated_charts
