@@ -111,6 +111,7 @@ class Forest():
 
         self.actual_yield = self.techno_wood_info['actual_yield']
         self.managed_yield = self.techno_wood_info['managed_yield']
+        self.unmanaged_yield = self.techno_wood_info['unmanaged_yield']
         self.wood_percentage_for_energy = self.techno_wood_info['wood_percentage_for_energy']
 
     def create_dataframe(self):
@@ -408,13 +409,13 @@ class Forest():
         """
 
         self.biomass_dry_df['deforestation (Mt)'] = -self.forest_surface_df[
-            'delta_deforestation_surface'] * self.actual_yield * self.wood_density
+            'delta_deforestation_surface'] * self.unmanaged_yield * self.wood_density
         self.biomass_dry_df['deforestation_for_energy'] = self.biomass_dry_df['deforestation (Mt)'] * \
                                                           self.wood_percentage_for_energy
         self.biomass_dry_df['deforestation_for_industry'] = self.biomass_dry_df['deforestation (Mt)'] - \
                                                             self.biomass_dry_df['deforestation_for_energy']
         self.biomass_dry_df[
-            'deforestation_price_per_ton'] = self.actual_yield * self.wood_density / self.deforest_cost_per_ha
+            'deforestation_price_per_ton'] = self.unmanaged_yield * self.wood_density / self.deforest_cost_per_ha
         self.biomass_dry_df['deforestation_price_per_MWh'] = self.biomass_dry_df['deforestation_price_per_ton'] / \
                                                              self.biomass_dry_calorific_value
 
@@ -780,7 +781,7 @@ class Forest():
             d_delta_mw_d_invest * self.residues_density * self.managed_yield * self.residues_density_percentage)
 
         # compute gradient of deforestation production for nrj
-        d_deforestation_prod_for_nrj = -d_delta_deforestation_d_invest * self.wood_density * self.actual_yield
+        d_deforestation_prod_for_nrj = -d_delta_deforestation_d_invest * self.wood_density * self.unmanaged_yield
 
         d_techno_prod_d_invest = (
                                              d_mw_prod_wood_for_nrj + d_deforestation_prod_for_nrj) * self.biomass_dry_calorific_value + \
@@ -811,7 +812,7 @@ class Forest():
             d_delta_mw_d_invest * self.residues_density * self.managed_yield) * self.residues_density_percentage
 
         # compute gradient of deforestation production for nrj
-        d_deforestation_prod = -d_delta_deforestation_d_invest * self.wood_density * self.actual_yield
+        d_deforestation_prod = -d_delta_deforestation_d_invest * self.wood_density * self.unmanaged_yield
 
         # compute gradient of managed wood prod
         d_mw_prod = d_mw_prod_wood_for_nrj + d_mw_prod_residue_for_nrj
