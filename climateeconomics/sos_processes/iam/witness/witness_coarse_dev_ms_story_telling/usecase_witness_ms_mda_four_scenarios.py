@@ -140,7 +140,7 @@ class Study(ClimateEconomicsStudyManager):
             self.USECASE4: 1.41,
             self.USECASE7: 3.0
         }
-        ref_co2_2020 = 44.05
+        ref_co2_2020 = 45.88
         tolerance_high_ref_2020 = 1.015
         tolerance_low_ref_2020 = 0.985
         error_msg = ''
