@@ -8,11 +8,11 @@ All types of contributions are encouraged and valued.
 - [1. Quick Overview](#1-quick-overview)
 - [2. Github workflow](#2-github-workflow)
 - [3. How Should I Develop My Ideas?](#3-how-should-i-develop-my-ideas)
-  - [3.0. What is a coupling variable ?](#30-what-is-a-coupling-variable-?)
+  - [3.0. What is a coupling variable?](#30-what-is-a-coupling-variable)
   - [3.1. Creating a Model & a New Discipline](#31-creating-a-model--a-new-discipline)
   - [3.2. Existing Discipline Modifications](#32-existing-discipline-modifications)
-    - [3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph](#321-adding-a-non-coupling-inputoutput-or-a-new-post-processing-graph)
-    - [3.2.2. Adding a Coupling Input/Output](#322-adding-a-coupling-inputoutput)
+    - [3.2.1. Adding a Non-coupling variable or a New Post-processing Graph](#321-adding-a-non-coupling-variable-or-a-new-post-processing-graph)
+    - [3.2.2. Adding a Coupling variable](#322-adding-a-coupling-variable)
     - [3.2.3. I Want to Modify How an Output Is Computed](#323-i-want-to-modify-how-an-output-is-computed)
   - [3.3. New Process and/or New Usecase](#33-new-process-andor-new-usecase)
   - [3.4. Existing Process Modifications](#34-existing-process-modifications)
@@ -39,9 +39,9 @@ The integration of a contribution is done in two steps:
 ## 3. How Should I Develop My Ideas?
 Depending on the nature of your contribution, here is the way of working to implement your ideas:
 
-### 3.0. What is a coupling variable ?
+### 3.0. What is a coupling variable?
 _This notion will be important for the following._
-> A **_coupling variable_** is a variable that is **an output** of discipline **and an input** for another, in a process.
+> A **_coupling variable_** is a variable that is **an output** of a discipline **and an input** for another, in a process.
 
 ### 3.1. Creating a Model & a New Discipline
 > - [Check how to wrap a model here](https://sostrades-core.readthedocs.io/en/latest/how-to/wrap-model.html)
@@ -61,14 +61,14 @@ You should be testing the gradients of all coupling outputs with respect to all 
 
 ### 3.2. Existing Discipline Modifications
 
-#### 3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph
+#### 3.2.1. Adding a Non-coupling variable or a New Post-processing Graph
 > - [Check how to add post-processings here](https://sostrades-core.readthedocs.io/en/latest/how-to/create-postprocessing.html)
 
 No new test creation required. Still, all tests (`l0`, `l1`, and use cases) should be OK after modifications.
 
 In the case of adding a new input, some tests might require fixes: specify values for new missing inputs.
 
-#### 3.2.2. Adding a Coupling Input/Output
+#### 3.2.2. Adding a Coupling variable
 
 **Documentation:** Update the markdown documentation file stored in a `documentation/` folder next to the discipline.
 
