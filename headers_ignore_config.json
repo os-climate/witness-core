@@ -23,6 +23,7 @@
         "bat"
     ],
     "files_to_ignore": [
+        "LICENSE",
         ".readthedocs",
         "docs/Makefile",
         ".flake8",
