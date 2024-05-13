@@ -43,11 +43,10 @@ templates_path = ['_templates']
 
 # -- Options for HTML output
 
-html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
 
 # -- Options for auto-generated header anchors depth
 # documentation:  https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#auto-generated-header-anchors
-myst_heading_anchors = 3
+myst_heading_anchors = 5
