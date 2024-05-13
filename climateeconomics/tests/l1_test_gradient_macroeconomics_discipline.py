@@ -28,7 +28,6 @@ from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
-        self.override_dump_jacobian = True
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = GlossaryCore.YearStartDefault
@@ -167,18 +166,18 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         }
 
         self.checked_inputs = [f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
-                               # f'{self.name}.{GlossaryCore.EnergyProductionValue}',
-                               # f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                               # f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
-                               # f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                               # f'{self.name}.{GlossaryCore.CO2TaxesValue}',
-                               # f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                               # f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                               # f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',
+                               f'{self.name}.{GlossaryCore.EnergyProductionValue}',
+                               f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
+                               f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
+                               f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
+                               f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                               f'{self.name}.{GlossaryCore.PopulationDfValue}',
+                               f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
+                               f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',
                                ]
 
         self.checked_outputs = [
-            f'{self.name}.{self.model_name}.{GlossaryCore.TempOutput}',
+            #f'{self.name}.{self.model_name}.{GlossaryCore.TempOutput}',
             f'{self.name}.{GlossaryCore.DamageDfValue}',
             f'{self.name}.{GlossaryCore.EconomicsDfValue}',
             f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',

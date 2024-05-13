@@ -672,13 +672,16 @@ class MacroEconomics:
 
     def compute_usable_capital_objective(self):
         """
-        usable capital objective = (capital utilisation ratio * non energy capital - usable capital)**2 / usable_capital_objective
+        usable capital objective = (capital utilisation ratio * non energy capital - usable capital)**2 / usable_capital_objective_ref
         """
         ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
         usable_capital_unbouded = self.capital_df[GlossaryCore.UsableCapitalUnbounded].values
         self.usable_cap_sqrt = (usable_capital_unbouded - self.capital_utilisation_ratio * ne_capital)
         self.usable_capital_objective = np.array([np.sum(np.power(self.usable_cap_sqrt,2))/ (self.nb_years * self.usable_capital_objective_ref)])
 
+    def d_usable_capital_obj_d_input(self, dkne_dinput):
+        d_Kuobj_dKne = - 2 * self.capital_utilisation_ratio * self.usable_cap_sqrt / self.nb_years / self.usable_capital_objective_ref
+        return dkne_dinput.T @ d_Kuobj_dKne
 
     def prepare_outputs(self):
         """post processing"""
@@ -849,6 +852,7 @@ class MacroEconomics:
         self.capital_df[GlossaryCore.NonEnergyInvestmentsValue] = self.economics_detail_df[GlossaryCore.NonEnergyInvestmentsValue].values
         self.capital_df[GlossaryCore.Consumption] = self.economics_detail_df[GlossaryCore.Consumption].values
         self.capital_df[GlossaryCore.PerCapitaConsumption] = self.economics_detail_df[GlossaryCore.PerCapitaConsumption].values
+        self.capital_df[GlossaryCore.EnergyWasted] = self.economics_detail_df[GlossaryCore.EnergyWasted].values
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
             self.capital_df, self.sector_gdp_df, self.energy_wasted_objective, self.total_gdp_per_group_df,\
@@ -1136,7 +1140,8 @@ class MacroEconomics:
 
         d_C_d_snei = d_Q_d_snei - d_Ine_d_snei
 
-        return d_Kne_d_snei, d_KU_d_snei, dY_d_snei, d_Q_d_snei, d_Ine_d_snei, d_C_d_snei
+        d_lower_bound_constraint_d_snei = (d_KU_d_snei - self.capital_utilisation_ratio * d_Kne_d_snei) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
+        return d_Kne_d_snei, d_KU_d_snei, dY_d_snei, d_Q_d_snei, d_Ine_d_snei, d_C_d_snei, d_lower_bound_constraint_d_snei
 
     def d_energy_wasted_d_input(self, d_kne_d_input):
         """
@@ -1154,6 +1159,9 @@ class MacroEconomics:
         d_Ew_d_input = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_d_input)))
 
         return d_Ew_d_input
+
+    def d_energy_wasted_obj_d_input(self, d_Ew_d_input):
+        return d_Ew_d_input.sum(axis=0) * 1e-3 / self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
 
 
     def d_net_output_d_user_input(self, d_gross_output_d_user_input):
