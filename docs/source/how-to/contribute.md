@@ -8,7 +8,7 @@ All types of contributions are encouraged and valued.
 - [1. Quick Overview](#1-quick-overview)
 - [2. Github workflow](#2-github-workflow)
 - [3. How Should I Develop My Ideas?](#3-how-should-i-develop-my-ideas)
-  - [3.0. What is a coupling variable ?](#30-what-is-a-coupling-variable)
+  - [3.0. What is a coupling variable ?](#30-what-is-a-coupling-variable-?)
   - [3.1. Creating a Model & a New Discipline](#31-creating-a-model--a-new-discipline)
   - [3.2. Existing Discipline Modifications](#32-existing-discipline-modifications)
     - [3.2.1. Adding a Non-coupling Input/Output or a New Post-processing Graph](#321-adding-a-non-coupling-inputoutput-or-a-new-post-processing-graph)
