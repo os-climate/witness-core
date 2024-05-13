@@ -736,7 +736,6 @@ class GlossaryCore:
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
             PerCapitaConsumption: ("float", [0, 1e30], False),
-            EnergyWasted: ("float", [0, 1e30], False),
         },
     }
 
@@ -1145,6 +1144,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
+            NonEnergyCapital: ("float", [0, 1e30], False),
             UsableCapital: ("float", [0, 1e30], False),
             Emax: ("float", [0, 1e30], False),
             EnergyEfficiency: ("float", [0, 1e30], False),
@@ -1597,6 +1597,17 @@ class GlossaryCore:
         "var_name": GDPCountryDFName,
         'type': 'dataframe',
         'unit': 'G$',
+    }
+
+    TempOutput = "TempOutput"
+    TempOutputDf = {
+        "var_name": TempOutput,
+        "type": "dataframe",
+        "description": "used to debug some gradients",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            NonEnergyCapital: ("int", [1900, YearEndDefault], False),
+        },
     }
 
     @staticmethod
