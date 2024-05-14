@@ -19,5 +19,6 @@
     "CH4_flaring_emission_factor": 0.00016360805030454754,
     "CH4_unintended_leakage_emission_factor": 4.5337170566320396e-05,
     "CH4_emission_factor_unit": "Mt/TWh"
-  }
+  },
+  "margin": "@dataframe@margin.csv"
 }

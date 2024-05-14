@@ -14,5 +14,6 @@
     "construction_delay": 3,
     "resource_price": 75.0,
     "resource_price_unit": "$/MWh"
-  }
+  },
+  "margin": "@dataframe@margin.csv"
 }
