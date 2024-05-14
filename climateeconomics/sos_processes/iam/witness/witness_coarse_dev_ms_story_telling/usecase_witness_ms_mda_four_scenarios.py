@@ -136,7 +136,7 @@ class Study(ClimateEconomicsStudyManager):
         all_energy_investment_without_tax = dm.get_all_namespaces_from_var_name(GlossaryCore.EnergyInvestmentsWoTaxValue)
         ref_value_energy_investment_without_tax = {
             self.USECASE2: 2.11,
-            self.USECASE2B: 0.7,
+            self.USECASE2B: 0.65,
             self.USECASE4: 1.41,
             self.USECASE7: 3.0
         }
