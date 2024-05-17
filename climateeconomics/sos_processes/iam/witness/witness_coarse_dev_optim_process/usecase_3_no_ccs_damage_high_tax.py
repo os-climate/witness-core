@@ -38,9 +38,9 @@ class Study(StudyOptimInvestDistrib):
         # update renewable & fossil invests & utilization ratio lower bound to not be too low
         var_that_needs_lower_bound_augmentation = {
             'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [50.] * GlossaryCore.NB_POLES_COARSE,
-            'fossil_FossilSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_COARSE,
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
             'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [300.] * GlossaryCore.NB_POLES_COARSE,
-            'renewable_RenewableSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_COARSE,
+            'renewable_RenewableSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
         }
         dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation)
 
@@ -89,4 +89,5 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
