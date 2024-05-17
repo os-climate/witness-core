@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
@@ -63,6 +64,17 @@ class Study(ClimateEconomicsStudyManager):
 
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
+
+    def update_dspace_col(self, dspace: pd.DataFrame, vardict: dict[str: list[float]], col: str = "lower_bnd") -> pd.DataFrame:
+        """
+        :param dspace: current design space
+        :param vardict: {varname to update: new value}
+        """
+        variable_lower_bound_cols = dict(zip(dspace['variable'], dspace[col]))
+        for var, new_val in vardict.items():
+            variable_lower_bound_cols[var] = new_val
+        dspace[col] = list(variable_lower_bound_cols.values())
+        return dspace
 
     def setup_usecase(self, study_folder_path=None):
         ns = self.study_name

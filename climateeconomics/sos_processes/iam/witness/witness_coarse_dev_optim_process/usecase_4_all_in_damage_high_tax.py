@@ -35,6 +35,21 @@ class Study(StudyOptimInvestDistrib):
         
         dspace = data_witness[f'{self.study_name}.{self.optim_name}.design_space']
 
+        var_that_needs_lower_bound_augmentation = {
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [50.] * GlossaryCore.NB_POLES_COARSE,
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
+            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [300.] * GlossaryCore.NB_POLES_COARSE,
+            'renewable_RenewableSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': [100.] * GlossaryCore.NB_POLES_COARSE,
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
+            'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [100.] * GlossaryCore.NB_POLES_COARSE,
+            'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
+            'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [1.2] * GlossaryCore.NB_POLES_COARSE,
+            'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
+        }
+        dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation)
+        dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation, col="value")
+
 
         # Activate damage
         updated_data = {
@@ -47,18 +62,8 @@ class Study(StudyOptimInvestDistrib):
             },
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
         }
+
         data_witness.update(updated_data)
-
-        # Deactivate nothing
-        var_to_deactive_and_set_to_lower_bound_value = []
-
-        serie_index = dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value)
-
-        for index_row, var_has_to_be_deactivate in serie_index.items():
-            if var_has_to_be_deactivate:
-                dspace.iloc[index_row]['value'] = dspace.iloc[index_row]['lower_bnd']
-
-        dspace.loc[dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value), 'enable_variable'] = False
 
         # Put high tax
         data_witness.update({
@@ -71,5 +76,4 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

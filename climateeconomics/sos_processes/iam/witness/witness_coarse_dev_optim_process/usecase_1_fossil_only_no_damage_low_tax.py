@@ -35,19 +35,12 @@ class Study(StudyOptimInvestDistrib):
         
         dspace = data_witness[f'{self.study_name}.{self.optim_name}.design_space']
 
-
-        # Deactivate damage
-        updated_data = {
-            f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.assumptions_dict': {
-                'compute_gdp': True,
-                'compute_climate_impact_on_gdp': False,
-                'activate_climate_effect_population': False,
-                'invest_co2_tax_in_renewables': False,
-                'activate_pandemic_effects': False
-            },
-            f'{self.study_name}.{self.optim_name}.design_space': dspace,
+        # update fossil invest & utilization ratio lower bound to not be too low
+        var_that_needs_lower_bound_augmentation = {
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [300.] * GlossaryCore.NB_POLES_COARSE,
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [40.] * GlossaryCore.NB_POLES_COARSE,
         }
-        data_witness.update(updated_data)
+        dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation)
 
         # Let only fossil design vars
         var_to_deactive_and_set_to_lower_bound_value = [
@@ -68,6 +61,19 @@ class Study(StudyOptimInvestDistrib):
                 dspace.iloc[index_row]['value'] = dspace.iloc[index_row]['lower_bnd']
 
         dspace.loc[dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value), 'enable_variable'] = False
+
+        # Deactivate damage
+        updated_data = {
+            f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.assumptions_dict': {
+                'compute_gdp': True,
+                'compute_climate_impact_on_gdp': False,
+                'activate_climate_effect_population': False,
+                'invest_co2_tax_in_renewables': False,
+                'activate_pandemic_effects': False
+            },
+            f'{self.study_name}.{self.optim_name}.design_space': dspace,
+        }
+        data_witness.update(updated_data)
 
         # Put low tax
         data_witness.update({

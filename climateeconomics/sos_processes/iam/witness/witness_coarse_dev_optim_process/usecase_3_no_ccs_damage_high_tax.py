@@ -35,6 +35,14 @@ class Study(StudyOptimInvestDistrib):
         
         dspace = data_witness[f'{self.study_name}.{self.optim_name}.design_space']
 
+        # update renewable & fossil invests & utilization ratio lower bound to not be too low
+        var_that_needs_lower_bound_augmentation = {
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [50.] * GlossaryCore.NB_POLES_COARSE,
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_COARSE,
+            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [300.] * GlossaryCore.NB_POLES_COARSE,
+            'renewable_RenewableSimpleTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_COARSE,
+        }
+        dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation)
 
         # Activate damage
         updated_data = {
@@ -47,9 +55,8 @@ class Study(StudyOptimInvestDistrib):
             },
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
         }
-        data_witness.update(updated_data)
 
-        # Let only fossil design vars
+        # Let only fossil and renewable design vars
         var_to_deactive_and_set_to_lower_bound_value = [
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
@@ -65,7 +72,11 @@ class Study(StudyOptimInvestDistrib):
             if var_has_to_be_deactivate:
                 dspace.iloc[index_row]['value'] = dspace.iloc[index_row]['lower_bnd']
 
+
         dspace.loc[dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value), 'enable_variable'] = False
+
+        data_witness.update(updated_data)
+
 
         # Put high tax
         data_witness.update({
@@ -78,5 +89,4 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

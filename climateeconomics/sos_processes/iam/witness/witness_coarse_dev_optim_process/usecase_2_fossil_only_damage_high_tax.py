@@ -35,6 +35,12 @@ class Study(StudyOptimInvestDistrib):
         
         dspace = data_witness[f'{self.study_name}.{self.optim_name}.design_space']
 
+        # update fossil invest & utilization ratio lower bound to not be too low
+        var_that_needs_lower_bound_augmentation = {
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [300.] * GlossaryCore.NB_POLES_COARSE,
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [40.] * GlossaryCore.NB_POLES_COARSE,
+        }
+        dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation)
 
         # Activate damage
         updated_data = {
@@ -47,7 +53,6 @@ class Study(StudyOptimInvestDistrib):
             },
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
         }
-        data_witness.update(updated_data)
 
         # Let only fossil design vars
         var_to_deactive_and_set_to_lower_bound_value = [
@@ -69,6 +74,9 @@ class Study(StudyOptimInvestDistrib):
 
         dspace.loc[dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value), 'enable_variable'] = False
 
+        data_witness.update(updated_data)
+
+
         # Put high tax
         data_witness.update({
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.ccs_price_percentage": 100.0,
@@ -80,5 +88,4 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

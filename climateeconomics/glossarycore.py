@@ -50,6 +50,10 @@ class GlossaryCore:
     # PWh = 1e3 TWh
     # 1 TWh  = 1e9 kWh
 
+    NB_POLES_COARSE: int = 7  # number of poles in witness coarse
+    NB_POLES_UTILIZATION_RATIO = (
+        10  # number of poles for bspline design variables utilization ratio
+    )
     Years = "years"
     YearStart = "year_start"
     YearStartDefault = 2020
