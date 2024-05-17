@@ -133,7 +133,7 @@ class Study(ClimateEconomicsStudyManager):
 
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl',
                                     'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl',
-                                    'forest_investment_array_mix', 'deforestation_investment_ctrl', 'crop_investment_array_mix']
+                                    'forest_investment_array_mix', 'crop_investment_array_mix']
         diet_mortality_df = pd.read_csv(join(dirname(__file__), 'data', 'diet_mortality.csv'))
 
         # clean dspace
