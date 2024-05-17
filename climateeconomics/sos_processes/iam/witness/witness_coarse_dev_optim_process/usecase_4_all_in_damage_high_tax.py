@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
@@ -48,7 +48,20 @@ class Study(StudyOptimInvestDistrib):
             'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [30.] * GlossaryCore.NB_POLES_UTILIZATION_RATIO,
         }
         dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation)
-        dspace = self.update_dspace_col(dspace, var_that_needs_lower_bound_augmentation, col="value")
+
+        new_values = var_that_needs_lower_bound_augmentation
+        initial_values_first_pole = {
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': DatabaseWitnessCore.InvestFossil2020.value,
+            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': DatabaseWitnessCore.InvestCleanEnergy2020.value,
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
+            'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
+            'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
+        }
+        for key, val in new_values.items():
+            if key in initial_values_first_pole:
+                val[0] = initial_values_first_pole[key]
+
+        dspace = self.update_dspace_col(dspace, new_values, col="value")
 
 
         # Activate damage
