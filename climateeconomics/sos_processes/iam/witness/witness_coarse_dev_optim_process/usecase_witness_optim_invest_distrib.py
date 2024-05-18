@@ -16,6 +16,7 @@ limitations under the License.
 '''
 import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
@@ -65,16 +66,60 @@ class Study(ClimateEconomicsStudyManager):
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
 
-    def update_dspace_col(self, dspace: pd.DataFrame, vardict: dict[str: list[float]], col: str = "lower_bnd") -> pd.DataFrame:
+    def make_dspace_invests(self, dspace_dict: dict[str: list]) -> pd.DataFrame:
         """
-        :param dspace: current design space
-        :param vardict: {varname to update: new value}
+        :param dspace_dict: {variable_name: [value, lower_bnd, upper_bnd, enable_variable]}
         """
-        variable_lower_bound_cols = dict(zip(dspace['variable'], dspace[col]))
-        for var, new_val in vardict.items():
-            variable_lower_bound_cols[var] = new_val
-        dspace[col] = list(variable_lower_bound_cols.values())
-        return dspace
+        out = {
+            "variable": [],
+            "value": [],
+            "lower_bnd": [],
+            "upper_bnd": [],
+            "enable_variable": [],
+            "activated_elem": [],
+        }
+        initial_values_first_pole = {
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': DatabaseWitnessCore.InvestFossil2020.value,
+            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': DatabaseWitnessCore.InvestCleanEnergy2020.value,
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
+            'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
+            'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
+        }
+
+        for var, infos in dspace_dict.items():
+            out['variable'].append(var)
+            out['value'].append([initial_values_first_pole[var]] + [infos[0]] * (GlossaryCore.NB_POLES_COARSE - 1))
+            out['lower_bnd'].append([infos[1]] * GlossaryCore.NB_POLES_COARSE)
+            out['upper_bnd'].append([infos[2]] * GlossaryCore.NB_POLES_COARSE)
+            out['enable_variable'].append(infos[3])
+            out['activated_elem'].append([False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1))
+
+        out = pd.DataFrame(out)
+        return out
+
+    def make_dspace_utilization_ratio(self, dspace_dict: dict[str: list]) -> pd.DataFrame:
+        """
+        :param dspace_dict: {variable_name: [value, lower_bnd, upper_bnd, enable_variable]}
+        """
+        out = {
+            "variable": [],
+            "value": [],
+            "lower_bnd": [],
+            "upper_bnd": [],
+            "enable_variable": [],
+            "activated_elem": [],
+        }
+
+        for var, infos in dspace_dict.items():
+            out['variable'].append(var)
+            out['value'].append([infos[0]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+            out['lower_bnd'].append([infos[1]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+            out['upper_bnd'].append([infos[2]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+            out['enable_variable'].append(infos[3])
+            out['activated_elem'].append([True] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+
+        out = pd.DataFrame(out)
+        return out
 
     def setup_usecase(self, study_folder_path=None):
         ns = self.study_name

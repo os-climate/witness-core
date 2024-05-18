@@ -54,7 +54,6 @@ class Study(ClimateEconomicsStudyManager):
             # self.UC5: Study5 # deactivate usecase 5 as it is the same as the one with no CCUS
         }
 
-
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{scatter_scenario}.samples_df': scenario_df,
@@ -69,9 +68,8 @@ class Study(ClimateEconomicsStudyManager):
 
         # override infos
         func_df = pd.read_csv(join(self.data_dir, 'func_df_optim.csv'))
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in scenario_dict.keys()})
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.algo": "SLSQP" for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 3 for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "GSPureNewtonMDA" for scenario_name in scenario_dict.keys()})
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.FunctionsManager.function_df": func_df for scenario_name in scenario_dict.keys()})
 
         return values_dict
@@ -79,4 +77,5 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
