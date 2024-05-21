@@ -326,7 +326,8 @@ class Crop():
             if key == GlossaryCore.Years:
                 result[key] = self.updated_diet_df[key]
             else:
-                result[key] = self.population_df[GlossaryCore.PopulationValue].values * self.updated_diet_df[key].values * 1e6
+                result[key] = self.population_df[GlossaryCore.PopulationValue].values * self.updated_diet_df[
+                    key].values * 1e6
         # as population is in million of habitants, *1e6 is needed
         return result
 
@@ -384,8 +385,6 @@ class Crop():
         milk_and_eggs_calories = self.milk_and_eggs_calories_per_day * 365
         # same for fruits, cereals and rice that are summed into design var vegetables_and_carbs_calories_per_day
         vegetables_and_carbs_calories = self.vegetables_and_carbs_calories_per_day * 365
-
-
 
         # Compute initial diet in kcal/day/person (diet df in kg/year/person)
         diet_init_kcal = self.diet_df.copy()
@@ -454,7 +453,8 @@ class Crop():
             {GlossaryCore.Years: self.years, 'productivity_evolution': pdctivity_reduction})
         # Apply this reduction to increase land surface needed
         non_years_columns = self.food_surface_df_without_climate_change.columns[1:]
-        surface_usage_by_food_type_with_climate_impact = self.food_surface_df_without_climate_change[non_years_columns].multiply(other=(1 - pdctivity_reduction), axis=0)
+        surface_usage_by_food_type_with_climate_impact = self.food_surface_df_without_climate_change[
+            non_years_columns].multiply(other=(1 - pdctivity_reduction), axis=0)
         surface_usage_by_food_type_with_climate_impact.insert(loc=0, column=GlossaryCore.Years, value=self.years)
         self.food_land_surface_df = surface_usage_by_food_type_with_climate_impact
 
@@ -544,6 +544,7 @@ class Crop():
         """
         Put all capex in $/MWh
         """
+        capex_init = None  # initialize capex to None
         if data_tocheck['Capex_init_unit'] == 'euro/ha':
 
             density_per_ha = data_tocheck['density_per_ha']
@@ -564,7 +565,9 @@ class Crop():
             capex_unit = data_tocheck['Capex_init_unit']
             raise Exception(
                 f'The CAPEX unity {capex_unit} is not handled yet in techno_type')
-
+        # Ensure capex_init was set
+        if capex_init is None:
+            raise Exception("capex_init was not set properly.")
         # return capex in $/MWh
         return capex_init * 1.0e3
 
@@ -782,18 +785,21 @@ class Crop():
                 # CO2
                 self.CO2_land_emissions_detailed[f'{food} (Gt)'] = self.co2_emissions_per_kg[food] * \
                                                                    self.updated_diet_df[food] * \
-                                                                   self.population_df[GlossaryCore.PopulationValue].values * \
-                                                                   1e6 / 1e12 #pop in millions, emissions in Gt
+                                                                   self.population_df[
+                                                                       GlossaryCore.PopulationValue].values * \
+                                                                   1e6 / 1e12  # pop in millions, emissions in Gt
                 # CH4
                 self.CH4_land_emissions_detailed[f'{food} (Gt)'] = self.ch4_emissions_per_kg[food] * \
                                                                    self.updated_diet_df[food] * \
-                                                                   self.population_df[GlossaryCore.PopulationValue].values * \
-                                                                   1e6 / 1e12 #pop in millions, emissions in Gt
+                                                                   self.population_df[
+                                                                       GlossaryCore.PopulationValue].values * \
+                                                                   1e6 / 1e12  # pop in millions, emissions in Gt
                 # N20
                 self.N2O_land_emissions_detailed[f'{food} (Gt)'] = self.n2o_emissions_per_kg[food] * \
                                                                    self.updated_diet_df[food] * \
-                                                                   self.population_df[GlossaryCore.PopulationValue].values * \
-                                                                   1e6 / 1e12 #pop in millions, emissions in Gt
+                                                                   self.population_df[
+                                                                       GlossaryCore.PopulationValue].values * \
+                                                                   1e6 / 1e12  # pop in millions, emissions in Gt
             else:
                 self.CO2_land_emissions_detailed[f'{food} (Gt)'] = 0.
                 self.CH4_land_emissions_detailed[f'{food} (Gt)'] = 0.
@@ -802,7 +808,6 @@ class Crop():
             self.CO2_land_emissions[f'emitted_CO2_evol_cumulative'] += self.CO2_land_emissions_detailed[f'{food} (Gt)']
             self.CH4_land_emissions[f'emitted_CH4_evol_cumulative'] += self.CH4_land_emissions_detailed[f'{food} (Gt)']
             self.N2O_land_emissions[f'emitted_N2O_evol_cumulative'] += self.N2O_land_emissions_detailed[f'{food} (Gt)']
-
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 
@@ -846,15 +851,15 @@ class Crop():
         dghg(fish)/dpop = ghg_per_kg(fish)/ 10^12 * kg(fish) * 10^6
         '''
         dghg_dpop_co2 = np.diag(self.co2_emissions_per_kg[GlossaryCore.Fish] * \
-                        self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
+                                self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
         dghg_dpop_ch4 = np.diag(self.ch4_emissions_per_kg[GlossaryCore.Fish] * \
-                        self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
+                                self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
         dghg_dpop_n2o = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] * \
-                        self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
+                                self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
 
         return {GlossaryCore.CO2: dghg_dpop_co2,
                 GlossaryCore.CH4: dghg_dpop_ch4,
-                GlossaryCore.N2O: dghg_dpop_n2o,}
+                GlossaryCore.N2O: dghg_dpop_n2o, }
 
     def d_ghg_fish_emission_d_fish_kcal(self):
         '''
@@ -864,16 +869,19 @@ class Crop():
         d_kcal(fish) = kcal_per_kg(fish) * d_kg(Fish)
         dghg(fish)/dkcal(fish) = 1/kcal_per_kg(fish) * dghg(fish)/dkg(fish) = ghg_per_kg(fish)/ 10^12/kcal_per_kg(fish) * population * 10^6
         '''
-        dco2_dkcal_fish = np.diag(self.co2_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
-                        self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
-        dch4_dkcal_fish = np.diag(self.ch4_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
-                        self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
-        dn2o_dkcal_fish = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
-                        self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
+        dco2_dkcal_fish = np.diag(
+            self.co2_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
+            self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
+        dch4_dkcal_fish = np.diag(
+            self.ch4_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
+            self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
+        dn2o_dkcal_fish = np.diag(
+            self.n2o_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
+            self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
 
         return {GlossaryCore.CO2: dco2_dkcal_fish,
                 GlossaryCore.CH4: dch4_dkcal_fish,
-                GlossaryCore.N2O: dn2o_dkcal_fish,}
+                GlossaryCore.N2O: dn2o_dkcal_fish, }
 
     def d_food_land_surface_d_temperature(self, temperature_df, column_name):
         """
@@ -1239,7 +1247,8 @@ class Crop():
         fish_diet_grad = 365 * kg_food_to_surface[GlossaryCore.Fish]
 
         # red to white meat value influences red meat, white meat, and vegetable surface
-        if food in ['white meat', 'fruits and vegetables', 'cereals', 'rice and maize', GlossaryCore.OtherFood, GlossaryCore.Fish]:
+        if food in ['white meat', 'fruits and vegetables', 'cereals', 'rice and maize', GlossaryCore.OtherFood,
+                    GlossaryCore.Fish]:
 
             if food == GlossaryCore.Fish:
                 sub_total_surface_grad = fish_diet_grad / self.kg_to_kcal_dict[food]
@@ -1274,25 +1283,27 @@ class Crop():
         return total_surface_climate_grad.values * idty
 
     def compute_calories_per_day_constraint(self):
-        self.calories_per_day_constraint = (self.calories_pc_df['kcal_pc'].values - self.constaint_calories_limit) / self.constraint_calories_ref
+        self.calories_per_day_constraint = (self.calories_pc_df[
+                                                'kcal_pc'].values - self.constaint_calories_limit) / self.constraint_calories_ref
 
     def compute_calories_per_capita(self):
-        non_wasted_share = 1 - self.food_waste_percentage_df[GlossaryCore.FoodWastePercentageValue].values/100.
+        non_wasted_share = 1 - self.food_waste_percentage_df[GlossaryCore.FoodWastePercentageValue].values / 100.
         self.produced_kcal = self.red_meat_calories_per_day \
-                                         + self.white_meat_calories_per_day \
-                                         + self.vegetables_and_carbs_calories_per_day \
-                                         + self.milk_and_eggs_calories_per_day \
-                                         + self.fish_calories_per_day \
-                                         + self.other_calories_per_day
+                             + self.white_meat_calories_per_day \
+                             + self.vegetables_and_carbs_calories_per_day \
+                             + self.milk_and_eggs_calories_per_day \
+                             + self.fish_calories_per_day \
+                             + self.other_calories_per_day
 
         self.calories_pc_df['kcal_pc'] = self.produced_kcal * non_wasted_share
 
     def compute_organic_waste(self):
-        waste_share = self.food_waste_percentage_df[GlossaryCore.FoodWastePercentageValue] /100.
+        waste_share = self.food_waste_percentage_df[GlossaryCore.FoodWastePercentageValue] / 100.
         self.organic_waste_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             "kcal": self.produced_kcal * waste_share
         })
+
     def compute_total_food_land_surface(self):
         self.total_food_land_surface[GlossaryCore.Years] = self.food_land_surface_df[GlossaryCore.Years]
         self.total_food_land_surface['total surface (Gha)'] = self.food_land_surface_df['total surface (Gha)']
@@ -1303,7 +1314,8 @@ class Crop():
     def compute_mix_detailed_production(self):
         self.mix_detailed_production['Crop residues (TWh)'] = self.residue_prod_from_food_surface.values + \
                                                               self.techno_infos_dict[
-                                                                  'residue_density_percentage'] * self.production['biomass_dry (TWh)']
+                                                                  'residue_density_percentage'] * self.production[
+                                                                  'biomass_dry (TWh)']
 
         self.mix_detailed_production['Crop for Energy (TWh)'] = self.production['biomass_dry (TWh)'] * (
                 1 - self.techno_infos_dict['residue_density_percentage'])

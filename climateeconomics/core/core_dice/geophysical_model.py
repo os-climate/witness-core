@@ -409,6 +409,7 @@ class TempChange():
         Compute exogenous forcing for other greenhouse gases
         """
         t = ((year - self.year_start) / self.time_step) + 1
+        exog_forcing = None  # initialize exog_forcing variable defined in either if or else statement
         if t < 18:
             exog_forcing = self.init_forcing_nonco + \
                 (1 / 17) * (self.hundred_forcing_nonco -

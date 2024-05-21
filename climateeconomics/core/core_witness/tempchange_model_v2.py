@@ -253,6 +253,10 @@ class TempChange(object):
 
             forcing = self.compute_forcing_meinshausen(co2_ppm, ch4_ppm, n2o_ppm)
 
+        else:
+
+            raise Exception("forcing model not in available models")
+
         self.temperature_df[GlossaryCore.Forcing] = forcing
 
     ######### DICE ########
@@ -359,6 +363,8 @@ class TempChange(object):
 
             dforcing = self.compute_dforcing_meinshausen(co2_ppm, ch4_ppm, n2o_ppm)
 
+        else:
+            raise Exception("forcing model not in available models")
         return dforcing
 
     def compute_dlog_co2_forcing(self, co2_ppm):
@@ -386,6 +392,8 @@ class TempChange(object):
                     5.31e-15 * c1 * (c1 * c2)**(1.52)
                 fprime = 2.01e-5 * c1**(0.75) * 0.75 * c2**(0.75 - 1) + \
                     5.31e-15 * c1**(2.52) * 1.52 * c2**(1.52 - 1)
+            else:
+                raise Exception("parameter of the method not in the possible list")
 
             return 0.47 * fprime / f
 

@@ -59,7 +59,6 @@ class InvestDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         inputs = self.get_sosdisc_inputs()
-        
 
         difference = np.linalg.norm(inputs['energy_investment_macro'][GlossaryCore.EnergyInvestmentsValue].values -
                                     inputs[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue].values) / inputs['invest_norm']
@@ -68,13 +67,12 @@ class InvestDiscipline(ClimateEcoDiscipline):
             invest_objective = difference
         elif inputs['formulation'] == 'constraint':
             invest_objective = inputs['max_difference'] - difference
-
+        else:
+            raise Exception("formulation type should be either objective or constraint")
         # Store output data
         dict_values = {'invest_objective': pd.DataFrame(
             {'norm': [invest_objective]}),
             'diff_norm': difference}
-
-        
 
         self.store_sos_outputs_values(dict_values)
 
@@ -114,6 +112,7 @@ class InvestDiscipline(ClimateEcoDiscipline):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
+        chart_list = []
 
         # Overload default value with chart filter
         if chart_filters is not None:

@@ -56,7 +56,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     # execution_engine.dm.get_all_namespaces_from_var_name('temperature_df')[0]
 
     instanciated_charts = []
-
+    chart_list = []
     # Overload default value with chart filter
     if chart_filters is not None:
         for chart_filter in chart_filters:

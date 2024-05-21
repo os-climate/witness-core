@@ -115,14 +115,14 @@ class ClimateEcoDiscipline(SoSWrapp):
                 value_out = 0
             else:
                 value_out = value * 1.1
+            return value_out
 
         elif min_or_max == "max":
             if value >= 0:
                 value_out = value * 1.1
             else:
                 value_out = 0
-
-        return value_out
+            return value_out
 
     def get_ranges_input_var(self):
         '''

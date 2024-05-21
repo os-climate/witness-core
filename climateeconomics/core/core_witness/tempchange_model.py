@@ -237,7 +237,6 @@ class TempChange(object):
         (watts per m2 from 1900)
         """
         atmo_conc = self.carboncycle_df['atmo_conc'].values
-
         if self.forcing_model == 'DICE':
 
             exog_forcing = self.compute_exog_forcing_dice()
@@ -259,6 +258,8 @@ class TempChange(object):
         elif self.forcing_model == 'Meinshausen':
 
             forcing = self.compute_forcing_meinshausen(atmo_conc)
+        else:
+            raise Exception("forcing model not in available models")
 
         self.temperature_df[GlossaryCore.Forcing] = forcing
 
@@ -340,6 +341,8 @@ class TempChange(object):
 
             dforcing = self.compute_dforcing_meinshausen(atmo_conc)
 
+        else:
+            raise Exception("forcing model not in available models")
         return dforcing
 
     def compute_dlog_co2_forcing(self, atmo_conc):
@@ -373,6 +376,9 @@ class TempChange(object):
                     5.31e-15 * c1 * (c1 * c2)**(1.52)
                 fprime = 2.01e-5 * c1**(0.75) * 0.75 * c2**(0.75 - 1) + \
                     5.31e-15 * c1**(2.52) * 1.52 * c2**(1.52 - 1)
+
+            else:
+                raise Exception("parameter of the method not in the possible list")
 
             return 0.47 * fprime / f
 

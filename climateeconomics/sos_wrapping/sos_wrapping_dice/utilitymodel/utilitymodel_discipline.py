@@ -95,6 +95,7 @@ class UtilityModelDiscipline(SoSWrapp):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
+        chart_list = []
 
         if chart_filters is not None:
             for chart_filter in chart_filters:

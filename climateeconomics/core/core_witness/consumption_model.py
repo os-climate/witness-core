@@ -199,6 +199,8 @@ class ConsumptionModel:
                                               GlossaryCore.PeriodUtilityPerCapita]
             welfare_objective = np.asarray(
                 [self.alpha * init_utility / last_utility, ])
+            return welfare_objective
+
         elif obj_option == GlossaryCore.Welfare:
             init_discounted_utility = self.init_discounted_utility
             welfare = self.utility_df[GlossaryCore.Welfare][self.year_end]
@@ -210,9 +212,11 @@ class ConsumptionModel:
             self.welfare = welfare
             welfare_objective = np.asarray(
                 [self.alpha * self.gamma * init_discounted_utility * n_years / welfare, ])
+            return welfare_objective
+
         else:
-            pass
-        return welfare_objective
+            # exception if objective option not in expected list
+            raise Exception("unhandled objective option")
 
     def compute_negative_welfare_objective(self):
         """
