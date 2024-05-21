@@ -30,7 +30,7 @@ The function looks like:
 
 And then: 
 
-$$birth\_rate(knowledge)_t = c + \alpha * (1- \frac{knowledge_t}{100})^{\beta}$$
+$$birth\_rate(knowledge)\_t = c + \alpha * (1- \frac{knowledge_t}{100})^{\beta}$$
 with $c$, $\alpha$ and $\beta$ the parameters obtained by the fitting of the full birth rate function.   
 For the second part we follow McIsaac (2017)[^1]:
 $$birth\_rate(gdp\_capita)_{15-49, t} = br\_upper + \frac{br\_lower - br\_upper}{(1 + \exp(-\delta (\frac{Y_t}{N_t}-\phi)))^{\frac{1}{\nu}}}$$
@@ -46,9 +46,9 @@ $$death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(
 where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $dr\_upper$ and $dr\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
 
 Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases [^2]. It is modelized following excess mortality function associated with climate change:
-$$\widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]$$
+$$\(\widetilde{DR}_i = DR_i \left[1 + \sum_{j \in J} \alpha_{i,j} \left(\frac{T}{T^0}\right)^{\theta}\right]\)$$
 
-with $\alpha_{i,j}$ the relative increase in the probability of dying due to risk $j$ for the age-group $i$, calibration_temperature_increase corresponding to $T_0$ the temperature change of +2.5 Celcius degrees in 2050 for the A1b scenario used in the WHO study[^3], and $\theta$ specifies the dependence of the probability of dying with respect to temperature.
+with $$\alpha_{i,j}$$ the relative increase in the probability of dying due to risk $j$ for the age-group $i$, calibration_temperature_increase corresponding to $T_0$ the temperature change of +2.5 Celcius degrees in 2050 for the A1b scenario used in the WHO study[^3], and $\theta$ specifies the dependence of the probability of dying with respect to temperature.
 Variable climate_mortality_param_df is the calibrated parameter value (Table 7) corresponding to: 
 $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 
