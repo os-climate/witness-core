@@ -260,11 +260,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             stackgroup='one',
         ))
 
-        column = 'Food Surface (Gha)'
+        column = 'total surface (Gha)'
         legend = column.replace(' (Gha)', '')
         new_chart.add_trace(go.Scatter(
             x=years,
-            y=(land_surface_detailed[column]).values.tolist(),
+            y=(surface_df[column]).values.tolist(),
             mode='lines',
             name=legend,
         ))
@@ -298,7 +298,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
-
+        #new_chart.to_plotly().show()
         instanciated_charts.append(new_chart)
 
     return instanciated_charts
