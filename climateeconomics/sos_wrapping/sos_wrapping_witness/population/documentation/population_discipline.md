@@ -30,7 +30,7 @@ The function looks like:
 
 And then: 
 
-$$birth\_rate(knowledge)_t = c + \alpha * (1- \frac{knowledge_t}{100})^{\beta}$$
+$$birth\_rate(knowledge)\_t = c + \alpha * (1- \frac{knowledge_t}{100})^{\beta}$$
 with $c$, $\alpha$ and $\beta$ the parameters obtained by the fitting of the full birth rate function.   
 For the second part we follow McIsaac (2017)[^1]:
 $$birth\_rate(gdp\_capita)_{15-49, t} = br\_upper + \frac{br\_lower - br\_upper}{(1 + \exp(-\delta (\frac{Y_t}{N_t}-\phi)))^{\frac{1}{\nu}}}$$
@@ -46,19 +46,19 @@ $$death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(
 where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $dr\_upper$ and $dr\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
 
 Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases [^2]. It is modelized following excess mortality function associated with climate change:
-$$\widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]$$
+$$\widetilde{DR}\_i = DR\_i \left[1 + \sum_{j \in J} \alpha_{i,j} \left(\frac{T}{T^0}\right)^{\theta}\right]$$
 
-with $\alpha_{i,j}$ the relative increase in the probability of dying due to risk $j$ for the age-group $i$, calibration_temperature_increase corresponding to $T_0$ the temperature change of +2.5 Celcius degrees in 2050 for the A1b scenario used in the WHO study[^3], and $\theta$ specifies the dependence of the probability of dying with respect to temperature.
+with $$\alpha_{i,j}$$ the relative increase in the probability of dying due to risk $j$ for the age-group $i$, calibration_temperature_increase corresponding to $T_0$ the temperature change of +2.5 Celcius degrees in 2050 for the A1b scenario used in the WHO study[^3], and $\theta$ specifies the dependence of the probability of dying with respect to temperature.
 Variable climate_mortality_param_df is the calibrated parameter value (Table 7) corresponding to: 
 $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 
 ![](climate_death_multipliers.PNG)
 
-inally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
-$$DR_i = \widetilde{DR}_i + \overline{DR}_i$$
-with $\widetilde{DR}_i$ death rate related to economy and temperature, $\overline{DR}_i$ related to calorie intake.
-$$\overline{DR}_i = \alpha_{i,j}*|\frac{kcal-kcal_{ref}}{\theta*kcal_{ref}}|$$
-with $kcal$ average food intake per capita per day, $kcal_ref$ food intake recommended per capita per day, $\alpha$ relative increase in the probability of dying due to risk j for age-group i, $\theta$ fitting value.
+Finally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
+$$DR\_i = \widetilde{DR}\_i + \overline{DR}\_i$$
+with $\widetilde{DR}\_i$ death rate related to economy and temperature, $\overline{DR}\_i$ related to calorie intake.
+$$\(\overline{DR}\_i = \alpha\_{i,j} \left| \frac{kcal - kcal\_{\text{ref}}}{\theta \cdot kcal\_{\text{ref}}} \right|\)$$
+with $kcal$ average food intake per capita per day, $kcal\_{ref}$ food intake recommended per capita per day, $\alpha$ relative increase in the probability of dying due to risk j for age-group i, $\theta$ fitting value.
 
 The following table shows the relative increase in mortality $\alpha$:
 
