@@ -47,7 +47,7 @@ Investments are in G<span>$</span> and utilization ratio in percentage.
 ## Objectives
 
 The optimisation objective can be rewritten as:
-$$Objective = \alpha * energy\_mean\_price\_objective + \gamma * consumption\_objective$$
+$$Objective = \alpha \times energy\_mean\_price\_objective + \gamma \times consumption\_objective$$
 
 $\alpha$ and $\gamma$ define the weight of each component of the objective.
 Since the $consumption\_objective$ needs to be maximized and since the global objective function is minimized, $\gamma < 0$. 
@@ -55,9 +55,9 @@ Then, the ratio between $\alpha$ and $\gamma$ is chosen so that the weighted com
 
 ### Energy mean price
 $$energy\_mean\_price\_objective = frac{\sum_{years}energy\_mean\_price}{energy\_price\_ref \times n\_years}$$
-where the $energy\_mean\_price$ is the average of the prices of all the energy mix technologies, namely:
-$$energy\_mean\_price = frac{\sum_{technos}energy\_price}{n\_technos}$$
-The energy\_price\_ref$ default value is 100 \$ so that $energy\_mean\_price\_objective$ values are around 1.
+where the $energy\_mean\_price[y]$ is the average of the prices of all the energy mix technologies at a given year, namely:
+$$energy\_mean\_price[y] = frac{\sum_{technos}energy\_price[y]}{n\_technos}$$
+The $energy\_price\_ref$ default value is 100 <span>$</span> so that $energy\_mean\_price\_objective$ values are around 1.
 
 
 ### Consumption objective
