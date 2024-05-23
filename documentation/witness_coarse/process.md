@@ -46,7 +46,7 @@ They are all inputs of the five witness coarse energy models, namely:
 An investment describes the capital invested in one of the five aforementioned technologies during the study period (typically between 2020 and 2100). An investment is > 0. To reduce the complexity of the optimization, the value of the investment is adjusted by the optimizer on a reduced number of years referred to as poles. For instance, if 7 poles are used, investments are optimized for years 2020, 2033, 2046, 2060, 2073, 2086, 2010 and investment values for the remaining years are deduced by b-spline interpolation of the values obtained at the poles. 
 An utilization ratio describes the percentage of one of the five aforementioned technologies that is used during the study periof. Its value ranges between 0 and 100. For instance, an utilization ratio of 50% means that the technology is used at 50% of its maximum capacity. Similar to the investments, the utilization ratios are adjusted by the optimizer on a reduced number of poles.
 Introducing poles reduces the dimensionality of the optimization problem. For instance if 7 and 11 poles are used for the investments and utilization ratios respectively, then the number of design variables reaches:
-$$5 \times models \times (7 \times poles_{investments} + 11 \times poles_{utilization \textunderscore ratio}) = 90 \times design \quad variables$$
+$$5 \times models \times (7 \times poles_{investments} + 11 \times poles_{utilization \textunderscore ratio}) = 90 \times design \textunderscore variables$$
 
 #### Lower and upper bounds
 In the first iterations of the optimization, the L-BGFGS-B optimization algorithm used in the study hits the upper and lower bounds of the design space.
@@ -63,19 +63,23 @@ If this case, the bound plays the role of an unwanted constraint that needs to b
 
 Investments are in G<span>$</span> and utilization ratio in percentage.
 
+TBetter managing the bounds could also potentially improve the mda convergence. 
+Indeed, in the GS pure Newton mda algorithm, a gradient is computed using the same analytical formulas as for the MDA. 
+Matrix inversion can be difficult and if preconditionning does not help, the gradients at the bounds could be a root cause of the issue.
+
 ### Objectives
 
 #### Energy mean price
-$$energy \textunderscore price_{mean \textunderscore objective} = \frac{\sum_{years} energy \textunderscore price_{mean}}{energy \textunderscore price_{ref}\times n_{years}}$$
+$$energy \textunderscore price_{mean \textunderscore objective} = \frac{1}{n_{years}} \times \sum_{years}\frac{energy \textunderscore price_{mean}[years]}{energy \textunderscore price_{ref}}$$
 where the $energy \textunderscore price_{mean}[years]$ is the average of the prices of all the energy mix technologies at a given year, namely:
-$$energy \textunderscore price_{mean}[years] = \frac{\sum_{technos} energy \textunderscore price[years]}{n_{technos}}$$
+$$energy \textunderscore price_{mean}[years] = \frac{1}{n_{technos}} \times \sum_{technos}energy \textunderscore price[years, technos]$$
 The $energy \textunderscore price_{ref}$ default value is 100 <span>$</span> so that $energy \textunderscore price_{mean \textunderscore objective}$ values are around 1.
 
 The energy mean price is affected by the value of the CO2 tax. If the CO2 tax is deactivated, fossil energies are preferred since they are cheaper. 
 However, if CO2 tax is activated, renewable energies are preferred as they emit less CO2 and eventually lead to a energy mean price (including CO2 tax) that is lower.
 
 #### Consumption objective
-$$consumption_{objective} = \frac{\sum_{years}consumption[years]}{consumption_{ref} \times n_{years}}$$
+$$consumption_{objective} = \frac{1}{n_{years}} \times \sum_{years}\frac{consumption[years]}{consumption_{ref}}$$
 As defined in the documentation of the macroeconomics discipline, consumption C is the part of the net output not invested, namely:
 $$C = Q - I$$
 where Net output $Q$ is the output net of climate damage explained in the macroeconomics discipline documentation.
