@@ -234,10 +234,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         years = surface_df[GlossaryCore.Years].values.tolist()
         for key in surface_df.keys():
             if key == GlossaryCore.Years:
-                pass
-            elif key.startswith('total'):
-                pass
-            else:
                 new_chart.add_trace(go.Scatter(
                     x=years,
                     y=(surface_df[key]).values.tolist(),
@@ -246,6 +242,10 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                     name=key,
                     stackgroup='one',
                 ))
+            elif key.startswith('total'):
+                pass
+            else:
+                pass
 
         # total food and forest surface, food should be at the bottom to be compared with crop surface
         land_surface_detailed = get_scenario_value(execution_engine, f'{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}', scenario_name)
@@ -260,11 +260,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             stackgroup='one',
         ))
 
-        column = 'Food Surface (Gha)'
+        column = 'total surface (Gha)'
         legend = column.replace(' (Gha)', '')
         new_chart.add_trace(go.Scatter(
             x=years,
-            y=(land_surface_detailed[column]).values.tolist(),
+            y=(surface_df[column]).values.tolist(),
             mode='lines',
             name=legend,
         ))
@@ -277,7 +277,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         # shrub surface cannot be <0
         shrub_surface = np.maximum(np.zeros(len(years)), total_land_available[0] * np.ones(len(years)) -
                                    (land_surface_detailed['Total Forest Surface (Gha)'] +
-                                    land_surface_detailed['Total Agriculture Surface (Gha)']).values)
+                                    surface_df['total surface (Gha)']).values)
 
         column = 'Shrub Surface (Gha)'
         legend = column.replace(' (Gha)', '')
@@ -298,7 +298,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
-
+        new_chart.to_plotly().show()
         instanciated_charts.append(new_chart)
 
     return instanciated_charts
