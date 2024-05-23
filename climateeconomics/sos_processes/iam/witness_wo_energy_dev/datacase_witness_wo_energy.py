@@ -272,7 +272,7 @@ class DataStudy():
 
         data = {
             'variable': [
-                GlossaryCore.EnergyInvestmentsMinimizationObjective,
+                GlossaryCore.EnergyWastedObjective,
                 GlossaryCore.NegativeWelfareObjective,
                 GlossaryCore.UsableCapitalObjectiveName,
                 GlossaryCore.ConsumptionObjective,
@@ -286,7 +286,7 @@ class DataStudy():
                 'invest_objective',
             ],
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [0.01, 1.0, 0.5, 0.0, 0.0],
+            'weight': [0.1, 0., 0., -20., 3.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
             'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
         }
