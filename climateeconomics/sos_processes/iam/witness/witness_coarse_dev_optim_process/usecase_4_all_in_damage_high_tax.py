@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import pandas as pd
 from climateeconomics.glossarycore import GlossaryCore
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
@@ -32,8 +32,29 @@ class Study(StudyOptimInvestDistrib):
     def setup_usecase(self, study_folder_path=None):
         
         data_witness = super().setup_usecase()
-        
-        dspace = data_witness[f'{self.study_name}.{self.optim_name}.design_space']
+
+        # update fossil invest & utilization ratio lower bound to not be too low
+        min_invest = 1.
+        max_invest = 3000.
+        dspace_invests = {
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [10., 10., 3000., True],
+            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [300., 300., max_invest, True],
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': [min_invest, min_invest, max_invest, True],
+            'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [min_invest, min_invest, max_invest, True],
+            'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, True],
+        }
+        dspace_invests = self.make_dspace_invests(dspace_invests)
+        min_UR = 30.
+        dspace_UR = {
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [40., min_UR, 100., True],
+            'renewable_RenewableSimpleTechno_utilization_ratio_array': [40., min_UR, 100., True],
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array': [40., min_UR, 100., True],
+            'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array': [40., min_UR, 100., True],
+            'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [40., min_UR, 100., True],
+
+        }
+        dspace_UR = self.make_dspace_utilization_ratio(dspace_UR)
+        dspace = pd.concat([dspace_invests, dspace_UR])
 
 
         # Activate damage
@@ -47,18 +68,8 @@ class Study(StudyOptimInvestDistrib):
             },
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
         }
+
         data_witness.update(updated_data)
-
-        # Deactivate nothing
-        var_to_deactive_and_set_to_lower_bound_value = []
-
-        serie_index = dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value)
-
-        for index_row, var_has_to_be_deactivate in serie_index.items():
-            if var_has_to_be_deactivate:
-                dspace.iloc[index_row]['value'] = dspace.iloc[index_row]['lower_bnd']
-
-        dspace.loc[dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value), 'enable_variable'] = False
 
         # Put high tax
         data_witness.update({
@@ -71,5 +82,4 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

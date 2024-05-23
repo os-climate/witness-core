@@ -193,6 +193,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
     def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
+        chart_list = []
 
         # Overload default value with chart filter
         if chart_filters is not None:

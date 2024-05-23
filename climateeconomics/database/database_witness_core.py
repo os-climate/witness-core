@@ -394,3 +394,31 @@ class DatabaseWitnessCore:
         source="Investments are obtained manualy based on production of IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050",
         last_update_date=date(2024, 4, 24)
     )
+
+    InvestFossil2020 = ColectedData(
+        value=839.0,
+        unit="G$",
+        description="Investment in fossil in 2020 in G US$",
+        link="https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings",
+        source="World energy investment - IEA",
+        last_update_date=date(2023, 10, 26),
+    )
+
+    InvestCleanEnergy2020 = ColectedData(
+        value=1259.0,
+        unit="G$",
+        description="Investment in clean energy in 2020 in G US$",
+        link="https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings",
+        source="World energy investment - IEA",
+        last_update_date=date(2023, 10, 26),
+    )
+
+    InvestCCUS2020 = ColectedData(
+        value=4.0,
+        unit="G$",
+        description="Investment in all CCUS technos in 2020 in G US$",
+        link="https://iea.blob.core.windows.net/assets/181b48b4-323f-454d-96fb-0bb1889d96a9/CCUS_in_clean_energy_transitions.pdf",
+        # page 13
+        source="CCUS in clean energy transitions - IEA",
+        last_update_date=date(2023, 10, 26),
+    )

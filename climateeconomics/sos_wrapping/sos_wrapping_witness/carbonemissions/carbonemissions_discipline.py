@@ -272,6 +272,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
+        chart_list = []
 
         # Overload default value with chart filter
         if chart_filters is not None:

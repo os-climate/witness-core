@@ -254,6 +254,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                             d_forcing_datmo_conc['CO2 forcing N2O ppm'] + d_forcing_datmo_conc['CH4 forcing N2O ppm'] +
                             d_forcing_datmo_conc['N2O forcing N2O ppm']))
 
+            else:
+
+                raise Exception("forcing model not in available models")
+
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration), d_temp_d_co2_ppm, )
             self.set_partial_derivative_for_other_types(
@@ -302,6 +306,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
+        chart_list = []
 
         # Overload default value with chart filter
         if chart_filters is not None:
@@ -337,6 +342,9 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
 
     elif model == 'FAIR':
         raise NotImplementedError('Model not implemented yet')
+
+    else:
+        raise Exception("forcing model not in available models")
 
     years = list(temperature_df.index)
 

@@ -259,7 +259,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
-
+        chart_list = []
+        years_list = None
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
@@ -267,7 +268,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
                 if chart_filter.filter_key == GlossaryCore.Years:
                     years_list = chart_filter.selected_values
-
+        if years_list is None:
+            raise Exception("no years selected in filters")
         pop_df = deepcopy(
             self.get_sosdisc_outputs('population_detail_df'))
         birth_rate_df = deepcopy(
