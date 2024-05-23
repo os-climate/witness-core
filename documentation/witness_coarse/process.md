@@ -25,12 +25,12 @@ Multi-disciplinary design optimization (MDO) is a field of engineering that uses
 The problem is given with an objective to be minimized without constraints. As a result, the optimized solution will reach the lowest objective.
 
 Witness coarse formulation on 22-May-2024 reads:
-$$\text{Minimize} \quad \text{obj} = \alpha \times \text{energy\_{price}\_{mean}\_{objective}} - (1-\alpha) \times \text{consumption\_{objective}}$$
-$$\text{wrt} \quad \text{invest\_{mix}} \in [1,3000]$$
-$$\text{wrt} \quad \text{utilization\_{ratios}} \in [1,100]$$
+$$\text{minimize} \quad \text{obj} = \alpha \times \text{energy_{price}_{mean}_{objective}} - (1-\alpha) \times \text{consumption_{objective}}$$
+$$\text{wrt} \quad \text{invest_{mix}} \in [1,3000]$$
+$$\text{wrt} \quad \text{utilization_{ratios}} \in [1,100]$$
 
 $\alpha$ allows to define the weight of each component of the objective.
-Since the $consumption\_{objective}$ needs to be maximized and since the global objective function is minimized, $-\text{consumption\_{objective}}$ is considered. 
+Since the $consumption_{objective}$ needs to be maximized and since the global objective function is minimized, $-\text{consumption_{objective}}$ is considered. 
 $\alpha$ is chosen so that the weighted components of the objective functions are of the same order of magnitude. 
 
 
@@ -46,17 +46,17 @@ They are all inputs of the five witness coarse energy models, namely:
 An investment describes the capital invested in one of the five aforementioned technologies during the study period (typically between 2020 and 2100). An investment is > 0. To reduce the complexity of the optimization, the value of the investment is adjusted by the optimizer on a reduced number of years referred to as poles. For instance, if 7 poles are used, investments are optimized for years 2020, 2033, 2046, 2060, 2073, 2086, 2010 and investment values for the remaining years are deduced by b-spline interpolation of the values obtained at the poles. 
 An utilization ratio describes the percentage of one of the five aforementioned technologies that is used during the study periof. Its value ranges between 0 and 100. For instance, an utilization ratio of 50% means that the technology is used at 50% of its maximum capacity. Similar to the investments, the utilization ratios are adjusted by the optimizer on a reduced number of poles.
 Introducing poles reduces the dimensionality of the optimization problem. For instance if 7 and 11 poles are used for the investments and utilization ratios respectively, then the number of design variables reaches:
-$$5 \times \text{models} \times (7 \times \text{poles}\_{investments} + 11 \times \text{poles\_{utilization}\_{ratio}}) = 90 \times \text{design} \quad \text{variables}$$
+$$5 \times \text{models} \times (7 \times \text{poles}_{investments} + 11 \times \text{poles_{utilization}_{ratio}}) = 90 \times \text{design} \quad \text{variables}$$
 
-### Lower and upper bounds
+#### Lower and upper bounds
 In the first iterations of the optimization, the L-BGFGS-B optimization algorithm used in the study hits the upper and lower bounds of the design space.
 It has been observed that when the lower bounds of the design variables (investments or utilization ratio) are set close to 0 (for instance 1.e-6), then the optimization algorithm has a hard time converging (or does not converge at all).
 NB: a lower bound is stricltly positive to avoid computing null gradients which could prevent the optimization from converging.
 Chosing lower and upper bounds that are physically realistic has shown to help convergence. For instance, for a net zero emission scenario, typical upper and lower bounds are:
-$$10 \leq investment\_fossil \leq 3000$$
-$$300 \leq investment\_renewable \leq 3000$$
-$$1 \leq investment\_CCUS \leq 3000$$
-$$30 \leq utilization\_ratio \leq 100$$
+$$10 \leq investment_fossil \leq 3000$$
+$$300 \leq investment_renewable \leq 3000$$
+$$1 \leq investment_CCUS \leq 3000$$
+$$30 \leq utilization_ratio \leq 100$$
 
 It is of utmost importance to check that for the optimized solution, the design variables do not meet the bounds. 
 If this case, the bound plays the role of an unwanted constraint that needs to be relieved by considering larger bound values.
@@ -66,21 +66,21 @@ Investments are in G<span>$</span> and utilization ratio in percentage.
 ### Objectives
 
 #### Energy mean price
-$$\text{energy\_{price}\_{mean}\_{objective}} = frac{\sum_{years}\text{energy\_{price}\_{mean}}}{\text{energy\_{price}\_{ref}} \times n\_{years}}$$
-where the $\text{energy\_{price}\_{mean}}[years]$ is the average of the prices of all the energy mix technologies at a given year, namely:
-$$\text{energy\_{price}\_{mean}}[years] = frac{\sum_{technos}\text{energy\_{price}}[years]}{n\_{technos}}$$
-The $\text{energy\_{price}\_{ref}}$ default value is 100 <span>$</span> so that $\text{energy\_{price}\_{mean}\_{objective}}$ values are around 1.
+$$\text{energy_{price}_{mean}_{objective}} = frac{\sum_{years}\text{energy_{price}_{mean}}}{\text{energy_{price}_{ref}} \times n_{years}}$$
+where the $\text{energy_{price}_{mean}}[years]$ is the average of the prices of all the energy mix technologies at a given year, namely:
+$$\text{energy_{price}_{mean}}[years] = frac{\sum_{technos}\text{energy_{price}}[years]}{n_{technos}}$$
+The $\text{energy_{price}_{ref}}$ default value is 100 <span>$</span> so that $\text{energy_{price}_{mean}_{objective}}$ values are around 1.
 
 The energy mean price is affected by the value of the CO2 tax. If the CO2 tax is deactivated, fossil energies are preferred since they are cheaper. 
 However, if CO2 tax is activated, renewable energies are preferred as they emit less CO2 and eventually lead to a energy mean price (including CO2 tax) that is lower.
 
 #### Consumption objective
-$$\text{consumption\_{objective}} = frac{\sum_{years}\text{consumption}[years]}{\text{consumption\_{ref}} \times n\_{years}}$$
+$$\text{consumption_{objective}} = frac{\sum_{years}\text{consumption}[years]}{\text{consumption_{ref}} \times n_{years}}$$
 As defined in the documentation of the macroeconomics discipline, consumption C is the part of the net output not invested, namely:
 $$C = Q - I$$
 where Net output $Q$ is the output net of climate damage explained in the macroeconomics discipline documentation.
 
-The $\text{consumption\_{ref}$ default value is 250 T\$ so that $\text{consumption\_{objective}}$ values are around 1.
+The $\text{consumption_{ref}}$ default value is 250 T\$ so that $\text{consumption_{objective}}$ values are around 1.
 In witness, it is assumed that the larger the consumption per capita, the better the wealth of the population over the entire period of the study, which is what is aimed at. The consumption objective is therefore a quantity to be maximized.
 
 From the equation above, one could think that reducing the investments (I) would maximize the consumption (C). However, reducing the investments in energy also reduces the net output (see the impact of energy investments on usable capital Ku in the macroeconomics documentation).
