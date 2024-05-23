@@ -44,7 +44,7 @@ class Study(StudyOptimInvestDistrib):
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, False],
         }
         dspace_invests = self.make_dspace_invests(dspace_invests)
-        min_UR = 30.
+        min_UR = 50.
         dspace_UR = {
             'fossil_FossilSimpleTechno_utilization_ratio_array': [40., min_UR, 100., True],
             'renewable_RenewableSimpleTechno_utilization_ratio_array': [40., min_UR, 100., False],

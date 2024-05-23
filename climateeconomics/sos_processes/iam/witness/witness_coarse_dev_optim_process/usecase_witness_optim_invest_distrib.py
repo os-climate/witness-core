@@ -112,11 +112,11 @@ class Study(ClimateEconomicsStudyManager):
 
         for var, infos in dspace_dict.items():
             out['variable'].append(var)
-            out['value'].append([infos[0]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+            out['value'].append([100.] + [infos[0]] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1))
             out['lower_bnd'].append([infos[1]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
             out['upper_bnd'].append([infos[2]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
             out['enable_variable'].append(infos[3])
-            out['activated_elem'].append([True] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+            out['activated_elem'].append([False] + [True] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1))
 
         out = pd.DataFrame(out)
         return out
