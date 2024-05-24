@@ -66,7 +66,7 @@ class Study(ClimateEconomicsStudyManager):
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
 
-    def make_dspace_invests(self, dspace_dict: dict[str: list]) -> pd.DataFrame:
+    def make_dspace_invests(self, dspace_dict: dict[str: list], overwrite_invest_index: list[int] = []) -> pd.DataFrame:
         """
         :param dspace_dict: {variable_name: [value, lower_bnd, upper_bnd, enable_variable]}
         """
@@ -94,6 +94,8 @@ class Study(ClimateEconomicsStudyManager):
             out['enable_variable'].append(infos[3])
             out['activated_elem'].append([False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1))
 
+        for index in overwrite_invest_index:
+            out['activated_elem'][index] = [False] * GlossaryCore.NB_POLES_COARSE
         out = pd.DataFrame(out)
         return out
 

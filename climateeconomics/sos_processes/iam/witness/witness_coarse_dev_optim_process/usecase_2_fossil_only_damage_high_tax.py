@@ -43,7 +43,7 @@ class Study(StudyOptimInvestDistrib):
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, False],
         }
-        dspace_invests = self.make_dspace_invests(dspace_invests)
+        dspace_invests = self.make_dspace_invests(dspace_invests, overwrite_invest_index=[1])
         min_UR = 50.
         dspace_UR = {
             'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
