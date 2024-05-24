@@ -14,6 +14,8 @@ limitations under the License.
 
 '''
 from os.path import join, dirname
+from os import environ
+environ['USE_PETSC'] = "False"
 
 import pandas as pd
 
