@@ -50,6 +50,10 @@ class GlossaryCore:
     # PWh = 1e3 TWh
     # 1 TWh  = 1e9 kWh
 
+    NB_POLES_COARSE: int = 7  # number of poles in witness coarse
+    NB_POLES_UTILIZATION_RATIO = (
+        10  # number of poles for bspline design variables utilization ratio
+    )
     Years = "years"
     YearStart = "year_start"
     YearStartDefault = 2020
@@ -736,7 +740,6 @@ class GlossaryCore:
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
             PerCapitaConsumption: ("float", [0, 1e30], False),
-            EnergyWasted: ("float", [0, 1e30], False),
         },
     }
 
@@ -1145,6 +1148,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
+            NonEnergyCapital: ("float", [0, 1e30], False),
             UsableCapital: ("float", [0, 1e30], False),
             Emax: ("float", [0, 1e30], False),
             EnergyEfficiency: ("float", [0, 1e30], False),
@@ -1597,6 +1601,17 @@ class GlossaryCore:
         "var_name": GDPCountryDFName,
         'type': 'dataframe',
         'unit': 'G$',
+    }
+
+    TempOutput = "TempOutput"
+    TempOutputDf = {
+        "var_name": TempOutput,
+        "type": "dataframe",
+        "description": "used to debug some gradients",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            NonEnergyCapital: ("int", [1900, YearEndDefault], False),
+        },
     }
 
     @staticmethod
