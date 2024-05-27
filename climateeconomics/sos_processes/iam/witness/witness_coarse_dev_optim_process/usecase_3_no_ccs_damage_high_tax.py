@@ -43,13 +43,13 @@ class Study(StudyOptimInvestDistrib):
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, False],
         }
         dspace_invests = self.make_dspace_invests(dspace_invests)
-        min_UR = 10.
+        min_UR = 50.
         dspace_UR = {
-            'fossil_FossilSimpleTechno_utilization_ratio_array': [40., min_UR, 100., True],
-            'renewable_RenewableSimpleTechno_utilization_ratio_array': [40., min_UR, 100., True],
-            'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array': [40., min_UR, 100., False],
-            'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array': [40., min_UR, 100., False],
-            'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [40., min_UR, 100., False],
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
+            'renewable_RenewableSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
+            'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
+            'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
         }
         dspace_UR = self.make_dspace_utilization_ratio(dspace_UR)
         dspace = pd.concat([dspace_invests, dspace_UR])
