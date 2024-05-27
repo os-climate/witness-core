@@ -66,7 +66,7 @@ class Study(ClimateEconomicsStudyManager):
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
 
-    def make_dspace_invests(self, dspace_dict: dict[str: list]) -> pd.DataFrame:
+    def make_dspace_invests(self, dspace_dict: dict[str: list], overwrite_invest_index: list[int] = []) -> pd.DataFrame:
         """
         :param dspace_dict: {variable_name: [value, lower_bnd, upper_bnd, enable_variable]}
         """
@@ -94,6 +94,8 @@ class Study(ClimateEconomicsStudyManager):
             out['enable_variable'].append(infos[3])
             out['activated_elem'].append([False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1))
 
+        for index in overwrite_invest_index:
+            out['activated_elem'][index] = [False] * GlossaryCore.NB_POLES_COARSE
         out = pd.DataFrame(out)
         return out
 
@@ -112,11 +114,11 @@ class Study(ClimateEconomicsStudyManager):
 
         for var, infos in dspace_dict.items():
             out['variable'].append(var)
-            out['value'].append([infos[0]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
-            out['lower_bnd'].append([infos[1]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+            out['value'].append([100.] + [infos[0]] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1))
+            out['lower_bnd'].append([infos[1]] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO))
             out['upper_bnd'].append([infos[2]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
             out['enable_variable'].append(infos[3])
-            out['activated_elem'].append([True] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
+            out['activated_elem'].append([False] + [True] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1))
 
         out = pd.DataFrame(out)
         return out

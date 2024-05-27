@@ -5,22 +5,22 @@
 
 \begin{document}
 
-WITNESS Coarse 14-12-21
+WITNESS Coarse 23-05-2024
 
 \begin{equation}
 \begin{aligned}
 minimize \quad  obj =~
-&\alpha\,\frac{discounted\_utility_{ref}*n_{years}}{\sum_{y}discounted\_utility[y]}+(1-\alpha)*\frac{\sum_{y}CO2[y]}{CO2_{ref}*n_{years}} \\
+&\alpha\,frac{\sum_{years}\sum_{technos}\text{energy\_{price}[technos,years]}}{\text{energy\_{price}\_{ref} \times n_{years} \times n_{technos}}}
+- (1-\alpha) \times frac{\sum_{years}\text{consumption}[years]}{\text{consumption\_{ref}} \times n\_{years}} \\
 %
-% ppm objective deactivated
-% + (1-\beta) \frac{\sum_{y}CO2^{ppm}[y]}{CO2^{ppm}_{ref}*n_{years}}
 %
 \\
-\textrm{w.r.t} \quad & invest_{mix} \in [0,100]\\                     
-\textrm{s.t.} \quad 
-  & Total\_energy\_prod \geq min\_energy \\
-  & energy\_net\_prod \geq energy\_demand ~(\forall~ energies) \\
-  & land\_use \geq land\_demand \textrm{~~(for forest and agriculture)}
+\textrm{w.r.t} \quad & invest_{mix} \in [0,100]\\
+\textrm{w.r.t} \quad & utilization_{ratios} \in [1,300]\\
+%\textrm{s.t.} \quad
+%  & Total\_energy\_prod \geq min\_energy \\
+%  & energy\_net\_prod \geq energy\_demand ~(\forall~ energies) \\
+%  & land\_use \geq land\_demand \textrm{~~(for forest and agriculture)}
 \end{aligned}
 \end{equation}
 
