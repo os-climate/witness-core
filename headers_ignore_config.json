@@ -20,7 +20,8 @@
         "ini",
         "coveragerc",
         "yaml",
-        "bat"
+        "bat",
+        "tex"
     ],
     "files_to_ignore": [
         "LICENSE",
