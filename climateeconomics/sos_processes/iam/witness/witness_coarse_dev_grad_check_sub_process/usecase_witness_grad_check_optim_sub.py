@@ -91,7 +91,7 @@ class Study(ClimateEconomicsStudyManager):
 
         # define the missing inputs:
         # InvestmentsProfileBuilderDisc inputs
-        columns_names = [GlossaryEnergy.Years, f'{GlossaryEnergy.renewable}.RenewableSimpleTechno',
+        columns_names = [f'{GlossaryEnergy.renewable}.RenewableSimpleTechno',
                          f'{GlossaryEnergy.fossil}.FossilSimpleTechno',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno',
@@ -104,7 +104,7 @@ class Study(ClimateEconomicsStudyManager):
         def df_generator():
             df = pd.DataFrame({
                 **{GlossaryEnergy.Years: years},
-                **dict(zip(columns_names[1:], np.random.rand(len(columns_names[1:]))))
+                **dict(zip(columns_names, np.random.rand(len(columns_names))))
             })
             return df
 
