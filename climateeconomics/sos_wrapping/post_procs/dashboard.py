@@ -234,6 +234,10 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         years = surface_df[GlossaryCore.Years].values.tolist()
         for key in surface_df.keys():
             if key == GlossaryCore.Years:
+                pass
+            elif key.startswith('total'):
+                pass
+            else:
                 new_chart.add_trace(go.Scatter(
                     x=years,
                     y=(surface_df[key]).values.tolist(),
@@ -242,10 +246,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                     name=key,
                     stackgroup='one',
                 ))
-            elif key.startswith('total'):
-                pass
-            else:
-                pass
 
         # total food and forest surface, food should be at the bottom to be compared with crop surface
         land_surface_detailed = get_scenario_value(execution_engine, f'{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}', scenario_name)
