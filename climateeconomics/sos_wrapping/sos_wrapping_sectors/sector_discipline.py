@@ -416,6 +416,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
+        chart_list = []
 
         # Overload default value with chart filter
         if chart_filters is not None:
@@ -432,8 +433,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
         damage_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}")
-        if prod_func_fit:
-            lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
+
 
         if 'sector output' in chart_list:
             chart_name = f'{self.sector_name} sector economics output'
@@ -632,27 +632,28 @@ class SectorDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'long term energy efficiency' in chart_list:
+            if prod_func_fit:
+                lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
+                to_plot = [GlossaryCore.EnergyEfficiency]
 
-            to_plot = [GlossaryCore.EnergyEfficiency]
+                years = list(lt_energy_eff[GlossaryCore.Years])
 
-            years = list(lt_energy_eff[GlossaryCore.Years])
+                chart_name = 'Capital energy efficiency over the years'
 
-            chart_name = 'Capital energy efficiency over the years'
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
+                                                     chart_name=chart_name, y_min_zero=True)
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
-                                                 chart_name=chart_name, y_min_zero=True)
+                for key in to_plot:
+                    visible_line = True
 
-            for key in to_plot:
-                visible_line = True
+                    ordonate_data = list(lt_energy_eff[key])
 
-                ordonate_data = list(lt_energy_eff[key])
+                    new_series = InstanciatedSeries(
+                        years, ordonate_data, key, 'lines', visible_line)
 
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, key, 'lines', visible_line)
+                    new_chart.add_series(new_series)
 
-                new_chart.add_series(new_series)
-
-            instanciated_charts.append(new_chart)
+                instanciated_charts.append(new_chart)
 
         if GlossaryCore.SectionGdpPart in chart_list:
             sections_gdp = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}")

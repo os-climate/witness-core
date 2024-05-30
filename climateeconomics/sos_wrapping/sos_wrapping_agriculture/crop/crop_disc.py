@@ -946,19 +946,20 @@ class CropDiscipline(ClimateEcoDiscipline):
         value of ToT with a shift of five year between then
         '''
         instanciated_charts = []
+        chart_list = []
 
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-
+        year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
         if CropDiscipline.CROP_CHARTS in chart_list:
 
             surface_df = self.get_sosdisc_outputs('food_land_surface_df')
             years = surface_df[GlossaryCore.Years].values.tolist()
-            year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
-            year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
+
             crop_surfaces = surface_df['total surface (Gha)'].values
             crop_surface_series = InstanciatedSeries(
                 years, crop_surfaces.tolist(), 'Total crop surface', InstanciatedSeries.LINES_DISPLAY)

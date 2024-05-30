@@ -92,7 +92,7 @@ Q_inf_taken = 5
 new_difference = 1000
 new_year_regression = 0
 end_of_past_production = 0
-
+final_Q_inf = None
 #Goes through all the past years and returns the year of the regression
 for evolving_year in past_production_years : 
     
@@ -112,7 +112,8 @@ for evolving_year in past_production_years :
         new_year_regression = year_regression
         final_Q_inf = Q_inf_taken
         end_of_past_production = evolving_year
-
+if final_Q_inf is None :
+    raise Exception("assertion abs(Q_inf_th - Q_inf_taken) < new_difference is not True")
 error = ((Q_inf_th -final_Q_inf) / Q_inf_th) * 100
 
 

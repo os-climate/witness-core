@@ -112,7 +112,7 @@ def post_processings(execution_engine, namespace, filters):
     year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
 
     damage_tax_activation_status_dict = get_scenario_damage_tax_activation_status(execution_engine, scenario_list)
-    #graphs_list = []
+    graphs_list = []
     if filters is not None:
         for chart_filter in filters: # filter on "scenarios" must occur before filter on "Effects" otherwise filter "Effects" does not work
             if chart_filter.filter_key == CHART_NAME:

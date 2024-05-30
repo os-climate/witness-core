@@ -45,6 +45,7 @@ def post_processings(execution_engine, scenario_name, sector: str, chart_filters
     '''
 
     instanciated_charts = []
+    chart_list = []
 
     # Overload default value with chart filter
     if chart_filters is not None:

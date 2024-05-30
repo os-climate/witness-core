@@ -67,10 +67,7 @@ class Study(ClimateEconomicsStudyManager):
             values_dict.update(scenarioData)
 
         # override infos
-        func_df = pd.read_csv(join(self.data_dir, 'func_df_optim.csv'))
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in scenario_dict.keys()})
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.FunctionsManager.function_df": func_df for scenario_name in scenario_dict.keys()})
 
         return values_dict
 

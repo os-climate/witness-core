@@ -76,7 +76,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     # Prepare data
     resource_name = namespace.split('Resources.')[-1]
     first_part_ns = namespace.split('Resources.')[0]
-
+    ns_val = None
     # TODO quick fix but need to do a cleaner way but needs deeper reflexion 
     ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
     max_length = 0
@@ -92,7 +92,8 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     index = ns_energy_mix.find('.EnergyMix')
     if index != -1:
         ns_val = ns_energy_mix[:index]
-
+    if ns_val is None:
+        raise Exception("variable ns_val is not defined")
     WITNESS_ns = ns_val
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.EnergyMix')[0]

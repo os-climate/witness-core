@@ -306,7 +306,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     years = np.arange(EnergyMix.get_sosdisc_inputs(
         GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
-
+    total_carbon_emissions = None
     for energy in energy_list:
         if energy == 'biomass_dry':
             namespace_disc = f'{namespace}.AgricultureMix'
@@ -368,6 +368,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                                              carbon_emissions[techno].values
                 else:
                     CO2_from_other_consumption += carbon_emissions[emission_type].values
+            if total_carbon_emissions is None :
+                raise Exception("variable total carbon emissions not defined")
             CO2_after_use = total_carbon_emissions
             CO2_per_kWh_techno = total_carbon_emissions
             # Data for scatter plot
