@@ -96,20 +96,44 @@ class Study(ClimateEconomicsStudyManager):
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno',
                          f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno']
-        n_profiles = 2 ** 3 # 2 generic profiles for each of the 3 variables
+        n_profiles = 2 * len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile
         values_dict.update({
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.column_names': columns_names,
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.n_profiles': n_profiles,
         })
-        def df_generator():
-            df = pd.DataFrame({
-                **{GlossaryEnergy.Years: years},
-                **dict(zip(columns_names, np.random.rand(len(columns_names))))
-            })
+        def df_generator(i, columns_names, n_profiles, years):
+            '''
+            args:
+                i [int]= index of the profile
+                columns_names [list] = list of names of variables
+                n_profiles [int]=  total number of profiles
+            assuming that there are nb_columns variables, assuming that there are one increasing and 1 decreasing
+            profile per variable, then df_generator generates those 2 profiles for each variable
+            the growing generic invest profiles are for the even values of i
+            the decreasing generic invest profiles are for the uneven values of i
+            Profiles are normalized between 0 and 1
+            '''
+            if n_profiles != 2 * len(columns_names):
+                raise ValueError(f'df_generator computes 2 generic invest profiles per column. n_profiles should be {2 * len(columns_names)} '
+                                 f'whereas it it {n_profiles}')
+            # growing normalized invest profiles are for the even values of i (arbitrary choice)
+            if i % 2 == 0:
+                normalized_profile = np.linspace(1.e-6, 3000., len(years))
+            else:
+                normalized_profile = np.linspace(3000., 1.e-6, len(years))
+            column_vect = np.zeros(len(columns_names))
+            # put the normalized profile in the column of variable corresponding to index i assuming that there are
+            # 2 profiles per variable
+            column_vect[int(i/2)] = 1.
+            data = np.array([normalized_profile]).T * column_vect
+            df = pd.DataFrame(data, columns=columns_names)
+            df.insert(0, GlossaryEnergy.Years, years, True)
+
             return df
 
         values_dict.update({
-            f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{i}": df_generator() for i in range(n_profiles)
+            f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{i}":
+                df_generator(i, columns_names, n_profiles, years) for i in range(n_profiles)
         })
         # impose values to the utilization ratios that are not design variables anymore
         list_utilization_ratio_var = ['fossil_FossilSimpleTechno_utilization_ratio_array',
@@ -128,8 +152,8 @@ class Study(ClimateEconomicsStudyManager):
             coeff_i = 1.
             design_space_ctrl_dict['variable'] = f'coeff_{i}'
             design_space_ctrl_dict['value'] = [np.array([coeff_i])]
-            design_space_ctrl_dict['lower_bnd'] = [np.array([1.0e-6])]
-            design_space_ctrl_dict['upper_bnd'] = [np.array([10.])]
+            design_space_ctrl_dict['lower_bnd'] = [np.array([0.])]
+            design_space_ctrl_dict['upper_bnd'] = [np.array([1.])]
             design_space_ctrl_dict['enable_variable'] = True
             design_space_ctrl_dict['activated_elem'] = [[True]]
             dspace_df = pd.concat([dspace_df, pd.DataFrame(design_space_ctrl_dict)], ignore_index=True)
