@@ -54,7 +54,17 @@ class Study(StudyOptimInvestDistrib):
 
         }
         dspace_UR = self.make_dspace_utilization_ratio(dspace_UR)
-        dspace = pd.concat([dspace_invests, dspace_UR])
+        # dspace pour Ine
+        dspace_Ine = self.make_dspace_Ine()
+        dspace = pd.concat([dspace_invests, dspace_UR, dspace_Ine])
+
+        # update design var descriptor with Ine variable
+        dvar_descriptor = data_witness[f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor']
+        design_var_descriptor_ine_variable = self.get_ine_dvar_descr()
+        
+        dvar_descriptor.update({
+            "share_non_energy_invest_ctrl": design_var_descriptor_ine_variable
+        })
 
 
         # Activate damage
