@@ -77,7 +77,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             self.test_population_discipline_analytic_small_pop,
             self.test_population_discipline_analytic_grad_temp_negative,
             self.test_population_discipline_analytic_3000_calories_pc,
-            self.test_population_discipline_deactivate_climate_effect()
+            self.test_population_discipline_deactivate_climate_effect(),
+            self.test_population_discipline_activate_pandemic_effect()
         ]
 
     def test_population_discipline_analytic_grad_output(self):
@@ -476,7 +477,6 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Test gradient population wrt economics_df
         '''
-
         assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
         assumptions_dict['activate_pandemic_effects'] = True
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
