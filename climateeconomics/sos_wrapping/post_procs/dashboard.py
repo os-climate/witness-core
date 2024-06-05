@@ -298,7 +298,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
-        new_chart.to_plotly().show()
+
         instanciated_charts.append(new_chart)
 
     return instanciated_charts
