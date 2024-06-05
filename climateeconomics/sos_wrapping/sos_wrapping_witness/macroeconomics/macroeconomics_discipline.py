@@ -102,7 +102,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                          'unit': '-', 'user_level': 2},
 
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
-        GlossaryCore.ShareNonEnergyInvestment['var_name']: GlossaryCore.ShareNonEnergyInvestment,
+        GlossaryCore.ShareNonEnergyInvestmentsValue: GlossaryCore.ShareNonEnergyInvestment,
         GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'unit': '-', 'user_level': 2},
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,

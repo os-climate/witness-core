@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 import pandas as pd
 
 from climateeconomics.database import DatabaseWitnessCore
@@ -56,7 +57,18 @@ class Study(StudyOptimInvestDistrib):
 
         }
         dspace_UR = self.make_dspace_utilization_ratio(dspace_UR)
-        dspace = pd.concat([dspace_invests, dspace_UR])
+
+        # dspace pour Ine
+        dspace_Ine = self.make_dspace_Ine()
+        dspace = pd.concat([dspace_invests, dspace_UR, dspace_Ine])
+
+        # update design var descriptor with Ine variable
+        dvar_descriptor = data_witness[f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor']
+        design_var_descriptor_ine_variable = self.get_ine_dvar_descr()
+
+        dvar_descriptor.update({
+            "share_non_energy_invest_ctrl": design_var_descriptor_ine_variable
+        })
 
         # Deactivate damage
         updated_data = {
@@ -75,6 +87,7 @@ class Study(StudyOptimInvestDistrib):
         data_witness.update({
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.ccs_price_percentage": 25.0,
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.co2_damage_price_percentage": 25.0,
+            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([27.0] * (GlossaryCore.NB_POLES_COARSE-1)),
         })
 
         return data_witness
@@ -82,5 +95,5 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()
+
