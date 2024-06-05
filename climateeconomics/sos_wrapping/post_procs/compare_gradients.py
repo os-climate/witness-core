@@ -47,7 +47,7 @@ def post_processing_filters(execution_engine, namespace):
     chart_list = ['Objective Lagrangian']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
-        'Charts', chart_list, chart_list, 'Charts'))
+        'Charts_grad', chart_list, chart_list, 'Charts_grad')) # name 'Charts' is already used by ssp_comparison post-proc
 
     return chart_filters
 
@@ -64,14 +64,14 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
     # Overload default value with chart filter
     if chart_filters is not None:
         for chart_filter in chart_filters:
-            if chart_filter.filter_key == 'Charts':
+            if chart_filter.filter_key == 'Charts_grad':
                 chart_list = chart_filter.selected_values
 
     if 'Objective Lagrangian' in chart_list:
         n_profiles = get_scenario_value(execution_engine, 'n_profiles', scenario_name)
         mdo_disc = execution_engine.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        inputs = [f'usecase_witness_grad_check_optim_sub.WITNESS_Eval.WITNESS.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
-        outputs = [f'usecase_witness_grad_check_optim_sub.{OBJECTIVE_LAGR}']
+        inputs = [f'{scenario_name}.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
+        outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"]
         # compute analytical gradient first at the converged point of the MDA
         mdo_disc.add_differentiated_inputs(inputs)
         mdo_disc.add_differentiated_outputs(outputs)
