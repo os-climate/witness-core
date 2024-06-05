@@ -65,7 +65,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         '''
         dm_data_dict_before = deepcopy(execution_engine.dm.get_data_dict_values())
         n_profiles = get_scenario_value(execution_engine, 'n_profiles', scenario_name)
-        n_profiles = 2
         mdo_disc = execution_engine.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         inputs = [f'{scenario_name}.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
         outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"]
