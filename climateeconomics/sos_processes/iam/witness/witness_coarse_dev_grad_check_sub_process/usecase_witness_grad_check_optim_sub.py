@@ -175,14 +175,20 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
+    uc_cls = Study()
+    uc_cls.test()
+    # comment above and uncomment below to test the post-processing
+    '''
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
-    ns = f'usecase_witness_grad_check_optim_sub.WITNESS_Eval.WITNESS'#.InvestmentDistribution'
+    ns = f'usecase_witness_grad_check_optim_sub.WITNESS_Eval.WITNESS'
     filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
 
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
     for graph in graph_list:
         graph.to_plotly().show()
+    '''
+
 

@@ -13,23 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import logging
+from copy import deepcopy
 import numpy as np
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-
-import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
-import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from climateeconomics.core.tools.post_proc import get_scenario_value
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
 from gemseo.utils.derivatives_approx import DisciplineJacApprox
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -68,20 +57,31 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
                 chart_list = chart_filter.selected_values
 
     if 'Objective Lagrangian' in chart_list:
+        '''
+        The l1s_test compare the variables before and after the post-processing. 
+        In the post-processing below, the approx gradient computes the mda in X+h as opposed to X for the initial mda
+        Therefore, data in the datamanager change and the l1s_test would fail. To prevent that, the data manager is recovered 
+        at the end of post-processing  
+        '''
+        dm_data_dict_before = deepcopy(execution_engine.dm.get_data_dict_values())
         n_profiles = get_scenario_value(execution_engine, 'n_profiles', scenario_name)
+        n_profiles = 2
         mdo_disc = execution_engine.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         inputs = [f'{scenario_name}.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
         outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"]
         # compute analytical gradient first at the converged point of the MDA
         mdo_disc.add_differentiated_inputs(inputs)
         mdo_disc.add_differentiated_outputs(outputs)
+        logging.info('Post-processing: Computing analytical gradient')
         grad_analytical = mdo_disc.linearize(force_no_exec=True) #can add data of the converged point (see sos_mdo_discipline.py)
 
         # computed approximated gradient in 2nd step so that the analytical gradient is not computed in X0 + h
         # warm start must have been removed so that mda and convergence criteria are the same for analytical and approximated gradients
+        logging.info('Post-processing: computing approximated gradient')
         approx = DisciplineJacApprox(mdo_disc, approx_method=DisciplineJacApprox.FINITE_DIFFERENCES)
         grad_approx = approx.compute_approx_jac(outputs, inputs)
 
+        logging.info('Post-processing: generating gradient charts')
         coeff_i = [i for i in range(n_profiles)]
         output = outputs[0]
         # data type: grad_approx = {output:{coeff_i:array([[X]])}}
@@ -89,9 +89,9 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         grad_approx_list = [grad_approx[output][inputs[i]][0][0] for i in range(n_profiles)]
 
         # plot the gradients in abs value
-        chart_name = f'df/dx({output})'
+        chart_name = f'Gradient validation of {OBJECTIVE_LAGR}'
 
-        new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient',
+        new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient [-]',
                                          chart_name=chart_name, y_min_zero=False)
 
         visible_line = True
@@ -104,7 +104,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         instanciated_charts.append(new_chart)
 
         # plot the relative error
-        chart_name = f'Relative error of df/dx({output})'
+        chart_name = f'Gradient relative error of {OBJECTIVE_LAGR}'
 
         new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient relative error [%]',
                                          chart_name=chart_name, y_min_zero=False)
@@ -116,6 +116,14 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             coeff_i, list(error), '', 'lines', visible_line)
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
+
+        # reset the data manager to initial value to pass the l1s tests
+        execution_engine.dm.set_values_from_dict(dm_data_dict_before)
+        execution_engine.dm.create_reduced_dm()
+        '''
+        NB: on the GUI, to visualize the gradients graph once the computation has run, it is necessary first to 
+        close the study and reopen it
+        '''
 
     return instanciated_charts
 
