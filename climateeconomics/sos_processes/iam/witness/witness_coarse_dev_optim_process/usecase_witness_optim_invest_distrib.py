@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.database import DatabaseWitnessCore
@@ -123,6 +124,27 @@ class Study(ClimateEconomicsStudyManager):
         out = pd.DataFrame(out)
         return out
 
+    def make_dspace_Ine(self):
+        return pd.DataFrame({
+            "variable": ["share_non_energy_invest_ctrl"],
+            "value": [[27.0] * GlossaryCore.NB_POLES_COARSE],
+            "lower_bnd": [[5.0] * GlossaryCore.NB_POLES_COARSE],
+            "upper_bnd": [[50.0] * GlossaryCore.NB_POLES_COARSE],
+            "enable_variable": [True],
+            "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
+        })
+
+    def get_ine_dvar_descr(self):
+        return {
+            'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'out_type': "dataframe",
+            'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index_name': GlossaryCore.Years,
+            'namespace_in': GlossaryCore.NS_WITNESS,
+            'namespace_out': GlossaryCore.NS_WITNESS,
+        }
+
     def setup_usecase(self, study_folder_path=None):
         ns = self.study_name
 
@@ -220,10 +242,27 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.DesignVariables.design_var_descriptor']
 
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
+
+
+        # Ajout design var Share Non Energy invest
+
+
         out.update({
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor': updated_dvar_descriptor
         })
+
+
+        import numpy as np
+        a = {
+          'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'out_type': "dataframe",
+            'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index_name': GlossaryCore.Years,
+            'namespace_in': "",
+            'namespace_out': GlossaryCore.NS_WITNESS,
+        }
         return out
 
 
