@@ -41,7 +41,7 @@ class Study(StudyOptimInvestDistrib):
         max_invest = 3000.
         dspace_invests = {
             'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [300., 300., 3000., True],
-            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [min_invest, min_invest, max_invest, False],
+            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [min_invest, min_invest, max_invest, True],
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, False],
@@ -50,7 +50,7 @@ class Study(StudyOptimInvestDistrib):
         min_UR = 50.
         dspace_UR = {
             'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
-            'renewable_RenewableSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
+            'renewable_RenewableSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
             'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
             'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
@@ -85,8 +85,8 @@ class Study(StudyOptimInvestDistrib):
 
         # Put low tax
         data_witness.update({
-            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.ccs_price_percentage": 25.0,
-            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.co2_damage_price_percentage": 25.0,
+            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.ccs_price_percentage": 0.0,
+            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.co2_damage_price_percentage": 0.0,
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([27.0] * (GlossaryCore.NB_POLES_COARSE-1)),
         })
 
