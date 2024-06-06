@@ -17,6 +17,3 @@ pytest==7.4.3
 pytest-cov==4.1.0
 pytest-xdist==3.4.0
 pytest-durations==1.2.0
-
-# Unused old requirements
-# scikit-learn>=0.24.2
