@@ -164,6 +164,7 @@ class Study(ClimateEconomicsStudyManager):
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
                              f'{ns}.cache_type': 'SimpleCache',
+                             f'{ns}.warm_start': False, # so that mda is computed identically for analytical and approx gradients
                              f'{ns}.design_space': dspace_df,
                              f'{ns}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
                              f'{ns}.eq_constraints': [],
@@ -174,16 +175,20 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
+    uc_cls = Study()
+    uc_cls.test()
+    # comment above and uncomment below to test the post-processing
+    '''
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
-        if 'Forest' in disc.get_disc_full_name():
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
+    ns = f'usecase_witness_grad_check_optim_sub.WITNESS_Eval.WITNESS'
+    filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
 
-            for graph in graph_list:
-                graph.to_plotly().show()
+    graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
+    for graph in graph_list:
+        graph.to_plotly().show()
+    '''
+
+

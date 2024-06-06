@@ -100,4 +100,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         coupling_builder.set_builder_info('cls_builder', chain_builders)
         #coupling_builder.set_builder_info('with_data_io', True)
 
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(GlossaryCore.NS_WITNESS,
+                                                                                'climateeconomics.sos_wrapping.post_procs.compare_gradients')
+
         return coupling_builder
