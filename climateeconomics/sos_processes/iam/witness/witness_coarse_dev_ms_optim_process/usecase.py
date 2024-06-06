@@ -31,7 +31,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
 
 
 class Study(ClimateEconomicsStudyManager):
-    UC1 = "- Damage, - Tax, Fossil only"
+    UC1 = "- Damage, - Tax"
     UC2 = "+ Damage, + Tax, Fossil only"
     UC3 = "+ Damage, + Tax, No CCUS"
     UC4 = "+ Damage, + Tax, All technos"
