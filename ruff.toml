@@ -1,0 +1,8 @@
+[lint]
+# extend-select = ["ALL"]
+extend-select = ["I"]
+
+ignore  = ["E722", "F841", "E501"]
+# E722 Do not use bare `except`
+# F841 Local variable `xxx` is assigned to but never used
+# E501 Line too long
