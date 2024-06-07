@@ -19,9 +19,9 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class ClimateEcoDiscipline(SoSWrapp):

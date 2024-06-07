@@ -13,17 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 from collections import defaultdict
-# mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
-import pandas as pd
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+import numpy as np
+
+# mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import Study as usecase_diet
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import (
+    Study as usecase_diet,
+)
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -85,7 +93,7 @@ class Study(ClimateEconomicsStudyManager):
         years = np.arange(self.year_start, self.year_end + 1, self.time_step)
 
         dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = \
-            dspace_df[f'forest_investment_array_mix']['value']
+            dspace_df['forest_investment_array_mix']['value']
         design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
                                                                 'out_type': 'dataframe',
                                                                 'key': 'forest_investment',
@@ -96,7 +104,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 }
         if 'CropEnergy' in self.agri_techno_list:
             dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = \
-                dspace_df[f'crop_investment_array_mix']['value']
+                dspace_df['crop_investment_array_mix']['value']
             design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
                                                                   'out_type': 'dataframe',
                                                                   'key': GlossaryCore.InvestmentsValue,
@@ -107,7 +115,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                   }
         if 'ManagedWood' in self.agri_techno_list:
             dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = \
-                dspace_df[f'managed_wood_investment_array_mix']['value']
+                dspace_df['managed_wood_investment_array_mix']['value']
             design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
                                                                           'out_type': 'dataframe',
                                                                           'key': GlossaryCore.InvestmentsValue,
@@ -117,7 +125,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           'namespace_out': 'ns_forest'
                                                                           }
         dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = \
-            dspace_df[f'deforestation_investment_ctrl']['value']
+            dspace_df['deforestation_investment_ctrl']['value']
         design_var_descriptor['deforestation_investment_ctrl'] = {'out_name': 'deforestation_investment',
                                                                   'out_type': 'dataframe',
                                                                   'key': GlossaryCore.InvestmentsValue,
@@ -127,7 +135,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                   'namespace_out': 'ns_forest'
                                                                   }
         dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = \
-            dspace_df[f'red_meat_percentage_ctrl']['value']
+            dspace_df['red_meat_percentage_ctrl']['value']
         design_var_descriptor['red_meat_percentage_ctrl'] = {'out_name': 'red_meat_percentage',
                                                              'out_type': 'dataframe',
                                                              'key': 'red_meat_percentage',
@@ -137,7 +145,7 @@ class Study(ClimateEconomicsStudyManager):
                                                              'namespace_out': 'ns_crop'
                                                              }
         dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = \
-            dspace_df[f'white_meat_percentage_ctrl']['value']
+            dspace_df['white_meat_percentage_ctrl']['value']
         design_var_descriptor['white_meat_percentage_ctrl'] = {'out_name': 'white_meat_percentage',
                                                                'out_type': 'dataframe',
                                                                'key': 'white_meat_percentage',

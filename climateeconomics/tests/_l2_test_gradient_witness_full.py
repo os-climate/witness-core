@@ -1,7 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
-
+Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -13,16 +11,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 '''
-from os.path import join, dirname, exists
+from os.path import dirname, exists, join
 
-from tqdm import tqdm
-
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+from tqdm import tqdm
+
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):

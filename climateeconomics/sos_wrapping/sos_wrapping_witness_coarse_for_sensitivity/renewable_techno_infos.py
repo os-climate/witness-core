@@ -15,8 +15,9 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import \
-    RenewableSimpleTechnoDiscipline
+from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import (
+    RenewableSimpleTechnoDiscipline,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 RENEWABLE_DEFAULT_TECHNO_DICT = RenewableSimpleTechnoDiscipline.techno_infos_dict_default

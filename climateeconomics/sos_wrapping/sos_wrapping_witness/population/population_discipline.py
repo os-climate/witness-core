@@ -21,14 +21,18 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-
 import sostrades_core.tools.post_processing.post_processing_tools as ppt
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.core.core_witness.population_model import Population
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 
 
 class PopulationDiscipline(ClimateEcoDiscipline):
@@ -592,7 +596,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(death_dict['diet']['cum_total'])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, f'cumulative malnutrition deaths', 'bar')
+                years, ordonate_data, 'cumulative malnutrition deaths', 'bar')
 
             new_chart.series.append(new_series)
 
@@ -726,7 +730,7 @@ def graph_model_cumulative_climate_deaths(death_dict, instanciated_charts):
     ordonate_data = list(death_dict['climate']['cum_total'])
 
     new_series = InstanciatedSeries(
-        years, ordonate_data, f'cumulative climatic deaths', 'bar')
+        years, ordonate_data, 'cumulative climatic deaths', 'bar')
 
     new_chart.series.append(new_series)
 
@@ -793,7 +797,7 @@ def graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated
     visible_line = True
     ordonate_data = list(death_dict['climate']['cum_total'])
     new_series = InstanciatedSeries(
-        years, ordonate_data, f'Cumulative climate deaths', 'bar')
+        years, ordonate_data, 'Cumulative climate deaths', 'bar')
     new_chart.series.append(new_series)
 
     ordonate_data = list(pop_df['total'])

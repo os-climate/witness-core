@@ -14,10 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
-    GHGemissionsDiscipline
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
+    GHGemissionsDiscipline,
+)
 
 
 class ProcessBuilder(BaseProcessBuilder):

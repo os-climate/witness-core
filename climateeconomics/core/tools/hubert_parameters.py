@@ -15,12 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import (
+    CopperResourceModel,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 resource_name = CopperResourceModel.resource_name #CopperResourceModel.resource_name  PlatinumResourceModel.resource_name

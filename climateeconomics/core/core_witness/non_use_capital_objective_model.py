@@ -16,9 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class NonUseCapitalObjective():

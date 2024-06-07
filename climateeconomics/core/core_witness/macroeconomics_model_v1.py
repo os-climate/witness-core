@@ -17,8 +17,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class MacroEconomics:
     """

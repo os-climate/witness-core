@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/21-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/21-2024/06/07 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class OrderOfMagnitude():
@@ -182,7 +182,7 @@ class Crop():
             self.construction_delay = self.techno_infos_dict[GlossaryCore.ConstructionDelay]
         else:
             print(
-                f'The construction_delay data is not set for Crop : default = 3 years  ')
+                'The construction_delay data is not set for Crop : default = 3 years  ')
 
     def create_dataframe(self):
         '''
@@ -483,7 +483,7 @@ class Crop():
         self.cost_details['Energy costs ($/MWh)'] = self.compute_other_primary_energy_costs()
 
         # Factory cost including CAPEX OPEX
-        self.cost_details['Factory ($/MWh)'] = self.cost_details[f'Capex ($/MWh)'] * (
+        self.cost_details['Factory ($/MWh)'] = self.cost_details['Capex ($/MWh)'] * (
                 self.crf + self.techno_infos_dict['Opex_percentage'])
 
         if 'nb_years_amort_capex' in self.techno_infos_dict:
@@ -600,7 +600,7 @@ class Crop():
         # each year
         # Grouping the aging distribution production by year and summing up the production
         age_distrib_prod_sum = self.age_distrib_prod_df.groupby([GlossaryCore.Years], as_index=False).agg(
-            {f'distrib_prod (TWh)': 'sum'}
+            {'distrib_prod (TWh)': 'sum'}
         )
         # Delete the 'biomass_dry (TWh)' column if it already exists in the self.production dataframe
         if 'biomass_dry (TWh)' in self.production:
@@ -621,7 +621,7 @@ class Crop():
 
         aging_distrib_year_df = pd.DataFrame(
             {'age': self.initial_age_distrib['age'].values})
-        aging_distrib_year_df[f'distrib_prod (TWh)'] = self.initial_age_distrib['distrib'] * \
+        aging_distrib_year_df['distrib_prod (TWh)'] = self.initial_age_distrib['distrib'] * \
                                                        self.initial_production / 100.0
         # Calculating yearly production based on investment
         production_from_invest = self.compute_prod_from_invest(
@@ -651,11 +651,11 @@ class Crop():
         age_values = aging_distrib_year_df['age'].values
         age_array = np.concatenate(tuple(
             age_values + i for i in range(len_years)))
-        prod_array = aging_distrib_year_df[f'distrib_prod (TWh)'].values.tolist(
+        prod_array = aging_distrib_year_df['distrib_prod (TWh)'].values.tolist(
         ) * len_years
 
         old_prod_aged = pd.DataFrame({GlossaryCore.Years: year_array, 'age': age_array,
-                                      f'distrib_prod (TWh)': prod_array})
+                                      'distrib_prod (TWh)': prod_array})
 
         # Concatenating the two created DataFrames
         self.age_distrib_prod_df = pd.concat(
@@ -668,7 +668,7 @@ class Crop():
             # delete years after year end
             & (self.age_distrib_prod_df[GlossaryCore.Years] < self.year_end + 1)
             # Fill Nan with zeros and suppress all zeros
-            & (self.age_distrib_prod_df[f'distrib_prod (TWh)'] != 0.0)
+            & (self.age_distrib_prod_df['distrib_prod (TWh)'] != 0.0)
             ]
         # Fill Nan with zeros
         self.age_distrib_prod_df.fillna(0.0, inplace=True)
@@ -694,7 +694,7 @@ class Crop():
         # Calculate production from investment based on Capex and InvestmentsValue
         # # Invest in M$ | Capex in $/MWh | Prod in TWh
         production_from_invest['prod_from_invest'] = production_from_invest[GlossaryCore.InvestmentsValue].values / \
-                                                     production_from_invest[f'Capex ($/MWh)'].values
+                                                     production_from_invest['Capex ($/MWh)'].values
         # Incrementing years by construction_delay (to start production at year + construction_delay)
         production_from_invest[GlossaryCore.Years] += construction_delay
         # Removing data for years beyond the study period
@@ -805,9 +805,9 @@ class Crop():
                 self.CH4_land_emissions_detailed[f'{food} (Gt)'] = 0.
                 self.N2O_land_emissions_detailed[f'{food} (Gt)'] = 0.
 
-            self.CO2_land_emissions[f'emitted_CO2_evol_cumulative'] += self.CO2_land_emissions_detailed[f'{food} (Gt)']
-            self.CH4_land_emissions[f'emitted_CH4_evol_cumulative'] += self.CH4_land_emissions_detailed[f'{food} (Gt)']
-            self.N2O_land_emissions[f'emitted_N2O_evol_cumulative'] += self.N2O_land_emissions_detailed[f'{food} (Gt)']
+            self.CO2_land_emissions['emitted_CO2_evol_cumulative'] += self.CO2_land_emissions_detailed[f'{food} (Gt)']
+            self.CH4_land_emissions['emitted_CH4_evol_cumulative'] += self.CH4_land_emissions_detailed[f'{food} (Gt)']
+            self.N2O_land_emissions['emitted_N2O_evol_cumulative'] += self.N2O_land_emissions_detailed[f'{food} (Gt)']
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 
@@ -1134,7 +1134,7 @@ class Crop():
             # jacobian by construction _delay)
             # Each column is then composed of [0,0,0... (dp/dx,dp/dx)*lifetime,
             # 0,0,0]
-            dpprod_dpinvest = 1 / self.cost_details[f'Capex ($/MWh)'].values[i] / \
+            dpprod_dpinvest = 1 / self.cost_details['Capex ($/MWh)'].values[i] / \
                               self.data_fuel_dict['calorific_value']
             is_invest_negative = max(
                 np.sign(self.cost_details[GlossaryCore.InvestmentsValue].values[i] + np.finfo(float).eps), 0.0)

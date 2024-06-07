@@ -13,13 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 # -*- coding: utf-8 -*-
-
-
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    INVEST_DISC_NAME,
+)
+from energy_models.sos_processes.witness_sub_process_builder import (
+    WITNESSSubProcessBuilder,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):

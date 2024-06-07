@@ -14,16 +14,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
@@ -135,7 +138,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             f'{namespace}.CO2_tax_minus_CO2_damage_constraint_df']
         self.ee.display_treeview_nodes(display_variables=True)
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_constraint_wrt_design_var_bspline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_constraint_wrt_design_var_bspline.pkl',
                             discipline=disc, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, local_data={},
                             parallel=True)

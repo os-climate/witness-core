@@ -13,9 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 import math
-from os.path import join, dirname
+from os.path import dirname, join
+
+import pandas as pd
+
 "read DataFrame"
 data_folder = join(dirname(dirname(__file__)), 'data_energy', 'data')
 data=pd.read_csv(join(data_folder, 'value_added_by_sector.csv'))
