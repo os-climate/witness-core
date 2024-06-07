@@ -30,8 +30,6 @@
         "docs/Makefile",
         ".flake8",
         ".prettierignore",
-        ".pre-commit-config.yaml",
-        "pyproject.toml",
         "climateeconomics/sos_processes/iam/witness/economics_sector_process/process.py",
         "climateeconomics/sos_processes/iam/witness_sect_wo_energy/process.py",
         "climateeconomics/sos_processes/iam/witness/witness_coarse_story_telling_optim_process/process.py",
