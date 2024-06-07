@@ -21,7 +21,8 @@
         "coveragerc",
         "yaml",
         "bat",
-        "tex"
+        "tex",
+        "toml"
     ],
     "files_to_ignore": [
         "LICENSE",
