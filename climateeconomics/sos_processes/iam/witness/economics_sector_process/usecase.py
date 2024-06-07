@@ -13,14 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.study_manager.study_manager import StudyManager
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):

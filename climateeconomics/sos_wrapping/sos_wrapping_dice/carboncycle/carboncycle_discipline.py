@@ -16,13 +16,16 @@ limitations under the License.
 '''
 import pandas as pd
 
-from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
-from climateeconomics.glossarycore import GlossaryCore
 # coding: utf-8
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CarbonCycleDiscipline(SoSWrapp):
@@ -208,7 +211,6 @@ def resize_array(array):
 
 
 def resize_index(index, array):
-
-    l = len(array)
-    new_index = index[0:l]
+    length = len(array)
+    new_index = index[0:length]
     return new_index

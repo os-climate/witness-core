@@ -15,18 +15,21 @@ limitations under the License.
 '''
 
 import ast
-from os.path import join, dirname
+from os.path import dirname, join
 
 import pandas as pd
-from numpy import array
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+from numpy import array
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 
 
 class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
@@ -113,7 +116,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             inputs.extend(self.ee.dm.get_all_namespaces_from_var_name(name))
         inputs = [
             'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
-        pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
+        pkl_name = 'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
 
         # self.override_dump_jacobian = True
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,

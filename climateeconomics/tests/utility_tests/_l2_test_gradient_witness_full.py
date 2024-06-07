@@ -14,19 +14,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname, exists
+from os.path import dirname, exists, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import (
+    Study as witness_usecase,
+)
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
@@ -106,7 +111,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_objective_wrt_state_var_on_witness_full.pkl', local_data={},
+                            filename='jacobian_objective_wrt_state_var_on_witness_full.pkl', local_data={},
                             discipline=disc, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-12, parallel=True)
 
@@ -662,7 +667,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        pkl_name = f'jacobian_lagrangian_objective_wrt_design_var_on_witness_full_invest_distrib_x.pkl'
+        pkl_name = 'jacobian_lagrangian_objective_wrt_design_var_on_witness_full_invest_distrib_x.pkl'
         self.ee.display_treeview_nodes(display_variables=True)
         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                             step=1.0e-15, derr_approx='complex_step', threshold=1e-8, local_data={},
@@ -737,7 +742,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                 'resources_CO2_emissions')]
             print(disc.name)
             print(i)
-            pkl_name = f'pickle_discilpine.pkl'
+            pkl_name = 'pickle_discilpine.pkl'
             filepath = join(dirname(__file__), AbstractJacobianUnittest.PICKLE_DIRECTORY, 'l2_witness_full',
                             pkl_name)
 

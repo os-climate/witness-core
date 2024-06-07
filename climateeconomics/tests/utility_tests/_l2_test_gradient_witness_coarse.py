@@ -14,20 +14,24 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname, exists
+from os.path import dirname, exists, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \
-    Study as witness_coarse_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
+    Study as witness_coarse_usecase,
+)
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 
 
 class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
@@ -145,7 +149,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names, local_data={},
                                    outputs=output_full_names,
                                    load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                      f'jacobian_objectives_constraint_wrt_design_var_on_witness_coarse.pkl'))
+                                                      'jacobian_objectives_constraint_wrt_design_var_on_witness_coarse.pkl'))
 
     def test_03_gradient_lagrangian_objective_wrt_design_var_on_witness_coarse_subprocess(self):
         '''
@@ -214,7 +218,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names, local_data={},
                                    outputs=output_full_names,
                                    load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                      f'jacobian_lagrangian_objective_wrt_design_var_on_witness_coarse.pkl'))
+                                                      'jacobian_lagrangian_objective_wrt_design_var_on_witness_coarse.pkl'))
 
         if disc.jac is not None:
             print(disc.jac[output_full_names[0]])
@@ -475,7 +479,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
                 print(inputs)
                 print(outputs)
-                pkl_name = f'jacobian_witness_coarse_subprocess_optim_eachdiscipline_adjoint.pkl'
+                pkl_name = 'jacobian_witness_coarse_subprocess_optim_eachdiscipline_adjoint.pkl'
                 filepath = join(dirname(__file__), AbstractJacobianUnittest.PICKLE_DIRECTORY, 'l2_witness_full',
                                 pkl_name)
                 if len(inputs) != 0:

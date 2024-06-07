@@ -15,15 +15,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class PopulationJacobianDiscTest(AbstractJacobianUnittest):
@@ -97,7 +101,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_output.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.PopulationDfValue}'], step=1e-15, derr_approx='complex_step')
@@ -119,7 +123,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_working_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
@@ -140,7 +144,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_working_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
@@ -163,7 +167,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_temp.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.PopulationDfValue}'], step=1e-15, derr_approx='complex_step')
@@ -206,7 +210,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_temp_neg.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_temp_neg.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
@@ -252,7 +256,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_gdp.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_big_gdp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
@@ -298,7 +302,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_augmente_temp.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_augmente_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
@@ -349,7 +353,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
 
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_small_pop.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_small_pop.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
@@ -400,7 +404,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
 
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_pop.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_big_pop.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
@@ -435,7 +439,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.override_dump_jacobian = True
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_population_discipline_3000_kcal.pkl',
+                            filename='jacobian_population_discipline_3000_kcal.pkl',
                             discipline=disc_techno,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}'],
@@ -464,7 +468,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_output_wo_climate_effect.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_output_wo_climate_effect.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
@@ -491,7 +495,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_output_w_pandemic_effect.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_output_w_pandemic_effect.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.TemperatureDfValue}'],

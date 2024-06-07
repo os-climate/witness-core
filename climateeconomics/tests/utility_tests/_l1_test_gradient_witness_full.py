@@ -17,13 +17,18 @@ limitations under the License.
 from os.path import dirname
 
 import numpy as np
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import (
+    Study as witness_usecase,
+)
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
@@ -87,7 +92,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_objective_wrt_state_var_on_witness_full.pkl', discipline=disc,
+                            filename='jacobian_objective_wrt_state_var_on_witness_full.pkl', discipline=disc,
                             inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', local_data={}, step=1.0e-12,
                             parallel=True)
@@ -137,7 +142,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         input_full_names.extend(
             [f'Test.EnergyMix.{energy}.invest_techno_mix' for energy in usecase.energy_list])
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_wrt_state_var_on_witness_full.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_residus_wrt_state_var_on_witness_full.pkl',
                             discipline=disc, inputs=input_full_names, local_data={},
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
 
@@ -232,7 +237,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         #     input_full_names.append(
         #         f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_wrt_design_var_on_witness_full.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_residus_wrt_design_var_on_witness_full.pkl',
                             local_data={}, discipline=disc,
                             inputs=[f'{namespace}.EnergyMix.electricity.CoalGen.electricity_CoalGen_array_mix',
                                     f'{namespace}.EnergyMix.liquid_fuel.Refinery.liquid_fuel_Refinery_array_mix',
@@ -281,7 +286,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         #                     f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_objective_wrt_design_var_on_witness_full.pkl', discipline=disc,
+                            filename='jacobian_objective_wrt_design_var_on_witness_full.pkl', discipline=disc,
                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                             inputs=input_full_names,
                             outputs=output_full_names, parallel=True)
@@ -381,7 +386,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.display_treeview_nodes(display_variables=True)
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_adjoint_with_bsplines_witness_full.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_adjoint_with_bsplines_witness_full.pkl',
                             discipline=disc, local_data={}, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
 

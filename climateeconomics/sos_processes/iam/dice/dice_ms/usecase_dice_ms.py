@@ -14,15 +14,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.dice.dice_model.usecase import Study as dice_usecase
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from climateeconomics.sos_processes.iam.dice.dice_model.usecase import (
+    Study as dice_usecase,
+)
 
 
 class Study(StudyManager):

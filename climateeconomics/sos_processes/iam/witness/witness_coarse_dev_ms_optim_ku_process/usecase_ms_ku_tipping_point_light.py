@@ -13,21 +13,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from os.path import join, dirname
+from os.path import dirname, join
+
 # from os import environ
 # environ['USE_PETSC'] = "False"
-
 import pandas as pd
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2_optim_story_telling import \
-    Study as Study1
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_4_optim_story_telling import \
-    Study as Study3
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_7_optim_story_telling import \
-    Study as Study4
-
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import Study as uc_ms_mda
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
+    Study as uc_ms_mda,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2_optim_story_telling import (
+    Study as Study1,
+)
 
 
 class Study(ClimateEconomicsStudyManager):

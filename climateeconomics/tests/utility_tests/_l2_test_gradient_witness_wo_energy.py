@@ -20,12 +20,15 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
-    DataStudy as datacase_witness
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import (
+    DataStudy as datacase_witness,
+)
 
 
 class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
@@ -113,7 +116,7 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
                              ]
 
         disc_closed_loop = self.ee.root_process
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_witness_wo_energy_NR.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_obj_witness_wo_energy_NR.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 
     def test_02_check_gradient_redidus_witness_wo_energy(self):
@@ -124,7 +127,7 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         output_full_names = [f'{self.name}.{GlossaryCore.UtilityDfValue}']
 
         disc_closed_loop = self.ee.root_process
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_witness_wo_energy.pkl', local_data = {},discipline=disc_closed_loop, inputs=input_full_names,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_residus_witness_wo_energy.pkl', local_data = {},discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, output_column=GlossaryCore.DiscountedUtility, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 
     def test_03_check_gradient_obj_energy_outputs_witness_wo_energy(self):
@@ -139,7 +142,7 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
                              f'{self.name}.CO2_tax_minus_CO2_damage_constraint_df']
 
         disc_closed_loop = self.ee.root_process
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_energy_outputs_witness_wo_energy.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_obj_energy_outputs_witness_wo_energy.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 
     def test_04_check_gradient_residus_energy_outputs_witness_wo_energy(self):
@@ -151,7 +154,7 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         output_full_names = [f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}']
 
         disc_closed_loop = self.ee.root_process
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_energy_outputs_witness_wo_energy.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_residus_energy_outputs_witness_wo_energy.pkl',local_data = {}, discipline=disc_closed_loop, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, threshold=1e-5, parallel=True)
 
 

@@ -16,19 +16,22 @@ limitations under the License.
 
 import numpy as np
 import plotly.graph_objects as go
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from plotly.subplots import make_subplots
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
 
 import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
 import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -86,7 +89,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         graph_flue_gas = []
         for year_index, year in enumerate(years):
             storage_limit = co2_emissions['carbon_storage Limited by capture (Gt)'][year_index]
-            graph_gross_co2.append(total_ghg_df[f'Total CO2 emissions'][year_index] + storage_limit)
+            graph_gross_co2.append(total_ghg_df['Total CO2 emissions'][year_index] + storage_limit)
             captured_total = carbon_captured['DAC'][year_index]*0.001+carbon_captured['flue gas'][year_index]*0.001
             if captured_total > 0.0:
                 proportion_stockage = storage_limit/captured_total
@@ -98,7 +101,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         fig.add_trace(go.Scatter(
             x=years,
-            y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+            y=total_ghg_df['Total CO2 emissions'].to_list(),
             fill='tonexty',  # fill area between trace0 and trace1
             mode='lines',
             fillcolor='rgba(200, 200, 200, 0.0)',
@@ -126,7 +129,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         ), secondary_y=False)
 
         fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
-        fig.update_yaxes(title_text=f'CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
+        fig.update_yaxes(title_text='CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
 
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
@@ -190,7 +193,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         forest_investment = get_scenario_value(execution_engine, GlossaryEnergy.ForestInvestmentValue, scenario_name)
         years = forest_investment[GlossaryEnergy.Years]
 
-        chart_name_energy = f'Distribution of investments on each energy '
+        chart_name_energy = 'Distribution of investments on each energy '
 
         new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                     chart_name=chart_name_energy, stacked_bar=True)

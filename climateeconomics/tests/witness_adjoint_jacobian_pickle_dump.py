@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
 import climateeconomics.tests.utility_tests as jacobian_target
-
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-
 
 if __name__ == '__main__':
 

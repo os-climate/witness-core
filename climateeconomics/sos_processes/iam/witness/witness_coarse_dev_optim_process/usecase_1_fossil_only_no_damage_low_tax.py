@@ -16,11 +16,10 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
-    Study as StudyOptimInvestDistrib
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import (
+    Study as StudyOptimInvestDistrib,
+)
 
 
 class Study(StudyOptimInvestDistrib):

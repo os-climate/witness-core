@@ -14,12 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.data_manager import DataManager
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries
-from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
-    InstantiatedParetoFrontOptimalChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+)
+from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import (
+    InstantiatedParetoFrontOptimalChart,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -73,8 +77,8 @@ def post_processings(execution_engine, namespace, filters):
         min_value_welfare = min(list(welfare.values()))
 
         new_pareto_chart = InstantiatedParetoFrontOptimalChart(
-            abscissa_axis_name=f'Temperature increase since industrial revolution in degree Celsius',
-            primary_ordinate_axis_name=f'Welfare',
+            abscissa_axis_name='Temperature increase since industrial revolution in degree Celsius',
+            primary_ordinate_axis_name='Welfare',
             abscissa_axis_range=[min_temp - max_temp * 0.05, max_temp * 1.05],
             primary_ordinate_axis_range=[
                 min_value_welfare - max_value_welfare * 0.03, max_value_welfare * 1.03],

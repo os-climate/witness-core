@@ -15,7 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import (
+    SectorDiscipline,
+)
 
 
 class ServicesDiscipline(SectorDiscipline):
