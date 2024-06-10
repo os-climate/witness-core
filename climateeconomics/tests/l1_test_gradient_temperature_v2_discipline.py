@@ -15,14 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 from pandas import read_csv
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
@@ -88,7 +90,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_temperature_v2_discipline_DICE.pkl',
+                            filename='jacobian_temperature_v2_discipline_DICE.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
@@ -148,7 +150,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_temperature_v2_discipline_Myhre.pkl',
+                            filename='jacobian_temperature_v2_discipline_Myhre.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
@@ -208,7 +210,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_temperature_v2_discipline_Meinshausen.pkl',
+                            filename='jacobian_temperature_v2_discipline_Meinshausen.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
@@ -268,7 +270,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_temperature_v2_discipline_etminan.pkl',
+                            filename='jacobian_temperature_v2_discipline_etminan.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
@@ -326,7 +328,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_temperature_v2_discipline_Meinshausen.pkl',
+                            filename='jacobian_temperature_v2_discipline_Meinshausen.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
@@ -379,7 +381,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_v2_discipline_etminan_lower.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_temperature_v2_discipline_etminan_lower.pkl',
                             local_data = disc_techno.local_data,
                             discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], output_column='CO2 forcing', derr_approx='finite_differences')

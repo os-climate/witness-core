@@ -21,12 +21,16 @@ import numpy as np
 import pandas as pd
 from numpy import arange
 from pandas import read_csv
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

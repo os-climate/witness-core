@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/07-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/07-2024/06/07 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from pandas import DataFrame
+from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
 class GHGEmissions:
@@ -132,8 +131,8 @@ class GHGEmissions:
             self.gwp_emissions[f'{ghg}_20'] = self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_20[ghg]
             self.gwp_emissions[f'{ghg}_100'] = self.ghg_emissions_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)] * self.gwp_100[ghg]
 
-        self.gwp_emissions[f'Total GWP (20-year basis)'] = self.gwp_emissions[[f'{ghg}_20' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
-        self.gwp_emissions[f'Total GWP (100-year basis)'] = self.gwp_emissions[[f'{ghg}_100' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
+        self.gwp_emissions['Total GWP (20-year basis)'] = self.gwp_emissions[[f'{ghg}_20' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
+        self.gwp_emissions['Total GWP (100-year basis)'] = self.gwp_emissions[[f'{ghg}_100' for ghg in self.GHG_TYPE_LIST]].sum(axis=1)
 
     def compute_co2_emissions_for_carbon_cycle(self):
         co2_emissions_df = self.ghg_emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]].rename(

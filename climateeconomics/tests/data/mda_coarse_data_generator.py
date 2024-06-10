@@ -14,16 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-# -*- coding: utf-8 -*-
-"""
-Created on Monday Nov 29 17:21:18 2021
-
-"""
 import pickle
 
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as MDA_Coarse
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
+    Study as MDA_Coarse,
+)
 
 
 def launch_data_pickle_generation(directory=''):

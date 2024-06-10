@@ -14,18 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 import unittest
+
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class AgricultureMixModelTestCase(unittest.TestCase):

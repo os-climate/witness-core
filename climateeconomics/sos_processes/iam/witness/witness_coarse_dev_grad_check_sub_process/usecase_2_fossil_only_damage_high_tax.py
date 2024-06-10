@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_grad_check_sub_process.usecase_witness_grad_check_optim_sub import \
-    Study as StudySubOptim
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_grad_check_sub_process.usecase_witness_grad_check_optim_sub import (
+    Study as StudySubOptim,
+)
 
 
 class Study(StudySubOptim):
