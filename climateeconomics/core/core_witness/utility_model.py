@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,22 +13,23 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class UtilityModel():
-    '''
+class UtilityModel:
+    """
     Used to compute population welfare and utility
-    '''
+    """
 
     def __init__(self, param):
-        '''
+        """
         Constructor
-        '''
+        """
         self.param = param
         self.per_capita_consumption_ref = None
 
@@ -46,26 +47,21 @@ class UtilityModel():
         self.year_end = self.param[GlossaryCore.YearEnd]
         self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
 
-        self.conso_elasticity = self.param['conso_elasticity']  # elasmu
-        self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
-        self.initial_raw_energy_price = self.param['initial_raw_energy_price']
-        self.init_discounted_utility = self.param['init_discounted_utility']
+        self.conso_elasticity = self.param["conso_elasticity"]  # elasmu
+        self.init_rate_time_pref = self.param["init_rate_time_pref"]  # prstp
+        self.initial_raw_energy_price = self.param["initial_raw_energy_price"]
+        self.init_discounted_utility = self.param["init_discounted_utility"]
         self.per_capita_consumption_ref = self.param[GlossaryCore.PerCapitaConsumptionUtilityRefName]
-        #self.min_period_utility = 0.01²
+        # self.min_period_utility = 0.01²
 
     def create_dataframe(self):
-        '''
+        """
         Create the dataframe and fill it with values at year_start
-        '''
-        years_range = np.arange(
-            self.year_start,
-            self.year_end + 1,
-            self.time_step)
+        """
+        years_range = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.years_range = years_range
         self.n_years = len(self.years_range)
-        utility_df = pd.DataFrame(
-            index=years_range,
-            columns=GlossaryCore.UtilityDf['dataframe_descriptor'].keys())
+        utility_df = pd.DataFrame(index=years_range, columns=GlossaryCore.UtilityDf["dataframe_descriptor"].keys())
 
         for key in utility_df.keys():
             utility_df[key] = 0
@@ -79,8 +75,7 @@ class UtilityModel():
          rr(t) = 1/((1+prstp)**(tstep*(t.val-1)));
         """
         t = ((self.years_range - self.year_start) / self.time_step) + 1
-        u_discount_rate = 1 / ((1 + self.init_rate_time_pref)
-                               ** (self.time_step * (t - 1)))
+        u_discount_rate = 1 / ((1 + self.init_rate_time_pref) ** (self.time_step * (t - 1)))
         self.utility_df[GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
 
@@ -94,7 +89,7 @@ class UtilityModel():
         """Per capita consumption utilty is ((percapitaconso**(1-elasmu)-1)/(1-elasmu)-1)
         leads to <0 values at small pc_consumption values => keep pc_consumption only"""
         pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-        #consumption_utility = (pc_consumption ** (1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
+        # consumption_utility = (pc_consumption ** (1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
         self.utility_df[GlossaryCore.PerCapitaConsumptionUtility] = pc_consumption
 
     def compute_utility(self):
@@ -121,34 +116,40 @@ class UtilityModel():
     def compute_normalized_welfare(self):  # rescalenose
         """Normalized Welfare = sum of discounted utility / n_years / init discounted utility"""
 
-        self.normalized_welfare = np.asarray([self.utility_df[GlossaryCore.DiscountedUtility].sum()]) / self.n_years / self.init_discounted_utility
+        self.normalized_welfare = (
+            np.asarray([self.utility_df[GlossaryCore.DiscountedUtility].sum()])
+            / self.n_years
+            / self.init_discounted_utility
+        )
 
     def compute_negative_welfare_objective(self):
         """
         Compute negative welfare objective as - welfare / init_discounted_utility * n_years
         """
-        self.negative_welfare_objective = -1.*  self.normalized_welfare
+        self.negative_welfare_objective = -1.0 * self.normalized_welfare
 
     def compute_inverse_welfare_objective(self):
-        self.inverse_welfare_objective = 1. / self.normalized_welfare
+        self.inverse_welfare_objective = 1.0 / self.normalized_welfare
 
     def compute_negative_last_year_utility_objective(self):
         """objective for utility at last year"""
         last_year_discounted_utility = self.utility_df[GlossaryCore.DiscountedUtility][self.year_end]
-        self.last_year_utility_objective = np.asarray([- last_year_discounted_utility / self.init_discounted_utility])
+        self.last_year_utility_objective = np.asarray([-last_year_discounted_utility / self.init_discounted_utility])
 
     def compute_per_capita_consumption_utility_objective(self):
         """
         Objective for capita consumption (without energy price effect)
         """
-        self.per_capita_consumption_objective = -1.0 * (np.asarray([self.utility_df[GlossaryCore.PerCapitaConsumptionUtility].sum()])
-                                                 / (self.n_years * self.per_capita_consumption_ref))
+        self.per_capita_consumption_objective = -1.0 * (
+            np.asarray([self.utility_df[GlossaryCore.PerCapitaConsumptionUtility].sum()])
+            / (self.n_years * self.per_capita_consumption_ref)
+        )
 
     ######### GRADIENTS ########
 
     def d_energy_price_ratio_d_energy_price(self):
         energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
-        return np.diag(-1.* self.energy_price_ref / energy_price ** 2)
+        return np.diag(-1.0 * self.energy_price_ref / energy_price**2)
 
     def d_utility_d_energy_price(self):
         """utility = per capita consumption utility * energy price ratio"""
@@ -159,8 +160,8 @@ class UtilityModel():
     def d_pc_consumption_utility_d_per_capita_consumption(self):
         """pass"""
         pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-        #d_pc_consumption_utility_d_pc_consumption = pc_consumption ** (-self.conso_elasticity)
-        #np.diag(d_pc_consumption_utility_d_pc_consumption)
+        # d_pc_consumption_utility_d_pc_consumption = pc_consumption ** (-self.conso_elasticity)
+        # np.diag(d_pc_consumption_utility_d_pc_consumption)
 
         return np.identity(len(pc_consumption))
 
@@ -194,9 +195,11 @@ class UtilityModel():
     def d_objectives_d_user_input(self, d_discounted_utility_d_user_input):
         d_normalized_welfare_d_user_input = self.d_normalized_welfare_d_user_input(d_discounted_utility_d_user_input)
         d_negative_welfare_d_normlized_welfare = -1
-        d_negative_welfare_objective_d_user_input = d_negative_welfare_d_normlized_welfare * d_normalized_welfare_d_user_input
+        d_negative_welfare_objective_d_user_input = (
+            d_negative_welfare_d_normlized_welfare * d_normalized_welfare_d_user_input
+        )
 
-        d_inverse_welfare_d_welfare = - 1. / self.normalized_welfare ** 2
+        d_inverse_welfare_d_welfare = -1.0 / self.normalized_welfare**2
         d_inverse_welfare_objective_d_user_input = d_inverse_welfare_d_welfare * d_normalized_welfare_d_user_input
 
         return d_negative_welfare_objective_d_user_input, d_inverse_welfare_objective_d_user_input
@@ -204,17 +207,17 @@ class UtilityModel():
     def d_last_utility_objective_d_user_input(self, d_discounted_utility_d_user_input):
         """Last utility objective = - discounted utility at year end / discounted utility at year start"""
         d_last_utility_d_discounted_utility = np.zeros_like(self.years_range, dtype=float)
-        d_last_utility_d_discounted_utility[-1] = -1. / self.init_discounted_utility
+        d_last_utility_d_discounted_utility[-1] = -1.0 / self.init_discounted_utility
         d_last_utility_objective_d_user_input = d_last_utility_d_discounted_utility @ d_discounted_utility_d_user_input
         return d_last_utility_objective_d_user_input
 
     def d_pc_consumption_utility_objective_d_per_capita_consumption(self):
         """derivative of consumption utility per capita objective wrt per capita consumption"""
         pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-        d_pc_consumption_utility_objective_d_pc_consumption = -1.0 * np.sum(np.identity(len(pc_consumption)),
-                                                                     axis=0) / (self.n_years * self.per_capita_consumption_ref)
+        d_pc_consumption_utility_objective_d_pc_consumption = (
+            -1.0 * np.sum(np.identity(len(pc_consumption)), axis=0) / (self.n_years * self.per_capita_consumption_ref)
+        )
         return d_pc_consumption_utility_objective_d_pc_consumption
-
 
     def compute(self, economics_df, energy_mean_price, population_df):
         """compute"""
@@ -239,7 +242,7 @@ class UtilityModel():
 
 def cutoff_function(x: np.ndarray, min_value):
     """cuttoff function"""
-    capped_values = min_value / 10. * (9 + np.exp(x / min_value - 1))
+    capped_values = min_value / 10.0 * (9 + np.exp(x / min_value - 1))
     out = np.copy(x)
     out[x <= min_value] = capped_values[x <= min_value]
     return out
@@ -247,7 +250,7 @@ def cutoff_function(x: np.ndarray, min_value):
 
 def d_cutoff_function(x, dx, min_value):
     """derivative of cutoff function"""
-    d_capping = np.exp(x / min_value - 1) / 10.
+    d_capping = np.exp(x / min_value - 1) / 10.0
     d_cutoff = np.ones_like(x)
     d_cutoff[x <= min_value] = d_capping[x <= min_value]
     out = d_cutoff * dx

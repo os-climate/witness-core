@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,68 +13,72 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
-        self.name = 'Test'
-        self.model_name = 'utility'
-        self.year_start =GlossaryCore.YearStartDefault
+        self.name = "Test"
+        self.model_name = "utility"
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
+        ns_dict = {
+            GlossaryCore.NS_WITNESS: f"{self.name}",
+            "ns_public": f"{self.name}",
+            GlossaryCore.NS_ENERGY_MIX: f"{self.name}",
+            GlossaryCore.NS_REFERENCE: f"{self.name}",
+            GlossaryCore.NS_FUNCTIONS: f"{self.name}",
+        }
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        mod_path = "climateeconomics.sos_wrapping.sos_wrapping_witness.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline"
+        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        
-        self.economics_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
-            GlossaryCore.PerCapitaConsumption: np.linspace(12, 6, len(self.years)),
-        })
 
-        self.population_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.PopulationValue: np.linspace(7886, 9550, len(self.years))
-        })
+        self.economics_df = pd.DataFrame(
+            {
+                GlossaryCore.Years: self.years,
+                GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+                GlossaryCore.PerCapitaConsumption: np.linspace(12, 6, len(self.years)),
+            }
+        )
+
+        self.population_df = pd.DataFrame(
+            {GlossaryCore.Years: self.years, GlossaryCore.PopulationValue: np.linspace(7886, 9550, len(self.years))}
+        )
         self.population_df.index = self.years
 
-        energy_mean_price = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.EnergyPriceValue: np.linspace(200, 10, len(self.years))
-        })
+        energy_mean_price = pd.DataFrame(
+            {GlossaryCore.Years: self.years, GlossaryCore.EnergyPriceValue: np.linspace(200, 10, len(self.years))}
+        )
 
-        self.values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-                            f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                            f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
+        self.values_dict = {
+            f"{self.name}.{GlossaryCore.EconomicsDfValue}": self.economics_df,
+            f"{self.name}.{GlossaryCore.PopulationDfValue}": self.population_df,
+            f"{self.name}.{GlossaryCore.EnergyMeanPriceValue}": energy_mean_price,
+        }
 
         self.ee.load_study_from_input_dict(self.values_dict)
-
 
     def analytic_grad_entry(self):
         return [
@@ -85,14 +89,23 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
-                                    f'{self.name}.{GlossaryCore.PopulationDfValue}'],
-                            outputs=[f'{self.name}.{GlossaryCore.WelfareObjective}',
-                                     f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}',
-                                     f'{self.name}.{GlossaryCore.LastYearDiscountedUtilityObjective}',
-                                     f'{self.name}.{GlossaryCore.PerCapitaConsumptionUtilityObjectiveName}'
-                            ],
-                            derr_approx='complex_step')
+        self.check_jacobian(
+            location=dirname(__file__),
+            filename=f"jacobian_utility_discipline_welfare.pkl",
+            discipline=disc_techno,
+            step=1e-15,
+            local_data=disc_techno.local_data,
+            inputs=[
+                f"{self.name}.{GlossaryCore.EconomicsDfValue}",
+                f"{self.name}.{GlossaryCore.EnergyMeanPriceValue}",
+                f"{self.name}.{GlossaryCore.PopulationDfValue}",
+            ],
+            outputs=[
+                f"{self.name}.{GlossaryCore.WelfareObjective}",
+                f"{self.name}.{GlossaryCore.UtilityDfValue}",
+                f"{self.name}.{GlossaryCore.NegativeWelfareObjective}",
+                f"{self.name}.{GlossaryCore.LastYearDiscountedUtilityObjective}",
+                f"{self.name}.{GlossaryCore.PerCapitaConsumptionUtilityObjectiveName}",
+            ],
+            derr_approx="complex_step",
+        )

@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,41 +13,43 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class PolicyDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
 
-        self.name = 'Test'
+        self.name = "Test"
         self.ee = ExecutionEngine(self.name)
 
     def analytic_grad_entry(self):
-        return [
-            self.test_policy_analytic_grad
-        ]
+        return [self.test_policy_analytic_grad]
 
     def test_policy_analytic_grad(self):
 
-        self.model_name = 'policy'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+        self.model_name = "policy"
+        ns_dict = {
+            GlossaryCore.NS_WITNESS: f"{self.name}",
+            "ns_public": f"{self.name}",
+            GlossaryCore.NS_REFERENCE: f"{self.name}",
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        mod_path = "climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline"
+        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -55,38 +57,48 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-        CCS_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(100, 900, len(years))})
+        CCS_price = pd.DataFrame({GlossaryCore.Years: years, "ccs_price_per_tCO2": np.linspace(100, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(300, 700, len(years))}
+        )
 
-        values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,
-                       f'{self.name}.ccs_price_percentage': 50.,
-                       f'{self.name}.co2_damage_price_percentage': 70.
-                       }
+        values_dict = {
+            f"{self.name}.CCS_price": CCS_price,
+            f"{self.name}.{GlossaryCore.CO2DamagePrice}": CO2_damage,
+            f"{self.name}.ccs_price_percentage": 50.0,
+            f"{self.name}.co2_damage_price_percentage": 70.0,
+        }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
 
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline.pkl',
-                            local_data = disc.local_data,discipline=disc, inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
-                            outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
+        disc = self.ee.dm.get_disciplines_with_name(f"{self.name}.{self.model_name}")[
+            0
+        ].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(
+            location=dirname(__file__),
+            filename=f"jacobian_policy_discipline.pkl",
+            local_data=disc.local_data,
+            discipline=disc,
+            inputs=[f"{self.name}.CCS_price", f"{self.name}.{GlossaryCore.CO2DamagePrice}"],
+            outputs=[f"{self.name}.{GlossaryCore.CO2TaxesValue}"],
+            step=1e-15,
+            derr_approx="complex_step",
+        )
 
     def test_policy_analytic_grad_2(self):
 
-        self.model_name = 'policy'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+        self.model_name = "policy"
+        ns_dict = {
+            GlossaryCore.NS_WITNESS: f"{self.name}",
+            "ns_public": f"{self.name}",
+            GlossaryCore.NS_REFERENCE: f"{self.name}",
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        mod_path = "climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline"
+        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -94,36 +106,47 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-        CCS_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(900, 900, len(years))})
+        CCS_price = pd.DataFrame({GlossaryCore.Years: years, "ccs_price_per_tCO2": np.linspace(900, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(300, 700, len(years))}
+        )
 
-        values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,
-                       f'{self.name}.ccs_price_percentage': 50.,
-                       f'{self.name}.co2_damage_price_percentage': 70.
-                       }
+        values_dict = {
+            f"{self.name}.CCS_price": CCS_price,
+            f"{self.name}.{GlossaryCore.CO2DamagePrice}": CO2_damage,
+            f"{self.name}.ccs_price_percentage": 50.0,
+            f"{self.name}.co2_damage_price_percentage": 70.0,
+        }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
-                            outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
+        disc = self.ee.dm.get_disciplines_with_name(f"{self.name}.{self.model_name}")[
+            0
+        ].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(
+            location=dirname(__file__),
+            filename=f"jacobian_policy_discipline2.pkl",
+            discipline=disc,
+            local_data=disc.local_data,
+            inputs=[f"{self.name}.CCS_price", f"{self.name}.{GlossaryCore.CO2DamagePrice}"],
+            outputs=[f"{self.name}.{GlossaryCore.CO2TaxesValue}"],
+            step=1e-15,
+            derr_approx="complex_step",
+        )
 
     def test_policy_analytic_grad_3(self):
 
-        self.model_name = 'policy'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+        self.model_name = "policy"
+        ns_dict = {
+            GlossaryCore.NS_WITNESS: f"{self.name}",
+            "ns_public": f"{self.name}",
+            GlossaryCore.NS_REFERENCE: f"{self.name}",
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        mod_path = "climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline"
+        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -131,20 +154,30 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-        CCS_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(-100, -900, len(years))})
+        CCS_price = pd.DataFrame({GlossaryCore.Years: years, "ccs_price_per_tCO2": np.linspace(-100, -900, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(-300, -700, len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(-300, -700, len(years))}
+        )
 
-        values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,
-                       f'{self.name}.ccs_price_percentage': 50.,
-                       f'{self.name}.co2_damage_price_percentage': 60.
-                       }
+        values_dict = {
+            f"{self.name}.CCS_price": CCS_price,
+            f"{self.name}.{GlossaryCore.CO2DamagePrice}": CO2_damage,
+            f"{self.name}.ccs_price_percentage": 50.0,
+            f"{self.name}.co2_damage_price_percentage": 60.0,
+        }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
-                            outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
+        disc = self.ee.dm.get_disciplines_with_name(f"{self.name}.{self.model_name}")[
+            0
+        ].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(
+            location=dirname(__file__),
+            filename=f"jacobian_policy_discipline3.pkl",
+            discipline=disc,
+            local_data=disc.local_data,
+            inputs=[f"{self.name}.CCS_price", f"{self.name}.{GlossaryCore.CO2DamagePrice}"],
+            outputs=[f"{self.name}.{GlossaryCore.CO2TaxesValue}"],
+            step=1e-15,
+            derr_approx="complex_step",
+        )

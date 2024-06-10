@@ -1,4 +1,5 @@
 # Resources wrappings
 
 Undocumented :
-* Resource post processing (in *post_proc_resource*)
+
+- Resource post processing (in _post_proc_resource_)

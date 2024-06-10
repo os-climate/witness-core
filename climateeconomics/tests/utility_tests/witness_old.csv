@@ -999,5 +999,3 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 7,0.000,0.000,0.155,0.022,C:\Users\ng87a63\Desktop\SoSTrades\witness-energy\energy_models\models\electricity\coal_gen\coal_gen.py:91(compute_dprod_dinvest)
 6,0.020,0.003,0.154,0.026,C:\Users\ng87a63\Desktop\SoSTrades\sosgemseo\src\gemseo\core\jacobian_assembly.py:149(compute_sizes)
 531039,0.154,0.000,0.154,0.000,C:\Users\ng87a63\Anaconda3\lib\site-packages\pandas\core\flags.py:51(allows_duplicate_labels)
-
-

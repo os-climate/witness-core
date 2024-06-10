@@ -1,3 +1,3 @@
 # Resource Models
 
-Recources data are located in *resources_data* folder
+Recources data are located in _resources_data_ folder

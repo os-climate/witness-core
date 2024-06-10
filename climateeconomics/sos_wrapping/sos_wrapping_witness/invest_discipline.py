@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,15 +13,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class InvestDiscipline(ClimateEcoDiscipline):
@@ -29,68 +34,84 @@ class InvestDiscipline(ClimateEcoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Investissement Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': '',
-        'version': '',
+        "label": "WITNESS Investissement Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "",
+        "version": "",
     }
-    _maturity = 'Research'
+    _maturity = "Research"
     years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     DESC_IN = {
-        'energy_investment_macro': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
-        GlossaryCore.EnergyInvestmentsValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX},
-        'invest_norm': {'type': 'float', 'default': 10.0},
-        'formulation': {'type': 'string', 'default': 'objective', 'possile_values': ['objective', 'constraint']},
-        'max_difference': {'type': 'float', 'default': 1.0e-1},
+        "energy_investment_macro": {"type": "dataframe", "visibility": "Shared", "namespace": GlossaryCore.NS_WITNESS},
+        GlossaryCore.EnergyInvestmentsValue: {
+            "type": "dataframe",
+            "visibility": "Shared",
+            "namespace": GlossaryCore.NS_ENERGY_MIX,
+        },
+        "invest_norm": {"type": "float", "default": 10.0},
+        "formulation": {"type": "string", "default": "objective", "possile_values": ["objective", "constraint"]},
+        "max_difference": {"type": "float", "default": 1.0e-1},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
-        'invest_objective': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
-        'diff_norm': {'type': 'array'}
+        "invest_objective": {"type": "dataframe", "visibility": "Shared", "namespace": GlossaryCore.NS_WITNESS},
+        "diff_norm": {"type": "array"},
     }
 
     def run(self):
         # Get inputs
         inputs = self.get_sosdisc_inputs()
 
-        difference = np.linalg.norm(inputs['energy_investment_macro'][GlossaryCore.EnergyInvestmentsValue].values -
-                                    inputs[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue].values) / inputs['invest_norm']
+        difference = (
+            np.linalg.norm(
+                inputs["energy_investment_macro"][GlossaryCore.EnergyInvestmentsValue].values
+                - inputs[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue].values
+            )
+            / inputs["invest_norm"]
+        )
 
-        if inputs['formulation'] == 'objective':
+        if inputs["formulation"] == "objective":
             invest_objective = difference
-        elif inputs['formulation'] == 'constraint':
-            invest_objective = inputs['max_difference'] - difference
+        elif inputs["formulation"] == "constraint":
+            invest_objective = inputs["max_difference"] - difference
         else:
             raise Exception("formulation type should be either objective or constraint")
         # Store output data
-        dict_values = {'invest_objective': pd.DataFrame(
-            {'norm': [invest_objective]}),
-            'diff_norm': difference}
+        dict_values = {"invest_objective": pd.DataFrame({"norm": [invest_objective]}), "diff_norm": difference}
 
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """ 
-        Compute jacobian for each coupling variable 
+        """
+        Compute jacobian for each coupling variable
         gradiant of coupling variable to compute
         """
         inputs = self.get_sosdisc_inputs()
-        invest_objective = self.get_sosdisc_outputs(
-            'invest_objective')['norm'].values[0]
-        dinvestment = (inputs['energy_investment_macro'][GlossaryCore.EnergyInvestmentsValue].values -
-                       inputs[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue].values) / invest_objective / inputs['invest_norm']**2
+        invest_objective = self.get_sosdisc_outputs("invest_objective")["norm"].values[0]
+        dinvestment = (
+            (
+                inputs["energy_investment_macro"][GlossaryCore.EnergyInvestmentsValue].values
+                - inputs[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue].values
+            )
+            / invest_objective
+            / inputs["invest_norm"] ** 2
+        )
 
         self.set_partial_derivative_for_other_types(
-            ('invest_objective', 'norm'), ('energy_investment_macro', GlossaryCore.EnergyInvestmentsValue), dinvestment)  # Invest from T$ to G$
+            ("invest_objective", "norm"), ("energy_investment_macro", GlossaryCore.EnergyInvestmentsValue), dinvestment
+        )  # Invest from T$ to G$
         self.set_partial_derivative_for_other_types(
-            ('invest_objective', 'norm'), (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), -dinvestment)  # Invest from T$ to G$
+            ("invest_objective", "norm"),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue),
+            -dinvestment,
+        )  # Invest from T$ to G$
 
     def get_chart_filter_list(self):
 
@@ -99,10 +120,9 @@ class InvestDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Difference of investments']
+        chart_list = ["Difference of investments"]
         # First filter to deal with the view : program or actor
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
 
         return chart_filters
 
@@ -117,13 +137,12 @@ class InvestDiscipline(ClimateEcoDiscipline):
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     chart_list = chart_filter.selected_values
 
-        if 'Difference of investments' in chart_list:
+        if "Difference of investments" in chart_list:
 
-            energy_investment_macro = self.get_sosdisc_inputs(
-                'energy_investment_macro')
+            energy_investment_macro = self.get_sosdisc_inputs("energy_investment_macro")
 
             energy_investment = self.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsValue)
 
@@ -132,30 +151,45 @@ class InvestDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            chart_name = 'Energy investments between macroeconomy output and energy input'
+            chart_name = "Energy investments between macroeconomy output and energy input"
 
-            new_chart = TwoAxesInstanciatedChart(
-                GlossaryCore.Years, 'Investments', chart_name=chart_name)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, "Investments", chart_name=chart_name)
 
             energy_investment_series = InstanciatedSeries(
-                years, list(energy_investment[GlossaryCore.EnergyInvestmentsValue].values), 'energy investment (energy)', 'lines')
+                years,
+                list(energy_investment[GlossaryCore.EnergyInvestmentsValue].values),
+                "energy investment (energy)",
+                "lines",
+            )
 
             new_chart.series.append(energy_investment_series)
 
             energy_investment_macro_series = InstanciatedSeries(
-                years, list(energy_investment_macro[GlossaryCore.EnergyInvestmentsValue].values), 'energy_investment (macroeconomy)', 'lines')
+                years,
+                list(energy_investment_macro[GlossaryCore.EnergyInvestmentsValue].values),
+                "energy_investment (macroeconomy)",
+                "lines",
+            )
 
             new_chart.series.append(energy_investment_macro_series)
             instanciated_charts.append(new_chart)
 
-            norm = self.get_sosdisc_outputs('diff_norm')
-            chart_name = 'Differences between energy investments'
+            norm = self.get_sosdisc_outputs("diff_norm")
+            chart_name = "Differences between energy investments"
 
             new_chart = TwoAxesInstanciatedChart(
-                GlossaryCore.Years, 'Differences of investments', chart_name=chart_name)
+                GlossaryCore.Years, "Differences of investments", chart_name=chart_name
+            )
 
             energy_investment_series = InstanciatedSeries(
-                years, list(energy_investment_macro[GlossaryCore.EnergyInvestmentsValue].values - energy_investment[GlossaryCore.EnergyInvestmentsValue].values), '', 'lines')
+                years,
+                list(
+                    energy_investment_macro[GlossaryCore.EnergyInvestmentsValue].values
+                    - energy_investment[GlossaryCore.EnergyInvestmentsValue].values
+                ),
+                "",
+                "lines",
+            )
 
             new_chart.series.append(energy_investment_series)
 

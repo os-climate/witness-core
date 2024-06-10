@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,18 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import unittest
 
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as uc
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
+
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import (
+    Study as uc,
+)
 
 
 class TestIPCCSSPComparison(unittest.TestCase):
@@ -26,13 +32,12 @@ class TestIPCCSSPComparison(unittest.TestCase):
         """
         setup of test
         """
-        self.study_name = 'Test_IPCC_SSP_comparison'
-        self.repo = 'climateeconomics.sos_processes.iam.witness'
-        self.proc_name = 'witness'
+        self.study_name = "Test_IPCC_SSP_comparison"
+        self.repo = "climateeconomics.sos_processes.iam.witness"
+        self.proc_name = "witness"
 
         self.ee = ExecutionEngine(self.study_name)
-        builder = self.ee.factory.get_builder_from_process(repo=self.repo,
-                                                           mod_id=self.proc_name)
+        builder = self.ee.factory.get_builder_from_process(repo=self.repo, mod_id=self.proc_name)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         # Added directly to witness process
@@ -45,8 +50,9 @@ class TestIPCCSSPComparison(unittest.TestCase):
 
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
-        self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
-                                            f'{self.study_name}.max_mda_iter': 2})
+        self.ee.load_study_from_input_dict(
+            {f"{self.study_name}.sub_mda_class": "MDAGaussSeidel", f"{self.study_name}.max_mda_iter": 2}
+        )
 
     def test_ssps_scenario_plots(self):
         """
@@ -60,12 +66,12 @@ class TestIPCCSSPComparison(unittest.TestCase):
 
         ppf = PostProcessingFactory()
         filters = ppf.get_post_processing_filters_by_namespace(self.ee, self.study_name)
-        graph_list = ppf.get_post_processing_by_namespace(self.ee, self.study_name, filters,
-                                                          as_json=False)
+        graph_list = ppf.get_post_processing_by_namespace(self.ee, self.study_name, filters, as_json=False)
         # for graph in graph_list:
         #     graph.to_plotly().show()
 
-if '__main__' == __name__:
+
+if "__main__" == __name__:
 
     cls = TestIPCCSSPComparison()
     cls.setUp()

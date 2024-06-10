@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 21/12/2023 Copyright 2023 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,30 +12,32 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
-from climateeconomics.glossarycore import GlossaryCore
+"""
+
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Population Process',
-        'description': '',
-        'category': '',
-        'version': '',
+        "label": "WITNESS Population Process",
+        "description": "",
+        "category": "",
+        "version": "",
     }
+
     def get_builders(self):
 
         ns_scatter = self.ee.study_name
 
-        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
-                   'ns_public': ns_scatter
-                   }
+        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter, "ns_public": ns_scatter}
 
-        mods_dict = {'Population': 'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline'
-                     }
+        mods_dict = {
+            "Population": "climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline"
+        }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
         return builder_list

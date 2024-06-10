@@ -56,28 +56,28 @@ burned directly for heat or converted to renewable liquid and gaseous fuels thro
 
 Biomass sources for energy include:
 
-* Wood, wood processing wastes—firewood, wood pellets, wood chips, lumber and furniture mill sawdust, waste, black liquor from pulp and paper mills
-* Agricultural crops, waste materials—corn, soybeans, sugar cane, switchgrass, woody plants, algae, crop and
+- Wood, wood processing wastes—firewood, wood pellets, wood chips, lumber and furniture mill sawdust, waste, black liquor from pulp and paper mills
+- Agricultural crops, waste materials—corn, soybeans, sugar cane, switchgrass, woody plants, algae, crop and
   food processing residues
-* Biogenic materials in municipal solid waste—paper, cotton, wool products, food, yard, and wood wastes
-* Animal manure and human sewage
+- Biogenic materials in municipal solid waste—paper, cotton, wool products, food, yard, and wood wastes
+- Animal manure and human sewage
 
 ![](biomass_prod.PNG) [^1]
 
 We consider several methods for production:
 
-* Crops
-* Managed wood
-* Unmanaged wood
+- Crops
+- Managed wood
+- Unmanaged wood
 
 **Biomass to energy conversion:**
 
 Biomass is converted to energy through various processes, including:
 
-* Direct combustion (burning) to produce heat
-* Thermochemical conversion to produce solid, gaseous, and liquid fuels
-* Chemical conversion to produce liquid fuels
-* Biological conversion to produce liquid and gaseous fuels
+- Direct combustion (burning) to produce heat
+- Thermochemical conversion to produce solid, gaseous, and liquid fuels
+- Chemical conversion to produce liquid fuels
+- Biological conversion to produce liquid and gaseous fuels
 
 ## CO2 emissions
 
@@ -85,9 +85,10 @@ It gathers greenhous gaz from Crop and Forest models and send it to the Carbon E
 
 ## References
 
-[^1]: The World Bank Group, Overview, Last Updated: Apr 01 2022, online
-resource: https://www.worldbank.org/en/topic/agriculture/overview#1
+[^1]:
+    The World Bank Group, Overview, Last Updated: Apr 01 2022, online
+    resource: <https://www.worldbank.org/en/topic/agriculture/overview#1>
 
-[^2]: Biomass EIA page, online resource: https://www.eia.gov/energyexplained/biomass/
+[^2]: Biomass EIA page, online resource: <https://www.eia.gov/energyexplained/biomass/>
 
-[^3]: Data point: the dirty truth about wasted food, Economist Impact https://impact.economist.com/sustainability/ecosystems-resources/data-point-the-dirty-truth-about-wasted-food?utm_medium=cpc.adword.pd&utm_source=google&ppccampaignID=18151738051&ppcadID=&utm_campaign=a.22brand_pmax&utm_content=conversion.direct-response.anonymous&gad_source=1&gclid=CjwKCAiAt5euBhB9EiwAdkXWO8BVjjr-zSSDOfUrEqSGmkKHOlUR3mTdkn5q5XAbvWcADQBZlaZrlhoC_pgQAvD_BwE&gclsrc=aw.ds
+[^3]: Data point: the dirty truth about wasted food, Economist Impact <https://impact.economist.com/sustainability/ecosystems-resources/data-point-the-dirty-truth-about-wasted-food?utm_medium=cpc.adword.pd&utm_source=google&ppccampaignID=18151738051&ppcadID=&utm_campaign=a.22brand_pmax&utm_content=conversion.direct-response.anonymous&gad_source=1&gclid=CjwKCAiAt5euBhB9EiwAdkXWO8BVjjr-zSSDOfUrEqSGmkKHOlUR3mTdkn5q5XAbvWcADQBZlaZrlhoC_pgQAvD_BwE&gclsrc=aw.ds>

@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on {} Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,16 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-'''
+"""
 
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.base_functions.specific_check import specific_check_years
 
 
 class ClimateEconomicsStudyManager(StudyManager):
-    '''
+    """
     Class that overloads study manager to define a specific check for climate economics usecases
-    '''
+    """
 
     def specific_check_inputs(self):
         """
@@ -31,15 +31,13 @@ class ClimateEconomicsStudyManager(StudyManager):
         specific_check_years(self.execution_engine.dm)
 
     def should_be_lower(self, actual_value, ref_value, varname: str) -> str:
-        msg = ''
+        msg = ""
         if actual_value > ref_value:
             msg = f"{varname>140} should be lower than {ref_value} but is not. Value = {actual_value}"
         return msg
 
     def should_be_greater(self, actual_value, ref_value, varname: str) -> str:
-        msg = ''
+        msg = ""
         if actual_value < ref_value:
             msg = f"\n{varname:>140} should be greater than {ref_value} but is not. Value = {actual_value}"
         return msg
-
-

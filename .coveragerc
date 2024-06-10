@@ -1,7 +1,7 @@
 [run]
 relative_files = True
 branch = True
-omit = 
+omit =
     */tests/*
     */__init__.py
 	docs/

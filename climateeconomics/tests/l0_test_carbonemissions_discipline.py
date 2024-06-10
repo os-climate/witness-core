@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,144 +13,150 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import unittest
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CarbonEmissionDiscTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.name = 'Test'
+        self.name = "Test"
         self.ee = ExecutionEngine(self.name)
         self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-        self.economics_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
-        })
+        self.economics_df = pd.DataFrame(
+            {
+                GlossaryCore.Years: self.years,
+                GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+            }
+        )
 
-        self.energy_supply_df_all = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years))
-        })
+        self.energy_supply_df_all = pd.DataFrame(
+            {GlossaryCore.Years: self.years, GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years))}
+        )
 
-        self.CO2_emissions_by_use_sources = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            'CO2 from energy mix (Gt)': 0.0,
-            'carbon_capture from energy mix (Gt)': 0.0,
-            'Total CO2 by use (Gt)': 20.0,
-            'Total CO2 from Flue Gas (Gt)': 3.2
-        })
+        self.CO2_emissions_by_use_sources = pd.DataFrame(
+            {
+                GlossaryCore.Years: self.years,
+                "CO2 from energy mix (Gt)": 0.0,
+                "carbon_capture from energy mix (Gt)": 0.0,
+                "Total CO2 by use (Gt)": 20.0,
+                "Total CO2 from Flue Gas (Gt)": 3.2,
+            }
+        )
 
-        self.CO2_emissions_by_use_sinks = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            'CO2 removed by energy mix (Gt)': 0.0
-        })
+        self.CO2_emissions_by_use_sinks = pd.DataFrame(
+            {GlossaryCore.Years: self.years, "CO2 removed by energy mix (Gt)": 0.0}
+        )
 
-        self.co2_emissions_needed_by_energy_mix = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            'carbon_capture needed by energy mix (Gt)': 0.0
-        })
+        self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
+            {GlossaryCore.Years: self.years, "carbon_capture needed by energy mix (Gt)": 0.0}
+        )
 
-        self.co2_emissions_ccus_Gt = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            'carbon_storage Limited by capture (Gt)': 0.02
-        })
+        self.co2_emissions_ccus_Gt = pd.DataFrame(
+            {GlossaryCore.Years: self.years, "carbon_storage Limited by capture (Gt)": 0.02}
+        )
 
-        self.CO2_emitted_forest = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            'emitted_CO2_evol': 0.04,
-            'emitted_CO2_evol_cumulative': np.cumsum(np.linspace(0.01, 0.10, len(self.years))) + 3.21
-        })
+        self.CO2_emitted_forest = pd.DataFrame(
+            {
+                GlossaryCore.Years: self.years,
+                "emitted_CO2_evol": 0.04,
+                "emitted_CO2_evol_cumulative": np.cumsum(np.linspace(0.01, 0.10, len(self.years))) + 3.21,
+            }
+        )
 
     def test_execute(self):
 
-        self.model_name = 'carbonemission'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
-                   GlossaryCore.NS_CCS: f'{self.name}',
-                   'ns_energy': f'{self.name}'}
+        self.model_name = "carbonemission"
+        ns_dict = {
+            GlossaryCore.NS_WITNESS: f"{self.name}",
+            "ns_public": f"{self.name}",
+            GlossaryCore.NS_ENERGY_MIX: f"{self.name}",
+            GlossaryCore.NS_REFERENCE: f"{self.name}",
+            GlossaryCore.NS_CCS: f"{self.name}",
+            "ns_energy": f"{self.name}",
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        mod_path = "climateeconomics.sos_wrapping.sos_wrapping_witness.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline"
+        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-
-        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.energy_supply_df_all,
-                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_emitted_forest,
-                       f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
-                       f'{self.name}.CO2_emissions_by_use_sources': self.CO2_emissions_by_use_sources,
-                       f'{self.name}.CO2_emissions_by_use_sinks': self.CO2_emissions_by_use_sinks,
-                       f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix}
+        values_dict = {
+            f"{self.name}.{GlossaryCore.EconomicsDfValue}": self.economics_df,
+            f"{self.name}.{GlossaryCore.CO2EmissionsGtValue}": self.energy_supply_df_all,
+            f"{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": self.CO2_emitted_forest,
+            f"{self.name}.co2_emissions_ccus_Gt": self.co2_emissions_ccus_Gt,
+            f"{self.name}.CO2_emissions_by_use_sources": self.CO2_emissions_by_use_sources,
+            f"{self.name}.CO2_emissions_by_use_sinks": self.CO2_emissions_by_use_sinks,
+            f"{self.name}.co2_emissions_needed_by_energy_mix": self.co2_emissions_needed_by_energy_mix,
+        }
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+        disc = self.ee.dm.get_disciplines_with_name(f"{self.name}.{self.model_name}")[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
 
     def test_limit_co2_objective(self):
         # the limit is commented in th emodel we deaxctivate the test
-        self.model_name = 'carbonemission'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
-                   GlossaryCore.NS_CCS: f'{self.name}',
-                   'ns_energy': f'{self.name}'}
+        self.model_name = "carbonemission"
+        ns_dict = {
+            GlossaryCore.NS_WITNESS: f"{self.name}",
+            "ns_public": f"{self.name}",
+            GlossaryCore.NS_ENERGY_MIX: f"{self.name}",
+            GlossaryCore.NS_REFERENCE: f"{self.name}",
+            GlossaryCore.NS_CCS: f"{self.name}",
+            "ns_energy": f"{self.name}",
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        mod_path = "climateeconomics.sos_wrapping.sos_wrapping_witness.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline"
+        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-
         min_co2_objective = -1000.0
         # put manually the index
-        self.energy_supply_df_all[GlossaryCore.TotalCO2Emissions] = np.linspace(
-            0, -100000, len(self.years))
+        self.energy_supply_df_all[GlossaryCore.TotalCO2Emissions] = np.linspace(0, -100000, len(self.years))
 
-        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.energy_supply_df_all,
-                       f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_emitted_forest,
-                       f'{self.name}.{self.model_name}.min_co2_objective': min_co2_objective,
-                       f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
-                       f'{self.name}.CO2_emissions_by_use_sources': self.CO2_emissions_by_use_sources,
-                       f'{self.name}.CO2_emissions_by_use_sinks': self.CO2_emissions_by_use_sinks,
-                       f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix}
+        values_dict = {
+            f"{self.name}.{GlossaryCore.EconomicsDfValue}": self.economics_df,
+            f"{self.name}.{GlossaryCore.CO2EmissionsGtValue}": self.energy_supply_df_all,
+            f"{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": self.CO2_emitted_forest,
+            f"{self.name}.{self.model_name}.min_co2_objective": min_co2_objective,
+            f"{self.name}.co2_emissions_ccus_Gt": self.co2_emissions_ccus_Gt,
+            f"{self.name}.CO2_emissions_by_use_sources": self.CO2_emissions_by_use_sources,
+            f"{self.name}.CO2_emissions_by_use_sinks": self.CO2_emissions_by_use_sinks,
+            f"{self.name}.co2_emissions_needed_by_energy_mix": self.co2_emissions_needed_by_energy_mix,
+        }
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        CO2_objective = self.ee.dm.get_value(f'{self.name}.CO2_objective')
+        CO2_objective = self.ee.dm.get_value(f"{self.name}.CO2_objective")
         # If lower than min_co2_objective the objective is limited with an exp
         # until 10% of its limit (1100 il the value is 1000)
         self.assertLess(min_co2_objective * 1.1, CO2_objective)

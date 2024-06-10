@@ -1,4 +1,5 @@
-<!-- forest discipline sidebar.md -->           
+<!-- forest discipline sidebar.md -->
+
 [Up](../../)
 
-* [Forest disc](forest_disc)
+- [Forest disc](forest_disc)

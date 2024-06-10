@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/06/29-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,18 +13,24 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import (
+    AgricultureDiscipline,
+)
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import (
+    IndustrialDiscipline,
+)
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import (
+    ServicesDiscipline,
+)
 
 
-class MacroeconomicsModel():
+class MacroeconomicsModel:
     """
     Sector pyworld3
     General implementation of sector pyworld3
@@ -59,7 +65,7 @@ class MacroeconomicsModel():
         self.years_range = self.invests_energy_wo_tax[GlossaryCore.Years].values
         self.max_invest_constraint_ref = inputs_dict[GlossaryCore.MaxInvestConstraintRefName]
         # get share max invest and convert percentage
-        self.share_max_invest = inputs_dict[GlossaryCore.ShareMaxInvestName] / 100 # input is in %
+        self.share_max_invest = inputs_dict[GlossaryCore.ShareMaxInvestName] / 100  # input is in %
 
     def compute_economics(self):
         """Compute economics dataframes"""
@@ -70,10 +76,10 @@ class MacroeconomicsModel():
         net_output_to_sum = []
         invest_to_sum = []
         for sector in self.sectors_list:
-            capital_df_sector = self.inputs[f'{sector}.{GlossaryCore.CapitalDfValue}']
-            production_df_sector = self.inputs[f'{sector}.{GlossaryCore.ProductionDfValue}']
+            capital_df_sector = self.inputs[f"{sector}.{GlossaryCore.CapitalDfValue}"]
+            production_df_sector = self.inputs[f"{sector}.{GlossaryCore.ProductionDfValue}"]
             # get investment for each sector
-            invest_sector = self.inputs[f'{sector}.{GlossaryCore.InvestmentDfValue}']
+            invest_sector = self.inputs[f"{sector}.{GlossaryCore.InvestmentDfValue}"]
             capital_to_sum.append(capital_df_sector[GlossaryCore.Capital].values)
             u_capital_to_sum.append(capital_df_sector[GlossaryCore.UsableCapital].values)
             output_to_sum.append(production_df_sector[GlossaryCore.GrossOutput].values)
@@ -87,39 +93,49 @@ class MacroeconomicsModel():
         self.sum_net_output = np.sum(net_output_to_sum, axis=0)
 
         gross_output = pd.Series(self.sum_gross_output)
-        output_growth = (gross_output.diff() / gross_output.shift(1)).fillna(0.)
+        output_growth = (gross_output.diff() / gross_output.shift(1)).fillna(0.0)
 
         damages = self.sum_gross_output - self.sum_net_output
-        economics_detail_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
-                                            GlossaryCore.Capital: self.sum_capital,
-                                            GlossaryCore.UsableCapital: self.sum_u_capital,
-                                            GlossaryCore.GrossOutput: self.sum_gross_output,
-                                            GlossaryCore.OutputNetOfDamage: self.sum_net_output,
-                                            GlossaryCore.OutputGrowth: output_growth,
-                                            GlossaryCore.Damages: damages})
+        economics_detail_df = pd.DataFrame(
+            {
+                GlossaryCore.Years: self.years_range,
+                GlossaryCore.Capital: self.sum_capital,
+                GlossaryCore.UsableCapital: self.sum_u_capital,
+                GlossaryCore.GrossOutput: self.sum_gross_output,
+                GlossaryCore.OutputNetOfDamage: self.sum_net_output,
+                GlossaryCore.OutputGrowth: output_growth,
+                GlossaryCore.Damages: damages,
+            }
+        )
         economics_detail_df.index = self.years_range
         self.economics_detail_df = economics_detail_df
-        self.economics_df = economics_detail_df[GlossaryCore.SectorizedEconomicsDf['dataframe_descriptor'].keys()]
+        self.economics_df = economics_detail_df[GlossaryCore.SectorizedEconomicsDf["dataframe_descriptor"].keys()]
 
         # compute total sum of all invests
-        self.sum_invests_df = pd.DataFrame(columns= [GlossaryCore.Years, GlossaryCore.InvestmentsValue])
+        self.sum_invests_df = pd.DataFrame(columns=[GlossaryCore.Years, GlossaryCore.InvestmentsValue])
         self.sum_invests_df[GlossaryCore.Years] = self.years_range
-        self.sum_invests_df[GlossaryCore.InvestmentsValue] = sum(df_invest[GlossaryCore.InvestmentsValue].values for df_invest in invest_to_sum)
+        self.sum_invests_df[GlossaryCore.InvestmentsValue] = sum(
+            df_invest[GlossaryCore.InvestmentsValue].values for df_invest in invest_to_sum
+        )
         # add invests in energy to sum of invests (use .values to avoid index issues)
-        self.sum_invests_df[GlossaryCore.InvestmentsValue] += self.invests_energy_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values
+        self.sum_invests_df[GlossaryCore.InvestmentsValue] += self.invests_energy_wo_tax[
+            GlossaryCore.EnergyInvestmentsWoTaxValue
+        ].values
 
     def compute_total_damages(self):
-        self.damage_df = pd.DataFrame({
-            GlossaryCore.Years: self.years_range,
-        })
+        self.damage_df = pd.DataFrame(
+            {
+                GlossaryCore.Years: self.years_range,
+            }
+        )
 
-        column_to_sum = list(GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
+        column_to_sum = list(GlossaryCore.DamageDetailedDf["dataframe_descriptor"].keys())
         column_to_sum.remove(GlossaryCore.Years)
         for col in column_to_sum:
             damage_to_sum = []
             for sector in self.sectors_list:
-                damages_detailed_sector = self.inputs[f'{sector}.{GlossaryCore.DamageDetailedDfValue}']
-                damages_sector = self.inputs[f'{sector}.{GlossaryCore.DamageDfValue}']
+                damages_detailed_sector = self.inputs[f"{sector}.{GlossaryCore.DamageDetailedDfValue}"]
+                damages_sector = self.inputs[f"{sector}.{GlossaryCore.DamageDfValue}"]
                 if col in damages_sector.columns:
                     damage_to_sum.append(damages_sector[col].values)
                 else:
@@ -140,7 +156,9 @@ class MacroeconomicsModel():
         Method to compute maximum investment constraint in all sectors
         Used formula is : max_investment_constraint = (share_max_invest/100 * output_net_of_damage - total_invest) / max_invest_ref
         """
-        self.max_invest_constraint = (self.share_max_invest * self.sum_net_output - self.sum_invests_df[GlossaryCore.InvestmentsValue].values)/self.max_invest_constraint_ref
+        self.max_invest_constraint = (
+            self.share_max_invest * self.sum_net_output - self.sum_invests_df[GlossaryCore.InvestmentsValue].values
+        ) / self.max_invest_constraint_ref
 
     # GRADIENTS
     def get_derivative_sectors(self):

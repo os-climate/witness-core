@@ -402,5 +402,3 @@ section_non_energy_emissions_dict, Non energy emissions per section, GtCO2eq, No
 section_energy_consumption_dict, Energy consumption per section, TWh, Energy consumption per section and per sector dictionary,,
 section_energy_emissions_dict, Energy emissions per section, GtCO2eq, Energy emissions per section and per sector dictionary,,
 sector_total_emissions_dict, Total emissions per section, GtCO2eq, Total emissions per section and per sector dictionary,,
-
-

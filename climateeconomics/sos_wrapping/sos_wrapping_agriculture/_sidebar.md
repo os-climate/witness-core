@@ -1,6 +1,7 @@
-<!-- SoS wrapping agriculture sidebar.md -->           
+<!-- SoS wrapping agriculture sidebar.md -->
+
 | [Up](../)
 
-* [Agriculture](agriculture/documentation/)
-* [Crop](crop/)
-* [Forests](forest/)
+- [Agriculture](agriculture/documentation/)
+- [Crop](crop/)
+- [Forests](forest/)

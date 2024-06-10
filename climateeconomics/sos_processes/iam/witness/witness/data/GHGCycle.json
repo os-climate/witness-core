@@ -1,85 +1,61 @@
 {
-    "US": {
-        "year_start": 2020,
-        "year_end": 2100,
-        "time_step": 1,
-        "GHG_emissions_df": null,
-        "co2_emissions_fractions": [
-            0.13,
-            0.2,
-            0.32,
-            0.25,
-            0.1
-        ],
-        "co2_boxes_decays": [
-            1.0,
-            0.9972489701005488,
-            0.9865773841008381,
-            0.942873143854875,
-            0.6065306597126334
-        ],
-        "co2_boxes_init_conc": [
-            412.4,
-            7.696446691246241,
-            9.267066403773798,
-            3.338671805556784,
-            0.24383881831564577
-        ],
-        "ch4_emis_to_conc": 0.3597,
-        "ch4_decay_rate": 0.08333333333333333,
-        "ch4_pre_indus_conc": 790,
-        "ch4_init_conc": 1222,
-        "n2o_emis_to_conc": 0.2079,
-        "n2o_decay_rate": 0.008771929824561403,
-        "n2o_pre_indus_conc": 285,
-        "n2o_init_conc": 296,
-        "ppm_ref": 280,
-        "rockstrom_constraint_ref": 490,
-        "alpha": 0.5,
-        "beta": 1.0,
-        "minimum_ppm_limit": 250,
-        "minimum_ppm_constraint_ref": 10
-    },
-    "UE": {
-        "year_start": 2020,
-        "year_end": 2100,
-        "time_step": 1,
-        "GHG_emissions_df": null,
-        "co2_emissions_fractions": [
-            0.13,
-            0.2,
-            0.32,
-            0.25,
-            0.1
-        ],
-        "co2_boxes_decays": [
-            1.0,
-            0.9972489701005488,
-            0.9865773841008381,
-            0.942873143854875,
-            0.6065306597126334
-        ],
-        "co2_boxes_init_conc": [
-            412.4,
-            7.696446691246241,
-            9.267066403773798,
-            3.338671805556784,
-            0.24383881831564577
-        ],
-        "ch4_emis_to_conc": 0.3597,
-        "ch4_decay_rate": 0.08333333333333333,
-        "ch4_pre_indus_conc": 790,
-        "ch4_init_conc": 1222,
-        "n2o_emis_to_conc": 0.2079,
-        "n2o_decay_rate": 0.008771929824561403,
-        "n2o_pre_indus_conc": 285,
-        "n2o_init_conc": 296,
-        "ppm_ref": 280,
-        "rockstrom_constraint_ref": 490,
-        "alpha": 0.5,
-        "beta": 1.0,
-        "minimum_ppm_limit": 250,
-        "minimum_ppm_constraint_ref": 10
-    },
-    "id": "GHGCycle"
+  "US": {
+    "year_start": 2020,
+    "year_end": 2100,
+    "time_step": 1,
+    "GHG_emissions_df": null,
+    "co2_emissions_fractions": [0.13, 0.2, 0.32, 0.25, 0.1],
+    "co2_boxes_decays": [
+      1.0, 0.9972489701005488, 0.9865773841008381, 0.942873143854875,
+      0.6065306597126334
+    ],
+    "co2_boxes_init_conc": [
+      412.4, 7.696446691246241, 9.267066403773798, 3.338671805556784,
+      0.24383881831564577
+    ],
+    "ch4_emis_to_conc": 0.3597,
+    "ch4_decay_rate": 0.08333333333333333,
+    "ch4_pre_indus_conc": 790,
+    "ch4_init_conc": 1222,
+    "n2o_emis_to_conc": 0.2079,
+    "n2o_decay_rate": 0.008771929824561403,
+    "n2o_pre_indus_conc": 285,
+    "n2o_init_conc": 296,
+    "ppm_ref": 280,
+    "rockstrom_constraint_ref": 490,
+    "alpha": 0.5,
+    "beta": 1.0,
+    "minimum_ppm_limit": 250,
+    "minimum_ppm_constraint_ref": 10
+  },
+  "UE": {
+    "year_start": 2020,
+    "year_end": 2100,
+    "time_step": 1,
+    "GHG_emissions_df": null,
+    "co2_emissions_fractions": [0.13, 0.2, 0.32, 0.25, 0.1],
+    "co2_boxes_decays": [
+      1.0, 0.9972489701005488, 0.9865773841008381, 0.942873143854875,
+      0.6065306597126334
+    ],
+    "co2_boxes_init_conc": [
+      412.4, 7.696446691246241, 9.267066403773798, 3.338671805556784,
+      0.24383881831564577
+    ],
+    "ch4_emis_to_conc": 0.3597,
+    "ch4_decay_rate": 0.08333333333333333,
+    "ch4_pre_indus_conc": 790,
+    "ch4_init_conc": 1222,
+    "n2o_emis_to_conc": 0.2079,
+    "n2o_decay_rate": 0.008771929824561403,
+    "n2o_pre_indus_conc": 285,
+    "n2o_init_conc": 296,
+    "ppm_ref": 280,
+    "rockstrom_constraint_ref": 490,
+    "alpha": 0.5,
+    "beta": 1.0,
+    "minimum_ppm_limit": 250,
+    "minimum_ppm_constraint_ref": 10
+  },
+  "id": "GHGCycle"
 }

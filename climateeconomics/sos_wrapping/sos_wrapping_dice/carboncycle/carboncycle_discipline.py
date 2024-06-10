@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,55 +13,78 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import pandas as pd
 
-from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
-from climateeconomics.glossarycore import GlossaryCore
 # coding: utf-8
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CarbonCycleDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
-        'label': 'Carbon Cycle DICE Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': 'fas fa-recycle fa-fw',
-        'version': '',
+        "label": "Carbon Cycle DICE Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "fas fa-recycle fa-fw",
+        "version": "",
     }
-    _maturity = 'Research'
+    _maturity = "Research"
 
     DESC_IN = {
+        GlossaryCore.YearStart: {
+            "type": "int",
+            "default": 2015,
+            "unit": "year",
+            "visibility": "Shared",
+            "namespace": "ns_dice",
+        },
+        GlossaryCore.YearEnd: {
+            "type": "int",
+            "default": GlossaryCore.YearEndDefault,
+            "unit": "year",
+            "visibility": "Shared",
+            "namespace": "ns_dice",
+        },
+        GlossaryCore.TimeStep: {
+            "type": "int",
+            "default": 5,
+            "unit": "year per period",
+            "visibility": "Shared",
+            "namespace": "ns_dice",
+        },
+        "conc_lower_strata": {"type": "int", "default": 1720, "unit": "Gtc"},
+        "conc_upper_strata": {"type": "int", "default": 360, "unit": "Gtc"},
+        "conc_atmo": {"type": "int", "default": 588, "unit": "Gtc"},
+        "init_conc_atmo": {"type": "int", "default": 851, "unit": "Gtc"},
+        "init_upper_strata": {"type": "int", "default": 460, "unit": "Gtc"},
+        "init_lower_strata": {"type": "int", "default": 1740, "unit": "Gtc"},
+        "b_twelve": {"type": "float", "visibility": SoSWrapp.INTERNAL_VISIBILITY, "default": 0.12, "unit": "[-]"},
+        "b_twentythree": {"type": "float", "visibility": SoSWrapp.INTERNAL_VISIBILITY, "default": 0.007, "unit": "[-]"},
+        "lo_mat": {"type": "float", "default": 10},
+        "lo_mu": {"type": "float", "default": 100},
+        "lo_ml": {"type": "float", "default": 1000},
+        "emissions_df": {"type": "dataframe", "visibility": "Shared", "namespace": "ns_scenario"},
+    }
 
-        GlossaryCore.YearStart: {'type': 'int', 'default': 2015, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'default': GlossaryCore.YearEndDefault, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'default': 5, 'unit': 'year per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc'},
-        'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc'},
-        'conc_atmo': {'type': 'int', 'default': 588, 'unit': 'Gtc'},
-        'init_conc_atmo': {'type': 'int', 'default': 851, 'unit': 'Gtc'},
-        'init_upper_strata': {'type': 'int', 'default': 460, 'unit': 'Gtc'},
-        'init_lower_strata': {'type': 'int', 'default': 1740, 'unit': 'Gtc'},
-        'b_twelve': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.12, 'unit': '[-]'},
-        'b_twentythree': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.007, 'unit': '[-]'},
-        'lo_mat': {'type': 'float', 'default': 10},
-        'lo_mu': {'type': 'float', 'default': 100},
-        'lo_ml': {'type': 'float', 'default': 1000},
-        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
-
-    DESC_OUT = {GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe',
-                                   'visibility': 'Shared', 'namespace': 'ns_scenario'}}
+    DESC_OUT = {
+        GlossaryCore.CarbonCycleDfValue: {"type": "dataframe", "visibility": "Shared", "namespace": "ns_scenario"}
+    }
 
     def run(self):
         # get input of discipline
@@ -81,11 +104,9 @@ class CarbonCycleDiscipline(SoSWrapp):
         # value of ToT with a shift of five year between then
         chart_filters = []
 
-        chart_list = ['atmosphere concentration',
-                      'Atmospheric concentrations parts per million']
+        chart_list = ["atmosphere concentration", "Atmospheric concentrations parts per million"]
         # First filter to deal with the view : program or actor
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
 
         return chart_filters
 
@@ -100,15 +121,15 @@ class CarbonCycleDiscipline(SoSWrapp):
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     chart_list = chart_filter.selected_values
         carboncycle_df = self.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
         carboncycle_df = resize_df(carboncycle_df)
 
-        if 'atmosphere concentration' in chart_list:
+        if "atmosphere concentration" in chart_list:
 
-            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
-            atmo_conc = carboncycle_df['atmo_conc']
+            # carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
+            atmo_conc = carboncycle_df["atmo_conc"]
 
             years = list(atmo_conc.index)
 
@@ -117,28 +138,30 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             max_value = atmo_conc.values.max()
 
-            chart_name = 'atmosphere concentration of carbon'
+            chart_name = "atmosphere concentration of carbon"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'carbon concentration (Gtc)',
-                                                 [year_start - 5, year_end + 5], [
-                                                     0, max_value * 1.1],
-                                                 chart_name)
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                "carbon concentration (Gtc)",
+                [year_start - 5, year_end + 5],
+                [0, max_value * 1.1],
+                chart_name,
+            )
 
             visible_line = True
 
             ordonate_data = list(atmo_conc)
 
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'atmosphere concentration', 'lines', visible_line)
+            new_series = InstanciatedSeries(years, ordonate_data, "atmosphere concentration", "lines", visible_line)
 
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
-        if 'Atmospheric concentrations parts per million' in chart_list:
+        if "Atmospheric concentrations parts per million" in chart_list:
 
-            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
-            ppm = carboncycle_df['ppm']
+            # carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
+            ppm = carboncycle_df["ppm"]
 
             years = list(ppm.index)
 
@@ -147,19 +170,21 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             max_value = ppm.values.max()
 
-            chart_name = 'Atmospheric concentrations parts per million'
+            chart_name = "Atmospheric concentrations parts per million"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Atmospheric concentrations parts per million',
-                                                 [year_start - 5, year_end + 5], [
-                                                     0, max_value * 1.1],
-                                                 chart_name)
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                "Atmospheric concentrations parts per million",
+                [year_start - 5, year_end + 5],
+                [0, max_value * 1.1],
+                chart_name,
+            )
 
             visible_line = True
 
             ordonate_data = list(ppm)
 
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'ppm', 'lines', visible_line)
+            new_series = InstanciatedSeries(years, ordonate_data, "ppm", "lines", visible_line)
 
             new_chart.series.append(new_series)
 
@@ -186,8 +211,8 @@ def resize_df(df):
         new_df = df
     else:
         for element in key:
-            new_df[element] = df[element][0:i + 1]
-            new_df.index = index[0: i + 1]
+            new_df[element] = df[element][0 : i + 1]
+            new_df.index = index[0 : i + 1]
 
     return new_df
 

@@ -5,8 +5,8 @@
 In `witness-core`, a study is a way to evaluate the effect of specific energy
 ways of production, on specific aspects of climate change and macro-economy.
 
-A *study* includes data and a series of processing steps.
-Individual processing steps are called *disciplines*.
+A _study_ includes data and a series of processing steps.
+Individual processing steps are called _disciplines_.
 The diagram below shows components of a study.
 
 ```mermaid
@@ -31,11 +31,11 @@ flowchart LR
 
 The steps to model a study are:
 
-* provide input data in format, recognized by used disciplines
-* import existing disciplines, or create new disciplines, if necessary
-* couple used disciplines together
-* execute the study
-* post-process output data (visualize, export, etc.)
+- provide input data in format, recognized by used disciplines
+- import existing disciplines, or create new disciplines, if necessary
+- couple used disciplines together
+- execute the study
+- post-process output data (visualize, export, etc.)
 
 Examples of studies may be found as `usecase.py` scripts within
 `witness-core`.
@@ -43,22 +43,22 @@ Examples of studies may be found as `usecase.py` scripts within
 ## 2. Data Formats
 
 A general format of input and output data, used by disciplines, is a
-standard python *dictionary*.
+standard python _dictionary_.
 Internal keys and formats of input and output dictionaries are specified by
 disciplines, based on their processing algorithms.
 
 Theoretically, input and output data may be as simple as a dictionary with one
 array:
 
-~~~~
+```
 DESC_IN = {
     'values': {'type': 'array'}
 }
-~~~~
+```
 
 Practically, input and output dictionaries are usually more complex:
 
-~~~~
+```
 DESC_IN = {
     'transport_cost': {'type': 'dataframe', 'unit': '$/MWh'},
     'transport_margin': {'type': 'dataframe', 'unit': '%', },
@@ -67,23 +67,23 @@ DESC_IN = {
     'initial_age_distrib': {'type': 'dataframe', 'unit': '%'},
     'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$'}
 }
-~~~~
+```
 
 A common data type, used in input and output dictionaries of disciplines, is
-*dataframe*.
+_dataframe_.
 Dataframe is a 2-dimensional labeled data structure, defined by a python
 library `pandas`. For more details on dataframes, see
 [pandas user guide](https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#dataframe).
 
 Below is an example of creating a dataframe.
 
-~~~~
+```
 years = np.arange(self.year_start, self.year_end + 1, 1)
 
 crop_investment = pandas.DataFrame({'years': years,
                                     'investment': np.ones(len(years)) * 0.381
                                    })
-~~~~
+```
 
 ## 3. Disciplines
 
@@ -94,13 +94,13 @@ Discipline is a processing step in a study, introduced by a python library
 In `witness-core`, disciplines are derived from the base class
 `SoSDiscipline`, and should define:
 
-* `_ontology_data` and `_maturity` - for Witness GUI
-* `DESC_IN` and `DESC_OUT` - specify format of input and output dictionaries
-* `run()` - execute a data processing algorithm
+- `_ontology_data` and `_maturity` - for Witness GUI
+- `DESC_IN` and `DESC_OUT` - specify format of input and output dictionaries
+- `run()` - execute a data processing algorithm
 
 Below is a simple example of a discipline, derived from `SoSDiscipline`.
 
-~~~~
+```
 class Disc0(SoSDiscipline):
 
     # ontology information
@@ -137,7 +137,7 @@ class Disc0(SoSDiscipline):
         dict_values = {'a': int(a), 'x': x}
 
         self.store_sos_outputs_values(dict_values)
-~~~~
+```
 
 For more examples of simple disciplines, see the folder `sos_wrapping` in
 the repo `sostrades-core`.
@@ -176,14 +176,14 @@ flowchart LR
 To couple output data of one discipline with input data of the other, the
 corresponding dictionary keys should:
 
-* have the same name
-* have `visibility` set to `Shared`
-* have the same `namespace`
+- have the same name
+- have `visibility` set to `Shared`
+- have the same `namespace`
 
 An example below shows two disciplines, which will be coupled through a key
 `wave2`, if loaded into the same `ExecutionEngine`.
 
-~~~~
+```
 class DiscA(SoSDiscipline):
     DESC_IN = {
         'wave1': {'type': 'array' },
@@ -208,7 +208,7 @@ class DiscB(SoSDiscipline):
                   'namespace': 'ns_wave_processing'
                   },
     }
-~~~~
+```
 
 Notice, that `DESC_OUT` keys need to have `visibility` set to `Shared`, to
 be accessible by external callers.
@@ -217,21 +217,21 @@ be accessible by external callers.
 
 `StudyManager` is a base class, which handles:
 
-* initialization of disciplines
-* load of input data and disciplines into an `ExecutionEngine`
-* run the execution of disciplines
-* storing output data
+- initialization of disciplines
+- load of input data and disciplines into an `ExecutionEngine`
+- run the execution of disciplines
+- storing output data
 
 In `witness-core`, a study is implemented by a class, which should:
 
-* derive from `StudyManager`
-* define a method `setup_usecase`, to setup input data and disciplines
+- derive from `StudyManager`
+- define a method `setup_usecase`, to setup input data and disciplines
 
 The `run` method of `StudyManager` internally triggers `ExecutionEngine`.
 
 Below is a simple example of executing a study in a python script.
 
-~~~~
+```
 if '__main__' == __name__:
     uc_cls = Study()
 
@@ -245,7 +245,7 @@ if '__main__' == __name__:
     ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
         out_data = disc.get_sosdisc_outputs()
-~~~~
+```
 
 Examples of studies may be found as `usecase.py` scripts within
 `witness-core`.
@@ -256,8 +256,8 @@ Output data of a study may be used for post-processing (visualize, export,
 etc.) outside of `witness-core`.
 Common methods include:
 
-* Witness GUI
-* plotting from a script
+- Witness GUI
+- plotting from a script
 
 There is no universal recommendation on post-processing of the outcome of a
 study. The choice of a post-processing method depends on what may better

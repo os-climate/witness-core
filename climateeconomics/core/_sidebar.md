@@ -1,6 +1,5 @@
 <!-- core sidebar.md -->
+
 [Up](../)
 
-* [Resources](core_resources/)
-
- 
+- [Resources](core_resources/)

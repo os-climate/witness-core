@@ -999,5 +999,3 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 3219,0.002,0.000,0.006,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/common.py:522(require_length_match)
 1585,0.002,0.000,0.006,0.000,<__array_function__ internals>:2(bincount)
 117,0.000,0.000,0.006,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/internals/concat.py:581(_is_uniform_join_units)
-
-

@@ -1,2 +1,3 @@
 <!-- witness core sidebar -->
-* [Climate economics](climateeconomics/)
+
+- [Climate economics](climateeconomics/)
