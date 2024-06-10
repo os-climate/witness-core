@@ -29,6 +29,7 @@ class UtilityModel():
         '''
         Constructor
         '''
+        self.discounted_utility_quantity_objective = 0.
         self.param = param
         self.per_capita_consumption_ref = None
 
@@ -225,30 +226,71 @@ class UtilityModel():
 
         self.compute_utility_discount_rate()
         self.compute_energy_price_ratio()
+        self.compute_utility_quantity()
         self.compute_per_capita_consumption_utility()
         self.compute_utility()
         self.compute_discounted_utility()
         self.compute_normalized_welfare()
         self.compute_negative_welfare_objective()
         self.compute_inverse_welfare_objective()
+        self.compute_discounted_utility_quantity()
+        self.compute_quantity_objective()
         self.compute_negative_last_year_utility_objective()
         self.compute_per_capita_consumption_utility_objective()
 
         return self.utility_df
 
+    def compute_utility_quantity(self):
+        """
+        Consumption = Quantity (of "things" consumed") * Price ("average price of things consumed")
 
-def cutoff_function(x: np.ndarray, min_value):
-    """cuttoff function"""
-    capped_values = min_value / 10. * (9 + np.exp(x / min_value - 1))
-    out = np.copy(x)
-    out[x <= min_value] = capped_values[x <= min_value]
-    return out
+        We consider that the average price of things that are consumed is driven by energy price.
+        We want to maximize the quantity of things consumed,
 
+        quantity = consumption / price
 
-def d_cutoff_function(x, dx, min_value):
-    """derivative of cutoff function"""
-    d_capping = np.exp(x / min_value - 1) / 10.
-    d_cutoff = np.ones_like(x)
-    d_cutoff[x <= min_value] = d_capping[x <= min_value]
-    out = d_cutoff * dx
-    return out
+        If we take year start as a reference point ("1")
+
+        utility quantity (year) = quantity (year) / quantity (year start)
+        """
+        consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
+        consumption_year_start = consumption[0]
+
+        energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
+
+        quantity_year_start = consumption_year_start / self.energy_price_ref
+        quantity = consumption / energy_price
+
+        utility_quantity = quantity / quantity_year_start
+
+        self.utility_df[GlossaryCore.UtilityQuantity] = np.log(utility_quantity)
+
+    def compute_discounted_utility_quantity(self):
+        """
+        Discounted utility quantity (year) = Utility quantity(year) * discount factor (year)
+        """
+        utility_quantity = self.utility_df[GlossaryCore.UtilityQuantity].values
+        discount_factor = self.utility_df[GlossaryCore.UtilityDiscountRate].values
+
+        self.utility_df[GlossaryCore.DiscountedUtilityQuantity] = utility_quantity * discount_factor
+
+    def compute_quantity_objective(self):
+        """Quantity objective = Mean over years of discounted utility quantity"""
+        self.discounted_utility_quantity_objective = np.array([self.utility_df[GlossaryCore.DiscountedUtilityQuantity].values.mean()])
+
+    def d_utility_quantity(self):
+        energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
+        pcc = self.economics_df[GlossaryCore.PerCapitaConsumption].values
+        d_utility_denergy_price = np.diag(- 1 / energy_price)
+        d_utility_dpcc = np.diag(1 / pcc)
+        d_utility_dpcc[:, 0] = - 1 / pcc[0]
+        d_utility_dpcc[0,0] = 0.
+        discount_rate = self.utility_df[GlossaryCore.UtilityDiscountRate].values
+        d_discounted_utility_quantity_denergy_price = np.diag(discount_rate) * d_utility_denergy_price
+        d_discounted_utility_quantity_dpcc = np.diag(discount_rate) @ d_utility_dpcc
+
+        d_utility_obj_d_energy_price = d_discounted_utility_quantity_denergy_price.mean(axis=0)
+        d_utility_obj_dpcc = d_discounted_utility_quantity_dpcc.mean(axis=0)
+        return d_utility_denergy_price, d_utility_dpcc,\
+               d_discounted_utility_quantity_denergy_price, d_discounted_utility_quantity_dpcc,\
+               d_utility_obj_d_energy_price, d_utility_obj_dpcc

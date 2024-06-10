@@ -1047,6 +1047,10 @@ class GlossaryCore:
     }
 
     UtilityDiscountRate = "u_discount_rate"
+    UtilityPopulation = "Utility population"
+    UtilityEnergyPrice = "Utility energy price"
+    UtilityQuantity = "Utility quantity"
+    DiscountedUtilityQuantity = "Discounted utility quantity"
     PeriodUtilityPerCapita = "period_utility_pc"
     DiscountedUtility = "discounted_utility"
     Welfare = "welfare"
@@ -1062,6 +1066,8 @@ class GlossaryCore:
             UtilityDiscountRate: ("float", [0, 100], False),
             PeriodUtilityPerCapita: ("float", None, False),
             DiscountedUtility: ("float", None, False),
+            UtilityQuantity: ("float", None, False),
+            DiscountedUtilityQuantity: ("float", None, False),
             EnergyPriceRatio: ("float", [0, 1e30], False),
             PerCapitaConsumptionUtility: ("float", None, False),
         },
@@ -1087,6 +1093,17 @@ class GlossaryCore:
         "type": "array",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
+        "unit": "-",
+    }
+
+    QuantityObjectiveValue = "Quantity_objective"
+
+    QuantityObjective = {
+        "var_name": QuantityObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "objective of quantity of things consumed. Quantity  = Consumption / Price",
         "unit": "-",
     }
 

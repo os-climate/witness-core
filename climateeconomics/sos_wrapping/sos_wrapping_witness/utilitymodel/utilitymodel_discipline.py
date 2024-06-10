@@ -16,6 +16,8 @@ limitations under the License.
 '''
 from copy import deepcopy
 
+import numpy as np
+
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.utility_model import UtilityModel
 from climateeconomics.glossarycore import GlossaryCore
@@ -83,7 +85,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.LastYearDiscountedUtilityObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared',
                                                           'namespace': GlossaryCore.NS_WITNESS,
                                                           'description': "- discounted utility at year end / discounted utility at year start"},
-        GlossaryCore.PerCapitaConsumptionUtilityObjectiveName: GlossaryCore.PerCapitaConsumptionUtilityObjective
+        GlossaryCore.PerCapitaConsumptionUtilityObjectiveName: GlossaryCore.PerCapitaConsumptionUtilityObjective,
+        GlossaryCore.QuantityObjectiveValue: GlossaryCore.QuantityObjective,
     }
 
     def init_execution(self):
@@ -103,20 +106,20 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         utility_df = self.utility_m.compute(economics_df, energy_mean_price, population_df)
 
         dict_values = {
-            GlossaryCore.UtilityDfValue: utility_df,
+            GlossaryCore.UtilityDfValue: utility_df[GlossaryCore.UtilityDf['dataframe_descriptor'].keys()],
             GlossaryCore.NormalizedWelfare: self.utility_m.normalized_welfare,
             GlossaryCore.WelfareObjective: self.utility_m.inverse_welfare_objective,
             GlossaryCore.NegativeWelfareObjective: self.utility_m.negative_welfare_objective,
             GlossaryCore.LastYearDiscountedUtilityObjective: self.utility_m.last_year_utility_objective,
-            GlossaryCore.PerCapitaConsumptionUtilityObjectiveName: self.utility_m.per_capita_consumption_objective
+            GlossaryCore.PerCapitaConsumptionUtilityObjectiveName: self.utility_m.per_capita_consumption_objective,
+            GlossaryCore.QuantityObjectiveValue: self.utility_m.discounted_utility_quantity_objective,
         }
-        
 
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
         """ 
-        Compute jacobian for each coupling variable 
+        Compute jacobian for each coupling variable
         gradiant of coupling variable to compute: 
         utility_df
           - GlossaryCore.PeriodUtilityPerCapita:
@@ -129,10 +132,43 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                 - economics_df, GlossaryCore.PerCapitaConsumption
                 - energy_mean_price : GlossaryCore.EnergyPriceValue
         """
-        
+
         d_pc_consumption_utility_d_per_capita_consumption = self.utility_m.d_pc_consumption_utility_d_per_capita_consumption()
         d_pc_consumption_utility_obj_d_per_capita_consumption = self.utility_m.d_pc_consumption_utility_objective_d_per_capita_consumption()
         d_energy_price_ratio_d_energy_price = self.utility_m.d_energy_price_ratio_d_energy_price()
+
+        d_utility_denergy_price, d_utility_dpcc, \
+        d_discounted_utility_quantity_denergy_price, d_discounted_utility_quantity_dpcc, \
+        d_utility_obj_d_energy_price, d_utility_obj_dpcc = self.utility_m.d_utility_quantity()
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UtilityDfValue, GlossaryCore.UtilityQuantity),
+            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
+            d_utility_denergy_price)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UtilityDfValue, GlossaryCore.UtilityQuantity),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            d_utility_dpcc)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtilityQuantity),
+            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
+            d_discounted_utility_quantity_denergy_price)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtilityQuantity),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            d_discounted_utility_quantity_dpcc)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.QuantityObjectiveValue,),
+            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
+            d_utility_obj_d_energy_price)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.QuantityObjectiveValue,),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            d_utility_obj_dpcc)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaConsumptionUtility),
@@ -251,8 +287,10 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = [GlossaryCore.DiscountedUtility, 'Utility of pc consumption',
-                      GlossaryCore.EnergyPriceRatio]
+        chart_list = [GlossaryCore.DiscountedUtility,
+                      'Utility of pc consumption',
+                      GlossaryCore.EnergyPriceRatio,
+                      GlossaryCore.QuantityObjectiveValue]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -310,4 +348,29 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
+
+        if GlossaryCore.QuantityObjectiveValue in chart_list:
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Variation [%]',
+                                                 chart_name='Quantity utility')
+
+            values = utility_df[GlossaryCore.UtilityQuantity].values
+            new_series = InstanciatedSeries(
+                years, list(values), 'Quantity utility', 'lines', True)
+
+            new_chart.series.append(new_series)
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.QuantityObjectiveValue in chart_list:
+
+            power_quantity = 1.0
+            n = 200
+            k = 5
+            ratios = np.linspace(1/k, k, n)
+
+            new_chart = TwoAxesInstanciatedChart(f'Variation quantity consumed since {years[0]} [%]', 'Utility gain', chart_name='Model visualisation : Quantity utility function')
+            new_series = InstanciatedSeries(list((ratios - 1)*100), list(np.log(ratios ** power_quantity)), 'welfare quantity', 'lines', True)
+            new_chart.series.append(new_series)
+            instanciated_charts.append(new_chart)
+
         return instanciated_charts
+
