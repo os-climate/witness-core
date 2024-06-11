@@ -18,10 +18,12 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class PolicyDiscTest(unittest.TestCase):
@@ -72,7 +74,7 @@ class PolicyDiscTest(unittest.TestCase):
 # max_CCS_CO2, CO2_tax[GlossaryCore.CO2Tax].values, err_msg='arrays are not equal')
 
         ppf = PostProcessingFactory()
-        disc = self.ee.dm.get_disciplines_with_name(f'Test.policy')
+        disc = self.ee.dm.get_disciplines_with_name('Test.policy')
         filters = ppf.get_post_processing_filters_by_discipline(
             disc[0])
         graph_list = ppf.get_post_processing_by_discipline(

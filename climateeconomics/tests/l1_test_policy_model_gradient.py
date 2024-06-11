@@ -18,10 +18,12 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class PolicyDiscTest(AbstractJacobianUnittest):
@@ -71,7 +73,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline.pkl',
                             local_data = disc.local_data,discipline=disc, inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
@@ -109,7 +111,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_3(self):
@@ -146,5 +148,5 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')

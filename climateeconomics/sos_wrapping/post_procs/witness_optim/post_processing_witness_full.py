@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/03 Copyright 2023 Capgemini
+Modifications on 06/07/2024 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,17 +13,19 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 '''
 import numpy as np
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
 from matplotlib.pyplot import cm
 from plotly import graph_objects as go
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -56,26 +58,26 @@ def post_processings(execution_engine, namespace, filters):
 
     # ---
     if 'Energies CO2 intensity' in graphs_list:
-        chart_name = f'Energies CO2 intensity summary'
+        chart_name = 'Energies CO2 intensity summary'
         new_chart = get_chart_green_energies(
             execution_engine, namespace, chart_name=chart_name)
         if new_chart is not None:
             instanciated_charts.append(new_chart)
 
-        chart_name = f'Energies CO2 intensity by years'
+        chart_name = 'Energies CO2 intensity by years'
         new_chart = get_chart_green_energies(
             execution_engine, namespace, chart_name=chart_name, summary=False)
         if new_chart is not None:
             instanciated_charts.append(new_chart)
     # ---
     if 'Global CO2 breakdown sankey' in graphs_list:
-        chart_name = f'Global CO2 breakdown sankey summary'
+        chart_name = 'Global CO2 breakdown sankey summary'
         new_chart = get_chart_Global_CO2_breakdown_sankey(
             execution_engine, namespace, chart_name=chart_name)
         if new_chart is not None:
             instanciated_charts.append(new_chart)
 
-        chart_name = f'Global CO2 breakdown sankey by years'
+        chart_name = 'Global CO2 breakdown sankey by years'
         new_chart = get_chart_Global_CO2_breakdown_sankey(
             execution_engine, namespace, chart_name=chart_name, summary=False)
         if new_chart is not None:
@@ -392,7 +394,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
-    if columns != None and type(columns) == list:
+    if columns is not None and type(columns) == list:
         multilevel_df = pd.DataFrame(multilevel_df[columns])
 
     return multilevel_df, years, namespace
@@ -481,8 +483,8 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
             flux_color += [CO2_per_use, ]
             production_list += [production, ]
             source += [
-                i_label_dict[f'CO2 from other consumption'], ]
-            source_name += [f'CO2 from other consumption', ]
+                i_label_dict['CO2 from other consumption'], ]
+            source_name += ['CO2 from other consumption', ]
             target += [i_label_dict[energy], ]
             target_name += [energy, ]
             flux += [CO2_from_other_consumption_tot, ]
@@ -573,8 +575,8 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
                 flux_color += [CO2_per_use, ]
                 production_list += [production, ]
                 source += [
-                    i_label_dict[f'CO2 from other consumption'], ]
-                source_name += [f'CO2 from other consumption', ]
+                    i_label_dict['CO2 from other consumption'], ]
+                source_name += ['CO2 from other consumption', ]
                 target += [i_label_dict[energy], ]
                 target_name += [energy, ]
                 flux += [CO2_from_other_consumption_tot, ]

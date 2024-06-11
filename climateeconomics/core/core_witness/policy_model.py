@@ -16,10 +16,12 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.cst_manager.func_manager_common import (
+    get_dsmooth_dvariable_vect,
+    smooth_maximum_vect,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, \
-    get_dsmooth_dvariable_vect
 
 
 class PolicyModel():

@@ -17,9 +17,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.study_manager.study_manager import StudyManager
 
 AGRI_MIX_MODEL_LIST = ['Crop', 'Forest']
 AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = [

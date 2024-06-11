@@ -15,7 +15,9 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
+    FossilSimpleTechnoDiscipline,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 FOSSIL_DEFAULT_TECHNO_DICT = FossilSimpleTechnoDiscipline.techno_infos_dict_default

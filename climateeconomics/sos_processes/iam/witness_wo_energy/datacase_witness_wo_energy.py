@@ -14,22 +14,31 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from numpy import arange, asarray
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
-from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
-from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    Study as datacase_agriculture_mix,
+)
+from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import (
+    Study as datacase_landuse,
+)
+from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
+    Study as datacase_resource,
+)
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -314,7 +323,6 @@ class DataStudy():
                 'variable': 'forest_lost_capital_cons',
                 'parent': 'agriculture_constraint',
                 'ftype': INEQ_CONSTRAINT,
-                'weight': -1.0,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
                 'namespace': GlossaryCore.NS_FUNCTIONS,

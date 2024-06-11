@@ -14,18 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+import json as _json
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 from numpy import arange
 from scipy.interpolate import interp1d
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import Study as witness_sect_usecase
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
+    Study as witness_sect_usecase,
+)
 
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
@@ -329,7 +334,6 @@ class Study(StudyManager):
 
 
 # ---------------- SPECIFIC CODE TO ENABLE COMPLEX AS REAL INTO PLOTLY CHARTS
-import json as _json
 
 
 class ComplexJsonEncoder(_json.JSONEncoder):

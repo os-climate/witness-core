@@ -14,13 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
+
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -148,7 +152,7 @@ def post_processings(execution_engine, scenario_name, sector, chart_filters=None
 
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionEnergyEmissionPart, chart_name=chart_name, stacked_bar=True)
         new_series = InstanciatedSeries(
-            years, list(breakdown_emission_sector[GlossaryCore.EnergyEmissions].values), f'Total energy emissions', display_type=InstanciatedSeries.LINES_DISPLAY)
+            years, list(breakdown_emission_sector[GlossaryCore.EnergyEmissions].values), 'Total energy emissions', display_type=InstanciatedSeries.LINES_DISPLAY)
         new_chart.add_series(new_series)
 
         # loop on all sections of the sector
@@ -179,7 +183,7 @@ def post_processings(execution_engine, scenario_name, sector, chart_filters=None
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionNonEnergyEmissionPart,
                                              chart_name=chart_name, stacked_bar=True)
         new_series = InstanciatedSeries(
-            years, list(breakdown_emission_sector[GlossaryCore.NonEnergyEmissions].values), f'Total Non energy emissions',
+            years, list(breakdown_emission_sector[GlossaryCore.NonEnergyEmissions].values), 'Total Non energy emissions',
             display_type=InstanciatedSeries.LINES_DISPLAY)  # TODO change this and move it to model if we decide that it is in Gt
         new_chart.add_series(new_series)
 

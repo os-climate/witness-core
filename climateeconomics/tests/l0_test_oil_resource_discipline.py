@@ -15,15 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.glossarycore import GlossaryCore
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 import unittest
-from os.path import join, dirname
+from os.path import dirname, join
+
 from pandas import read_csv
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class OilModelTestCase(unittest.TestCase):
 

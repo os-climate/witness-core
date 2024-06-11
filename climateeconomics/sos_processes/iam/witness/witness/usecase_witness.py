@@ -20,21 +20,30 @@ import pstats
 from io import StringIO
 
 import pandas as pd
-from pandas import concat
-
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
-    DataStudy as datacase_witness
-from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
-    DataStudy as datacase_witness_dev
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
+    Study as datacase_energy,
+)
+from pandas import concat
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import (
+    DataStudy as datacase_witness,
+)
+from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import (
+    DataStudy as datacase_witness_dev,
+)
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -158,7 +167,9 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
 
-    from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+    from sostrades_core.tools.post_processing.post_processing_factory import (
+        PostProcessingFactory,
+    )
 
     ppf = PostProcessingFactory()
     ns = 'usecase_witness_ms_mda_four_scenarios.mda_scenarios.- damage - tax, fossil 100%.GHGEmissions'
