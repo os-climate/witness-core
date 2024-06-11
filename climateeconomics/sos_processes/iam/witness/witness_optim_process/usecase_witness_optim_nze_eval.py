@@ -13,23 +13,35 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
-    COUPLING_NAME, EXTRA_NAME
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_optim_sub_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from sostrades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.execution_engine.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from climateeconomics.database import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    COUPLING_NAME,
+    EXTRA_NAME,
+    OPTIM_NAME,
+)
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_optim_sub_usecase,
+)
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -145,7 +157,7 @@ class Study(ClimateEconomicsStudyManager):
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
 
-        dspace_file_name = f'invest_design_space_NZE.csv'
+        dspace_file_name = 'invest_design_space_NZE.csv'
         dspace_out = pd.read_csv(join(dirname(__file__), 'data', dspace_file_name))
 
 
@@ -161,8 +173,10 @@ class Study(ClimateEconomicsStudyManager):
                 lower_bnd_str = dspace_out[dspace_out["variable"] == variable]["lower_bnd"].iloc[0]
                 activated_elem_str = dspace_out[dspace_out["variable"] == variable]["activated_elem"].iloc[0]
 
-                if ',' not in valeur_str: valeur_array = np.array(eval(valeur_str.replace(' ', ',')))
-                else: valeur_array = np.array(eval(valeur_str))
+                if ',' not in valeur_str:
+                    valeur_array = np.array(eval(valeur_str.replace(' ', ',')))
+                else:
+                    valeur_array = np.array(eval(valeur_str))
                 upper_bnd_array = np.array(eval(upper_bnd_str.replace(' ', ',')))
                 lower_bnd_array = np.array(eval(lower_bnd_str.replace(' ', ',')))
                 activated_elem_array = eval(activated_elem_str)
@@ -176,9 +190,9 @@ class Study(ClimateEconomicsStudyManager):
                     f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.CCUS.{variable}': valeur_array})
         dspace_df['enable_variable'] = True
 
-        invest_mix_file = f'investment_mix.csv'
+        invest_mix_file = 'investment_mix.csv'
         invest_mix = pd.read_csv(join(dirname(__file__), 'data', invest_mix_file))
-        forest_invest_file = f'forest_investment.csv'
+        forest_invest_file = 'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), 'data', forest_invest_file))
         #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value

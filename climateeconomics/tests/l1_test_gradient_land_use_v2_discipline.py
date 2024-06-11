@@ -15,15 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 from pandas import read_csv
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
@@ -106,7 +108,7 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         #np.set_printoptions(threshold=np.inf)
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_land_use_v2_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_land_use_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.land_demand_df',
                                     f'{self.name}.forest_surface_df',

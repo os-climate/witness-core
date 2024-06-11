@@ -15,15 +15,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-
-from climateeconomics.core.core_resources.new_resources_v0.copper_model import CopperModel
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-# from sostrades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.core_resources.new_resources_v0.copper_model import (
+    CopperModel,
+)
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+
+# from sostrades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CopperDisc(SoSWrapp):

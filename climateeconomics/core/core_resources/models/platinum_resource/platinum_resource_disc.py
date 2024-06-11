@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/07 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,17 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_model import PlatinumResourceModel
-from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_model import (
+    PlatinumResourceModel,
+)
+from climateeconomics.core.core_resources.resource_model.resource_disc import (
+    ResourceDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class PlatinumResourceDiscipline(ResourceDiscipline):
@@ -140,7 +146,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
     def get_stock_charts(self, stock_df, use_stock_df):
 
         sub_resource_list = [col for col in stock_df.columns if col != GlossaryCore.Years]
-        stock_chart = TwoAxesInstanciatedChart('Years', f'maximum stocks [t]',
+        stock_chart = TwoAxesInstanciatedChart('Years', 'maximum stocks [t]',
                                                chart_name=f'{self.resource_name} stocks through the years',
                                                stacked_bar=True)
         if len(sub_resource_list) > 1:

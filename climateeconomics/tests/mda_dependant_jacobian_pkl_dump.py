@@ -18,9 +18,14 @@ limitations under the License.
 
 import os
 
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
+
 import climateeconomics.tests as jacobian_target
-from climateeconomics.tests.data.mda_coarse_data_generator import launch_data_pickle_generation
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from climateeconomics.tests.data.mda_coarse_data_generator import (
+    launch_data_pickle_generation,
+)
 
 if __name__ == '__main__':
 

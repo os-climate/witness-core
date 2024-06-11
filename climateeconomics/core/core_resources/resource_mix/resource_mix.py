@@ -19,17 +19,30 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from sostrades_core.tools.base_functions.exp_min import (
+    compute_dfunc_with_exp_min,
+    compute_func_with_exp_min,
+)
 
-from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
-from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
-from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
-    NaturalGasResourceDiscipline
-from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
-from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
+from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import (
+    CoalResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import (
+    CopperResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import (
+    NaturalGasResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import (
+    OilResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import (
+    UraniumResourceDiscipline,
+)
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
-    compute_func_with_exp_min
 
 
 class OrderOfMagnitude():
@@ -178,7 +191,7 @@ class ResourceMixModel():
             data_frame_recycled_production = deepcopy(inputs_dict[f'{resource}.recycled_production'])
             if GlossaryCore.Years in data_frame_recycled_production.columns:
                 data_frame_recycled_production.set_index(GlossaryCore.Years, inplace=True)
-            self.resource_demand = deepcopy(inputs_dict[f'resources_demand'])
+            self.resource_demand = deepcopy(inputs_dict['resources_demand'])
             if GlossaryCore.Years in self.resource_demand.columns:
                 self.resource_demand.set_index(GlossaryCore.Years, inplace=True)
             self.all_resource_price[resource] = data_frame_price['price']

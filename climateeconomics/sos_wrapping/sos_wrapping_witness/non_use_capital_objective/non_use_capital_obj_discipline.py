@@ -15,17 +15,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.core.core_witness.non_use_capital_objective_model import (
+    NonUseCapitalObjective,
+)
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class NonUseCapitalObjectiveDiscipline(SoSWrapp):
@@ -348,7 +354,7 @@ def compute_full_techno_list(energy_techno_dict):
     for energy, techno_dict in energy_techno_dict.items():
         if energy == GlossaryCore.SectorAgriculture:
             full_techno_list.extend(
-                [(f'', techno_dict['namespace']) for techno in techno_dict['value']])
+                [('', techno_dict['namespace']) for techno in techno_dict['value']])
         else:
             full_techno_list.extend(
                 [(f'{energy}.{techno}.', techno_dict['namespace']) for techno in techno_dict['value']])

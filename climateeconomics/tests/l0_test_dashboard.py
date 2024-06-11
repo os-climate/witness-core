@@ -15,11 +15,16 @@ limitations under the License.
 '''
 import unittest
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import Study as Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
+
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import (
+    Study as Study,
+)
 
 
 class PostProcessEnergy(unittest.TestCase):
@@ -51,7 +56,7 @@ class PostProcessEnergy(unittest.TestCase):
         Test to compare WITNESS energy capex, opex, CO2 tax prices
         tables for each energy / each techno per energy
         """
-        from os.path import join, dirname, exists
+        from os.path import dirname, exists, join
 
         dump_dir = join(dirname(__file__), 'data', self.ee.study_name)
         if exists(dump_dir):

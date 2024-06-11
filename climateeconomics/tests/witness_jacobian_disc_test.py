@@ -16,11 +16,12 @@ limitations under the License.
 '''
 
 import platform
-from os.path import join, dirname, exists
+from os.path import dirname, exists, join
 
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 from tqdm import tqdm
-
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class WitnessJacobianDiscTest(AbstractJacobianUnittest):

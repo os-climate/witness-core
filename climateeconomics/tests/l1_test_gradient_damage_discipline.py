@@ -14,15 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 from pandas import read_csv
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class DamageJacobianDiscTest(AbstractJacobianUnittest):
@@ -100,7 +102,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_damage_discipline.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
@@ -188,7 +190,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_wo_damage_on_climate.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_damage_discipline_wo_damage_on_climate.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
@@ -264,7 +266,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_dev_formula.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_damage_discipline_dev_formula.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',

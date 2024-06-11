@@ -15,13 +15,19 @@ limitations under the License.
 '''
 import logging
 from copy import deepcopy
+
 import numpy as np
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from climateeconomics.core.tools.post_proc import get_scenario_value
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from gemseo.utils.derivatives_approx import DisciplineJacApprox
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.core.tools.post_proc import get_scenario_value
 
 '''
 Post-processing designe to compare the analytical vs the approximated gradient of the objective function wrt the design 

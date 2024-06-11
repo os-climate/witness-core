@@ -15,9 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import \
-    PlatinumResourceDiscipline
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
+
+from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import (
+    PlatinumResourceDiscipline,
+)
 
 
 class ProcessBuilder(BaseProcessBuilder):

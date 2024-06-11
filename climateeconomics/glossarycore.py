@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from copy import deepcopy, copy
+from copy import copy, deepcopy
+
 import numpy as np
 import pandas as pd
 
@@ -42,13 +43,13 @@ def get_ref_variable(var_name: str, unit: str, default_value=None) -> dict:
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
 
-    # Trillion $ / T$   /   10^12
+    # Trillion $ / T$   /   10^12 - Tera works too !
     # Giga$      / G$   /   10^9
     # Million$   / M$   /   10^6
     # Megatons : 1e6 tons
     # Gigatons : 1e9 tons = 1e3 Megatons
     # PWh = 1e3 TWh
-    # 1 TWh  = 1e9 kWh
+    # 1 TWh  = 1e9 kWh = 1e12 Wh
 
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_UTILIZATION_RATIO = (

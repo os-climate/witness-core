@@ -19,10 +19,12 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
@@ -121,7 +123,7 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_non_use_capital_objective.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_non_use_capital_objective.pkl',
                             discipline=disc_techno,
                             step=1e-15, local_data=disc_techno.local_data,
                             inputs=list(filter(lambda s: s.endswith('non_use_capital'), disc_techno.local_data.keys())),
