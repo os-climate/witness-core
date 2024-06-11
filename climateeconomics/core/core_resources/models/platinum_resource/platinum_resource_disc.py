@@ -18,11 +18,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_model import (
     PlatinumResourceModel,
@@ -31,6 +26,11 @@ from climateeconomics.core.core_resources.resource_model.resource_disc import (
     ResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class PlatinumResourceDiscipline(ResourceDiscipline):

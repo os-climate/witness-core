@@ -18,7 +18,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_model import (
     CoalResourceModel,
@@ -27,6 +26,7 @@ from climateeconomics.core.core_resources.resource_model.resource_disc import (
     ResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class CoalResourceDiscipline(ResourceDiscipline):

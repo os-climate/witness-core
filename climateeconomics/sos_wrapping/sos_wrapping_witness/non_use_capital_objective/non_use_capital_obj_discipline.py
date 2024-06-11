@@ -15,6 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
+
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.core.core_witness.non_use_capital_objective_model import (
+    NonUseCapitalObjective,
+)
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -24,14 +32,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.core.core_witness.non_use_capital_objective_model import (
-    NonUseCapitalObjective,
-)
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class NonUseCapitalObjectiveDiscipline(SoSWrapp):

@@ -17,14 +17,13 @@ limitations under the License.
 
 import unittest
 
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from gemseo.utils.compare_data_manager_tooling import compare_dict
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
 from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import (
     Study as witness_proc_usecase,
 )
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from gemseo.utils.compare_data_manager_tooling import compare_dict
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class WitnessCoarseCache(unittest.TestCase):
@@ -35,13 +34,13 @@ class WitnessCoarseCache(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -72,7 +71,7 @@ class WitnessCoarseCache(unittest.TestCase):
         self.ee2 = ExecutionEngine(self.name)
 
         builder = self.ee2.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         self.ee2.factory.set_builders_to_coupling_builder(builder)
         self.ee2.configure()
@@ -111,13 +110,13 @@ class WitnessCoarseCache(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -148,7 +147,7 @@ class WitnessCoarseCache(unittest.TestCase):
         self.ee2 = ExecutionEngine(self.name)
 
         builder = self.ee2.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         self.ee2.factory.set_builders_to_coupling_builder(builder)
         self.ee2.configure()

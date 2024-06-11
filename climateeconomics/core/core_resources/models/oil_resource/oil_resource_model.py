@@ -16,12 +16,11 @@ limitations under the License.
 '''
 
 
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
-
 from climateeconomics.core.core_resources.resource_model.resource_model import (
     ResourceModel,
+)
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
 )
 
 
