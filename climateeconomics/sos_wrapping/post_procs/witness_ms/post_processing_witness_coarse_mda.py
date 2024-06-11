@@ -444,7 +444,7 @@ def post_processings(execution_engine, namespace, filters):
 
         utility_dict = {}
         for scenario in scenario_list:
-            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility].values.tolist(
+            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtilityQuantity].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, utility_dict,

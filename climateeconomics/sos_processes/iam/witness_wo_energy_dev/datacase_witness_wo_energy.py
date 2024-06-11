@@ -284,7 +284,7 @@ class DataStudy():
         data = {
             'variable': [
                 GlossaryCore.EnergyWastedObjective,
-                GlossaryCore.NegativeWelfareObjective,
+                GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
                 GlossaryCore.ConsumptionObjective,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
@@ -297,9 +297,9 @@ class DataStudy():
                 'invest_objective',
             ],
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [0.1, 0., 0., -20., 3.0],
+            'weight': [0.1, -1., -0., 0.0, 0.],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
+            'namespace': [GlossaryCore.NS_FUNCTIONS  , GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
         }
 
         func_df = DataFrame(data)
