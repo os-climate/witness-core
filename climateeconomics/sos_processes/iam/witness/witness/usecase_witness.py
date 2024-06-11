@@ -164,16 +164,4 @@ if '__main__' == __name__:
 
     # TODO : careful, this usecase is quite long to test ! 800 sec
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-
-    from sostrades_core.tools.post_processing.post_processing_factory import (
-        PostProcessingFactory,
-    )
-
-    ppf = PostProcessingFactory()
-    ns = 'usecase_witness_ms_mda_four_scenarios.mda_scenarios.- damage - tax, fossil 100%.GHGEmissions'
-    filters = ppf.get_all_post_processings(uc_cls.ee, False, as_json=False)
-
-
-    a = 1
+    uc_cls.test()

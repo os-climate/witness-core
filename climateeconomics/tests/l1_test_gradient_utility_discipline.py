@@ -94,11 +94,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'
                             ],
-                            outputs=[f'{self.name}.{GlossaryCore.WelfareObjective}',
-                                     f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}',
-                                     f'{self.name}.{GlossaryCore.LastYearDiscountedUtilityObjective}',
+                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
-                                     f'{self.name}.{GlossaryCore.PerCapitaConsumptionUtilityObjectiveName}'
                             ],
                             derr_approx='complex_step')

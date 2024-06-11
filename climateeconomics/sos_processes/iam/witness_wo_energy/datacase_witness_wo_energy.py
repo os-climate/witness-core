@@ -259,19 +259,15 @@ class DataStudy():
     def setup_objectives(self):
         data = {
             'variable': [
-                GlossaryCore.NegativeWelfareObjective,
-                GlossaryCore.LastYearDiscountedUtilityObjective,
                 'gwp100_objective',
             ],
             'parent': [
-                'utility_objective',
-                'utility_objective',
                 'GWP_long_term_obj',
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [1.0, 1.0, 0.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, ],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_WITNESS]
+            'ftype': [OBJECTIVE],
+            'weight': [0.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, ],
+            'namespace': [GlossaryCore.NS_WITNESS]
         }
 
         func_df = pd.DataFrame(data)

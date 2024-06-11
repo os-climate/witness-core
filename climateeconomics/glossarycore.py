@@ -127,9 +127,7 @@ class GlossaryCore:
     NonEnergyInvestmentsValue = "non_energy_investment"
     EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
     WelfareObjective = "welfare_objective"
-    NormalizedWelfare = "Normalized welfare"
     NegativeWelfareObjective = "negative_welfare_objective"
-    LastYearDiscountedUtilityObjective = "last_year_discounted_utility_objective"
     energy_list = "energy_list"
     techno_list = "technologies_list"
     ccs_list = "ccs_list"
@@ -1055,8 +1053,6 @@ class GlossaryCore:
     PeriodUtilityPerCapita = "period_utility_pc"
     DiscountedUtility = "discounted_utility"
     Welfare = "welfare"
-    EnergyPriceRatio = "energy_price_ratio"
-    PerCapitaConsumptionUtility = "Per capita consumption utility"
     UtilityDf = {
         "var_name": UtilityDfValue,
         "type": "dataframe",
@@ -1065,37 +1061,12 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             UtilityDiscountRate: ("float", [0, 100], False),
-            PeriodUtilityPerCapita: ("float", None, False),
-            DiscountedUtility: ("float", None, False),
             UtilityQuantity: ("float", None, False),
             DiscountedUtilityQuantity: ("float", None, False),
-            EnergyPriceRatio: ("float", [0, 1e30], False),
-            PerCapitaConsumptionUtility: ("float", None, False),
         },
         "unit": "-",
     }
 
-    PerCapitaConsumptionUtilityRefName = "per_capita_consumption_utility_ref"
-    PerCapitaConsumptionUtilityRef = {
-        "var_name": PerCapitaConsumptionUtilityRefName,
-        "type": "float",
-        "visibility": "Shared",
-        "namespace": NS_REFERENCE,
-        "unit": "k$/capita",
-        "default": 0.5,
-        "user_level": 3,
-    }
-
-    PerCapitaConsumptionUtilityObjectiveName = (
-        "per_capita_consumption_utility_objective"
-    )
-    PerCapitaConsumptionUtilityObjective = {
-        "var_name": PerCapitaConsumptionUtilityObjectiveName,
-        "type": "array",
-        "visibility": "Shared",
-        "namespace": NS_FUNCTIONS,
-        "unit": "-",
-    }
 
     QuantityObjectiveValue = "Quantity_objective"
 

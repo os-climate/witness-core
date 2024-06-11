@@ -123,12 +123,11 @@ class Study(ClimateEconomicsStudyManager):
         self.dspace = pd.DataFrame(dspace_dict)
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         # create func manager
-        func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.NegativeWelfareObjective,
-                                                    GlossaryCore.UsableCapitalObjectiveName,
-                                                    GlossaryCore.PerCapitaConsumptionUtilityObjectiveName],
+        func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.QuantityObjectiveValue,
+                                                    GlossaryCore.UsableCapitalObjectiveName,],
                      FunctionManagerDisc.PARENT: 'objectives',
                      FunctionManagerDisc.FTYPE: 'objective',
-                     FunctionManagerDisc.WEIGHT: [0.0, 1.0, 0.0],
+                     FunctionManagerDisc.WEIGHT: [0.0, 1.0,],
                      FunctionManagerDisc.AGGR_TYPE: 'sum',
                      FunctionManagerDisc.NAMESPACE_VARIABLE: GlossaryCore.NS_FUNCTIONS}
         func_df = pd.DataFrame(data=func_dict)

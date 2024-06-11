@@ -51,11 +51,6 @@ class WitnessIndicators(SoSWrapp):
                                            SoSWrapp.UNIT: '$/MWh'},
                GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
                GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
-               GlossaryCore.NormalizedWelfare: {SoSWrapp.TYPE: 'array',
-                                                SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
-                                                SoSWrapp.NAMESPACE: GlossaryCore.NS_WITNESS,
-                                                SoSWrapp.UNIT: '-',
-                                                SoSWrapp.DESCRIPTION: 'Sum of discounted utilities divided by number of year divided by initial discounted utility'},
                GlossaryEnergy.EnergyProductionDetailedValue: {SoSWrapp.TYPE: 'dataframe',
                                                               SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
                                                               SoSWrapp.NAMESPACE: GlossaryCore.NS_ENERGY_MIX,
@@ -72,7 +67,6 @@ class WitnessIndicators(SoSWrapp):
 
                 'world_net_product_2100': {SoSWrapp.TYPE: 'float', SoSWrapp.UNIT: 'T$'},
                 'temperature_rise_2100': {SoSWrapp.TYPE: 'float', SoSWrapp.UNIT: 'ºC'},
-                'welfare_indicator': {SoSWrapp.TYPE: 'float', SoSWrapp.UNIT: '-'},
                 }
 
     def run(self):
@@ -86,7 +80,6 @@ class WitnessIndicators(SoSWrapp):
         renewable_prod = prods['production renewable (TWh)'].tolist()[-1] * 1e-3
         world_net_product = self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)['output_net_of_d'].tolist()[-1]
         temperature_rise = self.get_sosdisc_inputs(GlossaryCore.TemperatureDfValue)['temp_atmo'].tolist()[-1]
-        welfare_indicator = self.get_sosdisc_inputs(GlossaryCore.NormalizedWelfare)[0]
 
         self.store_sos_outputs_values({
             'mean_energy_price_2100': mean_energy_price,
@@ -97,5 +90,4 @@ class WitnessIndicators(SoSWrapp):
             'renewable_energy_production_2100': renewable_prod,
             'world_net_product_2100': world_net_product,
             'temperature_rise_2100': temperature_rise,
-            'welfare_indicator': welfare_indicator,
         })
