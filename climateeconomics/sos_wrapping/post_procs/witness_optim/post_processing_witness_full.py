@@ -17,15 +17,15 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from energy_models.glossaryenergy import GlossaryEnergy
 from matplotlib.pyplot import cm
 from plotly import graph_objects as go
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
-
-from climateeconomics.glossarycore import GlossaryCore
 
 
 def post_processing_filters(execution_engine, namespace):

@@ -18,9 +18,9 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
-from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):

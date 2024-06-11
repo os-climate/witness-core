@@ -21,6 +21,14 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+
+from climateeconomics.charts_tools import graph_gross_and_net_output
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
+from climateeconomics.database.database_witness_core import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -30,14 +38,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
-
-from climateeconomics.charts_tools import graph_gross_and_net_output
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
-from climateeconomics.database.database_witness_core import DatabaseWitnessCore
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):

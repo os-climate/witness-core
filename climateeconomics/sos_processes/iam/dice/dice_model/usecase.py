@@ -16,9 +16,9 @@ limitations under the License.
 '''
 from numpy import append, arange, zeros
 from pandas import DataFrame
-from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 class Study(StudyManager):

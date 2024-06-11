@@ -18,10 +18,10 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.core.core_forest.forest_v2 import Forest
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class ForestTestCase(unittest.TestCase):

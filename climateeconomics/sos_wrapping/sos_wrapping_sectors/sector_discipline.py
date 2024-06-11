@@ -17,6 +17,13 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.charts_tools import graph_gross_and_net_output
+from climateeconomics.core.core_sectorization.sector_model import SectorModel
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -25,13 +32,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
-
-from climateeconomics.charts_tools import graph_gross_and_net_output
-from climateeconomics.core.core_sectorization.sector_model import SectorModel
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class SectorDiscipline(ClimateEcoDiscipline):

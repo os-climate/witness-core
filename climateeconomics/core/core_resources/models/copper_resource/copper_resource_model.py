@@ -20,6 +20,11 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.core.core_resources.resource_model.resource_model import (
+    ResourceModel,
+)
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
@@ -27,11 +32,6 @@ from sostrades_core.tools.base_functions.exp_min import (
     compute_dfunc_with_exp_min,
     compute_func_with_exp_min,
 )
-
-from climateeconomics.core.core_resources.resource_model.resource_model import (
-    ResourceModel,
-)
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class OrderOfMagnitude():

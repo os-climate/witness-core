@@ -16,15 +16,6 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-
-# from climateeconomics.core.core_land_use.land_use import LandUse,\
-# OrderOfMagnitude
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import (
     CoalResourceDiscipline,
@@ -51,6 +42,14 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+# from climateeconomics.core.core_land_use.land_use import LandUse,\
+# OrderOfMagnitude
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class ResourceMixDiscipline(SoSWrapp):

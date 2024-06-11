@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
     FossilSimpleTechnoDiscipline,
@@ -21,8 +22,6 @@ from energy_models.models.renewable.renewable_simple_techno.renewable_simple_tec
     RenewableSimpleTechnoDiscipline,
 )
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-
-from climateeconomics.glossarycore import GlossaryCore
 
 RENEWABLE_DEFAULT_TECHNO_DICT = RenewableSimpleTechnoDiscipline.techno_infos_dict_default
 FOSSIL_DEFAULT_TECHNO_DICT = FossilSimpleTechnoDiscipline.techno_infos_dict_default
