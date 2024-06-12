@@ -183,29 +183,41 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
+        economics_df = self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)
         energy_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)[GlossaryCore.EnergyPriceValue].values
         years = list(utility_df[GlossaryCore.Years].values)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Variation [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Utility gain',
                                                  chart_name='Quantity utility')
 
             values = utility_df[GlossaryCore.UtilityQuantity].values
             new_series = InstanciatedSeries(
-                years, list(values), 'Quantity utility', 'lines', True)
+                years, list(values), 'Utility gain', 'lines', True)
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Variation [%]',
-                                                 chart_name='Energy price variation since year start')
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Variation since {years[0]}[%]',
+                                                 chart_name=f'Utility composants variation since {years[0]}')
 
-            values = (energy_price / energy_price[0] - 1) * 100
+            energy_price_ratio = (energy_price / energy_price[0] - 1) * 100
             new_series = InstanciatedSeries(
-                years, list(values), 'Energy price variation', 'lines', True)
-
+                years, list(energy_price_ratio), 'Energy price', 'lines', True)
             new_chart.series.append(new_series)
+            pcc = economics_df[GlossaryCore.PerCapitaConsumption].values
+            pcc_var = (pcc / pcc[0] - 1) * 100
+            new_series = InstanciatedSeries(
+                years, list(pcc_var), 'Per capita consumption', 'lines', True)
+            new_chart.series.append(new_series)
+
+            quantity_consumed = pcc / energy_price
+            quantity_consumed_var = (quantity_consumed / quantity_consumed[0] - 1) * 100
+            new_series = InstanciatedSeries(
+                years, list(quantity_consumed_var), "Quantity of 'things' consumed per capita", 'bar', True)
+            new_chart.series.append(new_series)
+
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
