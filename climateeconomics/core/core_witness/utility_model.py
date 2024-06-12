@@ -133,7 +133,10 @@ class UtilityModel():
 
     def compute_quantity_objective(self):
         """Quantity objective = Mean over years of discounted utility quantity"""
-        self.discounted_utility_quantity_objective = np.array([self.utility_df[GlossaryCore.DiscountedUtilityQuantity].values.mean()])
+        quantity_obj_val = self.utility_df[GlossaryCore.DiscountedUtilityQuantity].values.mean()
+        quantity_obj_val = quantity_obj_val if not np.isnan(quantity_obj_val) else 0.
+        self.discounted_utility_quantity_objective = np.array([quantity_obj_val])
+
 
     ######### GRADIENTS ########
     def d_utility_quantity(self):
