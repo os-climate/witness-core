@@ -73,14 +73,13 @@ class DamageModel:
         using variables at t
         If tipping point = True : Martin Weitzman damage function.
         """
-        temp_atmo = self.temperature_df[GlossaryCore.TempAtmo]
-        temp_atmo = temp_atmo.clip(0.0)
+        temp_atmo = self.temperature_df[GlossaryCore.TempAtmo].clip(0.0).values
         if self.tipping_point_model:
             dam = (temp_atmo / self.tp_a1)**self.tp_a2 + (temp_atmo / self.tp_a3)**self.tp_a4
             damage_frac_output = 1 - (1 / (1 + dam))
         else:
             damage_frac_output = self.damag_int * temp_atmo + self.damag_quad * temp_atmo**self.damag_expo
-        self.damage_fraction_df[GlossaryCore.DamageFractionOutput] = damage_frac_output.values
+        self.damage_fraction_df[GlossaryCore.DamageFractionOutput] = damage_frac_output
 
     def compute_CO2_damage_price_dev(self):
         """
@@ -100,37 +99,23 @@ class DamageModel:
     def compute_gradient(self):
         """
         Compute gradient
-        d_damage_frac_output/d_temp_atmo, 
-        d_damages/d_temp_atmo, 
-        d_damages/d_gross_output, 
-        d_constraint/d_CO2_taxes, 
-        d_constraint/d_temp_atmo, 
-        d_constraint_economics
+        d_damage_frac_output/d_temp_atmo,
         """
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
-        nb_years = len(years)
-        ddamage_frac_output_temp_atmo = np.zeros((nb_years, nb_years))
-        for i in range(nb_years):
-            for line in range(nb_years):
-                if i == line:
-                    temp_atmo = self.temperature_df.at[years[line],
-                                                    GlossaryCore.TempAtmo]
-                    if self.tipping_point_model:
-                        if temp_atmo < 0:
-                            ddamage_frac_output_temp_atmo[line, i] = 0.0
-                        else:
-                            ddamage_frac_output_temp_atmo[line, i] = ((self.tp_a4 * (temp_atmo / self.tp_a3)**self.tp_a4) +
-                                                                    (self.tp_a2 * (temp_atmo / self.tp_a1)**self.tp_a2)) / \
-                                (temp_atmo * (
-                                    ((temp_atmo / self.tp_a1)**self.tp_a2)
-                                    + ((temp_atmo / self.tp_a3)**self.tp_a4)
-                                    + 1.0) ** 2.0)
-                    else:
-                        ddamage_frac_output_temp_atmo[line, i] = self.damag_int + \
-                            self.damag_quad * self.damag_expo * \
-                            temp_atmo ** (self.damag_expo - 1)
+        temp_atmo = self.temperature_df[GlossaryCore.TempAtmo].values
+        temp_atmo[temp_atmo <= 0] = 0.
+        if self.tipping_point_model:
+            u = (temp_atmo / self.tp_a1)**self.tp_a2 + (temp_atmo / self.tp_a3)**self.tp_a4
+            u_prime = (self.tp_a2 / self.tp_a1) * (temp_atmo / self.tp_a1) ** (self.tp_a2 - 1) + \
+                      (self.tp_a4 / self.tp_a3) * (temp_atmo / self.tp_a3) ** (self.tp_a4 - 1)
 
-        return ddamage_frac_output_temp_atmo
+            f_prime_u = 1 / (1 + u) ** 2
+            out = np.diag(u_prime * f_prime_u)
+
+        else:
+            u_prime = self.damag_int + self.damag_quad * self.damag_expo * temp_atmo ** (self.damag_expo - 1)
+            out = np.diag(u_prime)
+        out[temp_atmo <= 0] = 0
+        return out
 
     def d_co2_damage_price_d_damages(self):
         '''
