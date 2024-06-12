@@ -6,9 +6,8 @@ This document explores the relationship between global warming and its impact on
 - [Damage Functions](#damage-functions)
   - [Standard DICE Damage](#standard-dice-damage)
   - [Tipping Point](#tipping-point)
-- [Justification for Adjusting Tipping Point Value](#justification-for-adjusting-tipping-point-value)
-  - [Controversy on Tipping Point Value for Tipping Point Model](#controversy-on-tipping-point-value-for-tipping-point-model)
-  - [Implementation of 3.5°C Tipping Point](#implementation-of-35c-tipping-point)
+    - [Controversy on Tipping Point Value](#controversy-on-tipping-point-value)
+    - [Implementation of 3.5°C Tipping Point](#implementation-of-35c-tipping-point)
 - [Graphs](#graphs)
 - [Damage to Productivity](#damage-to-productivity)
 - [References and Notes](#references-and-notes)
@@ -32,33 +31,39 @@ The form of the damage fraction in the latest version of DICE (2017) is differen
 ![](dice_damage_model.png)
 
 ## Tipping Point
-We use another equation for the damage model from Weitzman (2009)[^2][^4] based on the assumption that once temperatures increase above a given point, damages may accelerate. In this version damages drastically increase after a temperature $T_3$ set to 3.5°C. We have then:
+We use another equation for the damage model from Weitzman (2009)[^2][^4] based on the assumption that once temperatures increase above a given point, damages may accelerate. In this version damages drastically increase after a temperature $T_3$ currently set to 3.5°C (more on that in next section). We have then:
 $$ D_t = \left(\frac{T_{t\,AT}}{20.46}\right)^2 + \left(\frac{T_{t\,AT}}{T_3}\right)^{6.754} $$
 and
 $$\Omega_t = \frac{D_t}{1 + D_t}$$
 As before, we have the total economics damage in trillions dollars:  
 $$Damages_t = \Omega _t. Y_t$$
 
-The macroeconomics model is highly dependent on the damage model which is highly sensitive to the 
-tipping point temperature. This original value of tp_a3 = 6.081°C was taken from a subjective probability 
-estimate among 52 experts of triggering a « tipping point of major changes » in each of five possible 
-categories: (1) The Atlantic meridional overturning circulation; (2) the Greenland ice sheet; 
-(3) the West Antarctic Ice Sheet; (4) the Amazon rainforest; (5) The El Nino/southern Oscillation. 
-At $T_{t\,AT}=6°C$, the expected probability is 3/5 [^4]. 
-Actually, tipping cascades could occur for $T_{t\,AT}=3°C$  [^5] (p.34) or even 1-2°C [^6][^7].
-Therefore, the sensitivity of the damage model to the tipping point temperature value can be studied 
-by adjusting the variable A3 in the GUI in expert mode (referred to as tp_a3 in the model).
+> The severity of the damage model can be modified by adjusting the variable A3 in the GUI in expert mode (referred to as `tp_a3` in the model).
 
-## Justification for Adjusting Tipping Point Value
-
-### Controversy on Tipping Point Value for Tipping Point Model
+### Controversy on Tipping Point Value
 The damage function significantly influences GDP and policy making. The DICE model and other IAMs traditionally do not account for tipping points, assuming these occur at 3°C or higher or over a 300-year timescale. This conservative approach has been criticized for underestimating climate change impacts.
 
-The original tipping point value of 6.081°C in Weitzman's model was based on expert estimates but has been critiqued for several reasons:
+The macroeconomics model is highly dependent on the damage model which is highly sensitive to the 
+tipping point temperature (when using the tipping point damage function, which is currently the case). This original value of `tp_a3 = 6.081°C` in Weitzman's model was taken from a subjective probability 
+estimate among 52 experts of triggering a « tipping point of major changes » in each of five possible 
+categories: 
+1. The Atlantic meridional overturning circulation (AMOC)
+2. The Greenland ice sheet
+3. West Antarctic Ice Sheet
+4. Amazon rainforest
+5. El Nino/southern Oscillation 
+
+At $T_{t\,AT}=6.081°C$, the expected probability is 3/5 [^4].
+
+However, that original tipping point value of 6.081°C has been critiqued for several reasons:
 
 - **Criticism of Existing Models**: Keen et al. (2021) argue that conservative models misinform climate policy and should be rejected [^7].
 - **Underestimation of Climate Change Costs**: Higher tipping points have led IAMs to underestimate the social cost of carbon and overestimate the cost of emission reductions, resulting in suboptimal climate policies[^7][^12].
 - **Call for Realistic Assumptions**: Correcting these errors suggests economic damages from climate change could be much worse than forecasted, necessitating immediate and realistic consideration of lower tipping points[^12].
+
+Some paper suggest radically different values :
+- $T_{3}=3°C$  [^5] (p.34) 
+- $T_{3}=1-2°C$ [^6][^7].
 
 ### Implementation of 3.5°C Tipping Point
 
