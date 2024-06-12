@@ -31,9 +31,7 @@ The form of the damage fraction in the latest version of DICE (2017) is differen
 
 ## Tipping Point
 We use another equation for the damage model from Weitzman (2009)[^2][^4] based on the assumption that once temperatures increase above a given point, damages may accelerate. In this version damages drastically increase after a temperature $T_3$ currently set to 3.5°C (more on that in next section). We have then:
-$$
-D_t = \left(\frac{T_{t\,AT}}{20.46}\right)^2 + \left(\frac{T_{t\,AT}}{T_3}\right)^{6.754}
-$$
+$$D_t = \left(\frac{T_{t\,AT}}{20.46}\right)^2 + \left(\frac{T_{t\,AT}}{T_3}\right)^{6.754}$$
 and
 $$\Omega_t = \frac{D_t}{1 + D_t}$$
 As before, we have the total economics damage in trillions dollars:  
