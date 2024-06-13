@@ -29,6 +29,8 @@ class UtilityModel():
         '''
         Constructor
         '''
+        self.shift_scurve = 0.
+        self.strech_scurve = 0.
         self.discounted_utility_quantity_objective = 0.
         self.param = param
 
@@ -45,6 +47,9 @@ class UtilityModel():
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
         self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
+
+        self.shift_scurve = self.param['shift_scurve']
+        self.strech_scurve = self.param['strech_scurve']
 
         self.conso_elasticity = self.param['conso_elasticity']  # elasmu
         self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
@@ -120,7 +125,18 @@ class UtilityModel():
 
         utility_quantity = quantity / quantity_year_start
 
-        self.utility_df[GlossaryCore.UtilityQuantity] = np.log(utility_quantity)
+        self.utility_df[GlossaryCore.UtilityQuantity] = self.s_curve_function(utility_quantity)
+
+    def s_curve_function(self, x):
+        y = (x - 1 - self.shift_scurve) * self.strech_scurve
+        return 1 / (1 + np.exp(-y))
+
+    def d_s_curve_function(self, x):
+        u_prime = self.strech_scurve
+        u = (x - 1 - self.shift_scurve) * self.strech_scurve
+        f_prime_u = np.exp(-u) / (1+np.exp(-u)) ** 2
+        return u_prime * f_prime_u
+
 
     def compute_discounted_utility_quantity(self):
         """
@@ -134,7 +150,6 @@ class UtilityModel():
     def compute_quantity_objective(self):
         """Quantity objective = Mean over years of discounted utility quantity"""
         quantity_obj_val = self.utility_df[GlossaryCore.DiscountedUtilityQuantity].values.mean()
-        quantity_obj_val = quantity_obj_val if not np.isnan(quantity_obj_val) else 0.
         self.discounted_utility_quantity_objective = np.array([quantity_obj_val])
 
 
@@ -142,9 +157,15 @@ class UtilityModel():
     def d_utility_quantity(self):
         energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
         pcc = self.economics_df[GlossaryCore.PerCapitaConsumption].values
-        d_utility_denergy_price = np.diag(- 1 / energy_price)
-        d_utility_dpcc = np.diag(1 / pcc)
-        d_utility_dpcc[:, 0] = - 1 / pcc[0]
+        u = (pcc / energy_price) / (pcc[0] / self.energy_price_ref)
+        d_u_d_ep = -(pcc / energy_price ** 2) / (pcc[0] / self.energy_price_ref)
+        d_u_d_pcc = (1 / energy_price) / (pcc[0] / self.energy_price_ref)
+        d_u_d_pcc0 = -(pcc / energy_price) / (pcc[0] ** 2 / self.energy_price_ref)
+
+        d_utility_denergy_price = np.diag(d_u_d_ep * self.d_s_curve_function(u))
+        d_utility_dpcc = np.diag(d_u_d_pcc * self.d_s_curve_function(u))
+        d_utility_dpcc0 = d_u_d_pcc0 * self.d_s_curve_function(u)
+        d_utility_dpcc[:, 0] = d_utility_dpcc0
         d_utility_dpcc[0,0] = 0.
         discount_rate = self.utility_df[GlossaryCore.UtilityDiscountRate].values
         d_discounted_utility_quantity_denergy_price = np.diag(discount_rate) * d_utility_denergy_price
