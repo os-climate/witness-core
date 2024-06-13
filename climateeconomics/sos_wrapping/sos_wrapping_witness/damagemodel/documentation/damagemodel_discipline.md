@@ -47,18 +47,18 @@ tipping point temperature (when using the tipping point damage function, which i
 estimate among 52 experts of triggering a « tipping point of major changes » in each of five possible 
 categories: 
 1. The Atlantic meridional overturning circulation (AMOC)
-2. The Greenland ice sheet
-3. West Antarctic Ice Sheet
+2. The Greenland ice sheet metltdown
+3. West Antarctic Ice Sheet meltdown
 4. Amazon rainforest
 5. El Nino/southern Oscillation 
 
 At $T_{t\,AT}=6.081°C$, the expected probability is 3/5 [^4].
 
-However, that original tipping point value of 6.081°C has been critiqued for several reasons:
+However, that original tipping point value of 6.081°C has been critized for several reasons:
 
 - **Criticism of Existing Models**: Keen et al. (2021) argue that conservative models misinform climate policy and should be rejected [^7].
-- **Underestimation of Climate Change Costs**: Higher tipping points have led IAMs to underestimate the social cost of carbon and overestimate the cost of emission reductions, resulting in suboptimal climate policies[^7][^12].
-- **Call for Realistic Assumptions**: Correcting these errors suggests economic damages from climate change could be much worse than forecasted, necessitating immediate and realistic consideration of lower tipping points[^12].
+- **Underestimation of Climate Change Costs**: Higher tipping points have led IAMs to underestimate the social cost of carbon and overestimate the cost of emission reductions, resulting in suboptimal climate policies[^7]
+- **Call for Realistic Assumptions**: Correcting these errors suggests economic damages from climate change could be much worse than forecasted, necessitating immediate and realistic consideration of lower tipping points.
 
 Some paper suggest radically different values :
 - $T_{3}=3°C$  [^5] (p.34) 
@@ -75,28 +75,29 @@ To provide a more accurate representation of climate-economic impacts, we have a
 See the documentation of macroeconomics model. 
 
 # References and Notes 
+
 [^1]: Nordhaus, W. D. (2017). Revisiting the social cost of carbon. Proceedings of the National Academy of Sciences, 114(7), 1518-1523.
 
 [^2]: Weitzman, M. L. (2009). On modeling and interpreting the economics of catastrophic climate change. The Review of Economics and Statistics, 91(1), 1-19.
 
-[^3]: Version of the code we use is "DICE-2016R-091916ap.gms" available at https://sites.google.com/site/williamdnordhaus/dice-rice. In the documentation (see [^1] ) $\Omega_t = \frac{1}{1+\pi_1 T_{t\,AT}+ \pi_2 T_{t\,AT}^\varepsilon}$.
+[^3]: Version of the code we use is "DICE-2016R-091916ap.gms" available at [https://sites.google.com/site/williamdnordhaus/dice-rice](https://sites.google.com/site/williamdnordhaus/dice-rice). In the documentation (see [^1]) $\Omega_t = \frac{1}{1+\pi_1 T_{t\,AT}+ \pi_2 T_{t\,AT}^\varepsilon}$.
 
-[^4]: Weitzman, M. L. (2012). GHG targets as insurance against catastrophic climate damages, National Bureau of Economic research (https://www.nber.org/system/files/working_papers/w16136/w16136.pdf )
+[^4]: Weitzman, M. L. (2012). GHG targets as insurance against catastrophic climate damages, National Bureau of Economic Research. [https://www.nber.org/system/files/working_papers/w16136/w16136.pdf](https://www.nber.org/system/files/working_papers/w16136/w16136.pdf)
 
-[^5]: Stern, Nicholas and Stiglitz, Joseph E, The social cost of carbon, risk, distribution, market failures: An alternative approach, volume 15, 2021, National Bureau of Economic Research Cambridge, MA, USA (https://files.static-nzz.ch/2021/4/26/7e32b21f-81b9-4033-907c-7aaeba85e7a5.pdf)
+[^5]: Stern, N., & Stiglitz, J. E. (2021). The social cost of carbon, risk, distribution, market failures: An alternative approach. National Bureau of Economic Research, Cambridge, MA, USA. [https://files.static-nzz.ch/2021/4/26/7e32b21f-81b9-4033-907c-7aaeba85e7a5.pdf](https://files.static-nzz.ch/2021/4/26/7e32b21f-81b9-4033-907c-7aaeba85e7a5.pdf)
 
-[^6]: Lenton TM, Rockström J, Gaffney O et al., Climate tipping points — too risky to bet against, Nature, 19 dec 2019 (https://ore.exeter.ac.uk/repository/bitstream/handle/10871/40141/Lenton_Nature%20Comment_accepted_version.pdf?sequence=2 )
+[^6]: Lenton, T. M., Rockström, J., Gaffney, O., et al. (2019). Climate tipping points — too risky to bet against. Nature, 19 Dec 2019. [https://ore.exeter.ac.uk/repository/bitstream/handle/10871/40141/Lenton_Nature%20Comment_accepted_version.pdf?sequence=2](https://ore.exeter.ac.uk/repository/bitstream/handle/10871/40141/Lenton_Nature%20Comment_accepted_version.pdf?sequence=2)
 
-[^7]: Keen, S et al, Economists' erroneous estimates of damages from climate change, Aug 2021, the Royal Society, (https://arxiv.org/pdf/2108.07847.pdf?trk=public_post_comment-text )
+[^7]: Keen, S., et al. (2021). Economists' erroneous estimates of damages from climate change. The Royal Society, Aug 2021. [https://arxiv.org/pdf/2108.07847.pdf?trk=public_post_comment-text](https://arxiv.org/pdf/2108.07847.pdf?trk=public_post_comment-text)
 
-[^8] Weitzman, M, GHG targets as insurance against catastrophic climate damages, National Bureau of Economic research, 2012 (https://www.nber.org/system/files/working_papers/w16136/w16136.pdf )
+[^8]: Weitzman, M. L. (2012). GHG targets as insurance against catastrophic climate damages, National Bureau of Economic Research. [https://www.nber.org/system/files/working_papers/w16136/w16136.pdf](https://www.nber.org/system/files/working_papers/w16136/w16136.pdf)
 
-[^9] Kriegler, Elmar, Jim W. Hall, Hermann Held, Richard Dawson, Hans Joachim Schnellnhuber. Imprecise probability assessment of tipping points in the climate system. Proceedings of the National Academy of Sciences, 106, 5041-5046 (31 March, 2009) 
+[^9]: Kriegler, E., Hall, J. W., Held, H., Dawson, R., & Schnellnhuber, H. J. (2009). Imprecise probability assessment of tipping points in the climate system. Proceedings of the National Academy of Sciences, 106, 5041-5046. 
 
-[^10] DeCanioS, 2003 Economic models of climate change: a critique. Springer
+[^10]: DeCanio, S. (2003). Economic models of climate change: a critique. Springer.
 
-[^11] Drijfhout, S.  et al, Catalogue of abrupt shifts in Intergovernmental Panel on Climate Change climate models, Proceedings of the National Academy of Sciences, vol 112, nb 43, p.E5777--E5786, 2015, National Acad Sciences. (https://www.pnas.org/doi/full/10.1073/pnas.1511451112 )
+[^11]: Drijfhout, S., et al. (2015). Catalogue of abrupt shifts in Intergovernmental Panel on Climate Change climate models. Proceedings of the National Academy of Sciences, 112(43), E5777-E5786. [https://www.pnas.org/doi/full/10.1073/pnas.1511451112](https://www.pnas.org/doi/full/10.1073/pnas.1511451112)
 
-[^12] Hänsel et al, Climate economics support for the UN climate targets (https://eprints.lse.ac.uk/105699/1/Climate_economics_support_for_the_UN_climate_targets_2.pdf )
+[^12]: Hänsel, M. C., et al. (2020). Climate economics support for the UN climate targets. [https://eprints.lse.ac.uk/105699/1/Climate_economics_support_for_the_UN_climate_targets_2.pdf](https://eprints.lse.ac.uk/105699/1/Climate_economics_support_for_the_UN_climate_targets_2.pdf)
 
-[^13] Keen, S. (2020), The appallingly bad neoclassical economics of climate change, Globalizations, DOI 10.1080/14747731.2020.1807856   (https://doi.org/10.1080/14747731.2020.1807856  )
+[^13]: Keen, S. (2020). The appallingly bad neoclassical economics of climate change. Globalizations. [https://doi.org/10.1080/14747731.2020.1807856](https://doi.org/10.1080/14747731.2020.1807856)
