@@ -16,9 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
 class CarbonEmissions():

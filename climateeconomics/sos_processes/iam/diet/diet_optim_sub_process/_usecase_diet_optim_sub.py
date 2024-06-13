@@ -17,14 +17,10 @@ limitations under the License.
 from collections import defaultdict
 
 import numpy as np
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import (
@@ -32,6 +28,9 @@ from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import (
 )
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

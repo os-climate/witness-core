@@ -18,17 +18,17 @@ import ast
 from os.path import dirname, join
 
 import pandas as pd
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from numpy import array
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_sub_proc_usecase,
+)
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
 )
 
 
@@ -50,7 +50,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
                                                            'witness_optim_sub_process',
-                                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                                           techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                                                            invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
                                                            process_level='dev')
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -58,7 +58,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         usecase = witness_sub_proc_usecase(bspline=False,
                                            execution_engine=self.ee,
-                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                           techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                                            process_level='dev',
                                            )
         usecase.study_name = self.name
@@ -108,7 +108,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         outputs = [self.ee.dm.get_all_namespaces_from_var_name(GlossaryCore.NegativeWelfareObjective)[0],
                    self.ee.dm.get_all_namespaces_from_var_name('emax_enet_constraint')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('delta_capital_constraint')[0]]
-        inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in DEFAULT_COARSE_TECHNO_DICT.items() for
+        inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.items() for
                        techno in techno_dict['value']]
         inputs_name = [name.replace('.', '_') for name in inputs_name]
         inputs = []
@@ -142,7 +142,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
             builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
                                                                'witness_optim_sub_process',
-                                                               techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                                               techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                                                                invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
                                                                process_level='dev')
             self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -150,7 +150,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
             usecase = witness_sub_proc_usecase(bspline=False,
                                                execution_engine=self.ee,
-                                               techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                               techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                                                process_level='dev',
                                                )
             usecase.study_name = self.name
@@ -203,7 +203,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                        self.ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
                        self.ee.dm.get_all_namespaces_from_var_name('Lower bound usable capital constraint')[0],
                        ]
-            inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in DEFAULT_COARSE_TECHNO_DICT.items() for
+            inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.items() for
                            techno in techno_dict['value']]
             inputs_name = [name.replace('.', '_') for name in inputs_name]
             inputs = []

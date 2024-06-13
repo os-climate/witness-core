@@ -17,6 +17,8 @@ import logging
 from copy import deepcopy
 
 import numpy as np
+
+from climateeconomics.core.tools.post_proc import get_scenario_value
 from gemseo.utils.derivatives_approx import DisciplineJacApprox
 from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
@@ -26,8 +28,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from climateeconomics.core.tools.post_proc import get_scenario_value
 
 '''
 Post-processing designe to compare the analytical vs the approximated gradient of the objective function wrt the design 

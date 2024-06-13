@@ -17,12 +17,11 @@ limitations under the License.
 
 import re
 
-from energy_models.core.energy_process_builder import EnergyProcessBuilder
-
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     AGRI_MIX_MODEL_LIST,
 )
+from energy_models.core.energy_process_builder import EnergyProcessBuilder
 
 
 class ProcessBuilder(EnergyProcessBuilder):

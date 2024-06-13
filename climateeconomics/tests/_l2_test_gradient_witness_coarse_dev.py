@@ -16,16 +16,15 @@ limitations under the License.
 '''
 from os.path import join
 
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
-
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_sub_proc_usecase,
 )
 from climateeconomics.tests.witness_jacobian_disc_test import WitnessJacobianDiscTest
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
@@ -48,7 +47,7 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
                                                            'witness_optim_sub_process',
-                                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                                           techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                                                            process_level='dev',
                                                            )
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -56,7 +55,7 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         usecase = witness_sub_proc_usecase(bspline=True,
                                            execution_engine=self.ee,
-                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                           techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                                            process_level='dev',
                                            )
         usecase.study_name = self.name

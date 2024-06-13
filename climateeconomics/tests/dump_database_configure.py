@@ -23,6 +23,7 @@ from tempfile import gettempdir
 
 import numpy as np
 import pandas as pd
+
 from sostrades_core.sos_processes.processes_factory import SoSProcessFactory
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 

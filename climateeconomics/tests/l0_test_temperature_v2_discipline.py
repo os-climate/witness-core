@@ -19,9 +19,9 @@ from os.path import dirname, join
 
 import numpy as np
 from pandas import read_csv
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TemperatureDiscTest(unittest.TestCase):

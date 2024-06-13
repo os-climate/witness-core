@@ -30,12 +30,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
     Study as Studycoarse,
 )
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestScatter(unittest.TestCase):

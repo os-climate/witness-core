@@ -15,16 +15,15 @@ limitations under the License.
 '''
 import unittest
 
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import (
+    Study as Study,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
 from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
-
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import (
-    Study as Study,
-)
 
 
 class PostProcessEnergy(unittest.TestCase):
