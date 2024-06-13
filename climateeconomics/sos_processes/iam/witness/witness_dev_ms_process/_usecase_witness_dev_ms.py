@@ -14,11 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 
-from climateeconomics.sos_processes.iam.witness.witness_dev.usecase_witness import Study as witness_dev_usecase
+from climateeconomics.sos_processes.iam.witness.witness_dev.usecase_witness import (
+    Study as witness_dev_usecase,
+)
 from sostrades_core.study_manager.study_manager import StudyManager
 
 

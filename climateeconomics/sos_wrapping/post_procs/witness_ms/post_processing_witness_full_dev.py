@@ -17,14 +17,20 @@ limitations under the License.
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
-    COUPLING_NAME, EXTRA_NAME
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    COUPLING_NAME,
+    EXTRA_NAME,
+    OPTIM_NAME,
+)
 from sostrades_core.execution_engine.data_manager import DataManager
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
-    InstantiatedParetoFrontOptimalChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import (
+    InstantiatedParetoFrontOptimalChart,
+)
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -94,7 +100,7 @@ def post_processings(execution_engine, namespace, filters):
     if 'Temperature vs Welfare' in graphs_list:
 
         chart_name = f'Temperature in {year_end} vs Welfare'
-        x_axis_name = f'Temperature increase since industrial revolution' + u'[\u00B0C]'
+        x_axis_name = 'Temperature increase since industrial revolution' + u'[\u00B0C]'
         y_axis_name = 'Welfare [-]'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
@@ -117,8 +123,8 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'GHG Emissions vs Welfare' in graphs_list:
 
-        chart_name = f'Sum of Global Warning Potential at 20 years vs Welfare'
-        x_axis_name = f'Summed Global Warning Potential at 20 years [GtCO2eq]'
+        chart_name = 'Sum of Global Warning Potential at 20 years vs Welfare'
+        x_axis_name = 'Summed Global Warning Potential at 20 years [GtCO2eq]'
         y_axis_name = f'Welfare in {year_end} [-]'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHGEmissions.GWP_emissions',
@@ -142,8 +148,8 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'GHG Emissions vs min(Utility)' in graphs_list:
 
-        chart_name = f'Summed Global Warning Potential at 20 years vs minimum of Utility'
-        x_axis_name = f'Summed Global Warning Potential at 20 years [GtCO2eq]'
+        chart_name = 'Summed Global Warning Potential at 20 years vs minimum of Utility'
+        x_axis_name = 'Summed Global Warning Potential at 20 years [GtCO2eq]'
         y_axis_name = 'min( Utility ) [-]'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHGEmissions.GWP_emissions',
@@ -168,8 +174,8 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'CO2 ppm(mean) vs Welfare' in graphs_list:
 
-        chart_name = f'mean CO2 ppm vs Welfare'
-        x_axis_name = f'Mean CO2 ppm'
+        chart_name = 'mean CO2 ppm vs Welfare'
+        x_axis_name = 'Mean CO2 ppm'
         y_axis_name = f'Welfare in {year_end}'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHGCycle.ghg_cycle_df_detailed',
@@ -371,9 +377,9 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
     if 'invest per scenario' in graphs_list:
-        chart_name = f'investments per scenario'
+        chart_name = 'investments per scenario'
         x_axis_name = 'Years'
-        y_axis_name = f'total energy investment'
+        y_axis_name = 'total energy investment'
 
         # Get the total energy investment
 

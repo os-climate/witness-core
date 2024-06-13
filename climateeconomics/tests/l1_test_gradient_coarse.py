@@ -14,22 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pickle
+from os.path import dirname, join
+
+import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.tests.data.mda_coarse_data_generator import (
+    launch_data_pickle_generation,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-
-"""
-mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
-"""
-
-import numpy as np
-from os.path import join, dirname
-
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-import pickle
-from climateeconomics.tests.data.mda_coarse_data_generator import launch_data_pickle_generation
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class CoarseJacobianTestCase(AbstractJacobianUnittest):

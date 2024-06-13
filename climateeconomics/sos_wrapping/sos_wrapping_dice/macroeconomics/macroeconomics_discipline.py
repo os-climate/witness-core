@@ -20,8 +20,10 @@ from climateeconomics.core.core_dice.macroeconomics_model import MacroEconomics
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class MacroeconomicsDiscipline(SoSWrapp):
@@ -305,8 +307,8 @@ def resize_array(array):
     return new_array
 
 
-def resize_index(index, array):
 
-    l = len(array)
-    new_index = index[0:l]
+def resize_index(index, array):
+    length = len(array)
+    new_index = index[0:length]
     return new_index

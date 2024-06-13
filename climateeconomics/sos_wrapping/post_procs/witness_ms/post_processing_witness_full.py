@@ -13,15 +13,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
-    COUPLING_NAME, EXTRA_NAME
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    COUPLING_NAME,
+    EXTRA_NAME,
+    OPTIM_NAME,
+)
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries
-from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
-    InstantiatedParetoFrontOptimalChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+)
+from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import (
+    InstantiatedParetoFrontOptimalChart,
+)
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -78,7 +83,7 @@ def post_processings(execution_engine, namespace, filters):
     if 'Temperature vs Utility' in selected_chart_list:
 
         chart_name = f'Temperature in {year_end} vs Utility'
-        x_axis_name = f'Temperature anomaly (°C above pre-industrial)'
+        x_axis_name = 'Temperature anomaly (°C above pre-industrial)'
         y_axis_name = 'Utility'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
@@ -101,8 +106,8 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'CO2 Emissions vs Utility min' in selected_chart_list:
 
-        chart_name = f'CO2 Emissions vs Minimum of utility'
-        x_axis_name = f'Summed CO2 emissions'
+        chart_name = 'CO2 Emissions vs Minimum of utility'
+        x_axis_name = 'Summed CO2 emissions'
         y_axis_name = 'min( Utility )'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGEmissionsDfValue}',
@@ -127,8 +132,8 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'PPM vs Utility' in selected_chart_list:
 
-        chart_name = f'Mean ppm vs Welfare'
-        x_axis_name = f'Mean ppm'
+        chart_name = 'Mean ppm vs Welfare'
+        x_axis_name = 'Mean ppm'
         y_axis_name = f'Utility in {year_end}'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGCycleDfValue}',
@@ -152,9 +157,9 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Consumption vs Mean Energy Price' in selected_chart_list:
 
-        chart_name = f'Consumption vs Mean Energy Price'
+        chart_name = 'Consumption vs Mean Energy Price'
         x_axis_name = f"Mean Energy Price [{GlossaryCore.EnergyMeanPrice['unit']}]"
-        y_axis_name = f'Consumption [G$]'
+        y_axis_name = 'Consumption [G$]'
 
         df_paths = [f'{GlossaryCore.EconomicsDetailDfValue}',
                     f'{GlossaryCore.EnergyMeanPriceValue}',

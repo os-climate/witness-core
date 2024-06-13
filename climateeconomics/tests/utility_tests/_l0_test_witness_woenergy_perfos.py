@@ -15,26 +15,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.glossarycore import GlossaryCore
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
-'''
-import unittest
-from time import sleep
-from shutil import rmtree
-from pathlib import Path
-from os.path import dirname, join
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy
 import cProfile
-import pstats
-from io import StringIO
-import matplotlib.pyplot as plt
 import os
 import platform
-import pandas as pd
+import pstats
+import unittest
+from io import StringIO
+from os.path import dirname, join
+from pathlib import Path
+from shutil import rmtree
+from time import sleep
+
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import (
+    DataStudy,
+)
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestScatter(unittest.TestCase):
@@ -167,7 +167,7 @@ class TestScatter(unittest.TestCase):
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
             os.system(
-                f'git add ./climateeconomics/tests/utility_tests/witness_wo_energy_perfos.csv')
+                'git add ./climateeconomics/tests/utility_tests/witness_wo_energy_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
             os.system('git pull')

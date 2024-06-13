@@ -16,13 +16,15 @@ limitations under the License.
 '''
 import pickle
 from copy import deepcopy
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as EnergyMDA
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    Study as EnergyMDA,
+)
 from gemseo.utils.compare_data_manager_tooling import compare_dict
 
 

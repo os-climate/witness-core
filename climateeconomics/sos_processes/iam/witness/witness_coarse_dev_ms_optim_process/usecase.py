@@ -13,25 +13,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import pandas as pd
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_fossil_only_no_damage_low_tax import \
-    Study as Study1
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_2_fossil_only_damage_high_tax import \
-    Study as Study2
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import \
-    Study as Study3
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import \
-    Study as Study4
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_5_no_renew_damage_high_tax import \
-    Study as Study5
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_fossil_only_no_damage_low_tax import (
+    Study as Study1,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_2_fossil_only_damage_high_tax import (
+    Study as Study2,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import (
+    Study as Study3,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import (
+    Study as Study4,
+)
 
 
 class Study(ClimateEconomicsStudyManager):
-    UC1 = "- Damage, - Tax, Fossil only"
+    UC1 = "- Damage, - Tax"
     UC2 = "+ Damage, + Tax, Fossil only"
     UC3 = "+ Damage, + Tax, No CCUS"
     UC4 = "+ Damage, + Tax, All technos"
@@ -67,12 +71,11 @@ class Study(ClimateEconomicsStudyManager):
             values_dict.update(scenarioData)
 
         # override infos
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 600 for scenario_name in scenario_dict.keys()})
 
         return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

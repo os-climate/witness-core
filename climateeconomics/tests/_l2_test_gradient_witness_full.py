@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 06/07/2024 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,16 +13,20 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 '''
-from os.path import join, dirname, exists
+from os.path import dirname, exists, join
 
 from tqdm import tqdm
 
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
@@ -181,12 +185,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
-            techno_dict=DEFAULT_COARSE_TECHNO_DICT)
+            techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT)
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT)
+            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT)
         usecase.study_name = self.name
 
         directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_coarse')

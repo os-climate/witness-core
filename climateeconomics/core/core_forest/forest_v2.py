@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/21-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/21-2024/06/07 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import pandas as pd
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sostrades_core.tools.cst_manager.constraint_manager import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.constraint_manager import (
+    compute_func_with_exp_min,
+)
 
 
 class Forest():
@@ -491,19 +493,19 @@ class Forest():
 
         self.crf = self.compute_crf()
 
-        self.biomass_dry_df[f'managed_wood_transport ($/t)'] = self.transport['transport']
+        self.biomass_dry_df['managed_wood_transport ($/t)'] = self.transport['transport']
 
         # Factory cost including CAPEX OPEX
         # $/ha * ha/m3 * m3/kg * 1000 = $/t
-        self.biomass_dry_df[f'managed_wood_capex ($/t)'] = self.techno_wood_info[f'managed_wood_price_per_ha'] * \
+        self.biomass_dry_df['managed_wood_capex ($/t)'] = self.techno_wood_info['managed_wood_price_per_ha'] * \
                                                            (
                                                                    self.crf + 0.045) / self.managed_yield / self.mean_density * 1000
 
-        self.biomass_dry_df[f'managed_wood_price_per_ton'] = (
+        self.biomass_dry_df['managed_wood_price_per_ton'] = (
                                                                      self.biomass_dry_df[
-                                                                         f'managed_wood_capex ($/t)'] +
+                                                                         'managed_wood_capex ($/t)'] +
                                                                      self.biomass_dry_df[
-                                                                         f'managed_wood_transport ($/t)']) * \
+                                                                         'managed_wood_transport ($/t)']) * \
                                                              self.margin['margin'] / 100.0
 
     def compute_crf(self):

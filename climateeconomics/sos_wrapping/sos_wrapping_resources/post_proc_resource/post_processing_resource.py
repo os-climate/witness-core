@@ -18,10 +18,14 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS[GlossaryCore.Consumption]
 
@@ -55,7 +59,7 @@ def post_processings(execution_engine, namespace, filters):
 
     # ---
     if 'Resource Consumption' in graphs_list:
-        chart_name = f'Resource Consumption'
+        chart_name = 'Resource Consumption'
         new_chart = get_chart_resource_consumption(
             execution_engine, namespace, chart_name=chart_name)
         if new_chart is not None:

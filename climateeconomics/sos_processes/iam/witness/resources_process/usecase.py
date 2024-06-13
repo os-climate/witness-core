@@ -14,19 +14,27 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from numpy import arange
 
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.core.core_resources.resource_mix.resource_mix import (
+    ResourceMixModel,
+)
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

@@ -14,19 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-'''
 import unittest
-from climateeconomics.core.core_agriculture.crop import Crop
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.core.core_agriculture.crop import Crop
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import (
+    CropDiscipline,
+)
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CropTestCase(unittest.TestCase):

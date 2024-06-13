@@ -14,18 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname, exists
+from os.path import dirname, exists, join
 
 import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
@@ -64,7 +67,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        techno_dict = DEFAULT_TECHNO_DICT
+        techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict,

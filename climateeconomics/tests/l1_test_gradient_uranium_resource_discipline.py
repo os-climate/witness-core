@@ -15,13 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
+from os.path import dirname, join
 
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
@@ -88,7 +90,7 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_uranium_discipline.pkl', 
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_uranium_discipline.pkl', 
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
@@ -128,7 +130,7 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_uranium_demand_variable_discipline.pkl', 
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_uranium_demand_variable_discipline.pkl', 
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',

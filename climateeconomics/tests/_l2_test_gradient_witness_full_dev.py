@@ -17,12 +17,15 @@ limitations under the License.
 from os.path import join
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
 from climateeconomics.tests.witness_jacobian_disc_test import WitnessJacobianDiscTest
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
@@ -46,7 +49,7 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
         builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
                                                            'witness_optim_sub_process',
                                                            process_level='dev',
-                                                           techno_dict=DEFAULT_TECHNO_DICT_DEV,
+                                                           techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV,
                                                            )
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
@@ -54,7 +57,7 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
         usecase = witness_sub_proc_usecase(bspline=True,
                                            execution_engine=self.ee,
                                            process_level='dev',
-                                           techno_dict=DEFAULT_TECHNO_DICT_DEV,
+                                           techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV,
                                            )
         usecase.study_name = self.name
 
@@ -63,13 +66,13 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         excluded_disc = []
 
-        excluded_outputs = [f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
+        excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
                             f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.{GlossaryCore.EnergyProductionDetailedValue}',
-                            f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_detailed_techno_prices',
                             f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.{GlossaryCore.EnergyProductionDetailedValue}',
-                            f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_detailed_techno_prices',
                             f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.{GlossaryCore.EnergyProductionDetailedValue}',
-                            f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_detailed_techno_prices',
                             f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.{GlossaryCore.EnergyProductionDetailedValue}',
                             ]
         disc_to_test_list = ['WITNESS.Resources'] #'WITNESS.AgricultureMix.Forest'

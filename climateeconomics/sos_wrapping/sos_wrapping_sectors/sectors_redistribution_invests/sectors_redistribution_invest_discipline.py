@@ -16,12 +16,15 @@ limitations under the License.
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invests_model import \
-    SectorRedistributionInvestsModel
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invests_model import (
+    SectorRedistributionInvestsModel,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class SectorsRedistributionInvestsDiscipline(SoSWrapp):
@@ -152,7 +155,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
             instanciated_charts.append(new_chart)
 
             # second graph
-            chart_name = f"Share of total investments production allocated to sectors [%]"
+            chart_name = "Share of total investments production allocated to sectors [%]"
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
                                                  '%',

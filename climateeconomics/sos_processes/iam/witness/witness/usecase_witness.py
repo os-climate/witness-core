@@ -22,19 +22,28 @@ from io import StringIO
 import pandas as pd
 from pandas import concat
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
-    DataStudy as datacase_witness
-from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
-    DataStudy as datacase_witness_dev
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import (
+    DataStudy as datacase_witness,
+)
+from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import (
+    DataStudy as datacase_witness_dev,
+)
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
+    Study as datacase_energy,
+)
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -47,7 +56,7 @@ class Study(ClimateEconomicsStudyManager):
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=True, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[
-                     2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                     2], techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -155,14 +164,4 @@ if '__main__' == __name__:
 
     # TODO : careful, this usecase is quite long to test ! 800 sec
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-
-    from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-
-    ppf = PostProcessingFactory()
-    ns = 'usecase_witness_ms_mda_four_scenarios.mda_scenarios.- damage - tax, fossil 100%.GHGEmissions'
-    filters = ppf.get_all_post_processings(uc_cls.ee, False, as_json=False)
-
-
-    a = 1
+    uc_cls.test()

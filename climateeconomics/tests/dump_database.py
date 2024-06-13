@@ -23,8 +23,11 @@ import pandas as pd
 from numpy.testing import assert_array_equal
 from pandas._testing import assert_frame_equal
 
-from climateeconomics.tests.dump_database_configure import dump_value_into_dict, retrieve_input_from_dict, \
-    dump_json_for_database_energy
+from climateeconomics.tests.dump_database_configure import (
+    dump_json_for_database_energy,
+    dump_value_into_dict,
+    retrieve_input_from_dict,
+)
 
 
 class TestUseCases(unittest.TestCase):

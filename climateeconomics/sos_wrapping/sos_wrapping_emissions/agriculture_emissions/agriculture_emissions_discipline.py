@@ -17,13 +17,18 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
-    GHGemissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
+    GHGemissionsDiscipline,
+)
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
@@ -269,7 +274,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         new_charts = []
 
         # all ghg graph
-        chart_name = f'Greenhouse Gas emissions of agriculture lands'
+        chart_name = 'Greenhouse Gas emissions of agriculture lands'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryCore.Years, 'GHG emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
@@ -307,7 +312,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         new_charts.append(new_chart)
 
         # co2 per crop/forest
-        chart_name = f'Comparison of CO2 emissions of agriculture lands'
+        chart_name = 'Comparison of CO2 emissions of agriculture lands'
         new_chart = TwoAxesInstanciatedChart(
             GlossaryCore.Years, 'CO2 emissions (GtCO2)', chart_name=chart_name, stacked_bar=True)
 

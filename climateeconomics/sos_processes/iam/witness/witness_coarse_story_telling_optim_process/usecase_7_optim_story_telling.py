@@ -14,13 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_story_telling_sub_process.usecase_witness_optim_sub \
-    import Study as witness_optim_sub_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from climateeconomics.sos_processes.iam.witness.witness_optim_story_telling_sub_process.usecase_witness_optim_sub import (
+    Study as witness_optim_sub_usecase,
+)
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    COUPLING_NAME,
+    EXTRA_NAME,
+    OPTIM_NAME,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 
 class Study(ClimateEconomicsStudyManager):

@@ -22,7 +22,9 @@ import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
@@ -72,7 +74,7 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_carbon_cycle_discipline1.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}',

@@ -23,7 +23,9 @@ import pandas as pd
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
@@ -195,7 +197,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_crop_discipline.pkl', discipline=disc_techno, local_data=disc_techno.local_data,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_crop_discipline.pkl', discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.TemperatureDfValue}',

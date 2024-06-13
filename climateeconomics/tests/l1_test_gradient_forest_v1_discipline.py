@@ -22,7 +22,9 @@ import pandas as pd
 from climateeconomics.core.core_forest.forest_v1 import Forest
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
@@ -87,7 +89,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v1_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_forest_v1_discipline.pkl',
                             discipline=disc_techno, local_data= disc_techno.local_data, step=1e-15, derr_approx='complex_step',
                             inputs=[
                                 f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}'],

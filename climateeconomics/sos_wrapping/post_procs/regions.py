@@ -17,8 +17,10 @@ limitations under the License.
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -143,7 +145,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         gdp_net_of_damage = 1000. * economics_df[GlossaryCore.OutputNetOfDamage].values
         new_series = InstanciatedSeries(
             years, list(gdp_net_of_damage),
-            f"Total GDP [G$]",
+            "Total GDP [G$]",
             InstanciatedSeries.LINES_DISPLAY, visible_line)
         new_chart.add_series(new_series)
 

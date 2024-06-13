@@ -22,7 +22,9 @@ import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class UtilityJacobianDiscTest(AbstractJacobianUnittest):
@@ -31,7 +33,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.name = 'Test'
         self.model_name = 'utility'
         self.year_start =GlossaryCore.YearStartDefault
-        self.year_end = GlossaryCore.YearEndDefault
+        self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
@@ -69,7 +71,9 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.EnergyPriceValue: np.linspace(200, 10, len(self.years))
         })
 
-        self.values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
+        self.values_dict = {f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
+
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
@@ -85,14 +89,12 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
-                                    f'{self.name}.{GlossaryCore.PopulationDfValue}'],
-                            outputs=[f'{self.name}.{GlossaryCore.WelfareObjective}',
-                                     f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}',
-                                     f'{self.name}.{GlossaryCore.LastYearDiscountedUtilityObjective}',
-                                     f'{self.name}.{GlossaryCore.PerCapitaConsumptionUtilityObjectiveName}'
+                                    f'{self.name}.{GlossaryCore.PopulationDfValue}'
+                            ],
+                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
+                                     f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
                             ],
                             derr_approx='complex_step')

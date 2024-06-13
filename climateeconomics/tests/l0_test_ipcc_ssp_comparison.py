@@ -15,9 +15,13 @@ limitations under the License.
 '''
 import unittest
 
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as uc
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import (
+    Study as uc,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
 
 class TestIPCCSSPComparison(unittest.TestCase):

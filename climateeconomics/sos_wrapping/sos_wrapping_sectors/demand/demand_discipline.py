@@ -16,11 +16,15 @@ limitations under the License.
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model import DemandModel
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model import (
+    DemandModel,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 
 class DemandDiscipline(SoSWrapp):
@@ -154,7 +158,7 @@ class DemandDiscipline(SoSWrapp):
             instanciated_charts.append(new_chart)
 
             # second graph
-            chart_name = f"Share of demand by sector [%]"
+            chart_name = "Share of demand by sector [%]"
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
                                                  '%',

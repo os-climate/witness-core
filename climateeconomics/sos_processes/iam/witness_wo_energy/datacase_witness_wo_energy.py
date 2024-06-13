@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 from pathlib import Path
 
 import numpy as np
@@ -23,13 +23,22 @@ from numpy import arange, asarray
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
-from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
-from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    Study as datacase_agriculture_mix,
+)
+from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import (
+    Study as datacase_landuse,
+)
+from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
+    Study as datacase_resource,
+)
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -250,19 +259,15 @@ class DataStudy():
     def setup_objectives(self):
         data = {
             'variable': [
-                GlossaryCore.NegativeWelfareObjective,
-                GlossaryCore.LastYearDiscountedUtilityObjective,
                 'gwp100_objective',
             ],
             'parent': [
-                'utility_objective',
-                'utility_objective',
                 'GWP_long_term_obj',
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [1.0, 1.0, 0.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, ],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_WITNESS]
+            'ftype': [OBJECTIVE],
+            'weight': [0.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, ],
+            'namespace': [GlossaryCore.NS_WITNESS]
         }
 
         func_df = pd.DataFrame(data)
@@ -314,7 +319,6 @@ class DataStudy():
                 'variable': 'forest_lost_capital_cons',
                 'parent': 'agriculture_constraint',
                 'ftype': INEQ_CONSTRAINT,
-                'weight': -1.0,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
                 'namespace': GlossaryCore.NS_FUNCTIONS,

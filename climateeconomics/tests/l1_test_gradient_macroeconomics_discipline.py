@@ -14,15 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 
+from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from climateeconomics.database.database_witness_core import DatabaseWitnessCore
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
@@ -236,7 +238,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             #graph.to_plotly().show()
             pass
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_macroeconomics_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -272,7 +274,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_grad_damageproductivity.pkl',
+                            filename='jacobian_macroeconomics_discipline_grad_damageproductivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -320,7 +322,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_grad_max_damage.pkl',
+                            filename='jacobian_macroeconomics_discipline_grad_max_damage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -373,7 +375,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             #graph.to_plotly().show()
             pass
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_grad_gigantic_invest.pkl',
+                            filename='jacobian_macroeconomics_discipline_grad_gigantic_invest.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -415,7 +417,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_very_high_emissions.pkl',
+                            filename='jacobian_macroeconomics_discipline_very_high_emissions.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -457,7 +459,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_negative_emissions.pkl',
+                            filename='jacobian_macroeconomics_discipline_negative_emissions.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -496,7 +498,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_negative_co2_tax.pkl',
+                            filename='jacobian_macroeconomics_discipline_negative_co2_tax.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -547,7 +549,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_without_compute_gdp.pkl',
+                            filename='jacobian_macroeconomics_discipline_without_compute_gdp.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -598,7 +600,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_without_compute_gdp_w_damage_to_productivity.pkl',
+                            filename='jacobian_macroeconomics_discipline_without_compute_gdp_w_damage_to_productivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -646,7 +648,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_without_invest_co2_tax_in_renewables.pkl',
+                            filename='jacobian_macroeconomics_discipline_without_invest_co2_tax_in_renewables.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -697,7 +699,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             pass
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_gigantic_energy_production_no_damage_productivity.pkl',
+                            filename='jacobian_macroeconomics_discipline_gigantic_energy_production_no_damage_productivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -748,7 +750,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             pass
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_gigantic_energy_production_damage_productivity.pkl',
+                            filename='jacobian_macroeconomics_discipline_gigantic_energy_production_damage_productivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -805,7 +807,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             pass
 
         self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_macroeconomics_discipline_gigantic_energy_production_wo_compute_gdp.pkl',
+                            filename='jacobian_macroeconomics_discipline_gigantic_energy_production_wo_compute_gdp.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,

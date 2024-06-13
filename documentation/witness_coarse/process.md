@@ -27,7 +27,7 @@ The problem is given with an objective to be minimized without constraints. As a
 Witness coarse formulation on 22-May-2024 reads:
 $$minimize \quad obj = \alpha \times energy \textunderscore price_{mean \textunderscore objective} - (1-\alpha) \times consumption_{objective}$$
 $$\text{wrt} \quad invest \textunderscore mix \in [1,3000]$$
-$$\text{wrt} \quad utilization \textunderscore ratios \in [1,100]$$
+$$\text{wrt} \quad utilization \textunderscore ratios \in [30,100]$$
 
 $\alpha$ allows to define the weight of each component of the objective.
 Since the $consumption_{objective}$ needs to be maximized and since the global objective function is minimized, $-consumption_{objective}$ is considered (with the minus sign). 
@@ -63,8 +63,8 @@ If this case, the bound plays the role of an unwanted constraint that needs to b
 
 Investments are in G<span>$</span> and utilization ratio in percentage.
 
-TBetter managing the bounds could also potentially improve the mda convergence. 
-Indeed, in the GS pure Newton mda algorithm, a gradient is computed using the same analytical formulas as for the MDA. 
+Better managing the bounds could also potentially improve the mda convergence. 
+Indeed, in the GS pure Newton mda algorithm, a gradient is computed using the same analytical formulas as for the MDO. 
 Matrix inversion can be difficult and if preconditionning does not help, the gradients at the bounds could be a root cause of the issue.
 
 ### Objectives
@@ -94,6 +94,13 @@ Because of this coupling between energy and economy, finding the optimum investm
 No equality or inequality constraint has been activated in this optimization.
 
 ## Main MDA/MDO algorithm parameters
+
+Robustness of MDA/MDO can be impacted by the choice of some parameters. For instance, solving the MDA with a Gauss-Seidel 
+approach can require several times less memory than a Gauss Seidel pure Newton approach. This could lead to out of memory issues. 
+This is due to the need to invert a matrix in the Newton approach as already discussed earlier in the section "lower and upper bounds"
+Precondionning can help as well as the linear solver used, this is why those parameters are noted in the table.
+Then, some optimization algorithms can hit the bounds at the beginning of the optimization which can lead to convergence issues as discussed earlier.
+The algorithm chose is therefore reminded in the table below.
 
 |      **Parameter**      |     **Value**     |
 |:-----------------------:|:-----------------:|

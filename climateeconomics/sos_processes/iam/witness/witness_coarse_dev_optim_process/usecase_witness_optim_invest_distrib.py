@@ -14,20 +14,33 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 import pandas as pd
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
-    COUPLING_NAME, EXTRA_NAME
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_optim_sub_usecase
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
+    COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    COUPLING_NAME,
+    EXTRA_NAME,
+    OPTIM_NAME,
+)
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_optim_sub_usecase,
+)
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from sostrades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -42,7 +55,7 @@ class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                  agri_techno_list=COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='dev',
                  file_path=__file__):
@@ -122,6 +135,27 @@ class Study(ClimateEconomicsStudyManager):
 
         out = pd.DataFrame(out)
         return out
+
+    def make_dspace_Ine(self):
+        return pd.DataFrame({
+            "variable": ["share_non_energy_invest_ctrl"],
+            "value": [[25.5] * GlossaryCore.NB_POLES_COARSE],
+            "lower_bnd": [[5.0] * GlossaryCore.NB_POLES_COARSE],
+            "upper_bnd": [[30.0] * GlossaryCore.NB_POLES_COARSE],
+            "enable_variable": [True],
+            "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
+        })
+
+    def get_ine_dvar_descr(self):
+        return {
+            'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'out_type': "dataframe",
+            'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index_name': GlossaryCore.Years,
+            'namespace_in': GlossaryCore.NS_WITNESS,
+            'namespace_out': GlossaryCore.NS_WITNESS,
+        }
 
     def setup_usecase(self, study_folder_path=None):
         ns = self.study_name
@@ -220,10 +254,27 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.DesignVariables.design_var_descriptor']
 
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
+
+
+        # Ajout design var Share Non Energy invest
+
+
         out.update({
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor': updated_dvar_descriptor
         })
+
+
+        import numpy as np
+        a = {
+          'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'out_type': "dataframe",
+            'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
+            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index_name': GlossaryCore.Years,
+            'namespace_in': "",
+            'namespace_out': GlossaryCore.NS_WITNESS,
+        }
         return out
 
 

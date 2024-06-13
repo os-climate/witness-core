@@ -22,14 +22,19 @@ from plotly.colors import qualitative
 from plotly.subplots import make_subplots
 
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
 
 
 class LandUseV2Discipline(SoSWrapp):
@@ -299,7 +304,7 @@ class LandUseV2Discipline(SoSWrapp):
                     fig.update_yaxes(title_text="Land Surfaces [Gha]", secondary_y=False)
                     fig.update_yaxes(title_text="(-1) * Land Demand Constraint", secondary_y=True,
                                      color=qualitative.Set1[0], range=[0,1.1*max(-land_demand_constraint)])
-                    chart_name = f'Land Demand Constraint'
+                    chart_name = 'Land Demand Constraint'
                     new_chart = InstantiatedPlotlyNativeChart(
                         fig=fig, chart_name=chart_name)
 
@@ -358,7 +363,7 @@ class LandUseV2Discipline(SoSWrapp):
                     )
                     fig.add_trace(fig_i)
                 # Create and add slider only for the available slider_values
-                chart_name = f'Global land use (Gha)'
+                chart_name = 'Global land use (Gha)'
                 steps = []
                 for i, val in enumerate(years):
                     step = dict(

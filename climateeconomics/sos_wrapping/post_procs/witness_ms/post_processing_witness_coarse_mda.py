@@ -15,20 +15,27 @@ limitations under the License.
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import \
-    Study as usecase_ms_mdo
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
-    Study as usecase_ms_mda
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import \
-    Study as usecase_ms_mda_tipping_point
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import (
+    Study as usecase_ms_mdo,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
+    Study as usecase_ms_mda,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
+    Study as usecase_ms_mda_tipping_point,
+)
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_chart_template import SeriesTemplate
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_chart_template import (
+    SeriesTemplate,
+)
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
@@ -280,7 +287,7 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
     if 'Invesments in energy' in graphs_list:
-        chart_name = f'Energy investments'
+        chart_name = 'Energy investments'
         x_axis_name = 'Years'
         y_axis_name = f'Investments [{GlossaryCore.EnergyInvestments["unit"]}]'
 
@@ -437,7 +444,7 @@ def post_processings(execution_engine, namespace, filters):
 
         utility_dict = {}
         for scenario in scenario_list:
-            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility].values.tolist(
+            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtilityQuantity].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, utility_dict,

@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from copy import deepcopy, copy
+from copy import copy, deepcopy
+
 import numpy as np
 import pandas as pd
 
@@ -42,13 +43,13 @@ def get_ref_variable(var_name: str, unit: str, default_value=None) -> dict:
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
 
-    # Trillion $ / T$   /   10^12
+    # Trillion $ / T$   /   10^12 - Tera works too !
     # Giga$      / G$   /   10^9
     # Million$   / M$   /   10^6
     # Megatons : 1e6 tons
     # Gigatons : 1e9 tons = 1e3 Megatons
     # PWh = 1e3 TWh
-    # 1 TWh  = 1e9 kWh
+    # 1 TWh  = 1e9 kWh = 1e12 Wh
 
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_UTILIZATION_RATIO = (
@@ -126,9 +127,7 @@ class GlossaryCore:
     NonEnergyInvestmentsValue = "non_energy_investment"
     EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
     WelfareObjective = "welfare_objective"
-    NormalizedWelfare = "Normalized welfare"
     NegativeWelfareObjective = "negative_welfare_objective"
-    LastYearDiscountedUtilityObjective = "last_year_discounted_utility_objective"
     energy_list = "energy_list"
     techno_list = "technologies_list"
     ccs_list = "ccs_list"
@@ -1047,11 +1046,13 @@ class GlossaryCore:
     }
 
     UtilityDiscountRate = "u_discount_rate"
+    UtilityPopulation = "Utility population"
+    UtilityEnergyPrice = "Utility energy price"
+    UtilityQuantity = "Utility quantity"
+    DiscountedUtilityQuantity = "Discounted utility quantity"
     PeriodUtilityPerCapita = "period_utility_pc"
     DiscountedUtility = "discounted_utility"
     Welfare = "welfare"
-    EnergyPriceRatio = "energy_price_ratio"
-    PerCapitaConsumptionUtility = "Per capita consumption utility"
     UtilityDf = {
         "var_name": UtilityDfValue,
         "type": "dataframe",
@@ -1060,33 +1061,21 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             UtilityDiscountRate: ("float", [0, 100], False),
-            PeriodUtilityPerCapita: ("float", None, False),
-            DiscountedUtility: ("float", None, False),
-            EnergyPriceRatio: ("float", [0, 1e30], False),
-            PerCapitaConsumptionUtility: ("float", None, False),
+            UtilityQuantity: ("float", None, False),
+            DiscountedUtilityQuantity: ("float", None, False),
         },
         "unit": "-",
     }
 
-    PerCapitaConsumptionUtilityRefName = "per_capita_consumption_utility_ref"
-    PerCapitaConsumptionUtilityRef = {
-        "var_name": PerCapitaConsumptionUtilityRefName,
-        "type": "float",
-        "visibility": "Shared",
-        "namespace": NS_REFERENCE,
-        "unit": "k$/capita",
-        "default": 0.5,
-        "user_level": 3,
-    }
 
-    PerCapitaConsumptionUtilityObjectiveName = (
-        "per_capita_consumption_utility_objective"
-    )
-    PerCapitaConsumptionUtilityObjective = {
-        "var_name": PerCapitaConsumptionUtilityObjectiveName,
+    QuantityObjectiveValue = "Quantity_objective"
+
+    QuantityObjective = {
+        "var_name": QuantityObjectiveValue,
         "type": "array",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
+        "description": "objective of quantity of things consumed. Quantity  = Consumption / Price",
         "unit": "-",
     }
 

@@ -14,16 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import csv
-
-import numpy as np
-import pandas as pd
-import seaborn as sns  # pylint: disable=E0401
-
-'''
-mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
-'''
 import cProfile
+import csv
 import os
 import platform
 import pstats
@@ -35,9 +27,14 @@ from shutil import rmtree
 from time import sleep
 
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as Studycoarse
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
+    Study as Studycoarse,
+)
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -171,7 +168,7 @@ class TestScatter(unittest.TestCase):
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
             os.system(
-                f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+                'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
 
@@ -390,7 +387,7 @@ class TestScatter(unittest.TestCase):
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
             os.system(
-                f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+                'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
             os.system('git pull')
@@ -1100,7 +1097,7 @@ class TestScatter(unittest.TestCase):
                           'Matrix Build']} for cat_times in cat_times_list]
         stacked_fig = get_stacked_bar_chart(case_dict.keys(), stacked_data,
                                             title='Stacked operations time', save=True,
-                                            filename=f'witness_full_MDA_parallel_perfos')
+                                            filename='witness_full_MDA_parallel_perfos')
         if platform.system() == 'Windows':
             for fig in operations_fig:
                 fig.show()
@@ -1109,11 +1106,11 @@ class TestScatter(unittest.TestCase):
             os.system('git config user.email "julien.souchard.external@airbus.com"')
             os.system('git config user.name "Julien Souchard"')
             os.system(
-                f'git add ./perfo_dir/*.csv')
+                'git add ./perfo_dir/*.csv')
             os.system(
-                f'git add ./perfo_dir/*.jpg')
+                'git add ./perfo_dir/*.jpg')
             os.system(
-                f'git commit -m "Add perfo MDA parallel figures"')
+                'git commit -m "Add perfo MDA parallel figures"')
             os.system('git pull')
             os.system('git push')
 
@@ -1275,7 +1272,7 @@ class TestScatter(unittest.TestCase):
                           'Matrix Build']} for cat_times in cat_times_list]
         stacked_fig = get_stacked_bar_chart(case_dict.keys(), stacked_data,
                                             title='Stacked operations time', save=True,
-                                            filename=f'witness_coarse_MDA_parallel_perfos')
+                                            filename='witness_coarse_MDA_parallel_perfos')
         if platform.system() == 'Windows':
             for fig in operations_fig:
                 fig.show()
@@ -1284,11 +1281,11 @@ class TestScatter(unittest.TestCase):
             os.system('git config user.email "julien.souchard.external@airbus.com"')
             os.system('git config user.name "Julien Souchard"')
             os.system(
-                f'git add ./perfo_dir/*.csv')
+                'git add ./perfo_dir/*.csv')
             os.system(
-                f'git add ./perfo_dir/*.jpg')
+                'git add ./perfo_dir/*.jpg')
             os.system(
-                f'git commit -m "Add perfo MDA parallel figures"')
+                'git commit -m "Add perfo MDA parallel figures"')
             os.system('git pull')
             os.system('git push')
 

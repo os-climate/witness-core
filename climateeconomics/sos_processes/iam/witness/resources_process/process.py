@@ -15,14 +15,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
-from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
-from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
-    NaturalGasResourceDiscipline
-from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
-from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import \
-    PlatinumResourceDiscipline
-from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
+from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import (
+    CoalResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import (
+    CopperResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import (
+    NaturalGasResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import (
+    OilResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import (
+    PlatinumResourceDiscipline,
+)
+from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import (
+    UraniumResourceDiscipline,
+)
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 

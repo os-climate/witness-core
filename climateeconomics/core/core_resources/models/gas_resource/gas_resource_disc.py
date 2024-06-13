@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 27/11/2023 Copyright 2023 Capgemini
+Modifications on 27/11/2023-2024/06/07 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,13 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
+from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import OilResourceModel
-from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
+from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import (
+    OilResourceModel,
+)
+from climateeconomics.core.core_resources.resource_model.resource_disc import (
+    ResourceDiscipline,
+)
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 

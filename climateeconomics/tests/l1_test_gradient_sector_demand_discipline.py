@@ -21,7 +21,9 @@ import pandas as pd
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
+)
 
 
 class SectorsDemandDiscipline(AbstractJacobianUnittest):
@@ -101,7 +103,7 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
         output_checked = [f'{name}.{sector}.{GlossaryCore.SectorGDPDemandDfValue}' for sector in self.sector_list]
 
         disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sectors_demand_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_sectors_demand_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=inputs_checked,

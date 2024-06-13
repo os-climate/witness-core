@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from numpy import arange, zeros, append
+from numpy import append, arange, zeros
 from pandas import DataFrame
 
 from climateeconomics.glossarycore import GlossaryCore

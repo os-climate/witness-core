@@ -15,11 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import \
-    AgricultureEmissionsDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
-    GHGemissionsDiscipline
-
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import (
+    AgricultureEmissionsDiscipline,
+)
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
+    GHGemissionsDiscipline,
+)
 # -*- coding: utf-8 -*-
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
