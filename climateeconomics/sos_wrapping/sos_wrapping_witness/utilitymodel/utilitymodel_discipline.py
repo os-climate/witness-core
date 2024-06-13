@@ -222,15 +222,14 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
 
-            power_quantity = 1.0
             n = 200
-            k = 5
-            ratios = np.linspace(1/k, k, n)
+            ratios = np.linspace(-0.2, 4, n)
 
-            new_chart = TwoAxesInstanciatedChart(f'Variation quantity consumed since {years[0]} [%]', 'Utility gain', chart_name='Model visualisation : Quantity utility function')
-            new_series = InstanciatedSeries(list((ratios - 1)*100), list(np.log(ratios ** power_quantity)), 'welfare quantity', 'lines', True)
+            new_chart = TwoAxesInstanciatedChart(f'Variation of quantity of things consumed since {years[0]} [%]', 'Utility gain', chart_name='Model visualisation : Quantity utility function')
+            new_series = InstanciatedSeries(list((ratios -1)*100), list(self.utility_m.s_curve_function(ratios)), 'welfare quantity', 'lines', True)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
+            #new_chart.to_plotly().show()
 
         return instanciated_charts
 
