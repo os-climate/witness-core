@@ -51,6 +51,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
+        'strech_scurve': {'type': 'float', 'default': 1.7},
+        'shift_scurve': {'type': 'float', 'default': -0.2},
         'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
