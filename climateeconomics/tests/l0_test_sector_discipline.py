@@ -18,12 +18,12 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import (
     SectorDiscipline,
 )
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class ServicesDiscTest(unittest.TestCase):

@@ -18,12 +18,6 @@ from os.path import dirname, exists, join
 
 import numpy as np
 import pandas as pd
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import (
@@ -31,6 +25,12 @@ from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import (
 )
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_sub_proc_usecase,
+)
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
 )
 
 
@@ -599,7 +599,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        techno_dict = DEFAULT_TECHNO_DICT
+        techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict,
@@ -676,7 +676,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
     def test_07_gradient_all_disciplines_on_crashed_x(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        techno_dict = DEFAULT_TECHNO_DICT
+        techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict,

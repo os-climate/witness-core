@@ -17,12 +17,12 @@ limitations under the License.
 from os.path import dirname, join
 
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
-
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(StudyManager):

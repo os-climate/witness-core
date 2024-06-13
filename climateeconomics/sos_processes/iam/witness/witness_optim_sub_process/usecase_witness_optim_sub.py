@@ -18,16 +18,10 @@ from collections import defaultdict
 
 import numpy as np
 import pandas as pd
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
@@ -35,6 +29,11 @@ from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase 
 )
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import (
     Study as witness_usecase,
+)
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -54,7 +53,7 @@ class Study(ClimateEconomicsStudyManager):
 
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[
-                     2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                     2], techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start

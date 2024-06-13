@@ -13,14 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
-)
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
-    DEFAULT_COARSE_TECHNO_DICT,
 )
 
 
@@ -48,7 +45,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict = DEFAULT_COARSE_TECHNO_DICT
+        techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',

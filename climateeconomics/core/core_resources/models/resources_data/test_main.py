@@ -19,11 +19,11 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
-
-from climateeconomics.glossarycore import GlossaryCore
 
 
 def sigmoid(ratio):

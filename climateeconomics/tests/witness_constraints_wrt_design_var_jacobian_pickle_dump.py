@@ -15,11 +15,10 @@ limitations under the License.
 
 '''
 
+import climateeconomics.tests as jacobian_target
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
-
-import climateeconomics.tests as jacobian_target
 
 if __name__ == '__main__':
 

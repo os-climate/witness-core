@@ -18,13 +18,13 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
 
 from climateeconomics.sos_processes.iam.witness.witness_optim_process.usecase_witness_optim import (
     Study as witness_optim_usecase,
+)
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
 )
 
 

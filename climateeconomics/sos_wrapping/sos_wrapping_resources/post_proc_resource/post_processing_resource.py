@@ -16,6 +16,8 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
@@ -24,8 +26,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-
-from climateeconomics.glossarycore import GlossaryCore
 
 RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS[GlossaryCore.Consumption]
 

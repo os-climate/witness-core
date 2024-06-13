@@ -16,14 +16,6 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from sostrades_core.execution_engine.design_var.design_var_disc import (
-    DesignVarDiscipline,
-)
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -41,6 +33,14 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_optim_sub_usecase,
 )
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -55,7 +55,7 @@ class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                  agri_techno_list=COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='dev',
                  file_path=__file__):

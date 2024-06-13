@@ -15,8 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
-
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import (
     CoalResourceDiscipline,
 )
@@ -35,6 +33,7 @@ from climateeconomics.core.core_resources.models.platinum_resource.platinum_reso
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import (
     UraniumResourceDiscipline,
 )
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):

@@ -17,11 +17,11 @@ limitations under the License.
 from os.path import dirname, join
 
 import numpy as np
-from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.sos_processes.iam.witness.witness_dev.usecase_witness import (
     Study as witness_dev_usecase,
 )
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 class Study(StudyManager):

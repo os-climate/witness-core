@@ -16,11 +16,6 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
@@ -28,6 +23,11 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
+)
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
 )
 
 

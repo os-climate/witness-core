@@ -18,12 +18,6 @@ from os.path import dirname, exists, join
 
 import numpy as np
 import pandas as pd
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import (
@@ -31,6 +25,12 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_c
 )
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_sub_proc_usecase,
+)
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import (
+    AbstractJacobianUnittest,
 )
 
 
@@ -66,7 +66,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         extra_name = 'WITNESS'
         # retrieve energy process
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
 
         # modify namespaces defined in the child process
@@ -99,7 +99,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(coupling_builder)
         self.ee.configure()
         usecase = witness_sub_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
@@ -161,13 +161,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
@@ -235,13 +235,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_coarse_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
@@ -364,12 +364,12 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
-            techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
+            techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
             invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
@@ -452,7 +452,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_coarse_process_one_distrib',
-            techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
+            techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 

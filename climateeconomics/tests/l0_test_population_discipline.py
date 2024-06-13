@@ -21,12 +21,12 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 from pandas import read_csv
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class PopDiscTest(unittest.TestCase):
