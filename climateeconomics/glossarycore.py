@@ -203,6 +203,7 @@ class GlossaryCore:
     SectionR = "Arts, entertainment and recreation"
     SectionS = "Other service activities"
     SectionT = "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
+    SectionU = "Activities of extraterritorial organizations and bodies"
     SectionHousehold = "Household"
 
     SectionsAgriculture = [SectionA]
