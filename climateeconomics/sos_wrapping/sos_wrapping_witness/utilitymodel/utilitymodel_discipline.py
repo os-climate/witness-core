@@ -51,6 +51,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
+        'strech_scurve': {'type': 'float', 'default': 1.7},
+        'shift_scurve': {'type': 'float', 'default': -0.2},
         'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -183,42 +185,53 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
+        economics_df = self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)
         energy_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)[GlossaryCore.EnergyPriceValue].values
         years = list(utility_df[GlossaryCore.Years].values)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Variation [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Utility gain',
                                                  chart_name='Quantity utility')
 
             values = utility_df[GlossaryCore.UtilityQuantity].values
             new_series = InstanciatedSeries(
-                years, list(values), 'Quantity utility', 'lines', True)
+                years, list(values), 'Utility gain', 'lines', True)
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Variation [%]',
-                                                 chart_name='Energy price variation since year start')
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Variation since {years[0]}[%]',
+                                                 chart_name=f'Utility composants variation since {years[0]}')
 
-            values = (energy_price / energy_price[0] - 1) * 100
+            energy_price_ratio = (energy_price / energy_price[0] - 1) * 100
             new_series = InstanciatedSeries(
-                years, list(values), 'Energy price variation', 'lines', True)
-
+                years, list(energy_price_ratio), 'Energy price', 'lines', True)
             new_chart.series.append(new_series)
+            pcc = economics_df[GlossaryCore.PerCapitaConsumption].values
+            pcc_var = (pcc / pcc[0] - 1) * 100
+            new_series = InstanciatedSeries(
+                years, list(pcc_var), 'Per capita consumption', 'lines', True)
+            new_chart.series.append(new_series)
+
+            quantity_consumed = pcc / energy_price
+            quantity_consumed_var = (quantity_consumed / quantity_consumed[0] - 1) * 100
+            new_series = InstanciatedSeries(
+                years, list(quantity_consumed_var), "Quantity of 'things' consumed per capita", 'bar', True)
+            new_chart.series.append(new_series)
+
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
 
-            power_quantity = 1.0
             n = 200
-            k = 5
-            ratios = np.linspace(1/k, k, n)
+            ratios = np.linspace(-0.2, 4, n)
 
-            new_chart = TwoAxesInstanciatedChart(f'Variation quantity consumed since {years[0]} [%]', 'Utility gain', chart_name='Model visualisation : Quantity utility function')
-            new_series = InstanciatedSeries(list((ratios - 1)*100), list(np.log(ratios ** power_quantity)), 'welfare quantity', 'lines', True)
+            new_chart = TwoAxesInstanciatedChart(f'Variation of quantity of things consumed since {years[0]} [%]', 'Utility gain', chart_name='Model visualisation : Quantity utility function')
+            new_series = InstanciatedSeries(list((ratios -1)*100), list(self.utility_m.s_curve_function(ratios)), 'welfare quantity', 'lines', True)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
+            #new_chart.to_plotly().show()
 
         return instanciated_charts
 
