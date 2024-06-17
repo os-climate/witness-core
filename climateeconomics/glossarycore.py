@@ -203,6 +203,7 @@ class GlossaryCore:
     SectionR = "Arts, entertainment and recreation"
     SectionS = "Other service activities"
     SectionT = "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
+    SectionU = "Activities of extraterritorial organizations and bodies"
     SectionHousehold = "Household"
 
     SectionsAgriculture = [SectionA]
@@ -1046,10 +1047,9 @@ class GlossaryCore:
     }
 
     UtilityDiscountRate = "u_discount_rate"
-    UtilityPopulation = "Utility population"
-    UtilityEnergyPrice = "Utility energy price"
-    UtilityQuantity = "Utility quantity"
-    DiscountedUtilityQuantity = "Discounted utility quantity"
+    DiscountedQuantityUtilityPopulation = "Discounted quantity utility population"
+    PerCapitaUtilityQuantity = "Utility quantity per capita"
+    DiscountedUtilityQuantityPerCapita = "Discounted utility quantity per capita"
     PeriodUtilityPerCapita = "period_utility_pc"
     DiscountedUtility = "discounted_utility"
     Welfare = "welfare"
@@ -1061,12 +1061,12 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             UtilityDiscountRate: ("float", [0, 100], False),
-            UtilityQuantity: ("float", None, False),
-            DiscountedUtilityQuantity: ("float", None, False),
+            PerCapitaUtilityQuantity: ("float", None, False),
+            DiscountedUtilityQuantityPerCapita: ("float", None, False),
+            DiscountedQuantityUtilityPopulation: ("float", None, False),
         },
         "unit": "-",
     }
-
 
     QuantityObjectiveValue = "Quantity_objective"
 

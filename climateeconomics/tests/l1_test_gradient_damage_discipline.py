@@ -30,7 +30,6 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
-        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 

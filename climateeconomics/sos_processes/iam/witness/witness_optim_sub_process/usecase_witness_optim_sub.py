@@ -54,7 +54,7 @@ class Study(ClimateEconomicsStudyManager):
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[
                      2], techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
-                 process_level='val'):
+                 process_level='dev'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -320,5 +320,5 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study()
+    uc_cls = Study(process_level='dev')
     uc_cls.test()
