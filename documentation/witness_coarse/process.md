@@ -4,9 +4,9 @@
    2. [Problem Formulation](#problem-formulation)
       1. [Design Space](#design-space)
       2. [Lower and Upper Bounds](#lower-and-upper-bounds)
-      3. [Objectives](#objectives)
-         1. [Quantity objective](#quantity-objective)
-            1. [Consumption in Witness](#consumption-in-witness)
+      3. [Objective](#objective)
+         1. [Utility per capita](#utility-per-capita)
+            1. [Consumption per capita in Witness](#consumption-per-capita-in-witness)
             2. [Energy price in Witness](#energy-price-in-witness)
       4. [Constraints](#constraints)
    3. [Main MDA/MDO Algorithm Parameters](#main-mdamdo-algorithm-parameters)
@@ -78,16 +78,17 @@ $$\text{Population utility objective} = \frac{1}{\text{nb years}}\sum_{\text{yea
 
 with 
 
-$$\text{Population utility} = \frac{\text{Population}}{\text{Population at year start}} \text{Utility per capita}$$.
+$$\text{Population utility} = \frac{\text{Population}}{\text{Population at year start}} \text{Utility per capita}$$
 
 The next section described the notion of  *Utility per capita*.
 
 #### Utility per capita
+
 The utility per capita relies on two variables available in witness, *Consumption per capita* and *Energy price*. The next two sections gives a quick explanation of these variables.
 
 In our optimization formulation, we want to maximize the quantity of things consumed. For that, we can see *Consumption per capita* can be seen as 
 
-$$Cpc = Q \times P$$
+$$C^{pc} = Q^{pc} \times P$$
 
 that is, a quantity (of "things" consumed) $\times$ Price ("average price of things consumed"). 
 The assumption we make is that the average price of things that are consumed is driven by energy price, leading to :
@@ -99,9 +100,9 @@ If we take year start as a reference point, and apply a function $f$ to mimic sa
 
 $$\text{utility per capita (year)} = f \left(\frac{\text{quantity per capita (year)}}{\text{quantity per capita (year start)}} \right)$$
 
-> This saturation function is an S-curve, whose parameters has been fine-tuned, but can be tweeked based on your preferences. 
+> This saturation function is an S-curve, whose parameters have been fine-tuned, but can be tweeked based on your preferences. 
 
-#### Consumption per capita in Witness
+##### Consumption per capita in Witness
 
 Consumption $C$ is the part of the net output not invested, namely:
 $$C = Q - I$$
@@ -112,7 +113,7 @@ Because of this coupling between energy and economy, finding the optimum investm
 
 Consumption per capita $C^{pc}$ is simply the $C$ divided by the population.
 
-#### Energy price in witness
+##### Energy price in witness
 
 The energy price in Witness is the average of the prices of all the energy mix technologies at a given year, namely:
 $$energy \textunderscore price_{mean}[years] = \frac{1}{n_{technos}} \times \sum_{technos}energy \textunderscore price[years, technos]$$
