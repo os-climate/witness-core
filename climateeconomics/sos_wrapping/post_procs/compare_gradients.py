@@ -14,9 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import logging
+import os
+import pickle
 from copy import deepcopy
 
 import numpy as np
+from os.path import dirname, join
 
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from gemseo.utils.derivatives_approx import DisciplineJacApprox
@@ -28,11 +31,16 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
+from climateeconomics.core.tools.post_proc import get_scenario_value
+from gemseo.utils.pkl_tools import load_compressed_pickle, dump_compressed_pickle
 
 '''
 Post-processing designe to compare the analytical vs the approximated gradient of the objective function wrt the design 
 variables
 '''
+
+TEMP_PKL_PATH = 'temp_pkl'
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -69,11 +77,22 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         Therefore, data in the datamanager change and the l1s_test would fail. To prevent that, the data manager is recovered 
         at the end of post-processing  
         '''
+        # add the invest profile to understand what could make the gradients go wrong
+        invest_profile = get_scenario_value(execution_engine, GlossaryEnergy.invest_mix, scenario_name)
+        years = list(invest_profile[GlossaryEnergy.Years])
+        graph_years = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Invest {GlossaryEnergy.invest_mix} [G$]',
+                                               chart_name="Output profile invest")
+        for column in [col for col in invest_profile.keys() if col != GlossaryEnergy.Years]:
+            series_values = list(invest_profile[column].values)
+            serie_obj = InstanciatedSeries(years, series_values, column, "lines")
+            graph_years.add_series(serie_obj)
+        instanciated_charts.append(graph_years)
+
         dm_data_dict_before = deepcopy(execution_engine.dm.get_data_dict_values())
         n_profiles = get_scenario_value(execution_engine, 'n_profiles', scenario_name)
         mdo_disc = execution_engine.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         inputs = [f'{scenario_name}.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
-        outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"]
+        outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"] # the objective lagrangian is one level above the scenario level
         # compute analytical gradient first at the converged point of the MDA
         mdo_disc.add_differentiated_inputs(inputs)
         mdo_disc.add_differentiated_outputs(outputs)
@@ -83,8 +102,36 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         # computed approximated gradient in 2nd step so that the analytical gradient is not computed in X0 + h
         # warm start must have been removed so that mda and convergence criteria are the same for analytical and approximated gradients
         logging.info('Post-processing: computing approximated gradient')
-        approx = DisciplineJacApprox(mdo_disc, approx_method=DisciplineJacApprox.FINITE_DIFFERENCES)
-        grad_approx = approx.compute_approx_jac(outputs, inputs)
+
+        # to avoid unnecessary computation of the approx gradient in case the of updated post-processing, the inputs are
+        # compared to values in pkl file. If they are different, approx jac is recomputed, otherwise the pkl values are considered
+        # Checking inputs
+        pkl_path = join(dirname(__file__), TEMP_PKL_PATH)
+        if not os.path.isdir(pkl_path):
+            os.mkdir(pkl_path)
+        recompute_gradients = True # initialize
+        input_pkl = join(pkl_path, scenario_name + '_inputs_dm_data_dict.pkl')
+        output_pkl = join(pkl_path, scenario_name + '_approx_jacobian.pkl')
+        try:
+            with open(input_pkl, 'rb') as f:
+                dm_data_dict_pkl = pickle.load(f)
+            f.close()
+            recompute_gradients = not (dm_data_dict_before == dm_data_dict_pkl)
+        except:
+            logging.info('Missing dm data dict in pkl file. Input data may have changed. Must recompute approx gradients')
+            with open(input_pkl, 'wb') as f:
+                pickle.dump(dm_data_dict_before, f)
+            f.close()
+        try:
+            grad_approx = load_compressed_pickle(output_pkl)
+        except:
+            logging.info('Missing grad approx pkl file. Must recompute approx gradients')
+            recompute_gradients = True
+        if recompute_gradients:
+            approx = DisciplineJacApprox(mdo_disc, approx_method=DisciplineJacApprox.FINITE_DIFFERENCES, step=1e-7)
+            grad_approx = approx.compute_approx_jac(outputs, inputs)
+            dump_compressed_pickle(output_pkl, grad_approx)
+
 
         logging.info('Post-processing: generating gradient charts')
         coeff_i = [i for i in range(n_profiles)]
@@ -94,7 +141,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         grad_approx_list = [grad_approx[output][inputs[i]][0][0] for i in range(n_profiles)]
 
         # plot the gradients in abs value
-        chart_name = f'Gradient validation of {OBJECTIVE_LAGR}'
+        chart_name = f'Gradient validation of {OBJECTIVE_LAGR}. Finite diff step={approx.step}'
 
         new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient [-]',
                                          chart_name=chart_name, y_min_zero=False)
@@ -109,11 +156,12 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         instanciated_charts.append(new_chart)
 
         # plot the relative error
-        chart_name = f'Gradient relative error of {OBJECTIVE_LAGR}'
+        chart_name = f'Gradient relative error of {OBJECTIVE_LAGR}. Finite diff step={approx.step}'
 
         new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient relative error [%]',
                                          chart_name=chart_name, y_min_zero=False)
 
+        new_chart.primary_ordinate_axis_range = [-100., 100]
         visible_line = True
         # unless the optimum is reached, a non-zero gradient is expected
         error = (np.array(grad_analytical_list) - np.array(grad_approx_list))/np.array(grad_approx_list) * 100.
