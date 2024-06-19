@@ -102,8 +102,10 @@ class IEADataPreparationDiscipline(SoSWrapp):
                         f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}', f'{Glossary.CropEnergy}',
                         f'{Glossary.ForestProduction}'
                         ]
-    # dict_values
-
+    dict_values_techno_production = create_production_variables(l_technos_to_add)
+    dict_in_production, dict_out_production = update_variable_name(list(dict_values_techno_production.values()))
+    desc_in_updated.update(dict_in_production)
+    desc_out_updated.update(dict_out_production)
     DESC_IN = {
         Glossary.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         Glossary.YearEnd: Glossary.YearEndVar,
