@@ -51,17 +51,14 @@ class IEADataPreparation:
         self.dict_df_in = None
         self.dict_df_out = None
 
-    def configure_parameters(self, input_dict):
+    def configure_parameters(self, input_dict, variables_to_store):
         """
         Configure parameters of model
         """
-        l_variables_in = [Glossary.CO2EmissionsGtValue, Glossary.EconomicsDfValue,
-                          Glossary.CO2TaxesValue, Glossary.EnergyProductionValue, Glossary.TemperatureDfValue,
-                          Glossary.PopulationDfValue]
-        self.dict_df_in = {var_name: input_dict[var_name] for var_name in l_variables_in}
+
         self.year_start = input_dict[Glossary.YearStart]
         self.year_end = input_dict[Glossary.YearEnd]
-
+        self.dict_df_in = {key_name: input_dict[key_name] for key_name in variables_to_store if key_name in input_dict}
     def compute(self):
         """
         Interpolate between year start and year end all the dataframes
@@ -91,7 +88,10 @@ class IEADataPreparation:
         # Dictionary to store the interpolated dataframes
         interpolated_dfs_dict = {}
 
-        for key, df in dataframes_dict.items():
+        for key, df_original in dataframes_dict.items():
+            print(key)
+            # copy input dataframe to avoid issues of memory link
+            df = df_original.copy()
             # Check if 'years' is in the columns
             if Glossary.Years not in df.columns:
                 raise ValueError(f"The column 'years' is missing in the DataFrame with key '{key}'.")

@@ -51,7 +51,7 @@ class IEADataPreparationTest(unittest.TestCase):
                                Glossary.OutputNetOfDamage: [120, 140, 145, 160]
                                })
         CO2_tax_df = pd.DataFrame({Glossary.Years: years,
-                                   Glossary.CO2Tax: [100, 500, 700, 800]})
+                                   Glossary.CO2Tax: [370, 500, 700, 800]})
 
         energy_production_df = pd.DataFrame({Glossary.Years: years,
                                              Glossary.TotalProductionValue: [40, 70, 80, 10]})
@@ -87,6 +87,15 @@ class IEADataPreparationTest(unittest.TestCase):
             values_dict.update({f'{self.name}.{self.model_name}.{techno}_techno_production' : pd.DataFrame({Glossary.Years: years,
                                 Glossary.TechnoProductionValue: [random.randint(15, 100) for _ in range(4)]})})
 
+        values_dict.update({
+            f'{self.name}.{self.model_name}.{Glossary.electricity}_energy_prices': pd.DataFrame({
+                Glossary.Years: years,
+                Glossary.SolarPv: [random.randint(30, 200) for _ in range(4)],
+                Glossary.Nuclear: [random.randint(30, 200) for _ in range(4)],
+                Glossary.CoalGen: [random.randint(30, 200) for _ in range(4)],
+                Glossary.GasTurbine: [random.randint(30, 200) for _ in range(4)]
+            })
+        })
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
@@ -96,5 +105,5 @@ class IEADataPreparationTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            # graph.to_plotly().show()
-            pass
+            graph.to_plotly().show()
+            #pass

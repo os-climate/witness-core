@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from copy import deepcopy
 
 import numpy as np
 
@@ -21,13 +20,14 @@ from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_prep
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from energy_models.glossaryenergy import GlossaryEnergy as Glossary
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
+
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
 )
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
+import plotly.graph_objects as go
 
 
 def update_variable_name(list_var_value):
@@ -102,10 +102,23 @@ class IEADataPreparationDiscipline(SoSWrapp):
                         f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}', f'{Glossary.CropEnergy}',
                         f'{Glossary.ForestProduction}'
                         ]
+    # get techno production metadata from glossary and modify them with the correct name
     dict_values_techno_production = create_production_variables(l_technos_to_add)
     dict_in_production, dict_out_production = update_variable_name(list(dict_values_techno_production.values()))
+    # update created desc_in and desc_out with the new variables
     desc_in_updated.update(dict_in_production)
     desc_out_updated.update(dict_out_production)
+    # add energy prices variable for electricity
+    energy_prices_dict = Glossary.get_dynamic_variable(Glossary.EnergyPricesDf)
+    # only energy price to compare is for electricity technologies. No need to call a function
+    energy_prices_dict['var_name'] = f'{Glossary.electricity}_{Glossary.EnergyPricesValue}'
+    desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict])
+    # update desc_in and desc_out with energy prices variable
+    desc_in_updated.update(desc_in_energy_prices)
+    desc_out_updated.update(desc_out_energy_prices)
+    # store list of input variables for later use
+    variables_to_store = list(desc_in_updated.keys())
+
     DESC_IN = {
         Glossary.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         Glossary.YearEnd: Glossary.YearEndVar,
@@ -126,7 +139,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
         """
         # get input of discipline
         param_in = self.get_sosdisc_inputs()
-        self.iea_data_preparation_model.configure_parameters(param_in)
+        self.iea_data_preparation_model.configure_parameters(param_in, variables_to_store = self.variables_to_store)
 
         # compute output
         self.iea_data_preparation_model.compute(
@@ -156,4 +169,45 @@ class IEADataPreparationDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
+        data_out = self.get_sosdisc_outputs()
+        data_in = self.get_sosdisc_inputs()
+
+        # loop on all output keys
+        for key, df_processed in data_out.items():
+            # recompute data_in key (without _interpolated)
+            original_key = key.replace('_interpolated', '')
+            df_original = data_in[original_key]
+
+            fig = go.Figure()
+            print('****', key)
+            # Plot original values with circles
+            for col in df_original.columns:
+                if col != Glossary.Years:
+                    fig.add_trace(go.Scatter(
+                        x=df_original[Glossary.Years],
+                        y=df_original[col],
+                        mode='markers',
+                        name=f'{col} (IEA)',
+                        marker=dict(symbol='circle', size=8)
+                    ))
+
+            # Plot interpolated and extrapolated values with dashed lines
+            for col in df_processed.columns:
+                if col != Glossary.Years:
+                    fig.add_trace(go.Scatter(
+                        x=df_processed[Glossary.Years],
+                        y=df_processed[col],
+                        mode='lines',
+                        name=f'{col} (Interpolated/Extrapolated)',
+                        line=dict(dash='dash')
+                    ))
+
+            fig.update_layout(
+                title=f'Interpolated and Extrapolated Data for {original_key}',
+                xaxis_title=Glossary.Years,
+                yaxis_title='Values',
+                legend_title='Legend'
+            )
+            new_chart = InstantiatedPlotlyNativeChart(fig, f'Interpolated and Extrapolated Data for {original_key}')
+            instanciated_charts.append(new_chart)
         return instanciated_charts
