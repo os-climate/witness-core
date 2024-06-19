@@ -38,7 +38,6 @@ from sostrades_core.execution_engine.design_var.design_var_disc import (
 from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
-from energy_models.core.investments.disciplines.investments_profile_builder_disc import InvestmentsProfileBuilderDisc
 
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -164,7 +163,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update({
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.column_names': columns_names,
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.n_profiles': n_profiles,
-            f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.{InvestmentsProfileBuilderDisc.EXPORT_PROFILES_AT_POLES}': True,
+            f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.{GlossaryEnergy.EXPORT_PROFILES_AT_POLES}': True,
             f'{ns}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor': self.design_var_descriptor,
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.nb_poles': GlossaryCore.NB_POLES_COARSE,
         })
