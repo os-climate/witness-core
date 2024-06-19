@@ -18,9 +18,9 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy as Glossary
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
+import random
 
 class IEADataPreparationTest(unittest.TestCase):
 
@@ -45,33 +45,47 @@ class IEADataPreparationTest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        CO2_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
-                                         GlossaryCore.TotalCO2Emissions: [60, 40, 20, 30]})
-        GDP_df = pd.DataFrame({GlossaryCore.Years: years,
-                               GlossaryCore.OutputNetOfDamage: [120, 140, 145, 160]
+        CO2_emissions_df = pd.DataFrame({Glossary.Years: years,
+                                         Glossary.TotalCO2Emissions: [60, 40, 20, 30]})
+        GDP_df = pd.DataFrame({Glossary.Years: years,
+                               Glossary.OutputNetOfDamage: [120, 140, 145, 160]
                                })
-        CO2_tax_df = pd.DataFrame({GlossaryCore.Years: years,
-                                   GlossaryCore.CO2Tax: [100, 500, 700, 800]})
+        CO2_tax_df = pd.DataFrame({Glossary.Years: years,
+                                   Glossary.CO2Tax: [100, 500, 700, 800]})
 
-        energy_production_df = pd.DataFrame({GlossaryCore.Years: years,
-                                             GlossaryCore.TotalProductionValue: [40, 70, 80, 10]})
+        energy_production_df = pd.DataFrame({Glossary.Years: years,
+                                             Glossary.TotalProductionValue: [40, 70, 80, 10]})
 
-        population_df = pd.DataFrame({GlossaryCore.Years: years,
-                                      GlossaryCore.PopulationValue: [8, 8.2, 8.3, 8]})
+        population_df = pd.DataFrame({Glossary.Years: years,
+                                      Glossary.PopulationValue: [8, 8.2, 8.3, 8]})
 
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years,
-                                      GlossaryCore.TempAtmo: [2.2, 2.7, 2.75, 2.78]})
+        temperature_df = pd.DataFrame({Glossary.Years: years,
+                                      Glossary.TempAtmo: [2.2, 2.7, 2.75, 2.78]})
+
+        l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}',
+                            f'{Glossary.electricity}_{Glossary.Hydropower}',
+                            f'{Glossary.electricity}_{Glossary.Solar}',
+                            f'{Glossary.electricity}_{Glossary.WindOnshoreAndOffshore}',
+                            f'{Glossary.solid_fuel}_{Glossary.CoalExtraction}',
+                            f'{Glossary.methane}_{Glossary.FossilGas}',
+                            f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}', f'{Glossary.CropEnergy}',
+                            f'{Glossary.ForestProduction}'
+                            ]
 
         values_dict = {
-            f'{self.name}.{GlossaryCore.YearStart}': year_start,
-            f'{self.name}.{GlossaryCore.YearEnd}': year_end,
-            f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsGtValue}': CO2_emissions_df,
-            f'{self.name}.{self.model_name}.{GlossaryCore.EconomicsDfValue}': GDP_df,
-            f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxesValue}': CO2_tax_df,
-            f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': energy_production_df,
-            f'{self.name}.{self.model_name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-            f'{self.name}.{self.model_name}.{GlossaryCore.PopulationDfValue}': population_df,
+            f'{self.name}.{Glossary.YearStart}': year_start,
+            f'{self.name}.{Glossary.YearEnd}': year_end,
+            f'{self.name}.{self.model_name}.{Glossary.CO2EmissionsGtValue}': CO2_emissions_df,
+            f'{self.name}.{self.model_name}.{Glossary.EconomicsDfValue}': GDP_df,
+            f'{self.name}.{self.model_name}.{Glossary.CO2TaxesValue}': CO2_tax_df,
+            f'{self.name}.{self.model_name}.{Glossary.EnergyProductionValue}': energy_production_df,
+            f'{self.name}.{self.model_name}.{Glossary.TemperatureDfValue}': temperature_df,
+            f'{self.name}.{self.model_name}.{Glossary.PopulationDfValue}': population_df,
         }
+        # random values for techno
+        for techno in l_technos_to_add:
+            values_dict.update({f'{self.name}.{self.model_name}.{techno}_techno_production' : pd.DataFrame({Glossary.Years: years,
+                                Glossary.TechnoProductionValue: [random.randint(15, 100) for _ in range(4)]})})
 
         self.ee.load_study_from_input_dict(values_dict)
 
