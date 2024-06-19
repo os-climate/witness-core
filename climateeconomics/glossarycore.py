@@ -268,10 +268,7 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-    df_descriptor_section_df = {
-        section: ("float", [0.0, 1e30], True) for section in SectionsPossibleValues
-    }
-    df_descriptor_section_df.update({Years: ("int", [1900, YearEndDefault], False)})
+
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
@@ -279,7 +276,7 @@ class GlossaryCore:
         "description": "Percentage of the GDP for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": df_descriptor_section_df,
+        "dataframe_descriptor": {Years: ("int", [1900, YearEndDefault], False)},
     }
     SectionEnergyConsumptionPercentageDf = {
         "var_name": SectionEnergyConsumptionPercentageDfValue,
@@ -288,7 +285,7 @@ class GlossaryCore:
         "description": "Percentage of the energy consumption for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": df_descriptor_section_df,
+        "dataframe_descriptor": {Years: ("int", [1900, YearEndDefault], False)},
     }
     SectorEnergyConsumptionPercentageDf = {
         "var_name": SectorEnergyConsumptionPercentageDfName,
@@ -314,7 +311,7 @@ class GlossaryCore:
         "description": "Non energy CO2 emission per $GDP per section",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": df_descriptor_section_df,
+        "dataframe_descriptor": {Years: ("int", [1900, YearEndDefault], False)},
     }
 
     SectionNonEnergyEmissionGDPDfSector = {

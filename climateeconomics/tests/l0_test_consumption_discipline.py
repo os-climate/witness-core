@@ -35,6 +35,8 @@ class ConsumptionDiscTest(unittest.TestCase):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.,
         })
 
     def test_execute(self):

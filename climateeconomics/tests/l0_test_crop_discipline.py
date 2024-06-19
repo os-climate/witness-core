@@ -45,7 +45,13 @@ class CropTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0,0.0, year_range))
-        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
+        self.temperature_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.TempAtmo: temperature,
+            GlossaryCore.TempOcean: 0,
+            GlossaryCore.ExoGForcing: 0,
+            GlossaryCore.Forcing: 0,
+        })
         self.temperature_df.index = years
 
         lifetime = 50

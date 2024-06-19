@@ -73,7 +73,6 @@ class OilResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_oil_resource',
                                  'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'oil_type': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -99,7 +98,6 @@ class OilResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_oil_resource',
                                           'dataframe_descriptor': {
-                                              GlossaryCore.Years: ('float', None, False),
                                               'light_consumption': ('float', None, True),
                                               'medium_consumption': ('float', None, True),
                                               'heavy_consumption': ('float', None, True),

@@ -88,7 +88,6 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_platinum_resource',
                                  'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'platinum_type': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -111,7 +110,6 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_platinum_resource',
                                           'dataframe_descriptor': {
-                                              GlossaryCore.Years: ('float', None, False),
                                               'platinum_consumption': ('float', None, True),}
                                           },
                'production_start': {'type': 'int', 'default': default_regression_start, 'unit': '-',

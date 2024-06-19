@@ -93,9 +93,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
                                    'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True),
-                                                            'cereals': ('float', [0, 1e9], True),
-                                                            'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
-                                                            'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
+                                                            'white meat': ('float', [0, 1e9], True),
+                                                            'milk': ('float', [0, 1e9], True),
+                                                            'eggs': ('float', [0, 1e9], True),
+                                                            'rice and maize': ('float', [0, 1e9], True),
+                                                            'potatoes': ('float', [0, 1e9], True),
                                                             'fruits and vegetables': ('float', [0, 1e9], True)},
                                    'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
                'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
@@ -144,8 +146,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         self.agriculture_model.apply_percentage(inp_dict)
         #-- compute
-        population_df = deepcopy(inp_dict[GlossaryCore.PopulationDfValue])
-        temperature_df = deepcopy(inp_dict[GlossaryCore.TemperatureDfValue])
+        population_df = inp_dict[GlossaryCore.PopulationDfValue]
+        temperature_df = inp_dict[GlossaryCore.TemperatureDfValue]
         self.agriculture_model.compute(population_df, temperature_df)
 
         outputs_dict = {

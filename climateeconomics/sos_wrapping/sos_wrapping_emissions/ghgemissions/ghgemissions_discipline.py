@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-
+from copy import deepcopy
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
@@ -117,16 +117,16 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             if sectorlist is not None:
                 for sector in sectorlist:
                     # section energy consumption
-                    section_energy_consumption_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionDf)
+                    section_energy_consumption_df_variable = deepcopy(GlossaryCore.SectionEnergyConsumptionDf)
                     section_energy_consumption_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}"] = section_energy_consumption_df_variable
 
-                    section_non_energy_emissions_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionGdpDf)
+                    section_non_energy_emissions_gdp_var = deepcopy(GlossaryCore.SectionNonEnergyEmissionGdpDf)
                     section_non_energy_emissions_gdp_var.update({'namespace': GlossaryCore.NS_GHGEMISSIONS})
                     section_non_energy_emissions_gdp_var.update({'visibility': "Shared"})
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emissions_gdp_var
 
-                    section_gdp_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpDf)
+                    section_gdp_var = deepcopy(GlossaryCore.SectionGdpDf)
                     section_gdp_var["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionGdpDfValue}"] = section_gdp_var
 

@@ -91,7 +91,6 @@ class LandUseV1Discipline(SoSWrapp):
                                                                    'UnmanagedWood (Gha)': ('float', None, False),
                                                                    'ManagedWoodResidues (Gha)': ('float', None, False),
                                                                    'UnmanagedWoodResidues (Gha)': ('float', None, False),
-                                                                   'Crop (Gha)': ('float', None, False),
                                                                    'Flue_gas_capture.Calcium_Looping (ha)': ('float', None, False),
                                                                    'Flue_gas_capture.Chilled_ammonia_process (ha)': ('float', None, False),
                                                                    'Flue_gas_capture.CO2_Membranes (ha)': ('float', None, False),
@@ -107,7 +106,6 @@ class LandUseV1Discipline(SoSWrapp):
                                                                    'Pure_Carbon_Solid_Storage (ha)': ('float', None, False),
                                                                    'Reforestation (ha)': ('float', None, False),
                                                                    'Reforestation (Gha)': ('float', None, False),
-                                                                   'Forest (Gha)': ('float', None, False),
                                                                    'Direct_air_capture.Amine_scrubbing (ha)': ('float', None, False),
                                                                    'Direct_air_capture.Calcium_Potassium_scrubbing (ha)': ('float', None, False),
                                                                    'CropEnergy (Gha)': (

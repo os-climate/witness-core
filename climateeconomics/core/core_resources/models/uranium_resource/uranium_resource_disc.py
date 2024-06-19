@@ -75,7 +75,6 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_uranium_resource',
                                  'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'Accessibility': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -92,15 +91,9 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                                  'uranium_80': ('float', None, True),
                                                  'uranium_130': ('float', None, True),
                                                  'uranium_260': ('float', None, True),
-                                                 'uranium_260_consumption': ('float', None, True),
                                               }},
                'resource_price_data': {'type': 'dataframe', 'unit': '$/kg', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {
-                                                 GlossaryCore.Years: ('float', None, False),
-                                                 'uranium_40_consumption': ('float', None, True),
-                                                 'uranium_80_consumption': ('float', None, True),
-                                                 'uranium_130_consumption': ('float', None, True),
-                                                 'uranium_260_consumption': ('float', None, True),
                                                  'resource_type': ('string', None, True),
                                            'price': ('float', None, True),
                                            'unit': ('string', None, True),
@@ -110,12 +103,10 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                           'user_level': 2, 'namespace': 'ns_uranium_resource',
                                           'dataframe_descriptor':
                                              {
-                                                 GlossaryCore.Years: ('float', None, False),
                                                  'uranium_40_consumption': ('float', None, True),
                                                  'uranium_80_consumption': ('float', None, True),
                                                  'uranium_130_consumption': ('float', None, True),
                                                  'uranium_260_consumption': ('float', None, True),
-                                                 'Reserve_unit': ('float', None, True),
                                               }
                                          },
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
