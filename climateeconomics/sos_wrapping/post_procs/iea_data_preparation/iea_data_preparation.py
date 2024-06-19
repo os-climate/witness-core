@@ -89,7 +89,6 @@ class IEADataPreparation:
         interpolated_dfs_dict = {}
 
         for key, df_original in dataframes_dict.items():
-            print(key)
             # copy input dataframe to avoid issues of memory link
             df = df_original.copy()
             # Check if 'years' is in the columns

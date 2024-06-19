@@ -47,8 +47,9 @@ class IEADataPreparationTest(unittest.TestCase):
         self.ee.display_treeview_nodes()
         CO2_emissions_df = pd.DataFrame({Glossary.Years: years,
                                          Glossary.TotalCO2Emissions: [60, 40, 20, 30]})
+        GDP_values = [120, 140, 145, 160]
         GDP_df = pd.DataFrame({Glossary.Years: years,
-                               Glossary.OutputNetOfDamage: [120, 140, 145, 160]
+                               Glossary.OutputNetOfDamage: GDP_values
                                })
         CO2_tax_df = pd.DataFrame({Glossary.Years: years,
                                    Glossary.CO2Tax: [370, 500, 700, 800]})
@@ -102,6 +103,14 @@ class IEADataPreparationTest(unittest.TestCase):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
+        gdp_interpolated = disc.get_sosdisc_outputs(f'{Glossary.EconomicsDfValue}_interpolated')
+        # check that input value is unchanged
+        assert gdp_interpolated.loc[
+                   gdp_interpolated[Glossary.Years].isin(years), Glossary.OutputNetOfDamage].tolist() == GDP_values
+        # check that the value at 2035 is the expected : 2030 : 140, 2040: 145 => 2035 should be equal to (140+145)/2
+        expected_value_2035 = (140+145)/2
+        assert gdp_interpolated.loc[gdp_interpolated[Glossary.Years] == 2035, Glossary.OutputNetOfDamage].values[0] == expected_value_2035
+
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
