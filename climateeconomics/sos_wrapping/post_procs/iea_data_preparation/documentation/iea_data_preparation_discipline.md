@@ -27,12 +27,22 @@ For nuclear for instance, this corresponds to the TWh of electricity and heat pr
 heat and electricity must be added for nuclear to be comparable with the IEA data. Same goes with wind energy where 
 witness offshore and onshore wind energy data must be added to be compared to the global IEA windenergy data. 
 Similarly, the witness solar pv and solar thermal must be added to be compared to the IEA data. Evenutally, for coal, fuel, 
-IEA data correspond to the energy associated to the Mt of coal and fuel extracted.
+IEA data correspond to the energy associated to the Mt of coal and fuel extracted. For the bioenergy, IEA splits into 
+liquid, solid and traditional use of biomass. In order to compare witness and IEA, the witness crop model energy production 
+is compared with the sum of the IEA energy production in "Conventional bioenergy crops" and "Short-rotation woody crops". 
+Similarly, the witness forest model energy production is compared with the sum of the IEA energy production in 
+"Traditional use of biomass", "Forestry plantings" and "Forest and wood residues".
 - **Energy prices**: only the electricity prices are compared between witness and IEA. IEA provides data for 4 regions
   (USA, China, EU, India) [^2]. Then the average electricity price per techno is obtained by weighting the price of each region 
 by the GDP share of that region. This is an approximation since the sum of the GDP shares of those regions amounts for 
 64% of the world GDP in 2022. It is therefore debatable to consider that this electricity price is representative of the world's 
 average electricity price. This however allows to make a first comparison.
+
+Eventually, the data processed as above are saved under witness-core\climateeconomics\data\IEA_NZE*.csv. In the csv, 
+the column name is identical to the corresponding witness variable name. Furthermore, the name of the corresponding witness dataframe 
+that the variable is taken from is described in the csv file name. This is however not applied to quantities that  
+require for instance summing of several witness variables. In this case, the variable name is just "Nuclear" for instance. 
+
 
 ## Input Data
 
