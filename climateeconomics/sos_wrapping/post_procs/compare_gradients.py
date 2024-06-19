@@ -34,6 +34,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from energy_models.glossaryenergy import GlossaryEnergy
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from gemseo.utils.pkl_tools import load_compressed_pickle, dump_compressed_pickle
+from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
 
 '''
 Post-processing designe to compare the analytical vs the approximated gradient of the objective function wrt the design 
@@ -60,6 +61,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
     OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
+    finite_differences_step = 1e-7
 
     instanciated_charts = []
     chart_list = []
@@ -101,7 +103,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
 
         # computed approximated gradient in 2nd step so that the analytical gradient is not computed in X0 + h
         # warm start must have been removed so that mda and convergence criteria are the same for analytical and approximated gradients
-        logging.info('Post-processing: computing approximated gradient')
 
         # to avoid unnecessary computation of the approx gradient in case the of updated post-processing, the inputs are
         # compared to values in pkl file. If they are different, approx jac is recomputed, otherwise the pkl values are considered
@@ -116,9 +117,15 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             with open(input_pkl, 'rb') as f:
                 dm_data_dict_pkl = pickle.load(f)
             f.close()
-            recompute_gradients = not (dm_data_dict_before == dm_data_dict_pkl)
         except:
-            logging.info('Missing dm data dict in pkl file. Input data may have changed. Must recompute approx gradients')
+            logging.info(f'Cannot open file {input_pkl}. Must recompute approximated gradients')
+            dm_data_dict_pkl = None
+        if dm_data_dict_pkl is not None:
+            compare_test_passed, error_msg_compare = test_compare_dm(dm_data_dict_before, dm_data_dict_pkl, scenario_name, 'pkl vs case dm' )
+            logging.info(error_msg_compare)
+            recompute_gradients = not compare_test_passed
+        if recompute_gradients:
+            logging.info('Input data have changed. Must recompute approx gradients')
             with open(input_pkl, 'wb') as f:
                 pickle.dump(dm_data_dict_before, f)
             f.close()
@@ -128,9 +135,12 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             logging.info('Missing grad approx pkl file. Must recompute approx gradients')
             recompute_gradients = True
         if recompute_gradients:
-            approx = DisciplineJacApprox(mdo_disc, approx_method=DisciplineJacApprox.FINITE_DIFFERENCES, step=1e-7)
+            logging.info('Post-processing: computing approximated gradient')
+            approx = DisciplineJacApprox(mdo_disc, approx_method=DisciplineJacApprox.FINITE_DIFFERENCES, step=finite_differences_step)
             grad_approx = approx.compute_approx_jac(outputs, inputs)
             dump_compressed_pickle(output_pkl, grad_approx)
+        else:
+            logging.info(f'Post-processing: recovering approximated gradient from pkl file {output_pkl}')
 
 
         logging.info('Post-processing: generating gradient charts')
@@ -141,7 +151,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         grad_approx_list = [grad_approx[output][inputs[i]][0][0] for i in range(n_profiles)]
 
         # plot the gradients in abs value
-        chart_name = f'Gradient validation of {OBJECTIVE_LAGR}. Finite diff step={approx.step}'
+        chart_name = f'Gradient validation of {OBJECTIVE_LAGR}. Finite diff step={finite_differences_step}'
 
         new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient [-]',
                                          chart_name=chart_name, y_min_zero=False)
@@ -156,7 +166,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         instanciated_charts.append(new_chart)
 
         # plot the relative error
-        chart_name = f'Gradient relative error of {OBJECTIVE_LAGR}. Finite diff step={approx.step}'
+        chart_name = f'Gradient relative error of {OBJECTIVE_LAGR}. Finite diff step={finite_differences_step}'
 
         new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient relative error [%]',
                                          chart_name=chart_name, y_min_zero=False)
