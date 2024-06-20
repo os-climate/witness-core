@@ -17,6 +17,7 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+import random
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -50,6 +51,7 @@ OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
+IEA_DISC = 'IEA'
 
 # usecase of witness full to evaluate a design space with NZE investments
 class Study(ClimateEconomicsStudyManager):
@@ -138,7 +140,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 2,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}': False}
 
         # print("Design space dimension is ", dspace_size)
@@ -146,7 +148,7 @@ class Study(ClimateEconomicsStudyManager):
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl',
                                     'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl',
                                     'forest_investment_array_mix', 'crop_investment_array_mix']
-        diet_mortality_df = pd.read_csv(join(dirname(__file__), 'data', 'diet_mortality.csv'))
+        diet_mortality_df = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', 'diet_mortality.csv'))
 
         # clean dspace
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
@@ -158,7 +160,7 @@ class Study(ClimateEconomicsStudyManager):
 
 
         dspace_file_name = 'invest_design_space_NZE.csv'
-        dspace_out = pd.read_csv(join(dirname(__file__), 'data', dspace_file_name))
+        dspace_out = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', dspace_file_name))
 
 
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
@@ -191,9 +193,9 @@ class Study(ClimateEconomicsStudyManager):
         dspace_df['enable_variable'] = True
 
         invest_mix_file = 'investment_mix.csv'
-        invest_mix = pd.read_csv(join(dirname(__file__), 'data', invest_mix_file))
+        invest_mix = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', invest_mix_file))
         forest_invest_file = 'forest_investment.csv'
-        forest_invest = pd.read_csv(join(dirname(__file__), 'data', forest_invest_file))
+        forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
         #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
@@ -208,6 +210,61 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict.update(values_dict_updt)
         optim_values_dict.update(values_dict_updt)
+
+        # input for IEA data
+        years = [2023, 2030, 2040, 2050]
+        CO2_emissions_df = pd.DataFrame({GlossaryEnergy.Years: years,
+                                         GlossaryEnergy.TotalCO2Emissions: [60, 40, 20, 30]})
+        GDP_df = pd.DataFrame({GlossaryEnergy.Years: years,
+                               GlossaryEnergy.OutputNetOfDamage: [120, 140, 145, 160]
+                               })
+        CO2_tax_df = pd.DataFrame({GlossaryEnergy.Years: years,
+                                   GlossaryEnergy.CO2Tax: [100, 500, 700, 800]})
+
+        energy_production_df = pd.DataFrame({GlossaryEnergy.Years: years,
+                                             GlossaryEnergy.TotalProductionValue: [40, 70, 80, 10]})
+
+        population_df = pd.DataFrame({GlossaryEnergy.Years: years,
+                                      GlossaryEnergy.PopulationValue: [8, 8.2, 8.3, 8]})
+
+        temperature_df = pd.DataFrame({GlossaryEnergy.Years: years,
+                                      GlossaryEnergy.TempAtmo: [2.2, 2.7, 2.75, 2.78]})
+
+        l_technos_to_add = [f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}',
+                            f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}',
+                            f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}',
+                            f'{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}',
+                            f'{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}',
+                            f'{GlossaryEnergy.methane}_{GlossaryEnergy.FossilGas}',
+                            f'{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}', f'{GlossaryEnergy.CropEnergy}',
+                            f'{GlossaryEnergy.ForestProduction}'
+                            ]
+
+        values_dict.update({
+            f'{ns}.{GlossaryEnergy.YearStart}': self.year_start,
+            f'{ns}.{GlossaryEnergy.YearEnd}': self.year_end,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.CO2EmissionsGtValue}': CO2_emissions_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.EconomicsDfValue}': GDP_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.CO2TaxesValue}': CO2_tax_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.EnergyProductionValue}': energy_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.TemperatureDfValue}': temperature_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.PopulationDfValue}': population_df,
+        })
+        # random values for techno
+        for techno in l_technos_to_add:
+            values_dict.update({f'{ns}.{IEA_DISC}.{techno}_techno_production' : pd.DataFrame({GlossaryEnergy.Years: years,
+                                GlossaryEnergy.TechnoProductionValue: [random.randint(15, 100) for _ in range(len(years))]})})
+
+        values_dict.update({
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': pd.DataFrame({
+                GlossaryEnergy.Years: years,
+                GlossaryEnergy.SolarPv: [random.randint(30, 200) for _ in range(4)],
+                GlossaryEnergy.Nuclear: [random.randint(30, 200) for _ in range(4)],
+                GlossaryEnergy.CoalGen: [random.randint(30, 200) for _ in range(4)],
+                GlossaryEnergy.GasTurbine: [random.randint(30, 200) for _ in range(4)]
+            })
+        })
+
         return [values_dict] + [optim_values_dict]
 
 
@@ -216,8 +273,15 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
+    ns = f'usecase_witness_optim_nze_eval.IEA'
+    filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
+
+    graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
+    for graph in graph_list:
+        graph.to_plotly().show()
+
     for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
-        if 'Forest' in disc.get_disc_full_name():
+        if 'IEA' in disc.get_disc_full_name():
             filters = ppf.get_post_processing_filters_by_discipline(
                 disc)
             graph_list = ppf.get_post_processing_by_discipline(
