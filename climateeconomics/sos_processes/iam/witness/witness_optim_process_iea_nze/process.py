@@ -69,8 +69,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_optim',
             'climateeconomics.sos_wrapping.post_procs.witness_optim.post_processing_witness_full')
 
-        #self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-        #    'ns_dashboard_iea',
-        #    'climateeconomics.sos_wrapping.post_procs.iea_nze_comparison.post_processing_iea_nze_comparison')
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            'ns_dashboard_iea',
+            'climateeconomics.sos_wrapping.post_procs.iea_nze_comparison.post_processing_iea_nze_comparison')
 
         return [opt_builder, builder_iea_disc]

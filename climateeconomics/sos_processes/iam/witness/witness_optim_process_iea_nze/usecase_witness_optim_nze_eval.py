@@ -273,7 +273,7 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
-    ns = f'usecase_witness_optim_nze_eval.IEA'
+    ns = f'usecase_witness_optim_nze_eval'
     filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
 
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
