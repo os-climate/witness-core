@@ -17,7 +17,7 @@ import os.path
 
 import numpy as np
 import pandas as pd
-from scipy.interpolate import interp1d
+from climateeconomics.core.tools.post_proc import get_scenario_value
 import logging
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -69,6 +69,16 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
     chart_list = []
+
+    # example: 3 methods to recover the dataframe of the variable 'invest_mix'
+    # method 1: if invest_mix occurs in different disciplines, first list the full variable name including namespace value
+    list_of_variables_with_full_namespace = execution_engine.dm.get_all_namespaces_from_var_name('invest_mix')
+    # then recover the values for each occurences of the variable
+    invest_mix_dict = {}
+    for var in list_of_variables_with_full_namespace:
+        invest_mix_dict[var] = execution_engine.dm.get_value(var)
+    # method 2: if only one occurrence of the variable, it gets it automatically:
+    invest_mix = get_scenario_value(execution_engine, 'invest_mix', namespace)
 
     # Overload default value with chart filter
     if filters is not None:
