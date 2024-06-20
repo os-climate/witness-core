@@ -66,6 +66,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.UtilityDfValue: GlossaryCore.UtilityDf,
         GlossaryCore.QuantityObjectiveValue: GlossaryCore.QuantityObjective,
+        GlossaryCore.LastYearUtilityObjectiveValue: GlossaryCore.LastYearUtilityObjective,
     }
 
     def init_execution(self):
@@ -85,6 +86,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         dict_values = {
             GlossaryCore.UtilityDfValue: utility_df[GlossaryCore.UtilityDf['dataframe_descriptor'].keys()],
             GlossaryCore.QuantityObjectiveValue: self.utility_m.discounted_utility_quantity_objective,
+            GlossaryCore.LastYearUtilityObjectiveValue: self.utility_m.last_year_utility_objective,
         }
 
         self.store_sos_outputs_values(dict_values)
@@ -108,7 +110,9 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         d_utility_denergy_price, d_utility_dpcc, \
         d_discounted_utility_quantity_denergy_price, d_discounted_utility_quantity_dpcc, \
         d_pop_discounted_utility_quantity_denergy_price, d_pop_discounted_utility_quantity_dpcc, d_pop_discounted_utility_quantity_dpop, \
-        d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop = self.utility_m.d_utility_quantity()
+        d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop,\
+        d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop= self.utility_m.d_utility_quantity()
+
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaUtilityQuantity),
             (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
@@ -158,6 +162,21 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.QuantityObjectiveValue,),
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             d_utility_obj_dpop)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.LastYearUtilityObjectiveValue,),
+            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
+            d_ly_utility_obj_d_energy_price)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.LastYearUtilityObjectiveValue,),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            d_ly_utility_obj_dpcc)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.LastYearUtilityObjectiveValue,),
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+            d_ly_utility_obj_dpop)
 
 
     def get_chart_filter_list(self):
