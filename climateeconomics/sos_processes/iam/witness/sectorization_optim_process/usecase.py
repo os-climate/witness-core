@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,16 +21,16 @@ import numpy as np
 import pandas as pd
 from numpy import arange
 from scipy.interpolate import interp1d
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
     Study as witness_sect_usecase,
 )
+from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+from sostrades_core.study_manager.study_manager import StudyManager
 
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
@@ -229,10 +229,9 @@ class Study(StudyManager):
                          'Services.gdp_error', 'Industry.energy_eff_error',
                          'Agriculture.energy_eff_error', 'Services.energy_eff_error'],
             'ftype': [OBJECTIVE] * 7,
-            'parent': [OBJECTIVE] * 7,
             'weight': [1] * 7,
             AGGR_TYPE: [AGGR_TYPE_SUM] * 7,
-            'namespace': ['ns_obj'] * 7,
+            'namespace': ['ns_obj'] * 7
         })
 
         func_mng_name = 'FunctionsManager'
@@ -352,4 +351,5 @@ class ComplexJsonEncoder(_json.JSONEncoder):
 
 if '__main__' == __name__:
     uc_cls = Study()
+    uc_cls.load_data()
     uc_cls.test()

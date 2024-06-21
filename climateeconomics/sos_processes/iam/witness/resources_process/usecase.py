@@ -23,10 +23,6 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
 from numpy import arange
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import (
     ResourceMixModel,
@@ -35,7 +31,13 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
 from climateeconomics.glossarycore import GlossaryCore
-
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE

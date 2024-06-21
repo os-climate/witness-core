@@ -26,10 +26,6 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import
     Study as datacase_energy,
 )
 from pandas import concat
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -43,6 +39,10 @@ from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_en
 )
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import (
     DataStudy as datacase_witness_dev,
+)
+from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
 )
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
