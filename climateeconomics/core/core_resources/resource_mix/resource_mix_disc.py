@@ -115,25 +115,10 @@ class ResourceMixDiscipline(SoSWrapp):
                                                              },
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                             'natural_gas_resource': ('float', None, True),
-                                                             'uranium_resource': ('float', None, True),
-                                                             'coal_resource': ('float', None, True),
-                                                             'oil_resource': ('float', None, True),
-                                                             'copper_resource': ('float', None, True),
-                                                             'platinum_resource': ('float', None, True),}
-                                    },
+                                    'dynamic_dataframe_columns': True,},
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                                     'natural_gas_resource': ('float', None, True),
-                                                                     'uranium_resource': ('float', None, True),
-                                                                     'coal_resource': ('float', None, True),
-                                                                     'oil_resource': ('float', None, True),
-                                                                     'copper_resource': ('float', None, True),
-                                                                     'platinum_resource': ('float', None, True),
-                                                                     }
-                                            },
+                                            'dynamic_dataframe_columns': True,},
                'conversion_dict': {'type': 'dict', 'subtype_descriptor': {'dict': {'dict': 'float'}}, 'unit': '[-]', 'default': default_conversion_dict,
                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }

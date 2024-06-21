@@ -69,11 +69,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                            'dataframe_descriptor':{GlossaryCore.Years: ('float', None, False),
                                                    'atmo_conc': ('float', None, False),
-                                                   'lower_ocean_conc': ('float', None, False),
-                                                   'shallow_ocean_conc': ('float', None, False),
-                                                   'ppm': ('float', None, False),
-                                                   'atmo_share_since1850': ('float', None, False),
-                                                   'atmo_share_sinceystart': ('float', None, False),}},
+                                                   }},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
@@ -96,7 +92,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
-        'temperature_detail_df': {'type': 'dataframe', 'unit': '°C'},
+        GlossaryCore.TemperatureDetailedDfValue: GlossaryCore.TemperatureDetailedDf,
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         'temperature_constraint': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS}}
@@ -139,8 +135,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         if in_dict['temperature_effect'] :
             # store output data
-            out_dict = {"temperature_detail_df": temperature_df,
-                        GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],
+            out_dict = {GlossaryCore.TemperatureDetailedDfValue: temperature_df,
+                        GlossaryCore.TemperatureDfValue: temperature_df[GlossaryCore.TemperatureDf['dataframe_descriptor'].keys()],
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
@@ -151,8 +147,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             temperature_df_2 = temperature_df.copy()
             temperature_df_2[GlossaryCore.TempAtmo] = [0.1 for i in range (len(temperature_df[GlossaryCore.TempAtmo]))]
 
-            out_dict = {"temperature_detail_df": temperature_df,
-                        GlossaryCore.TemperatureDfValue: temperature_df_2[[GlossaryCore.Years, GlossaryCore.TempAtmo]],
+            out_dict = {GlossaryCore.TemperatureDetailedDf: temperature_df,
+                        GlossaryCore.TemperatureDfValue: temperature_df_2[GlossaryCore.TemperatureDf['dataframe_descriptor'].keys()],
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
@@ -198,7 +194,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['temperature evolution', 'Radiative forcing']
+        chart_list = ['Temperature evolution', 'Radiative forcing']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -219,11 +215,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'temperature evolution' in chart_list:
+        if 'Temperature evolution' in chart_list:
 
             to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
             temperature_df = deepcopy(
-                self.get_sosdisc_outputs('temperature_detail_df'))
+                self.get_sosdisc_outputs(GlossaryCore.TemperatureDetailedDfValue))
 
             legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
                       GlossaryCore.TempOcean: 'ocean temperature'}

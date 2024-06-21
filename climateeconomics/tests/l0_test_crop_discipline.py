@@ -48,9 +48,6 @@ class CropTestCase(unittest.TestCase):
         self.temperature_df = pd.DataFrame({
             GlossaryCore.Years: years,
             GlossaryCore.TempAtmo: temperature,
-            GlossaryCore.TempOcean: 0,
-            GlossaryCore.ExoGForcing: 0,
-            GlossaryCore.Forcing: 0,
         })
         self.temperature_df.index = years
 

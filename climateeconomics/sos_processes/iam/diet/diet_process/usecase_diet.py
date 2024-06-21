@@ -95,7 +95,10 @@ class Study(ClimateEconomicsStudyManager):
         gdp = [130.187]*len(years)
 
         df_eco = DataFrame({GlossaryCore.Years: years,
-                            GlossaryCore.OutputNetOfDamage: gdp},
+                            GlossaryCore.OutputNetOfDamage: gdp,
+                            GlossaryCore.GrossOutput: gdp,
+                            GlossaryCore.PerCapitaConsumption: 0.,
+                            },
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = df_eco

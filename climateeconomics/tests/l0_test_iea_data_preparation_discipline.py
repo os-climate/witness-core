@@ -49,7 +49,9 @@ class IEADataPreparationTest(unittest.TestCase):
                                          Glossary.TotalCO2Emissions: [60, 40, 20, 30]})
         GDP_values = [120, 140, 145, 160]
         GDP_df = pd.DataFrame({Glossary.Years: years,
-                               Glossary.OutputNetOfDamage: GDP_values
+                               Glossary.OutputNetOfDamage: GDP_values,
+                               Glossary.GrossOutput: 0.,
+                               Glossary.PerCapitaConsumption: 0.
                                })
         CO2_tax_df = pd.DataFrame({Glossary.Years: years,
                                    Glossary.CO2Tax: [370, 500, 700, 800]})
@@ -61,7 +63,11 @@ class IEADataPreparationTest(unittest.TestCase):
                                       Glossary.PopulationValue: [8, 8.2, 8.3, 8]})
 
         temperature_df = pd.DataFrame({Glossary.Years: years,
-                                      Glossary.TempAtmo: [2.2, 2.7, 2.75, 2.78]})
+                                      Glossary.TempAtmo: [2.2, 2.7, 2.75, 2.78],
+                                       Glossary.TempOcean: 0.,
+                                       Glossary.ExoGForcing: 0.,
+                                       Glossary.Forcing: 0.,
+                                       })
 
         l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}',
                             f'{Glossary.electricity}_{Glossary.Hydropower}',

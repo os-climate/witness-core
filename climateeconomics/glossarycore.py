@@ -575,7 +575,6 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             DamageFractionOutput: ("float", [0.0, 1.0], False),
-            BaseCarbonPrice: ("float", [0, 1e30], False),
         },
     }
     Damages = "Damages [G$]"
@@ -1034,6 +1033,17 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "unit": "°C",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            TempAtmo: ("float", None, False),
+        },
+    }
+
+    TemperatureDetailedDfValue = "temperature_detailed_df"
+    TemperatureDetailedDf = {
+        "var_name": TemperatureDetailedDfValue,
+        "type": "dataframe",
+        "unit": "-",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             ExoGForcing: ("float", None, False),

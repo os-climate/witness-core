@@ -55,9 +55,6 @@ class PopDiscTest(unittest.TestCase):
         self.temperature_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.TempAtmo: np.linspace(0.1, 2.4, len(self.years)),
-            GlossaryCore.TempOcean: 0.,
-            GlossaryCore.ExoGForcing: 0.,
-            GlossaryCore.Forcing: 0.,
         })
 
         self.economics_df = pd.DataFrame({

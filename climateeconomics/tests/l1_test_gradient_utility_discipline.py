@@ -58,6 +58,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
             GlossaryCore.PerCapitaConsumption: np.linspace(12, 6, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: 0.,
         })
 
         self.population_df = pd.DataFrame({

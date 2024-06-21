@@ -80,8 +80,12 @@ class Study(StudyManager):
         year_range = self.year_end - self.year_start + 1
 
         temperature = np.array(np.linspace(1.05, 5.0, year_range))
-        temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
+        temperature_df = pd.DataFrame({
+            GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature,
+            GlossaryCore.ExoGForcing: 0.,
+            GlossaryCore.Forcing: 0.,
+            GlossaryCore.TempOcean: 0.,
+        })
         temperature_df.index = years
 
         population = np.array(np.linspace(7800.0, 9000.0, year_range))

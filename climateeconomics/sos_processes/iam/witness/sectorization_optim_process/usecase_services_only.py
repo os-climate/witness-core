@@ -157,6 +157,7 @@ class Study(StudyManager):
                                # 'Services.energy_eff_error'
                                ]
         func_df['ftype'] = [OBJECTIVE]
+        func_df['parent'] = [OBJECTIVE]
         func_df['weight'] = [1]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM]
         func_df['namespace'] = ['ns_obj']

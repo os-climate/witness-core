@@ -144,4 +144,4 @@ if '__main__' == __name__:
     #     pd.set_option('display.max_columns', None)
     #     pd.set_option('display.width', None)
 
-    uc_cls.test(force_run=True)
+    uc_cls.test()
