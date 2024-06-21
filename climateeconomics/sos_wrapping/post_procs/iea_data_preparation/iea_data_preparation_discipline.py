@@ -179,7 +179,6 @@ class IEADataPreparationDiscipline(SoSWrapp):
             df_original = data_in[original_key]
 
             fig = go.Figure()
-            print('****', key)
             # Plot original values with circles
             for col in df_original.columns:
                 if col != Glossary.Years:

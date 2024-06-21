@@ -61,7 +61,8 @@ Example DataFrames:
 ## Output Data
 
 The output of the model is a dictionary of DataFrames similar to the input, but with the following modifications:
-
+- Output variable have the same format as input, the name of each output is the name of the corresponding input with 
+a "_interpolated" suffix.
 - The 'years' column spans from `year_start` to `year_end`.
 - The values in the other columns are interpolated linearly for the years within the provided data range.
 - If the data in any DataFrame starts after `year_start`, the model performs backward extrapolation to estimate values for the missing initial years.
