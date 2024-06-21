@@ -148,7 +148,7 @@ def post_processings(execution_engine, namespace, filters):
     instanciated_charts = []
     chart_list = []
 
-    # example: 3 methods to recover the dataframe of the variable 'invest_mix'
+    # example: 2 methods to recover the dataframe of the variable 'invest_mix'
     # method 1: if invest_mix occurs in different disciplines, first list the full variable name including namespace value
     list_of_variables_with_full_namespace = (
         execution_engine.dm.get_all_namespaces_from_var_name("invest_mix")

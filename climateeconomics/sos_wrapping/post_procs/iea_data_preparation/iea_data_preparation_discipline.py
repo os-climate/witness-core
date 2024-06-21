@@ -184,8 +184,8 @@ class IEADataPreparationDiscipline(SoSWrapp):
             for col in df_original.columns:
                 if col != Glossary.Years:
                     fig.add_trace(go.Scatter(
-                        x=df_original[Glossary.Years],
-                        y=df_original[col],
+                        x=df_original[Glossary.Years].tolist(),
+                        y=df_original[col].tolist(),
                         mode='markers',
                         name=f'{col} (IEA)',
                         marker=dict(symbol='circle', size=8)
@@ -195,8 +195,8 @@ class IEADataPreparationDiscipline(SoSWrapp):
             for col in df_processed.columns:
                 if col != Glossary.Years:
                     fig.add_trace(go.Scatter(
-                        x=df_processed[Glossary.Years],
-                        y=df_processed[col],
+                        x=df_processed[Glossary.Years].tolist(),
+                        y=df_processed[col].tolist(),
                         mode='lines',
                         name=f'{col} (Interpolated/Extrapolated)',
                         line=dict(dash='dash')
