@@ -34,7 +34,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
     Study as witness_usecase7_story_telling,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

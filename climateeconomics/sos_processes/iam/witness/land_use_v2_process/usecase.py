@@ -20,8 +20,8 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 from sostrades_core.study_manager.study_manager import StudyManager

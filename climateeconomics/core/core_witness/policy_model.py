@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.cst_manager.func_manager_common import (
+from sostrades_optimization_plugin.tools.cst_manager.func_manager_common import (
     get_dsmooth_dvariable_vect,
     smooth_maximum_vect,
 )

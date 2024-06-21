@@ -23,7 +23,7 @@ from os.path import dirname, join
 
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from gemseo.utils.derivatives_approx import DisciplineJacApprox
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
