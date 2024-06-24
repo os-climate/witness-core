@@ -15,13 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
-    COUPLING_NAME,
-    EXTRA_NAME,
-    OPTIM_NAME,
-)
 from sostrades_core.execution_engine.data_manager import DataManager
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -30,6 +23,13 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 )
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import (
     InstantiatedParetoFrontOptimalChart,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    COUPLING_NAME,
+    EXTRA_NAME,
+    OPTIM_NAME,
 )
 
 

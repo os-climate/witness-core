@@ -94,7 +94,7 @@ class Study(ClimateEconomicsStudyManager):
         uc_mda.study_name = self.study_name  # mda settings on root coupling
         values_dict.update(uc_mda.setup_mda())
         # assumes max of 16 cores per computational node
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
         # setup each scenario (mda settings ignored)
         for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario}'

@@ -18,11 +18,10 @@ limitations under the License.
 import platform
 from os.path import dirname, exists, join
 
-from tqdm import tqdm
-
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+from tqdm import tqdm
 
 
 class WitnessJacobianDiscTest(AbstractJacobianUnittest):

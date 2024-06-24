@@ -14,9 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class AgricultureMixDiscipline(EnergyDiscipline):
@@ -43,8 +44,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
                                      'unit': '-'},
                'data_fuel_dict': {'type': 'dict', 'unit': 'defined in dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict,
-                                  'unit': '-'},
+                                  'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
     name = 'AgricultureMix'
