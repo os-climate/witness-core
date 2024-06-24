@@ -16,7 +16,9 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
@@ -36,6 +38,7 @@ from sostrades_core.execution_engine.design_var.design_var_disc import (
 from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
+
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -76,6 +79,44 @@ class Study(ClimateEconomicsStudyManager):
             invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
+    def df_generator_linear_profile(self, i, columns_names, n_profiles, years):
+        '''
+        args:
+            i [int]= index of the profile
+            columns_names [list] = list of names of variables
+            n_profiles [int]=  total number of profiles
+        assuming that there are nb_columns variables, assuming that there are one increasing and 1 decreasing
+        profile per variable, then df_generator generates those 2 profiles for each variable
+        the growing generic invest profiles are for the even values of i
+        the decreasing generic invest profiles are for the uneven values of i
+        Profiles are normalized between 0 and 1
+        '''
+        if n_profiles != 2 * len(columns_names):
+            raise ValueError(
+                f'df_generator computes 2 generic invest profiles per column. n_profiles should be {2 * len(columns_names)} '
+                f'whereas it it {n_profiles}')
+        # growing normalized invest profiles are for the even values of i (arbitrary choice)
+        if i % 2 == 0:
+            normalized_profile = np.linspace(1.e-6, 3000., len(years))
+        else:
+            normalized_profile = np.linspace(3000., 1.e-6, len(years))
+        column_vect = np.zeros(len(columns_names))
+        # put the normalized profile in the column of variable corresponding to index i assuming that there are
+        # 2 profiles per variable
+        column_vect[int(i / 2)] = 1.
+        data = np.array([normalized_profile]).T * column_vect
+        df = pd.DataFrame(data, columns=columns_names)
+        df.insert(0, GlossaryEnergy.Years, years, True)
+
+        return df
+
+    def df_generator_constant_profile(self, years, columns_names, list_val):
+        df = pd.DataFrame({
+            **{GlossaryEnergy.Years: years},
+            **dict(zip(columns_names, list_val))
+        })
+        return df
+
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
 
@@ -91,7 +132,9 @@ class Study(ClimateEconomicsStudyManager):
         for dict_data in witness_uc_data:
             values_dict.update(dict_data)
 
+        # No modif of the objective function
         self.func_df = self.witness_uc.func_df
+        self.func_df.loc[self.func_df['variable'] == 'gwp100_objective', 'weight'] = 1.
 
         # define the missing inputs:
         # InvestmentsProfileBuilderDisc inputs
@@ -100,44 +143,49 @@ class Study(ClimateEconomicsStudyManager):
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno',
                          f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno']
-        n_profiles = 2 * len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile
+
+        n_profiles = 2 #* len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile
+
+        # create the design var descriptor for the design variables discipline. In this usecase, all outputs of
+        # investprofilebuilder are provided with poles into the design variable discipline
+        self.design_var_descriptor = {}
+        for var in columns_names:
+            self.design_var_descriptor[f'{var}_array_mix'] = {
+                'out_name': GlossaryCore.invest_mix,
+                'out_type': 'dataframe',
+                'key': f'{var}',
+                'index': years,
+                'index_name': GlossaryCore.Years,
+                'namespace_in': 'ns_invest',
+                'namespace_out': 'ns_invest'
+            }
+
         values_dict.update({
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.column_names': columns_names,
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.n_profiles': n_profiles,
+            f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.{GlossaryEnergy.EXPORT_PROFILES_AT_POLES}': True,
+            f'{ns}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor': self.design_var_descriptor,
+            f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.nb_poles': GlossaryCore.NB_POLES_COARSE,
         })
-        def df_generator(i, columns_names, n_profiles, years):
-            '''
-            args:
-                i [int]= index of the profile
-                columns_names [list] = list of names of variables
-                n_profiles [int]=  total number of profiles
-            assuming that there are nb_columns variables, assuming that there are one increasing and 1 decreasing
-            profile per variable, then df_generator generates those 2 profiles for each variable
-            the growing generic invest profiles are for the even values of i
-            the decreasing generic invest profiles are for the uneven values of i
-            Profiles are normalized between 0 and 1
-            '''
-            if n_profiles != 2 * len(columns_names):
-                raise ValueError(f'df_generator computes 2 generic invest profiles per column. n_profiles should be {2 * len(columns_names)} '
-                                 f'whereas it it {n_profiles}')
-            # growing normalized invest profiles are for the even values of i (arbitrary choice)
-            if i % 2 == 0:
-                normalized_profile = np.linspace(1.e-6, 3000., len(years))
-            else:
-                normalized_profile = np.linspace(3000., 1.e-6, len(years))
-            column_vect = np.zeros(len(columns_names))
-            # put the normalized profile in the column of variable corresponding to index i assuming that there are
-            # 2 profiles per variable
-            column_vect[int(i/2)] = 1.
-            data = np.array([normalized_profile]).T * column_vect
-            df = pd.DataFrame(data, columns=columns_names)
-            df.insert(0, GlossaryEnergy.Years, years, True)
 
-            return df
-
+        years_dfi = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        #values_dict.update({
+        #    f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{i}":
+        #        self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
+        #})
+        min=1.e-6
+        max=3000.
+        # profile min
         values_dict.update({
-            f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{i}":
-                df_generator(i, columns_names, n_profiles, years) for i in range(n_profiles)
+            f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{0}":
+                #self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
+                self.df_generator_constant_profile(years_dfi, columns_names, [min] * len(columns_names))
+        })
+        # profile max
+        values_dict.update({
+            f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{1}":
+                #self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
+                self.df_generator_constant_profile(years_dfi, columns_names, [max] * len(columns_names))
         })
         # impose values to the utilization ratios that are not design variables anymore
         list_utilization_ratio_var = ['fossil_FossilSimpleTechno_utilization_ratio_array',
@@ -164,6 +212,18 @@ class Study(ClimateEconomicsStudyManager):
             values_dict.update({
                 f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.coeff_{i}": coeff_i
             })
+
+        # must add to the design space the inputs to the design variable discipline to allow the configure to work
+        # however these are not design variables as they are output of the investprofilebuilder discipline => trick
+        for var in columns_names:
+            design_space_ctrl_dict = {}
+            design_space_ctrl_dict['variable'] = var + '_array_mix'
+            design_space_ctrl_dict['value'] = [1000. * np.ones(GlossaryCore.NB_POLES_COARSE)]
+            design_space_ctrl_dict['lower_bnd'] = [1. * np.ones(GlossaryCore.NB_POLES_COARSE)]
+            design_space_ctrl_dict['upper_bnd'] = [3000. * np.ones(GlossaryCore.NB_POLES_COARSE)]
+            design_space_ctrl_dict['enable_variable'] = True
+            design_space_ctrl_dict['activated_elem'] = [[True] * GlossaryCore.NB_POLES_COARSE]
+            dspace_df = pd.concat([dspace_df, pd.DataFrame(design_space_ctrl_dict)], ignore_index=True)
 
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,

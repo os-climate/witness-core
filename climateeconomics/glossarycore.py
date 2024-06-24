@@ -1069,6 +1069,7 @@ class GlossaryCore:
     }
 
     QuantityObjectiveValue = "Quantity_objective"
+    LastYearUtilityObjectiveValue = "last_year_utility_obj"
 
     QuantityObjective = {
         "var_name": QuantityObjectiveValue,
@@ -1076,6 +1077,15 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
         "description": "objective of quantity of things consumed. Quantity  = Consumption / Price",
+        "unit": "-",
+    }
+
+    LastYearUtilityObjective = {
+        "var_name": LastYearUtilityObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "utility of last year",
         "unit": "-",
     }
 

@@ -100,6 +100,7 @@ class UtilityModel():
         self.compute_discounted_utility_quantity_per_capita()
         self.compute_discounted_utility_population()
         self.compute_quantity_objective()
+        self.compute_last_year_utility_objective()
 
         return self.utility_df
 
@@ -162,6 +163,9 @@ class UtilityModel():
         quantity_obj_val = self.utility_df[GlossaryCore.DiscountedQuantityUtilityPopulation].values.mean()
         self.discounted_utility_quantity_objective = np.array([quantity_obj_val])
 
+    def compute_last_year_utility_objective(self):
+        last_year_utility_objective = self.utility_df[GlossaryCore.DiscountedQuantityUtilityPopulation].values[-1]
+        self.last_year_utility_objective = np.array([last_year_utility_objective])
 
     ######### GRADIENTS ########
     def d_utility_quantity(self):
@@ -195,7 +199,13 @@ class UtilityModel():
         d_utility_obj_d_energy_price = d_pop_discounted_utility_quantity_denergy_price.mean(axis=0)
         d_utility_obj_dpcc = d_pop_discounted_utility_quantity_dpcc.mean(axis=0)
         d_utility_obj_dpop = d_pop_discounted_utility_quantity_dpop.mean(axis=0)
+
+        d_ly_utility_obj_d_energy_price = d_pop_discounted_utility_quantity_denergy_price[-1]
+        d_ly_utility_obj_dpcc = d_pop_discounted_utility_quantity_dpcc[-1]
+        d_ly_utility_obj_dpop = d_pop_discounted_utility_quantity_dpop[-1]
+
         return d_utility_denergy_price, d_utility_dpcc,\
                d_discounted_utility_quantity_denergy_price, d_discounted_utility_quantity_dpcc, \
                d_pop_discounted_utility_quantity_denergy_price, d_pop_discounted_utility_quantity_dpcc, d_pop_discounted_utility_quantity_dpop,\
-               d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop
+               d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop, \
+               d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop
