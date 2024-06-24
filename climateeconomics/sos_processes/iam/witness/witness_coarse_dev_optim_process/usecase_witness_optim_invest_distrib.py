@@ -140,7 +140,7 @@ class Study(ClimateEconomicsStudyManager):
         return pd.DataFrame({
             "variable": ["share_non_energy_invest_ctrl"],
             "value": [[25.5] * GlossaryCore.NB_POLES_COARSE],
-            "lower_bnd": [[5.0] * GlossaryCore.NB_POLES_COARSE],
+            "lower_bnd": [[24.5] * GlossaryCore.NB_POLES_COARSE],
             "upper_bnd": [[30.0] * GlossaryCore.NB_POLES_COARSE],
             "enable_variable": [True],
             "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
