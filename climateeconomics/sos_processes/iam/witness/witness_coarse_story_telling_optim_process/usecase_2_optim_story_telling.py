@@ -26,7 +26,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
     EXTRA_NAME,
     OPTIM_NAME,
 )
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

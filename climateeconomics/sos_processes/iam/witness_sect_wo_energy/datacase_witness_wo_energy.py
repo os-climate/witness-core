@@ -37,8 +37,8 @@ from climateeconomics.sos_processes.iam.witness.resources_process.usecase import
 from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
     Study as usecase_sectorization,
 )
-from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

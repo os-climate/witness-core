@@ -35,8 +35,8 @@ from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase impo
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
-from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

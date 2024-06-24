@@ -29,7 +29,7 @@ from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import (
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
 )
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

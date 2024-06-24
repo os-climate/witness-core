@@ -29,10 +29,10 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 )
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugin.models.design_var.design_var_disc import (
+from sostrades_optimization_plugins.models.design_var.design_var_disc import (
     DesignVarDiscipline,
 )
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
