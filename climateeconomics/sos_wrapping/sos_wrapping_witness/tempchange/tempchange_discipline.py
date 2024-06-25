@@ -19,6 +19,11 @@ limitations under the License.
 from copy import deepcopy
 
 import numpy as np
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
@@ -26,11 +31,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
 from climateeconomics.core.core_witness.tempchange_model import TempChange
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class TempChangeDiscipline(ClimateEcoDiscipline):

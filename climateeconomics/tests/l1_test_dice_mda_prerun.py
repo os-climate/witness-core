@@ -21,10 +21,10 @@ from time import time
 
 import numpy as np
 from pandas.core.frame import DataFrame
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.dice.dice_model.usecase import Study
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class DICEMDAPrerunTest(unittest.TestCase):

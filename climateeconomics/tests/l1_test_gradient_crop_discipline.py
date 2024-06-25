@@ -19,13 +19,13 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):

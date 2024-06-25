@@ -18,14 +18,14 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.core.core_agriculture.crop import Crop
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import (
     CropDiscipline,
 )
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CropTestCase(unittest.TestCase):

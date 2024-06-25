@@ -16,16 +16,17 @@ limitations under the License.
 '''
 import numpy as np
 from copy import deepcopy
-from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+
+from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class GHGemissionsDiscipline(ClimateEcoDiscipline):

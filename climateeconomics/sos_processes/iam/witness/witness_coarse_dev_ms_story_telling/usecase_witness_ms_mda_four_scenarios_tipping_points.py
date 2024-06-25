@@ -16,6 +16,10 @@ limitations under the License.
 from os.path import dirname, join, pardir
 
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    INVEST_DISC_NAME,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -34,10 +38,6 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
 )
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import (
     Study as usecase7,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
-    INVEST_DISC_NAME,
 )
 
 
@@ -103,7 +103,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
         # assumes max of 16 cores per computational node
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
 
         # update values dict with tipping point value of the damage model
         tipping_point_variable = 'Damage.tp_a3'

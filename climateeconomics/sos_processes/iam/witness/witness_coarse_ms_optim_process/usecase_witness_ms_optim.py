@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 27/11/2023 Copyright 2023 Capgemini
+Modifications on 27/11/2023-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
 from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import (
     Study as witness_optim_usecase,
-)
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
 )
 
 
@@ -60,7 +60,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         #values_dict[f'{self.study_name}.epsilon0'] = 1.0
         # assumes max of 16 cores per computational node
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
         for scenario in scenario_list:
             scenarioUseCase = witness_optim_usecase(
                 bspline=self.bspline, execution_engine=self.execution_engine)

@@ -17,6 +17,14 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -30,17 +38,6 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 )
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_optim_sub_usecase,
-)
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.design_var.design_var_disc import (
-    DesignVarDiscipline,
-)
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -123,6 +120,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "xtol_abs": 1e-16,
                                                                       "max_iter": 700,
                                                                       "disp": 30},
+                             f'{ns}.{self.optim_name}.desactivate_optim_out_storage': True,
 
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
                                  'tol': 1.0e-10,
@@ -214,14 +212,4 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    uc_cls.run()
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
-        if 'Forest' in disc.get_disc_full_name():
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
-
-            for graph in graph_list:
-                graph.to_plotly().show()
+    uc_cls.test()

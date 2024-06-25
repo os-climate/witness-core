@@ -1,7 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 06/07/2024 Copyright 2024 Capgemini
-
+Modifications on {} Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -15,17 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
+
 import numpy as np
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
 from matplotlib.pyplot import cm
 from plotly import graph_objects as go
-
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -394,7 +394,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
-    if columns is not None and type(columns) == list:
+    if columns is not None and isinstance(columns, list):
         multilevel_df = pd.DataFrame(multilevel_df[columns])
 
     return multilevel_df, years, namespace
