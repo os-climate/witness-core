@@ -29,8 +29,7 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
 )
 import plotly.graph_objects as go
 
-
-def update_variable_name(list_var_value):
+def update_variable_name(list_var_value, suffix):
     """
     Update variable name and add an additional extension to variable name and to variable name in var_value
     """
@@ -45,7 +44,7 @@ def update_variable_name(list_var_value):
         var_name = variable_dict['var_name']
         # copy dict before storing it as we do a modification later
         dict_in[var_name] = variable_dict.copy()
-        var_name_updated = var_name + '_interpolated'
+        var_name_updated = var_name + suffix
         variable_dict['var_name'] = var_name_updated
         dict_out[var_name_updated] = variable_dict
     return dict_in, dict_out
@@ -79,6 +78,8 @@ class IEADataPreparationDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
 
+    SUFFIX_VAR_INTERPOLATED = '_interpolated'  # var_out = var_in + SUFFIX_VAR_INTERPOLATED
+
     # all input variables are in output as well, only difference is that we add _interpolated to output variables
     years = np.arange(Glossary.YearStartDefault, Glossary.YearEndDefault + 1)
     # get variables from glossary to update either namespace or dataframe descriptor
@@ -92,7 +93,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
     l_dict_to_update = [co2_emissions_dict_variable, gdp_dict_variable, population_dict_variable, co2_tax_dict_value,
                         energy_production_dict_value, temperature_dict_value]
     # compute the updated dictionaries to be used in both desc_in and desc_out
-    desc_in_updated, desc_out_updated = update_variable_name(l_dict_to_update)
+    desc_in_updated, desc_out_updated = update_variable_name(l_dict_to_update, SUFFIX_VAR_INTERPOLATED)
 
     # add techno production
     l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}', f'{Glossary.electricity}_{Glossary.Hydropower}',
@@ -104,7 +105,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
                         ]
     # get techno production metadata from glossary and modify them with the correct name
     dict_values_techno_production = create_production_variables(l_technos_to_add)
-    dict_in_production, dict_out_production = update_variable_name(list(dict_values_techno_production.values()))
+    dict_in_production, dict_out_production = update_variable_name(list(dict_values_techno_production.values()), SUFFIX_VAR_INTERPOLATED)
     # update created desc_in and desc_out with the new variables
     desc_in_updated.update(dict_in_production)
     desc_out_updated.update(dict_out_production)
@@ -112,7 +113,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
     energy_prices_dict = Glossary.get_dynamic_variable(Glossary.EnergyPricesDf)
     # only energy price to compare is for electricity technologies. No need to call a function
     energy_prices_dict['var_name'] = f'{Glossary.electricity}_{Glossary.EnergyPricesValue}'
-    desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict])
+    desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict], SUFFIX_VAR_INTERPOLATED)
     # update desc_in and desc_out with energy prices variable
     desc_in_updated.update(desc_in_energy_prices)
     desc_out_updated.update(desc_out_energy_prices)
@@ -175,7 +176,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
         # loop on all output keys
         for key, df_processed in data_out.items():
             # recompute data_in key (without _interpolated)
-            original_key = key.replace('_interpolated', '')
+            original_key = key.replace(self.SUFFIX_VAR_INTERPOLATED, '')
             df_original = data_in[original_key]
 
             fig = go.Figure()
