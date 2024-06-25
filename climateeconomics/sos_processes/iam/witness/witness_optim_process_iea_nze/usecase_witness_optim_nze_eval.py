@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from os.path import dirname, join
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import random
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -52,6 +52,12 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 IEA_DISC = 'IEA'
+
+DATA_DIR = Path(__file__).parents[4] / "data"
+
+def create_df_from_csv(filename: str, data_dir=DATA_DIR, **kwargs):
+    """Creates a pandas DataFrame from a given filename"""
+    return pd.read_csv(str(data_dir / filename), **kwargs)
 
 # usecase of witness full to evaluate a design space with NZE investments
 class Study(ClimateEconomicsStudyManager):
@@ -212,33 +218,22 @@ class Study(ClimateEconomicsStudyManager):
         optim_values_dict.update(values_dict_updt)
 
         # input for IEA data
-        years = [2023, 2030, 2040, 2050]
-        CO2_emissions_df = pd.DataFrame({GlossaryEnergy.Years: years,
-                                         GlossaryEnergy.TotalCO2Emissions: [60, 40, 20, 30]})
-        GDP_df = pd.DataFrame({GlossaryEnergy.Years: years,
-                               GlossaryEnergy.OutputNetOfDamage: [120, 140, 145, 160]
-                               })
-        CO2_tax_df = pd.DataFrame({GlossaryEnergy.Years: years,
-                                   GlossaryEnergy.CO2Tax: [100, 500, 700, 800]})
-
-        energy_production_df = pd.DataFrame({GlossaryEnergy.Years: years,
-                                             GlossaryEnergy.TotalProductionValue: [40, 70, 80, 10]})
-
-        population_df = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      GlossaryEnergy.PopulationValue: [8, 8.2, 8.3, 8]})
-
-        temperature_df = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      GlossaryEnergy.TempAtmo: [2.2, 2.7, 2.75, 2.78]})
-
-        l_technos_to_add = [f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}',
-                            f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}',
-                            f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}',
-                            f'{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}',
-                            f'{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}',
-                            f'{GlossaryEnergy.methane}_{GlossaryEnergy.FossilGas}',
-                            f'{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}', f'{GlossaryEnergy.CropEnergy}',
-                            f'{GlossaryEnergy.ForestProduction}'
-                            ]
+        CO2_emissions_df = create_df_from_csv("IEA_NZE_co2_emissions_Gt.csv")
+        GDP_df = create_df_from_csv("IEA_NZE_output_net_of_d.csv")
+        CO2_tax_df = create_df_from_csv("IEA_NZE_CO2_taxes.csv")
+        population_df = create_df_from_csv("IEA_NZE_population.csv")
+        temperature_df = create_df_from_csv("IEA_NZE_temp_atmo.csv")
+        energy_production_df = create_df_from_csv("IEA_NZE_energy_production_brut.csv")
+        nuclear_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.Nuclear.techno_production.csv")
+        hydro_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv")
+        solar_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.SolarPv.techno_production.csv")
+        wind_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.WindXXshore.techno_production.csv")
+        coal_production_df = create_df_from_csv("IEA_NZE_EnergyMix_solid_fuel_CoalExtraction_techno_production.csv")
+        fossil_gas_production_df = create_df_from_csv("IEA_NZE_EnergyMix.methane.FossilGas.techno_production.csv")
+        biogas_production_df = create_df_from_csv("IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv")
+        crop_production_df = create_df_from_csv("IEA_NZE_crop_mix_detailed_production.csv")
+        forest_production_df = create_df_from_csv("IEA_NZE_forest_techno_production.csv")
+        electricity_prices_df = create_df_from_csv("IEA_NZE_electricity_Technologies_Mix_prices.csv")
 
         values_dict.update({
             f'{ns}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -249,21 +244,19 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.EnergyProductionValue}': energy_production_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.TemperatureDfValue}': temperature_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.PopulationDfValue}': population_df,
-        })
-        # random values for techno
-        for techno in l_technos_to_add:
-            values_dict.update({f'{ns}.{IEA_DISC}.{techno}_techno_production' : pd.DataFrame({GlossaryEnergy.Years: years,
-                                GlossaryEnergy.TechnoProductionValue: [random.randint(15, 100) for _ in range(len(years))]})})
-
-        values_dict.update({
-            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': pd.DataFrame({
-                GlossaryEnergy.Years: years,
-                GlossaryEnergy.SolarPv: [random.randint(30, 200) for _ in range(4)],
-                GlossaryEnergy.Nuclear: [random.randint(30, 200) for _ in range(4)],
-                GlossaryEnergy.CoalGen: [random.randint(30, 200) for _ in range(4)],
-                GlossaryEnergy.GasTurbine: [random.randint(30, 200) for _ in range(4)]
+            # energy production
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production': nuclear_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production': hydro_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}_techno_production': solar_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}_techno_production': wind_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production': coal_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.FossilGas}_techno_production': fossil_gas_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production': biogas_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.CropEnergy}_techno_production': crop_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.ForestProduction}_techno_production': forest_production_df,
+            # energy prices
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': electricity_prices_df
             })
-        })
 
         return [values_dict] + [optim_values_dict]
 
