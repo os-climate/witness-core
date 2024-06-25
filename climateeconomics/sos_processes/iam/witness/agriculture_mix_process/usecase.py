@@ -82,9 +82,6 @@ class Study(StudyManager):
         temperature = np.array(np.linspace(1.05, 5.0, year_range))
         temperature_df = pd.DataFrame({
             GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature,
-            GlossaryCore.ExoGForcing: 0.,
-            GlossaryCore.Forcing: 0.,
-            GlossaryCore.TempOcean: 0.,
         })
         temperature_df.index = years
 
