@@ -67,7 +67,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 chart_list = chart_filter.selected_values
 
     if 'temperature and ghg evolution' in chart_list:
-        temperature_df = get_scenario_value(execution_engine, 'temperature_detail_df', scenario_name)
+        temperature_df = get_scenario_value(execution_engine, GlossaryCore.TemperatureDetailedDfValue, scenario_name)
         total_ghg_df = get_scenario_value(execution_engine, GlossaryCore.GHGEmissionsDfValue, scenario_name)
         carbon_captured = get_scenario_value(execution_engine, GlossaryEnergy.CarbonCapturedValue, scenario_name)
         co2_emissions = get_scenario_value(execution_engine, 'co2_emissions_ccus_Gt', scenario_name)

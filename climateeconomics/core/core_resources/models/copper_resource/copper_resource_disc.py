@@ -74,7 +74,6 @@ class CopperResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_copper_resource',
                                  'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'copper_type': ('string', None, False),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -100,7 +99,6 @@ class CopperResourceDiscipline(ResourceDiscipline):
                                             'default': default_resource_consumed_data, 'user_level': 2, 'namespace': 'ns_copper_resource',
                                           'dataframe_descriptor':
                                               {
-                                                  GlossaryCore.Years: ('float', None, False),
                                                   'copper_consumption': ('float', None, True),
                                               }
                },

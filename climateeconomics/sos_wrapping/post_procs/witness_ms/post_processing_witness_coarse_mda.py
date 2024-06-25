@@ -173,7 +173,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            'Temperature_change.temperature_detail_df', ]
+            f'Temperature_change.{GlossaryCore.TemperatureDetailedDfValue}', ]
         (temperature_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         temperature_dict = {}

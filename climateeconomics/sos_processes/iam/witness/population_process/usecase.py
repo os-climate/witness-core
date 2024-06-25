@@ -67,8 +67,12 @@ class Study(StudyManager):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
 
-        economics_df_y = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        economics_df_y = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OutputNetOfDamage: gdp_serie,
+            GlossaryCore.GrossOutput: gdp_serie,
+            GlossaryCore.PerCapitaConsumption: 0.,
+        })
         economics_df_y.index = years
         temperature_df_all = read_csv(
             join(global_data_dir, 'temperature_data_onestep.csv'))

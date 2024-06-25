@@ -109,94 +109,14 @@ class ResourceMixDiscipline(SoSWrapp):
                                  'editable': False, 'structuring': True},
                ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t',
                                                              'namespace': 'ns_resource',
-                                                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                                                      GlossaryCore.CO2: ('float', None, True),
-                                                                                      'uranium_resource': ('float', None, True),
-                                                                                      'biomass_dry': ('float', None, True),
-                                                                                      'biomass_dry_resource': ('float', None, True),
-                                                                                      'wet_biomass': ('float', None, True),
-                                                                                      'wood': ('float', None, True),
-                                                                                      'carbon': ('float', None, True),
-                                                                                      'oil_resource': ('float', None, True),
-                                                                                      'NaturalOil': ('float', None, True),
-                                                                                      'Methanol': ('float', None, True),
-                                                                                      'Sodium_Hydroxyde': ('float', None, True),
-                                                                                      'Potassium_Hydroxyde': ('float', None, True),
-                                                                                      'oxygen': ('float', None, True),
-                                                                                      'calcium': ('float', None, True),
-                                                                                      'potassium': ('float', None, True),
-                                                                                      'amine': ('float', None, True),
-                                                                                      'sea_water': ('float', None, True),
-                                                                                      'water': ('float', None, True),
-                                                                                      'water_resource': (
-                                                                                      'float', None, True),
-                                                                                      'sea_water_resource': (
-                                                                                      'float', None, True),
-                                                                                      'CO2_resource': (
-                                                                                      'float', None, True),
-                                                                                      'wet_biomass_resource': (
-                                                                                      'float', None, True),
-                                                                                      'natural_oil_resource': (
-                                                                                      'float', None, True),
-                                                                                      'methanol_resource': (
-                                                                                      'float', None, True),
-                                                                                      'sodium_hydroxide_resource': (
-                                                                                      'float', None, True),
-                                                                                      'wood_resource': (
-                                                                                      'float', None, True),
-                                                                                      'carbon_resource': (
-                                                                                      'float', None, True),
-                                                                                      'managed_wood_resource': (
-                                                                                      'float', None, True),
-                                                                                      'oxygen_resource': (
-                                                                                      'float', None, True),
-                                                                                      'dioxygen_resource': (
-                                                                                      'float', None, True),
-                                                                                      'crude_oil_resource': (
-                                                                                      'float', None, True),
-                                                                                      'solid_fuel_resource': (
-                                                                                      'float', None, True),
-                                                                                      'calcium_resource': (
-                                                                                      'float', None, True),
-                                                                                      'calcium_oxyde_resource': (
-                                                                                      'float', None, True),
-                                                                                      'potassium_resource': (
-                                                                                      'float', None, True),
-                                                                                      'potassium_hydroxide_resource': (
-                                                                                      'float', None, True),
-                                                                                      'amine_resource': (
-                                                                                      'float', None, True),
-                                                                                      'ethanol_amine_resource': (
-                                                                                      'float', None, True),
-                                                                                      'mono_ethanol_amine_resource': (
-                                                                                      'float', None, True),
-                                                                                      'glycerol_resource': (
-                                                                                      'float', None, True),
-                                                                                      'platinum_resource': (
-                                                                                      'float', None, True),
-                                                                                      }
+                                                             'dynamic_dataframe_columns': True,
                                                              },
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                             'natural_gas_resource': ('float', None, True),
-                                                             'uranium_resource': ('float', None, True),
-                                                             'coal_resource': ('float', None, True),
-                                                             'oil_resource': ('float', None, True),
-                                                             'copper_resource': ('float', None, True),
-                                                             'platinum_resource': ('float', None, True),}
-                                    },
+                                    'dynamic_dataframe_columns': True,},
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                                     'natural_gas_resource': ('float', None, True),
-                                                                     'uranium_resource': ('float', None, True),
-                                                                     'coal_resource': ('float', None, True),
-                                                                     'oil_resource': ('float', None, True),
-                                                                     'copper_resource': ('float', None, True),
-                                                                     'platinum_resource': ('float', None, True),
-                                                                     }
-                                            },
+                                            'dynamic_dataframe_columns': True,},
                'conversion_dict': {'type': 'dict', 'subtype_descriptor': {'dict': {'dict': 'float'}}, 'unit': '[-]', 'default': default_conversion_dict,
                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }
@@ -237,83 +157,20 @@ class ResourceMixDiscipline(SoSWrapp):
                                              'price': ('float', None, True)}}
                 dynamic_inputs[f'{resource}.resource_stock'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource],
-                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                             'heavy': ('float', None, True),
-                                             'uranium_40': ('float', None, True),
-                                             'uranium_80': ('float', None, True),
-                                             'uranium_130': ('float', None, True),
-                                             'uranium_260': ('float', None, True),
-                                             'Conventional': ('float', None, True),
-                                             'tight': ('float', None, True),
-                                             'Coalbed_methane': ('float', None, True),
-                                             'shale': ('float', None, True),
-                                             'other': ('float', None, True),
-                                             'sub_bituminous_and_lignite': ('float', None, True),
-                                             'bituminous_and_anthracite': ('float', None, True),
-                                             'copper': ('float', None, True),
-                                             'medium': ('float', None, True),
-                                             'unassigned_production': ('float', None, True),
-                                             'light': ('float', None, True),}}
+                    'dynamic_dataframe_columns': True,
+                }
                 dynamic_inputs[f'{resource}.use_stock'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource],
-                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                             'heavy': ('float', None, True),
-                                             'uranium_40': ('float', None, True),
-                                             'uranium_80': ('float', None, True),
-                                             'uranium_130': ('float', None, True),
-                                             'uranium_260': ('float', None, True),
-                                             'Conventional': ('float', None, True),
-                                             'tight': ('float', None, True),
-                                             'Coalbed_methane': ('float', None, True),
-                                             'shale': ('float', None, True),
-                                             'other': ('float', None, True),
-                                             'sub_bituminous_and_lignite': ('float', None, True),
-                                             'bituminous_and_anthracite': ('float', None, True),
-                                             'copper': ('float', None, True),
-                                             'medium': ('float', None, True),
-                                             'unassigned_production': ('float', None, True),
-                                             'light': ('float', None, True),
-                                             }}
+                    'dynamic_dataframe_columns': True,
+                }
                 dynamic_inputs[f'{resource}.recycled_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource] ,
-                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                             'heavy': ('float', None, True),
-                                             'uranium_40': ('float', None, True),
-                                             'uranium_80': ('float', None, True),
-                                             'uranium_130': ('float', None, True),
-                                             'uranium_260': ('float', None, True),
-                                             'Conventional': ('float', None, True),
-                                             'tight': ('float', None, True),
-                                             'Coalbed_methane': ('float', None, True),
-                                             'shale': ('float', None, True),
-                                             'other': ('float', None, True),
-                                             'sub_bituminous_and_lignite': ('float', None, True),
-                                             'bituminous_and_anthracite': ('float', None, True),
-                                             'copper': ('float', None, True),
-                                             'medium': ('float', None, True),
-                                             'unassigned_production': ('float', None, True),
-                                             'light': ('float', None, True),
-                                             }}
+                    'dynamic_dataframe_columns': True,
+                }
                 dynamic_inputs[f'{resource}.predictable_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PROD_UNIT[resource],
-                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                             'heavy': ('float', None, True),
-                                             'uranium_40': ('float', None, True),
-                                             'uranium_80': ('float', None, True),
-                                             'uranium_130': ('float', None, True),
-                                             'uranium_260': ('float', None, True),
-                                             'Conventional': ('float', None, True),
-                                             'tight': ('float', None, True),
-                                             'Coalbed_methane': ('float', None, True),
-                                             'shale': ('float', None, True),
-                                             'other': ('float', None, True),
-                                             'sub_bituminous_and_lignite': ('float', None, True),
-                                             'bituminous_and_anthracite': ('float', None, True),
-                                             'copper': ('float', None, True),
-                                             'medium': ('float', None, True),
-                                             'unassigned_production': ('float', None, True),
-                                             'light': ('float', None, True),
-                                             }}
+                    'dynamic_dataframe_columns': True,
+                }
                 
             self.add_inputs(dynamic_inputs)
 

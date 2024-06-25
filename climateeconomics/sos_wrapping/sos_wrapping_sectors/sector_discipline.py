@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from os.path import dirname, join
-
+from copy import deepcopy
 import numpy as np
 import pandas as pd
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -144,11 +144,18 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                                                   'dataframe_descriptor': {},
                                                                   'dynamic_dataframe_columns': True}
 
-        section_gdp_percentage_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpPercentageDf)
+        df_descriptor = {
+            GlossaryCore.Years: ('int', [1900, 2100], True),
+            **{section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[self.sector_name]}
+        }
+        section_gdp_percentage_var = deepcopy(GlossaryCore.SectionGdpPercentageDf)
+        section_gdp_percentage_var["dataframe_descriptor"] = df_descriptor
         section_gdp_percentage_var.update({'namespace': GlossaryCore.NS_SECTORS})
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}"] = section_gdp_percentage_var
-        section_energy_consumption_percentage_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionPercentageDf)
+
+        section_energy_consumption_percentage_var = deepcopy(GlossaryCore.SectionEnergyConsumptionPercentageDf)
         section_energy_consumption_percentage_var.update({'namespace': GlossaryCore.NS_SECTORS})
+        section_energy_consumption_percentage_var["dataframe_descriptor"] = df_descriptor
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = section_energy_consumption_percentage_var
 
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
@@ -167,14 +174,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}"] = damage_detailed
 
         # section energy consumption df variable
-        section_energy_consumption_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionDf)
+        section_energy_consumption_df_variable = deepcopy(GlossaryCore.SectionEnergyConsumptionDf)
         section_energy_consumption_df_variable["dataframe_descriptor"].update(
             {section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[self.sector_name]}
         )
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionDfValue}"] = section_energy_consumption_df_variable
 
         # section gdp value df variable
-        section_gdf_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpDf)
+        section_gdf_df_variable = deepcopy(GlossaryCore.SectionGdpDf)
         section_gdf_df_variable["dataframe_descriptor"].update(
             {section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[self.sector_name]}
         )

@@ -229,9 +229,10 @@ class Study(StudyManager):
                          'Services.gdp_error', 'Industry.energy_eff_error',
                          'Agriculture.energy_eff_error', 'Services.energy_eff_error'],
             'ftype': [OBJECTIVE] * 7,
+            'parent': [OBJECTIVE] * 7,
             'weight': [1] * 7,
             AGGR_TYPE: [AGGR_TYPE_SUM] * 7,
-            'namespace': ['ns_obj'] * 7
+            'namespace': ['ns_obj'] * 7,
         })
 
         func_mng_name = 'FunctionsManager'
@@ -351,5 +352,4 @@ class ComplexJsonEncoder(_json.JSONEncoder):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
     uc_cls.test()
