@@ -79,6 +79,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
     _maturity = 'Research'
 
     SUFFIX_VAR_INTERPOLATED = '_interpolated'  # var_out = var_in + SUFFIX_VAR_INTERPOLATED
+    IEA_NAME = 'IEA'
 
     # all input variables are in output as well, only difference is that we add _interpolated to output variables
     years = np.arange(Glossary.YearStartDefault, Glossary.YearEndDefault + 1)

@@ -43,6 +43,7 @@ from sostrades_core.execution_engine.func_manager.func_manager_disc import (
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
+from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import IEADataPreparationDiscipline
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -51,7 +52,7 @@ OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
-IEA_DISC = 'IEA'
+IEA_DISC = IEADataPreparationDiscipline.IEA_NAME
 
 DATA_DIR = Path(__file__).parents[4] / "data"
 
@@ -146,7 +147,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 2,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}': False}
 
         # print("Design space dimension is ", dspace_size)

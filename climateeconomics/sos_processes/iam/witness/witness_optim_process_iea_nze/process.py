@@ -23,6 +23,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
 )
+from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import IEADataPreparationDiscipline
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -42,6 +43,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         '''
 
         optim_name = OPTIM_NAME
+        iea_name = IEADataPreparationDiscipline.IEA_NAME
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
@@ -60,7 +62,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             optim_name, [coupling_builder])
 
         # adding the iea data preparation discipline
-        mods_dict = {'IEA': 'climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline.IEADataPreparationDiscipline',
+        mods_dict = {iea_name: 'climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline.IEADataPreparationDiscipline',
         }
         ns_dict = {'ns_dashboard_iea': self.ee.study_name}
         builder_iea_disc = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
