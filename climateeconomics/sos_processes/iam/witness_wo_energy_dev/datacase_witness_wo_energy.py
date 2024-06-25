@@ -288,6 +288,7 @@ class DataStudy():
                 GlossaryCore.UsableCapitalObjectiveName,
                 GlossaryCore.ConsumptionObjective,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
+                GlossaryCore.LastYearUtilityObjectiveValue,
             ],
             'parent': [
                 'invest_objective',
@@ -295,11 +296,12 @@ class DataStudy():
                 'invest_objective',
                 'invest_objective',
                 'invest_objective',
+                'utility_objective',
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [0.1, -1., -0., 0.0, 0.],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS  , GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
+            'ftype': [OBJECTIVE] * 6,
+            'weight': [0.1, -1., 0., 0., 0., 0.],
+            AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
+            'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
         }
 
         func_df = DataFrame(data)
