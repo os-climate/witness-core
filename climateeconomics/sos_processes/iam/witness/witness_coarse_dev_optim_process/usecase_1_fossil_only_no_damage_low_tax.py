@@ -32,7 +32,7 @@ class Study(StudyOptimInvestDistrib):
                          execution_engine=execution_engine)
 
     def setup_usecase(self, study_folder_path=None):
-        
+        self.test_post_procs = False
         data_witness = super().setup_usecase()
 
         # update fossil invest & utilization ratio lower bound to not be too low
@@ -94,6 +94,5 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
     uc_cls.test()
 

@@ -64,7 +64,6 @@ class DamageModel:
         self.damage_fraction_df = pd.DataFrame(index=self.years_range, data={
             GlossaryCore.Years: self.years_range,
             GlossaryCore.DamageFractionOutput: 0.,
-            GlossaryCore.BaseCarbonPrice: 0.,
         })
 
     def compute_damage_fraction_of_gdp(self,):

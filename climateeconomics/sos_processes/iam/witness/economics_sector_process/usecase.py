@@ -115,12 +115,7 @@ class Study(StudyManager):
         # Damage
         damage_df = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
-             GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-
-        total_invests = pd.DataFrame(
-            {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))})
+             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),})
 
         invest_indus = pd.DataFrame(
             {GlossaryCore.Years: years,

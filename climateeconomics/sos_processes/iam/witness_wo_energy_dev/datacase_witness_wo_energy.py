@@ -105,7 +105,6 @@ class DataStudy():
         damage_fraction_initialisation = pd.DataFrame({
             GlossaryCore.Years: years,
             GlossaryCore.DamageFractionOutput: np.linspace(0.001, 0.1, len(years)),
-            GlossaryCore.BaseCarbonPrice: np.zeros_like(years),
         })
         witness_input[f'{self.study_name}.{GlossaryCore.DamageFractionDfValue}'] = damage_fraction_initialisation
         share_non_energy_investment = DataFrame(

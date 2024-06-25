@@ -83,7 +83,7 @@ class Study(StudyManager):
         damage_fraction_df = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
-             GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
+})
 
 
         # economisc df to init mda

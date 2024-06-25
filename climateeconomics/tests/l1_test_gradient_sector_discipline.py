@@ -58,7 +58,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.damage_fraction_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.DamageFractionOutput: 1e-2,
-            GlossaryCore.BaseCarbonPrice: 0.
         })
 
         global_data_dir = join(dirname(dirname(__file__)), 'data')

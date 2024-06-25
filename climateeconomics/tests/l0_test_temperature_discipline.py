@@ -54,6 +54,7 @@ class TemperatureDiscTest(unittest.TestCase):
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
         carboncycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
+        carboncycle_df = carboncycle_df[[GlossaryCore.Years, "atmo_conc"]]
 
         # put manually the index
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)

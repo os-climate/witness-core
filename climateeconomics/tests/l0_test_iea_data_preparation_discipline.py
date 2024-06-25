@@ -63,9 +63,6 @@ class IEADataPreparationTest(unittest.TestCase):
 
         temperature_df = pd.DataFrame({Glossary.Years: years,
                                       Glossary.TempAtmo: [2.2, 2.7, 2.75, 2.78],
-                                       Glossary.TempOcean: 0.,
-                                       Glossary.ExoGForcing: 0.,
-                                       Glossary.Forcing: 0.,
                                        })
 
         l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}',
