@@ -15,10 +15,7 @@ limitations under the License.
 """
 
 import logging
-from pathlib import Path
-
 import pandas as pd
-
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -27,6 +24,11 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import (
+    IEADataPreparationDiscipline,
+)
+
+IEA_NAME = IEADataPreparationDiscipline.IEA_NAME
 
 def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
     """
@@ -195,8 +197,8 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="Population",
                 y_axis_name="Population (Millions)",
-                iea_variable=f'{GlossaryEnergy.PopulationDfValue}',
-                witness_variable="population_df",
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.PopulationDfValue}',
+                witness_variable="WITNESS.population_df",
                 columns_to_plot=["population"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
         )
@@ -205,8 +207,8 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="Economics",
                 y_axis_name="GDP net of damage (G$)",
-                iea_variable=f'{GlossaryEnergy.EconomicsDfValue}',
-                witness_variable="economics_detail_df",
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.EconomicsDfValue}',
+                witness_variable="WITNESS.Macroeconomics.economics_detail_df",
                 columns_to_plot=["output_net_of_d"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
         )
@@ -216,8 +218,8 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="Temperature",
                 y_axis_name="Increase in atmospheric temperature (°C)",
-                iea_variable=f'{GlossaryEnergy.TemperatureDfValue}',
-                witness_variable="Population.temperature_df",
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.TemperatureDfValue}',
+                witness_variable="WITNESS.temperature_df",
                 columns_to_plot=["temp_atmo"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
         )
@@ -227,7 +229,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="CO2 emissions of the energy sector",
                 y_axis_name="Total CO2 emissions (Gt)",
-                iea_variable=f'{GlossaryEnergy.TemperatureDfValue}',
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.CO2EmissionsGtValue}',
                 witness_variable="EnergyMix.co2_emissions_Gt",
                 columns_to_plot=["Total CO2 emissions"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
@@ -238,8 +240,8 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="CO2 Taxes",
                 y_axis_name="CO2 taxes ($/ton of CO2)",
-                iea_variable=f'{GlossaryEnergy.CO2TaxesValue}',
-                witness_variable="CCUS.carbon_storage.PureCarbonSolidStorage.CO2_taxes",
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.CO2TaxesValue}',
+                witness_variable="WITNESS.CO2_taxes",
                 columns_to_plot=["CO2_tax"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
         )
@@ -250,7 +252,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="Energy from Coal",
                 y_axis_name="Energy (TWh)",
-                iea_variable=f'{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production',
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production',
                 witness_variable="EnergyMix.solid_fuel.CoalExtraction.techno_detailed_production",
                 columns_to_plot=["solid_fuel (TWh)"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
@@ -260,7 +262,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="Energy from Nuclear",
                 y_axis_name="Energy (TWh)",
-                iea_variable=f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production',
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production',
                 witness_variable="EnergyMix.electricity.Nuclear.techno_detailed_production",
                 columns_to_plot=["electricity (TWh)", "heat.hightemperatureheat (TWh)"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
@@ -271,7 +273,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name="Energy from Hydro",
                 y_axis_name="Electricity (TWh)",
-                iea_variable=f'{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production',
+                iea_variable=f'{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production',
                 witness_variable="EnergyMix.electricity.Hydropower.techno_detailed_production",
                 columns_to_plot=["electricity (TWh)"],
                 args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
