@@ -231,7 +231,7 @@ class Study(ClimateEconomicsStudyManager):
         solar_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.SolarPv.techno_production.csv")
         wind_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.WindXXshore.techno_production.csv")
         coal_production_df = create_df_from_csv("IEA_NZE_EnergyMix_solid_fuel_CoalExtraction_techno_production.csv")
-        fossil_gas_production_df = create_df_from_csv("IEA_NZE_EnergyMix.methane.FossilGas.techno_production.csv")
+        fossil_gas_production_df = create_df_from_csv("IEA_NZE_EnergyMix.methane.FossilGas.techno_detailed_production.csv")
         biogas_production_df = create_df_from_csv("IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv")
         crop_production_df = create_df_from_csv("IEA_NZE_crop_mix_detailed_production.csv")
         forest_production_df = create_df_from_csv("IEA_NZE_forest_techno_production.csv")
@@ -268,6 +268,9 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
+    uc_cls = Study()
+    uc_cls.test()
+    '''
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
@@ -278,13 +281,4 @@ if '__main__' == __name__:
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
     for graph in graph_list:
         graph.to_plotly().show()
-
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
-        if 'IEA' in disc.get_disc_full_name():
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
-
-            for graph in graph_list:
-                graph.to_plotly().show()
+    '''
