@@ -358,7 +358,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
             chart_name="Energy from Solar",
             y_axis_name="Energy (TWh)",
-            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production",
+            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}_techno_production",
             witness_variable=[
                 "EnergyMix.electricity.SolarPv.techno_production",
                 "EnergyMix.electricity.SolarThermal.techno_production",
@@ -368,14 +368,14 @@ def post_processings(execution_engine, namespace, filters):
                 "args_1": {"df_label": "WITNESS"},
                 "args_2": {"display_type": "scatter", "df_label": "IEA"},
             },
-            # sum_columns="WITNESS"
+            sum_columns="WITNESS"
         )
         instanciated_charts.append(new_chart)
         # "Wind" (coming from two different WITNESS variables)
         new_chart = create_chart_comparing_WITNESS_and_IEA(
             chart_name="Energy from Wind",
             y_axis_name="Energy (TWh)",
-            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production",
+            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}_techno_production",
             witness_variable=[
                 "EnergyMix.electricity.WindOnshore.techno_production",
                 "EnergyMix.electricity.WindOffshore.techno_production",
@@ -385,31 +385,33 @@ def post_processings(execution_engine, namespace, filters):
                 "args_1": {"df_label": "WITNESS"},
                 "args_2": {"display_type": "scatter", "df_label": "IEA"},
             },
-            # sum_columns="WITNESS"
+            sum_columns="WITNESS"
         )
         instanciated_charts.append(new_chart)
         # "Modern gaseous bioenergy"
         new_chart = create_chart_comparing_WITNESS_and_IEA(
-            chart_name="Energy from Wind",
+            chart_name="Energy from gaseous bionergy",
             y_axis_name="Energy (TWh)",
-            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production",
+            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production",
             witness_variable="EnergyMix.biogas.energy_production_detailed",
             columns_to_plot=["biogas AnaerobicDigestion (TWh)"],
             args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
             # sum_columns="WITNESS"
         )
         instanciated_charts.append(new_chart)
-        # "Oil"
-        new_chart = create_chart_comparing_WITNESS_and_IEA(
-            chart_name="Energy from Oil",
-            y_axis_name="Energy (TWh)",
-            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production",
-            witness_variable="EnergyMix.energy_production_brut_detailed",
-            columns_to_plot=["production fuel.liquid_fuel (TWh)"],
-            args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
-            # sum_columns="WITNESS"
-        )
-        instanciated_charts.append(new_chart)
+        
+        # SSR: I do not know which one goes here
+        # # "Oil" 
+        # new_chart = create_chart_comparing_WITNESS_and_IEA(
+        #     chart_name="Energy from Oil",
+        #     y_axis_name="Energy (TWh)",
+        #     iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production",
+        #     witness_variable="EnergyMix.energy_production_brut_detailed",
+        #     columns_to_plot=["production fuel.liquid_fuel (TWh)"],
+        #     args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
+        #     # sum_columns="WITNESS"
+        # )
+        # instanciated_charts.append(new_chart)
 
     if "Energy_prices" in chart_list:
         pass
