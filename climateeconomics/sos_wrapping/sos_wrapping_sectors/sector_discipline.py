@@ -13,8 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import dirname, join
 from copy import deepcopy
+from os.path import dirname, join
+
 import numpy as np
 import pandas as pd
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
