@@ -20,13 +20,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_agriculture.crop import Crop
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.database import DatabaseWitnessCore
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -36,6 +29,13 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
 )
+
+from climateeconomics.core.core_agriculture.crop import Crop
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.database import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CropDiscipline(ClimateEcoDiscipline):

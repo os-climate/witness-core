@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 27/11/2023 Copyright 2023 Capgemini
+Modifications on 27/11/2023-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import (
     CoalResourceDiscipline,
@@ -33,7 +35,6 @@ from climateeconomics.core.core_resources.models.platinum_resource.platinum_reso
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import (
     UraniumResourceDiscipline,
 )
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):

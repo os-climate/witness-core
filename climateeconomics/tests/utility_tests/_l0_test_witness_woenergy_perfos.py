@@ -29,12 +29,12 @@ from time import sleep
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import (
     DataStudy,
 )
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestScatter(unittest.TestCase):

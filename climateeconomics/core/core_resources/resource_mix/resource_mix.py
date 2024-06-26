@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/06-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,13 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
+from energy_models.core.stream_type.resources_models.resource_glossary import (
+    ResourceGlossary,
+)
+from sostrades_core.tools.base_functions.exp_min import (
+    compute_dfunc_with_exp_min,
+    compute_func_with_exp_min,
+)
 
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import (
     CoalResourceDiscipline,
@@ -36,13 +43,6 @@ from climateeconomics.core.core_resources.models.uranium_resource.uranium_resour
     UraniumResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.resources_models.resource_glossary import (
-    ResourceGlossary,
-)
-from sostrades_core.tools.base_functions.exp_min import (
-    compute_dfunc_with_exp_min,
-    compute_func_with_exp_min,
-)
 
 
 class OrderOfMagnitude():

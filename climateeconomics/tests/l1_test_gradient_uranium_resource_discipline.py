@@ -18,12 +18,12 @@ limitations under the License.
 from os.path import dirname, join
 
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):

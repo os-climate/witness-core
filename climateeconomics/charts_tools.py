@@ -14,8 +14,6 @@ limitations under the License.
 
 '''
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
@@ -23,6 +21,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 def graph_gross_and_net_output(economics_detail_df: pd.DataFrame,

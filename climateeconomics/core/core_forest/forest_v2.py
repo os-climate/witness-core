@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/21-2024/06/07 Copyright 2023 Capgemini
+Modifications on 2023/06/21-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.cst_manager.constraint_manager import (
     compute_func_with_exp_min,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class Forest():

@@ -1,7 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 06/07/2024 Copyright 2024 Capgemini
-
+Modifications on {} Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -17,14 +16,6 @@ limitations under the License.
 '''
 
 import pandas as pd
-
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
-    ClimateEconomicsStudyManager,
-)
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import (
-    DataStudy as datacase_witness_dev,
-)
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
@@ -33,6 +24,14 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
+)
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import (
+    DataStudy as datacase_witness_dev,
 )
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT

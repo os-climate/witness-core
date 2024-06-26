@@ -16,17 +16,17 @@ limitations under the License.
 '''
 
 import numpy as np
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.utility_model import UtilityModel
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class UtilityModelDiscipline(ClimateEcoDiscipline):
@@ -230,7 +230,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         years = list(utility_df[GlossaryCore.Years].values)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Utility gain',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Utility gain',
                                                  chart_name='Quantity utility')
 
             values = utility_df[GlossaryCore.PerCapitaUtilityQuantity].values
