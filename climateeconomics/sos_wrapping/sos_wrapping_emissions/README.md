@@ -1,7 +1,8 @@
 # DICE discipline wrappings
 
 Undocumented wrappings :
-* Carbon emissions (in *carbonemissions*)
-* Damage model (in *damagemodel*)
-* Macro economics (in *macroeconomics*)
-* Post processing DICE multi-scenario (in *post_proc_dice_ms*)
+
+- Carbon emissions (in _carbonemissions_)
+- Damage model (in _damagemodel_)
+- Macro economics (in _macroeconomics_)
+- Post processing DICE multi-scenario (in _post_proc_dice_ms_)

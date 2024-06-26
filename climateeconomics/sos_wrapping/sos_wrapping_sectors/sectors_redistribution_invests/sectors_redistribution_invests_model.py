@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -20,6 +21,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class SectorRedistributionInvestsModel:
     """model for energy and investment redistribution between economy sectors"""
+
     def __init__(self):
         self.inputs = dict()
         self.sectors = list()
@@ -32,11 +34,18 @@ class SectorRedistributionInvestsModel:
         sectors_invests = {}
         all_sectors_invests_df = {GlossaryCore.Years: economics_df[GlossaryCore.Years].values}
         for sector in self.sectors:
-            sector_invests_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
-                                       GlossaryCore.ShareInvestment].values / 100. * net_output
+            sector_invests_values = (
+                self.inputs[f"{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}"][
+                    GlossaryCore.ShareInvestment
+                ].values
+                / 100.0
+                * net_output
+            )
             sector_invests_df = pd.DataFrame(
-                {GlossaryCore.Years: economics_df[GlossaryCore.Years].values,
-                 GlossaryCore.InvestmentsValue: sector_invests_values}
+                {
+                    GlossaryCore.Years: economics_df[GlossaryCore.Years].values,
+                    GlossaryCore.InvestmentsValue: sector_invests_values,
+                }
             )
 
             all_sectors_invests_df[sector] = sector_invests_values

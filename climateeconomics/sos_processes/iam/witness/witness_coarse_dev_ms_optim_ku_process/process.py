@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-'''
+"""
+
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -20,36 +21,39 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse Dev Multi-Scenario Usable Capital Optimization Process',
-        'description': '',
-        'category': '',
-        'version': '',
+        "label": "WITNESS Coarse Dev Multi-Scenario Usable Capital Optimization Process",
+        "description": "",
+        "category": "",
+        "version": "",
     }
 
     def get_builders(self):
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_story_telling_optim_process')
+            "climateeconomics.sos_processes.iam.witness", "witness_coarse_story_telling_optim_process"
+        )
 
-        scatter_scenario_name = 'optimization scenarios'
+        scatter_scenario_name = "optimization scenarios"
         """# modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
             scatter_scenario_name, after_name=self.ee.study_name)"""
 
         # Add new namespaces needed for the scatter multiscenario
-        ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
-                   }
+        ns_dict = {
+            "ns_scatter_scenario": f"{self.ee.study_name}.{scatter_scenario_name}",
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         """        multi_scenario = self.ee.factory.create_very_simple_multi_scenario_builder(
             scatter_scenario_name, 'scenario_list', [builder_cdf_list], autogather=True, gather_node='Post-processing')
         """
-        multi_scenario = self.ee.factory.create_multi_instance_driver(
-            'optimization scenarios', builder_cdf_list
+        multi_scenario = self.ee.factory.create_multi_instance_driver("optimization scenarios", builder_cdf_list)
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            "ns_scatter_scenario",
+            "climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_coarse_mda",
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            'ns_scatter_scenario', 'climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_coarse_mda')
-        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            'ns_scatter_scenario', 'climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_full')
+            "ns_scatter_scenario", "climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_full"
+        )
         return multi_scenario

@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2024/01/16-2024/06/24 Copyright 2024 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -23,10 +24,10 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'DICE Multi-Scenario Process',
-        'description': '',
-        'category': '',
-        'version': '',
+        "label": "DICE Multi-Scenario Process",
+        "description": "",
+        "category": "",
+        "version": "",
     }
 
     def get_builders(self):
@@ -44,25 +45,27 @@ class ProcessBuilder(BaseProcessBuilder):
         """
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.dice', 'dice_model')
+            "climateeconomics.sos_processes.iam.dice", "dice_model"
+        )
 
-        scatter_scenario_name = 'Control rate scenarios'
+        scatter_scenario_name = "Control rate scenarios"
 
         # Add new namespaces needed for the scatter multiscenario
         # redefining namespaces that need not be scattered
         ns_dict = {
-            GlossaryCore.NS_WITNESS: f'{self.ee.study_name}.{scatter_scenario_name}',
-            'ns_dice': f'{self.ee.study_name}.{scatter_scenario_name}',
-            'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
-                   'ns_post_processing': f'{self.ee.study_name}.Post-processing'}
+            GlossaryCore.NS_WITNESS: f"{self.ee.study_name}.{scatter_scenario_name}",
+            "ns_dice": f"{self.ee.study_name}.{scatter_scenario_name}",
+            "ns_scatter_scenario": f"{self.ee.study_name}.{scatter_scenario_name}",
+            "ns_post_processing": f"{self.ee.study_name}.Post-processing",
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_dice',
-                                                                                  GlossaryCore.NS_WITNESS]})
+        self.ee.scattermap_manager.add_build_map("new_map", {"ns_not_to_update": ["ns_dice", GlossaryCore.NS_WITNESS]})
         multi_scenario = self.ee.factory.create_multi_instance_driver(
-            scatter_scenario_name, builder_cdf_list, map_name='new_map'
+            scatter_scenario_name, builder_cdf_list, map_name="new_map"
         )
-        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
-                                                                                'climateeconomics.sos_wrapping.sos_wrapping_dice.post_proc_dice_ms.post_processing')
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            "ns_post_processing", "climateeconomics.sos_wrapping.sos_wrapping_dice.post_proc_dice_ms.post_processing"
+        )
 
         return multi_scenario

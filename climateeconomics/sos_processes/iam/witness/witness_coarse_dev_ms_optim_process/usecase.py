@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,7 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-'''
+"""
+
 from os.path import dirname, join
 
 import pandas as pd
@@ -44,11 +45,11 @@ class Study(ClimateEconomicsStudyManager):
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
-        self.data_dir = join(dirname(__file__), 'data')
+        self.data_dir = join(dirname(__file__), "data")
 
     def setup_usecase(self, study_folder_path=None):
 
-        scatter_scenario = 'optimization scenarios'
+        scatter_scenario = "optimization scenarios"
 
         scenario_dict = {
             self.UC1: Study1,
@@ -58,24 +59,33 @@ class Study(ClimateEconomicsStudyManager):
             # self.UC5: Study5 # deactivate usecase 5 as it is the same as the one with no CCUS
         }
 
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
+        scenario_df = pd.DataFrame(
+            {"selected_scenario": [True] * len(scenario_dict), "scenario_name": list(scenario_dict.keys())}
+        )
         values_dict = {
-            f'{self.study_name}.{scatter_scenario}.samples_df': scenario_df,
-            f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
+            f"{self.study_name}.{scatter_scenario}.samples_df": scenario_df,
+            f"{self.study_name}.n_subcouplings_parallel": min(
+                16, len(scenario_df.loc[scenario_df["selected_scenario"]])
+            ),
         }
 
         for scenario_name, studyClass in scenario_dict.items():
             scenarioUseCase = studyClass(execution_engine=self.execution_engine)
-            scenarioUseCase.study_name = f'{self.study_name}.{scatter_scenario}.{scenario_name}'
+            scenarioUseCase.study_name = f"{self.study_name}.{scatter_scenario}.{scenario_name}"
             scenarioData = scenarioUseCase.setup_usecase()
             values_dict.update(scenarioData)
 
         # override infos
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 600 for scenario_name in scenario_dict.keys()})
+        values_dict.update(
+            {
+                f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 600
+                for scenario_name in scenario_dict.keys()
+            }
+        )
 
         return values_dict
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.test()

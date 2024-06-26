@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2024/06/07 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-'''
+"""
 
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -21,11 +21,13 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 
 import climateeconomics.tests as jacobian_target
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     pkl_dir = AbstractJacobianUnittest.PICKLE_DIRECTORY
-    directories = [f'{pkl_dir}/witness_coarse_dev',
-                   ]
+    directories = [
+        f"{pkl_dir}/witness_coarse_dev",
+    ]
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
-        jacobian_target, '_l2_test_gradient_witness_coarse_dev.py', directories=directories)
+        jacobian_target, "_l2_test_gradient_witness_coarse_dev.py", directories=directories
+    )

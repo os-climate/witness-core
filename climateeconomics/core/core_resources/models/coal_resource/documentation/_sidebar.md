@@ -1,4 +1,5 @@
-<!-- coal resource discipline sidebar.md -->           
+<!-- coal resource discipline sidebar.md -->
+
 [Up](../../)
 
-* [Coal resources disc](coal_resource_disc)
+- [Coal resources disc](coal_resource_disc)

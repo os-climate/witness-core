@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import pandas as pd
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -29,53 +30,65 @@ from climateeconomics.glossarycore import GlossaryCore
 class CarbonemissionsDiscipline(SoSWrapp):
     "carbonemissions discipline for DICE"
 
-
     # ontology information
     _ontology_data = {
-        'label': 'Carbon Emissions DICE Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': 'fas fa-smog fa-fw',
-        'version': '',
+        "label": "Carbon Emissions DICE Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "fas fa-smog fa-fw",
+        "version": "",
     }
-    _maturity = 'Research'
+    _maturity = "Research"
     DESC_IN = {
-        GlossaryCore.YearStart: {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'unit': 'years per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'init_land_emissions': {'type': 'float', 'unit': 'GtCO2 per year', 'default': 2.6},
-        'decline_rate_land_emissions': {'type': 'float', 'default': .115},
-        'init_cum_land_emisisons': {'type': 'float', 'unit': 'GtCO2', 'default': 100},
-        'init_gr_sigma': {'type': 'float', 'default': -0.0152},
-        'decline_rate_decarbo': {'type': 'float', 'default': -0.001},
-        'init_indus_emissions': {'type': 'float', 'unit': 'GtCO2 per year', 'default': 35.745},
-        GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'namespace': 'ns_dice', 'default': 105.1},
-        'init_cum_indus_emissions': {'type': 'float', 'unit': 'GtCO2', 'default': 400},
-        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
-        'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
-                                   'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
-                                   'dataframe_edition_locked': False}
+        GlossaryCore.YearStart: {"type": "int", "unit": "year", "visibility": "Shared", "namespace": "ns_dice"},
+        GlossaryCore.YearEnd: {"type": "int", "unit": "year", "visibility": "Shared", "namespace": "ns_dice"},
+        GlossaryCore.TimeStep: {
+            "type": "int",
+            "unit": "years per period",
+            "visibility": "Shared",
+            "namespace": "ns_dice",
+        },
+        "init_land_emissions": {"type": "float", "unit": "GtCO2 per year", "default": 2.6},
+        "decline_rate_land_emissions": {"type": "float", "default": 0.115},
+        "init_cum_land_emisisons": {"type": "float", "unit": "GtCO2", "default": 100},
+        "init_gr_sigma": {"type": "float", "default": -0.0152},
+        "decline_rate_decarbo": {"type": "float", "default": -0.001},
+        "init_indus_emissions": {"type": "float", "unit": "GtCO2 per year", "default": 35.745},
+        GlossaryCore.InitialGrossOutput["var_name"]: {
+            "type": "float",
+            "unit": "trillions $",
+            "visibility": "Shared",
+            "namespace": "ns_dice",
+            "default": 105.1,
+        },
+        "init_cum_indus_emissions": {"type": "float", "unit": "GtCO2", "default": 400},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, "ns_scenario"),
+        "emissions_control_rate": {
+            "type": "dataframe",
+            "visibility": "Shared",
+            "namespace": "ns_scenario",
+            "dataframe_descriptor": {"year": ("float", None, False), "value": ("float", None, True)},
+            "dataframe_edition_locked": False,
+        },
     }
-    DESC_OUT = {
-        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
-    }
+    DESC_OUT = {"emissions_df": {"type": "dataframe", "visibility": "Shared", "namespace": "ns_scenario"}}
 
     def run(self):
         # Get inputs
         in_dict = self.get_sosdisc_inputs()
-        emissions_control_rate = in_dict.pop('emissions_control_rate')
+        emissions_control_rate = in_dict.pop("emissions_control_rate")
         # Compute de emissions_model
         emissions_model = CarbonEmissions(in_dict)
         emissions_df = emissions_model.compute(in_dict, emissions_control_rate)
         # Warning : float are mandatory for MDA ...
         emissions_df = emissions_df.astype(float)
         # Store output data
-        dict_values = {'emissions_df': emissions_df}
+        dict_values = {"emissions_df": emissions_df}
         self.store_sos_outputs_values(dict_values)
 
     def get_chart_filter_list(self):
@@ -85,10 +98,9 @@ class CarbonemissionsDiscipline(SoSWrapp):
 
         chart_filters = []
 
-        chart_list = ['carbon emission', 'emission control rate']
+        chart_list = ["carbon emission", "emission control rate"]
         # First filter to deal with the view : program or actor
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
 
         return chart_filters
 
@@ -103,17 +115,17 @@ class CarbonemissionsDiscipline(SoSWrapp):
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     chart_list = chart_filter.selected_values
-        emissions_df = self.get_sosdisc_outputs('emissions_df')
+        emissions_df = self.get_sosdisc_outputs("emissions_df")
         emissions_df = resize_df(emissions_df)
 
-        if 'carbon emission' in chart_list:
+        if "carbon emission" in chart_list:
 
-            to_plot = ['total_emissions', 'land_emissions', 'indus_emissions']
-            #emissions_df = discipline.get_sosdisc_outputs('emissions_df')
+            to_plot = ["total_emissions", "land_emissions", "indus_emissions"]
+            # emissions_df = discipline.get_sosdisc_outputs('emissions_df')
 
-            total_emission = emissions_df['total_emissions']
+            total_emission = emissions_df["total_emissions"]
 
             years = list(emissions_df.index)
 
@@ -122,35 +134,37 @@ class CarbonemissionsDiscipline(SoSWrapp):
 
             max_value = total_emission.values.max()
 
-            chart_name = 'total carbon emissions'
+            chart_name = "total carbon emissions"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'carbon emissions (Gtc)',
-                                                 [year_start - 5, year_end + 5], [
-                                                     0, max_value * 1.1],
-                                                 chart_name)
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                "carbon emissions (Gtc)",
+                [year_start - 5, year_end + 5],
+                [0, max_value * 1.1],
+                chart_name,
+            )
 
             for key in to_plot:
                 visible_line = True
 
                 c_emission = list(emissions_df[key])
 
-                new_series = InstanciatedSeries(
-                    years, c_emission, key, 'lines', visible_line)
+                new_series = InstanciatedSeries(years, c_emission, key, "lines", visible_line)
 
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
-        if 'emission control rate' in chart_list:
+        if "emission control rate" in chart_list:
 
-            to_plot = ['emissions_control_rate']
+            to_plot = ["emissions_control_rate"]
 
             inputs = self.get_sosdisc_inputs()
-            control_rate_df = inputs.pop('emissions_control_rate')
-            control_rate = list(control_rate_df['value'])
-            emissions_df = self.get_sosdisc_outputs('emissions_df')
+            control_rate_df = inputs.pop("emissions_control_rate")
+            control_rate = list(control_rate_df["value"])
+            emissions_df = self.get_sosdisc_outputs("emissions_df")
 
-            total_emission = emissions_df['total_emissions']
+            total_emission = emissions_df["total_emissions"]
 
             years = list(total_emission.index)
 
@@ -159,18 +173,20 @@ class CarbonemissionsDiscipline(SoSWrapp):
 
             max_value = max(control_rate)
 
-            chart_name = 'emission control rate over the years'
+            chart_name = "emission control rate over the years"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'emission control rate',
-                                                 [year_start - 5, year_end + 5], [
-                                                     0, max_value * 1.1],
-                                                 chart_name)
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                "emission control rate",
+                [year_start - 5, year_end + 5],
+                [0, max_value * 1.1],
+                chart_name,
+            )
 
             for key in to_plot:
                 visible_line = True
 
-                new_series = InstanciatedSeries(
-                    years, control_rate, 'emissions_control_rate', 'lines', visible_line)
+                new_series = InstanciatedSeries(years, control_rate, "emissions_control_rate", "lines", visible_line)
 
                 new_chart.series.append(new_series)
 
@@ -197,8 +213,8 @@ def resize_df(df):
         new_df = df
     else:
         for element in key:
-            new_df[element] = df[element][0:i + 1]
-            new_df.index = index[0: i + 1]
+            new_df[element] = df[element][0 : i + 1]
+            new_df.index = index[0 : i + 1]
 
     return new_df
 

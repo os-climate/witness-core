@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/05/02-2024/06/24 Copyright 2023 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from os.path import join
 from pathlib import Path
 
@@ -29,45 +30,68 @@ class ClimateEcoDiscipline(SoSWrapp):
     Climate Economics Discipline
     """
 
-    assumptions_dict_default = {'compute_gdp': True,
-                                'compute_climate_impact_on_gdp': True,
-                                'activate_climate_effect_population': True,
-                                'activate_pandemic_effects': False,
-                                'invest_co2_tax_in_renewables': True,
-                                }
+    assumptions_dict_default = {
+        "compute_gdp": True,
+        "compute_climate_impact_on_gdp": True,
+        "activate_climate_effect_population": True,
+        "activate_pandemic_effects": False,
+        "invest_co2_tax_in_renewables": True,
+    }
 
-    YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YearStartDefault,
-                          'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950,2040]}
-    TIMESTEP_DESC_IN = {'type': 'int', 'default': 1, 'unit': 'year per period',
-                        'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
-    ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
-                     'user_level': 1, 'unit': '-'}
-    GWP_100_default = {GlossaryCore.CO2: 1.0,
-                       GlossaryCore.CH4: 28.,
-                       GlossaryCore.N2O: 265.}
+    YEAR_START_DESC_IN = {
+        "type": "int",
+        "default": GlossaryCore.YearStartDefault,
+        "unit": "year",
+        "visibility": "Shared",
+        "namespace": "ns_public",
+        "range": [1950, 2040],
+    }
+    TIMESTEP_DESC_IN = {
+        "type": "int",
+        "default": 1,
+        "unit": "year per period",
+        "visibility": "Shared",
+        "namespace": "ns_public",
+        "user_level": 2,
+    }
+    ALPHA_DESC_IN = {
+        "type": "float",
+        "range": [0.0, 1.0],
+        "default": 0.5,
+        "visibility": "Shared",
+        "namespace": GlossaryCore.NS_WITNESS,
+        "user_level": 1,
+        "unit": "-",
+    }
+    GWP_100_default = {GlossaryCore.CO2: 1.0, GlossaryCore.CH4: 28.0, GlossaryCore.N2O: 265.0}
 
-    GWP_20_default = {GlossaryCore.CO2: 1.0,
-                      GlossaryCore.CH4: 85.,
-                      GlossaryCore.N2O: 265.}
+    GWP_20_default = {GlossaryCore.CO2: 1.0, GlossaryCore.CH4: 85.0, GlossaryCore.N2O: 265.0}
     ASSUMPTIONS_DESC_IN = {
-        'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'structuring': True, 'unit': '-'}
+        "var_name": "assumptions_dict",
+        "type": "dict",
+        "default": assumptions_dict_default,
+        "visibility": "Shared",
+        "namespace": GlossaryCore.NS_WITNESS,
+        "structuring": True,
+        "unit": "-",
+    }
 
     desc_in_default_pandemic_param = GlossaryCore.PandemicParamDf
     # https://stackoverflow.com/questions/13905741/accessing-class-variables-from-a-list-comprehension-in-the-class-definition
-    global_data_dir = join(Path(__file__).parents[2], 'data')
+    global_data_dir = join(Path(__file__).parents[2], "data")
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Climate Economics Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': '',
-        'version': '',
+        "label": "WITNESS Climate Economics Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "",
+        "version": "",
     }
 
     def _run(self):
@@ -94,14 +118,14 @@ class ClimateEcoDiscipline(SoSWrapp):
 
     def get_greataxisrange(self, serie):
         """
-        Get the lower and upper bound of axis for graphs 
+        Get the lower and upper bound of axis for graphs
         min_value: lower bound
         max_value: upper bound
         """
         min_value = serie.values.min()
         max_value = serie.values.max()
-        min_range = self.get_value_axis(min_value, 'min')
-        max_range = self.get_value_axis(max_value, 'max')
+        min_range = self.get_value_axis(min_value, "min")
+        max_range = self.get_value_axis(max_value, "max")
 
         return min_range, max_range
 
@@ -110,7 +134,7 @@ class ClimateEcoDiscipline(SoSWrapp):
         if min: if positive returns 0, if negative returns 1.1*value
         if max: if positive returns is 1.1*value, if negative returns 0
         """
-        if min_or_max == 'min':
+        if min_or_max == "min":
             if value >= 0:
                 value_out = 0
             else:
@@ -125,15 +149,15 @@ class ClimateEcoDiscipline(SoSWrapp):
             return value_out
 
     def get_ranges_input_var(self):
-        '''
+        """
         Get available ranges of input data.
-        '''
+        """
         return self.get_ranges_var(self.DESC_IN)
 
     def get_ranges_output_var(self):
-        '''
+        """
         Get available ranges of output data.
-        '''
+        """
         return self.get_ranges_var(self.DESC_OUT)
 
     def get_ranges_var(self, DESC):
@@ -156,7 +180,7 @@ class ClimateEcoDiscipline(SoSWrapp):
         # Loop through input variables
         for var_name, dict_data in DESC.items():
             # Check if the variable type is a DataFrame
-            if dict_data[self.TYPE] == 'dataframe':
+            if dict_data[self.TYPE] == "dataframe":
                 if self.DATAFRAME_DESCRIPTOR in dict_data:
                     range_dict_df = {}
                     # Extract ranges from DataFrame descriptor and store them in a dictionary
@@ -202,7 +226,8 @@ class ClimateEcoDiscipline(SoSWrapp):
                     elif isinstance(value, (float, int)):
                         if not (variable_range[0] <= value <= variable_range[1]):
                             raise ValueError(
-                                f"The value of '{key}' ({value}) is outside the specified range {variable_range}")
+                                f"The value of '{key}' ({value}) is outside the specified range {variable_range}"
+                            )
                     # If the variable is a DataFrame, check each column's values against the specified range
                     elif isinstance(value, pd.DataFrame):
                         # Check for DataFrames
@@ -212,12 +237,15 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 # Check if all values of the column are in the specified range
                                 if not value[column].between(column_range[0], column_range[1]).all():
                                     raise ValueError(
-                                        f"The values in column '{column}' of '{key}' are outside the specified range {column_range}. Values={value[column]}")
+                                        f"The values in column '{column}' of '{key}' are outside the specified range {column_range}. Values={value[column]}"
+                                    )
                     # If the variable is a NumPy array or a list, check if all values are within the specified range
                     elif isinstance(value, (np.ndarray, list)):
                         # Check for arrays
                         if not np.all(np.logical_and(variable_range[0] <= value, value <= variable_range[1])):
-                            raise ValueError(f"The values of '{key}' are outside the specified range {variable_range}. Value={value}")
+                            raise ValueError(
+                                f"The values of '{key}' are outside the specified range {variable_range}. Value={value}"
+                            )
                     # If the variable type is not supported, raise a TypeError
                     else:
                         raise TypeError(f"Unsupported type for variable '{key}'")

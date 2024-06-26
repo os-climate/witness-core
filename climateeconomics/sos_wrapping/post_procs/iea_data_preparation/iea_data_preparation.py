@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import numpy as np
 import pandas as pd
@@ -25,9 +25,9 @@ class IEADataPreparation:
     """
 
     def __init__(self):
-        '''
+        """
         Constructor
-        '''
+        """
         self.year_start = None
         self.year_end = None
         self.CO2_emissions_df_in = None
@@ -55,12 +55,12 @@ class IEADataPreparation:
         self.year_start = input_dict[Glossary.YearStart]
         self.year_end = input_dict[Glossary.YearEnd]
         self.dict_df_in = {key_name: input_dict[key_name] for key_name in variables_to_store if key_name in input_dict}
+
     def compute(self):
         """
         Interpolate between year start and year end all the dataframes
         """
         self.dict_df_out = self.interpolate_dataframes(self.dict_df_in)
-
 
     def interpolate_dataframes(self, dataframes_dict):
         """
@@ -104,7 +104,7 @@ class IEADataPreparation:
             df = df.reindex(full_range)
 
             # Perform linear interpolation for each column independently
-            df = df.apply(lambda col: col.interpolate(method='linear'))
+            df = df.apply(lambda col: col.interpolate(method="linear"))
 
             # Perform linear backward extrapolation for each column independently
             for column in df.columns:
@@ -113,17 +113,18 @@ class IEADataPreparation:
                 if first_valid_index is not None and first_valid_index > self.year_start:
                     # Calculate the slope using the first two valid data points
                     next_valid_index = df[column].index[df[column].index > first_valid_index][0]
-                    slope = (df[column][next_valid_index] - df[column][first_valid_index]) / \
-                            (next_valid_index - first_valid_index)
+                    slope = (df[column][next_valid_index] - df[column][first_valid_index]) / (
+                        next_valid_index - first_valid_index
+                    )
                     # Extrapolate backward
-                    df.loc[self.year_start:first_valid_index - 1, column] = df.loc[first_valid_index, column] + \
-                                                                       slope * (df.loc[
-                                                                                self.year_start:first_valid_index - 1].index - first_valid_index)
+                    df.loc[self.year_start : first_valid_index - 1, column] = df.loc[
+                        first_valid_index, column
+                    ] + slope * (df.loc[self.year_start : first_valid_index - 1].index - first_valid_index)
 
             # Reset the index to bring 'years' back as a column
             df.reset_index(inplace=True)
 
             # Add the interpolated DataFrame to the dictionary
-            interpolated_dfs_dict[key+'_interpolated'] = df
+            interpolated_dfs_dict[key + "_interpolated"] = df
 
         return interpolated_dfs_dict

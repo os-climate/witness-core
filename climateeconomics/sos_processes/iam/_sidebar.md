@@ -1,5 +1,6 @@
 <!-- IAM sidebar.md -->
+
 [Up](../)
 
-* [DICE](dice/)
-* [WITNESS](witness/)
+- [DICE](dice/)
+- [WITNESS](witness/)

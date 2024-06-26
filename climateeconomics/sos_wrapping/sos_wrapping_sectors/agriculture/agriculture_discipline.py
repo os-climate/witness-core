@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import (
     SectorDiscipline,
@@ -26,31 +27,29 @@ class AgricultureDiscipline(SectorDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Agriculture sector WITNESS Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': 'fa-solid fa-building-wheat',
-        'version': '',
+        "label": "Agriculture sector WITNESS Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "fa-solid fa-building-wheat",
+        "version": "",
     }
-    _maturity = 'Research'
+    _maturity = "Research"
 
     # update default values:
     def setup_sos_disciplines(self):
         SectorDiscipline.setup_sos_disciplines(self)
-        self.update_default_value('capital_start', 'in', 6.92448579)
-        self.update_default_value('productivity_start', 'in', 1.31162)
-        self.update_default_value('productivity_gr_start', 'in', 0.0027844)
-        self.update_default_value('decline_rate_tfp', 'in', 0.098585)
-        self.update_default_value('energy_eff_k', 'in', 0.1)
-        self.update_default_value('energy_eff_cst', 'in', 0.490463)
-        self.update_default_value('energy_eff_xzero', 'in', 1993)
-        self.update_default_value('energy_eff_max', 'in',2.35832)
-        self.update_default_value('output_alpha', 'in', 0.99)
-        self.update_default_value('depreciation_capital', 'in', 0.058)
-
-
+        self.update_default_value("capital_start", "in", 6.92448579)
+        self.update_default_value("productivity_start", "in", 1.31162)
+        self.update_default_value("productivity_gr_start", "in", 0.0027844)
+        self.update_default_value("decline_rate_tfp", "in", 0.098585)
+        self.update_default_value("energy_eff_k", "in", 0.1)
+        self.update_default_value("energy_eff_cst", "in", 0.490463)
+        self.update_default_value("energy_eff_xzero", "in", 1993)
+        self.update_default_value("energy_eff_max", "in", 2.35832)
+        self.update_default_value("output_alpha", "in", 0.99)
+        self.update_default_value("depreciation_capital", "in", 0.058)

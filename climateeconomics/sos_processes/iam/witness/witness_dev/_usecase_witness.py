@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on {} Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-'''
+"""
 
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -42,10 +42,18 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=True, run_usecase=False,
-                 execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV,
-                 process_level='dev'):
+    def __init__(
+        self,
+        year_start=GlossaryCore.YearStartDefault,
+        year_end=GlossaryCore.YearEndDefault,
+        time_step=1,
+        bspline=True,
+        run_usecase=False,
+        execution_engine=None,
+        invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
+        techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV,
+        process_level="dev",
+    ):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -55,33 +63,36 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
         self.process_level = process_level
         self.dc_energy = datacase_energy(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            self.year_start,
+            self.year_end,
+            self.time_step,
+            bspline=self.bspline,
+            execution_engine=execution_engine,
+            invest_discipline=self.invest_discipline,
+            techno_dict=techno_dict,
+        )
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_constraint_land_use(self):
-        func_df = pd.DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
+        func_df = pd.DataFrame(columns=["variable", "parent", "ftype", "weight", AGGR_TYPE])
         list_var = []
         list_parent = []
         list_ftype = []
         list_weight = []
         list_aggr_type = []
         list_ns = []
-        list_var.extend(
-            ['land_demand_constraint_df'])
+        list_var.extend(["land_demand_constraint_df"])
         list_parent.extend([None])
         list_ftype.extend([INEQ_CONSTRAINT])
         list_weight.extend([-1.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
+        list_aggr_type.extend([AGGR_TYPE_SUM])
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
+        func_df["variable"] = list_var
+        func_df["parent"] = list_parent
+        func_df["ftype"] = list_ftype
+        func_df["weight"] = list_weight
         func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+        func_df["namespace"] = list_ns
 
         return func_df
 
@@ -94,8 +105,7 @@ class Study(ClimateEconomicsStudyManager):
         self.dc_energy.study_name = self.study_name
         self.energy_mda_usecase = self.dc_energy
         # -- load data from witness
-        dc_witness = datacase_witness_dev(
-            self.year_start, self.year_end, self.time_step)
+        dc_witness = datacase_witness_dev(self.year_start, self.year_end, self.time_step)
         dc_witness.study_name = self.study_name
 
         witness_input_list = dc_witness.setup_usecase()
@@ -114,27 +124,34 @@ class Study(ClimateEconomicsStudyManager):
         # WITNESS
         # setup objectives
         self.func_df = pd.concat(
-            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(),
-             self.dc_energy.setup_objectives(), land_use_df_constraint])
+            [
+                dc_witness.setup_objectives(),
+                dc_witness.setup_constraints(),
+                self.dc_energy.setup_constraints(),
+                self.dc_energy.setup_objectives(),
+                land_use_df_constraint,
+            ]
+        )
 
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
 
         numerical_values_dict = {
-            f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
-            f'{self.study_name}.tolerance': 1.0e-10,
-            f'{self.study_name}.n_processes': 1,
-            f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
-            f'{self.study_name}.cache_type': 'SimpleCache'}
+            f"{self.study_name}.epsilon0": 1.0,
+            f"{self.study_name}.max_mda_iter": 50,
+            f"{self.study_name}.tolerance": 1.0e-10,
+            f"{self.study_name}.n_processes": 1,
+            f"{self.study_name}.linearization_mode": "adjoint",
+            f"{self.study_name}.sub_mda_class": "GSPureNewtonMDA",
+            f"{self.study_name}.cache_type": "SimpleCache",
+        }
 
         setup_data_list.append(numerical_values_dict)
 
         return setup_data_list
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     uc_cls = Study()
     uc_cls.test()

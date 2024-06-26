@@ -999,5 +999,3 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 8,0.000,0.000,0.087,0.011,/usr/local/sostrades/sosgemseo/src/gemseo/core/grammars/json_grammar.py:205(load_data)
 85964,0.065,0.000,0.087,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/construction.py:640(_sanitize_str_dtypes)
 486,0.008,0.000,0.087,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/indexes/base.py:2969(_union)
-
-

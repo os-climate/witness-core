@@ -999,5 +999,3 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 20982,0.043,0.000,0.114,0.000,/opt/conda/lib/python3.7/site-packages/numpy/core/numerictypes.py:359(issubdtype)
 90790,0.114,0.000,0.114,0.000,{method 'split' of 'str' objects}
 12,0.001,0.000,0.112,0.009,/usr/local/sostrades/energy_models/energy_models/models/biomass_dry/unmanaged_wood/unmanaged_wood.py:189(get_mean_age_over_years)
-
-

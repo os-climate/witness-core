@@ -4,7 +4,7 @@ Pollution, $CO_2$ emissions and environmental issues are being more and more cri
 
 ## Environmental damage price
 
-Emitting $CO_2$  and pollution in general cause different sorts of environmental damage. A price of these damages can be estimated, through the Damage model.
+Emitting $CO_2$ and pollution in general cause different sorts of environmental damage. A price of these damages can be estimated, through the Damage model.
 
 ## CCS price
 

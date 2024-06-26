@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,25 +13,26 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class UtilityModel():
-    '''
+class UtilityModel:
+    """
     Used to compute population welfare and utility
-    '''
+    """
 
     def __init__(self, param):
-        '''
+        """
         Constructor
-        '''
-        self.shift_scurve = 0.
-        self.strech_scurve = 0.
-        self.discounted_utility_quantity_objective = 0.
+        """
+        self.shift_scurve = 0.0
+        self.strech_scurve = 0.0
+        self.discounted_utility_quantity_objective = 0.0
         self.param = param
 
         self.set_data()
@@ -48,27 +49,22 @@ class UtilityModel():
         self.year_end = self.param[GlossaryCore.YearEnd]
         self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
 
-        self.shift_scurve = self.param['shift_scurve']
-        self.strech_scurve = self.param['strech_scurve']
+        self.shift_scurve = self.param["shift_scurve"]
+        self.strech_scurve = self.param["strech_scurve"]
 
-        self.conso_elasticity = self.param['conso_elasticity']  # elasmu
-        self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
-        self.initial_raw_energy_price = self.param['initial_raw_energy_price']
-        self.init_discounted_utility = self.param['init_discounted_utility']
+        self.conso_elasticity = self.param["conso_elasticity"]  # elasmu
+        self.init_rate_time_pref = self.param["init_rate_time_pref"]  # prstp
+        self.initial_raw_energy_price = self.param["initial_raw_energy_price"]
+        self.init_discounted_utility = self.param["init_discounted_utility"]
 
     def create_dataframe(self):
-        '''
+        """
         Create the dataframe and fill it with values at year_start
-        '''
-        years_range = np.arange(
-            self.year_start,
-            self.year_end + 1,
-            self.time_step)
+        """
+        years_range = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.years_range = years_range
         self.n_years = len(self.years_range)
-        utility_df = pd.DataFrame(
-            index=years_range,
-            columns=GlossaryCore.UtilityDf['dataframe_descriptor'].keys())
+        utility_df = pd.DataFrame(index=years_range, columns=GlossaryCore.UtilityDf["dataframe_descriptor"].keys())
 
         for key in utility_df.keys():
             utility_df[key] = 0
@@ -82,11 +78,9 @@ class UtilityModel():
          rr(t) = 1/((1+prstp)**(tstep*(t.val-1)));
         """
         t = ((self.years_range - self.year_start) / self.time_step) + 1
-        u_discount_rate = 1 / ((1 + self.init_rate_time_pref)
-                               ** (self.time_step * (t - 1)))
+        u_discount_rate = 1 / ((1 + self.init_rate_time_pref) ** (self.time_step * (t - 1)))
         self.utility_df[GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
-
 
     def compute(self, economics_df, energy_mean_price, population_df):
         """compute"""
@@ -136,7 +130,7 @@ class UtilityModel():
     def d_s_curve_function(self, x):
         u_prime = self.strech_scurve
         u = (x - 1 - self.shift_scurve) * self.strech_scurve
-        f_prime_u = np.exp(-u) / (1+np.exp(-u)) ** 2
+        f_prime_u = np.exp(-u) / (1 + np.exp(-u)) ** 2
         return u_prime * f_prime_u
 
     def compute_discounted_utility_quantity_per_capita(self):
@@ -174,7 +168,7 @@ class UtilityModel():
         population = self.population_df[GlossaryCore.PopulationValue].values
         pop_ratio = population / population[0]
         u = (pcc / energy_price) / (pcc[0] / self.energy_price_ref)
-        d_u_d_ep = -(pcc / energy_price ** 2) / (pcc[0] / self.energy_price_ref)
+        d_u_d_ep = -(pcc / energy_price**2) / (pcc[0] / self.energy_price_ref)
         d_u_d_pcc = (1 / energy_price) / (pcc[0] / self.energy_price_ref)
         d_u_d_pcc0 = -(pcc / energy_price) / (pcc[0] ** 2 / self.energy_price_ref)
 
@@ -182,19 +176,21 @@ class UtilityModel():
         d_utility_dpcc = np.diag(d_u_d_pcc * self.d_s_curve_function(u))
         d_utility_dpcc0 = d_u_d_pcc0 * self.d_s_curve_function(u)
         d_utility_dpcc[:, 0] = d_utility_dpcc0
-        d_utility_dpcc[0,0] = 0.
+        d_utility_dpcc[0, 0] = 0.0
         discount_rate = self.utility_df[GlossaryCore.UtilityDiscountRate].values
         d_discounted_utility_quantity_denergy_price = np.diag(discount_rate) * d_utility_denergy_price
         d_discounted_utility_quantity_dpcc = np.diag(discount_rate) @ d_utility_dpcc
 
-        d_pop_discounted_utility_quantity_denergy_price = np.diag(pop_ratio) * d_discounted_utility_quantity_denergy_price
+        d_pop_discounted_utility_quantity_denergy_price = (
+            np.diag(pop_ratio) * d_discounted_utility_quantity_denergy_price
+        )
         d_pop_discounted_utility_quantity_dpcc = np.diag(pop_ratio) @ d_discounted_utility_quantity_dpcc
 
         discounted_utility_pc = self.utility_df[GlossaryCore.DiscountedUtilityQuantityPerCapita].values
 
         d_pop_discounted_utility_quantity_dpop = np.diag(discounted_utility_pc / population[0])
-        d_pop_discounted_utility_quantity_dpop[:, 0] = - discounted_utility_pc / population[0] ** 2 * population
-        d_pop_discounted_utility_quantity_dpop[0, 0] = 0.
+        d_pop_discounted_utility_quantity_dpop[:, 0] = -discounted_utility_pc / population[0] ** 2 * population
+        d_pop_discounted_utility_quantity_dpop[0, 0] = 0.0
 
         d_utility_obj_d_energy_price = d_pop_discounted_utility_quantity_denergy_price.mean(axis=0)
         d_utility_obj_dpcc = d_pop_discounted_utility_quantity_dpcc.mean(axis=0)
@@ -204,8 +200,18 @@ class UtilityModel():
         d_ly_utility_obj_dpcc = d_pop_discounted_utility_quantity_dpcc[-1]
         d_ly_utility_obj_dpop = d_pop_discounted_utility_quantity_dpop[-1]
 
-        return d_utility_denergy_price, d_utility_dpcc,\
-               d_discounted_utility_quantity_denergy_price, d_discounted_utility_quantity_dpcc, \
-               d_pop_discounted_utility_quantity_denergy_price, d_pop_discounted_utility_quantity_dpcc, d_pop_discounted_utility_quantity_dpop,\
-               d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop, \
-               d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop
+        return (
+            d_utility_denergy_price,
+            d_utility_dpcc,
+            d_discounted_utility_quantity_denergy_price,
+            d_discounted_utility_quantity_dpcc,
+            d_pop_discounted_utility_quantity_denergy_price,
+            d_pop_discounted_utility_quantity_dpcc,
+            d_pop_discounted_utility_quantity_dpop,
+            d_utility_obj_d_energy_price,
+            d_utility_obj_dpcc,
+            d_utility_obj_dpop,
+            d_ly_utility_obj_d_energy_price,
+            d_ly_utility_obj_dpcc,
+            d_ly_utility_obj_dpop,
+        )

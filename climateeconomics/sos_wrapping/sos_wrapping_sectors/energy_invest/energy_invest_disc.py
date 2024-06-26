@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -33,16 +34,16 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Energy invest WITNESS Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': 'fas fa-child fa-fw',
-        'version': '',
+        "label": "Energy invest WITNESS Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "fas fa-child fa-fw",
+        "version": "",
     }
     DESC_IN = {
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
@@ -59,7 +60,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
     def run(self):
         """run"""
         inputs = self.get_sosdisc_inputs()
-        
+
         self.model = EnergyInvestModel()
 
         self.model.compute(inputs)
@@ -68,7 +69,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
             GlossaryCore.RenewablesEnergyInvestmentsValue: self.model.added_renewables_investments,
             GlossaryCore.EnergyInvestmentsValue: self.model.energy_investments,
         }
-        
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
@@ -84,7 +85,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
 
         chart_list = [GlossaryCore.EnergyInvestmentsValue]
         # First filter to deal with the view : program or actor
-        chart_filters.append(ChartFilter('Charts', chart_list, chart_list, 'charts'))
+        chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
 
         return chart_filters
 
@@ -98,35 +99,54 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
 
         if chart_filters is not None:
             for chart_filter in chart_filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     chart_list = chart_filter.selected_values
 
-        raw_invests = self.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsWoTaxValue)[GlossaryCore.EnergyInvestmentsWoTaxValue].values * 1000
-        added_invests_renawables = self.get_sosdisc_outputs(GlossaryCore.RenewablesEnergyInvestmentsValue)[GlossaryCore.InvestmentsValue].values * 100
-        total_energy_invests = self.get_sosdisc_outputs(GlossaryCore.EnergyInvestmentsValue)[GlossaryCore.EnergyInvestmentsValue].values * 100
+        raw_invests = (
+            self.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsWoTaxValue)[
+                GlossaryCore.EnergyInvestmentsWoTaxValue
+            ].values
+            * 1000
+        )
+        added_invests_renawables = (
+            self.get_sosdisc_outputs(GlossaryCore.RenewablesEnergyInvestmentsValue)[
+                GlossaryCore.InvestmentsValue
+            ].values
+            * 100
+        )
+        total_energy_invests = (
+            self.get_sosdisc_outputs(GlossaryCore.EnergyInvestmentsValue)[GlossaryCore.EnergyInvestmentsValue].values
+            * 100
+        )
         years = list(self.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsWoTaxValue)[GlossaryCore.Years].values)
 
         if GlossaryCore.EnergyInvestmentsValue in chart_list:
 
-            chart_name = 'Breakdown of energy investments'
+            chart_name = "Breakdown of energy investments"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Investment [G$]',
-                                                 chart_name=chart_name, stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years, "Investment [G$]", chart_name=chart_name, stacked_bar=True
+            )
 
             new_series = InstanciatedSeries(
-                years, list(added_invests_renawables),
-                'Invest in renewables from CO2 tax', InstanciatedSeries.BAR_DISPLAY, True)
+                years,
+                list(added_invests_renawables),
+                "Invest in renewables from CO2 tax",
+                InstanciatedSeries.BAR_DISPLAY,
+                True,
+            )
 
             new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
-                years, list(raw_invests),
-                'Raw investments in energy', InstanciatedSeries.BAR_DISPLAY, True)
+                years, list(raw_invests), "Raw investments in energy", InstanciatedSeries.BAR_DISPLAY, True
+            )
 
             new_chart.series.append(new_series)
 
-            new_series = InstanciatedSeries(years, list(total_energy_invests),
-                                            'Total energy investments', 'lines', True)
+            new_series = InstanciatedSeries(
+                years, list(total_energy_invests), "Total energy investments", "lines", True
+            )
 
             new_chart.series.append(new_series)
 
@@ -134,20 +154,25 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.EnergyInvestmentsValue in chart_list:
 
-            chart_name = 'Composition of energy investments'
+            chart_name = "Composition of energy investments"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%',
-                                                 chart_name=chart_name, stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, "%", chart_name=chart_name, stacked_bar=True)
 
-            added_invests_share = added_invests_renawables / total_energy_invests * 100.
-            new_series = InstanciatedSeries(years, list(added_invests_share),
-                'Invest in renewables from CO2 tax', InstanciatedSeries.BAR_DISPLAY, True)
+            added_invests_share = added_invests_renawables / total_energy_invests * 100.0
+            new_series = InstanciatedSeries(
+                years,
+                list(added_invests_share),
+                "Invest in renewables from CO2 tax",
+                InstanciatedSeries.BAR_DISPLAY,
+                True,
+            )
 
             new_chart.series.append(new_series)
 
-            raw_invests_share = raw_invests / total_energy_invests * 100.
-            new_series = InstanciatedSeries(years, list(raw_invests_share),
-                                            'Raw investments in energy', InstanciatedSeries.BAR_DISPLAY, True)
+            raw_invests_share = raw_invests / total_energy_invests * 100.0
+            new_series = InstanciatedSeries(
+                years, list(raw_invests_share), "Raw investments in energy", InstanciatedSeries.BAR_DISPLAY, True
+            )
 
             new_chart.series.append(new_series)
 

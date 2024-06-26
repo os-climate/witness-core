@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -25,9 +25,9 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 def post_processing_filters(execution_engine, namespace):
-    '''
+    """
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
-    '''
+    """
     chart_filters = []
 
     chart_list = [
@@ -36,16 +36,15 @@ def post_processing_filters(execution_engine, namespace):
         GlossaryCore.ChartGDPBiggestEconomies,
     ]
     # First filter to deal with the view : program or actor
-    chart_filters.append(ChartFilter(
-        'Charts', chart_list, chart_list, 'Charts'))
+    chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "Charts"))
 
     return chart_filters
 
 
 def post_processings(execution_engine, scenario_name, chart_filters=None):
-    '''
+    """
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
-    '''
+    """
 
     # execution_engine.dm.get_all_namespaces_from_var_name('temperature_df')[0]
     NUMBERCOUNTRIESTOPLOT = 10
@@ -56,7 +55,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     # Overload default value with chart filter
     if chart_filters is not None:
         for chart_filter in chart_filters:
-            if chart_filter.filter_key == 'Charts':
+            if chart_filter.filter_key == "Charts":
                 chart_list = chart_filter.selected_values
 
     if GlossaryCore.ChartGDPPerGroup in chart_list:
@@ -66,10 +65,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         years = list(total_gdp_per_region_df[GlossaryCore.Years])
 
-        chart_name = 'GDP-PPP adjusted per group of countries in T$2020'
+        chart_name = "GDP-PPP adjusted per group of countries in T$2020"
         # create new chart
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'GDP [trillion $2020]',
-                                             chart_name=chart_name, y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryCore.Years, "GDP [trillion $2020]", chart_name=chart_name, y_min_zero=True
+        )
 
         visible_line = True
         # loop on each column to show GDP per group of countries
@@ -77,22 +77,29 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             if col != GlossaryCore.Years:
                 ordonate_data = list(total_gdp_per_region_df[col].values)
                 # refactor name of column (group name)
-                column_name_updated = col.replace('_', ' ').title()
+                column_name_updated = col.replace("_", " ").title()
                 # add new serie
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, f'{column_name_updated}', InstanciatedSeries.LINES_DISPLAY, visible_line)
+                    years, ordonate_data, f"{column_name_updated}", InstanciatedSeries.LINES_DISPLAY, visible_line
+                )
                 new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
 
     if GlossaryCore.ChartPercentagePerGroup in chart_list:
 
         # get variable with total gdp per region
-        total_percentage_per_region_df = get_scenario_value(execution_engine, GlossaryCore.PercentageGDPGroupDFName, scenario_name)
+        total_percentage_per_region_df = get_scenario_value(
+            execution_engine, GlossaryCore.PercentageGDPGroupDFName, scenario_name
+        )
 
-        chart_name = 'Percentage of GDP-PPP adjusted per group of countries in [%]'
+        chart_name = "Percentage of GDP-PPP adjusted per group of countries in [%]"
         # create new chart
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Percentage of GDP per group of countries in [%]',
-                                             chart_name=chart_name, stacked_bar=True)
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryCore.Years,
+            "Percentage of GDP per group of countries in [%]",
+            chart_name=chart_name,
+            stacked_bar=True,
+        )
 
         visible_line = True
         # loop on each column to show GDP per group of countries
@@ -100,10 +107,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             if col != GlossaryCore.Years:
                 ordonate_data = list(total_percentage_per_region_df[col].values)
                 # refactor name of column (group name)
-                column_name_updated = col.replace('_', ' ').title()
+                column_name_updated = col.replace("_", " ").title()
                 # add new serie
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, f'{column_name_updated}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                    years, ordonate_data, f"{column_name_updated}", display_type=InstanciatedSeries.BAR_DISPLAY
+                )
                 new_chart.add_series(new_series)
 
         instanciated_charts.append(new_chart)
@@ -117,41 +125,44 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         # Rank GDP in descending order to select the x countries with the biggest GDP
         # Find the name of the x biggest  countries
         year_start = years[0]
-        list_biggest_countries = \
-        total_gdp_per_countries_df[total_gdp_per_countries_df[GlossaryCore.Years] == year_start].sort_values(by='gdp',
-                                                                                                             ascending=False)[
-            'country_name'].values[:NUMBERCOUNTRIESTOPLOT + 1]
+        list_biggest_countries = (
+            total_gdp_per_countries_df[total_gdp_per_countries_df[GlossaryCore.Years] == year_start]
+            .sort_values(by="gdp", ascending=False)["country_name"]
+            .values[: NUMBERCOUNTRIESTOPLOT + 1]
+        )
 
-        chart_name = f'The {NUMBERCOUNTRIESTOPLOT} biggest countries GDP-PPP adjusted per year in [G$]'
+        chart_name = f"The {NUMBERCOUNTRIESTOPLOT} biggest countries GDP-PPP adjusted per year in [G$]"
 
         # create new chart
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                             f'The {NUMBERCOUNTRIESTOPLOT} biggest countries GDP-PPP adjusted per year in [G$]',
-                                             chart_name=chart_name, stacked_bar=True)
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryCore.Years,
+            f"The {NUMBERCOUNTRIESTOPLOT} biggest countries GDP-PPP adjusted per year in [G$]",
+            chart_name=chart_name,
+            stacked_bar=True,
+        )
         visible_line = True
 
         # loop on each column to show GDP per group of countries
         for country in list_biggest_countries:
             ordonate_data = total_gdp_per_countries_df[total_gdp_per_countries_df[GlossaryCore.CountryName] == country][
-                GlossaryCore.GDPName].to_list()
+                GlossaryCore.GDPName
+            ].to_list()
             # refactor name of column (country name)
             country_name = country.title()
             # add new serie
             new_series = InstanciatedSeries(
-                years, ordonate_data, f'{country_name}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                years, ordonate_data, f"{country_name}", display_type=InstanciatedSeries.BAR_DISPLAY
+            )
             new_chart.add_series(new_series)
 
         # add total gdp line
         # convert T$ to G$
-        gdp_net_of_damage = 1000. * economics_df[GlossaryCore.OutputNetOfDamage].values
+        gdp_net_of_damage = 1000.0 * economics_df[GlossaryCore.OutputNetOfDamage].values
         new_series = InstanciatedSeries(
-            years, list(gdp_net_of_damage),
-            "Total GDP [G$]",
-            InstanciatedSeries.LINES_DISPLAY, visible_line)
+            years, list(gdp_net_of_damage), "Total GDP [G$]", InstanciatedSeries.LINES_DISPLAY, visible_line
+        )
         new_chart.add_series(new_series)
 
         instanciated_charts.append(new_chart)
 
     return instanciated_charts
-
-

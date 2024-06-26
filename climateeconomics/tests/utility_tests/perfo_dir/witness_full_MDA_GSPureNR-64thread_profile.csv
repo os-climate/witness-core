@@ -999,5 +999,3 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 8514,0.064,0.000,0.064,0.000,{built-in method _operator.mul}
 716/710,0.019,0.000,0.064,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/sorting.py:343(nargsort)
 348,0.002,0.000,0.063,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/indexes/base.py:5529(_transform_index)
-
-

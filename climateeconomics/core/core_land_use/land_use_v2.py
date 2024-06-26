@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/15-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import os
 
@@ -23,65 +23,59 @@ import pandas as pd
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class OrderOfMagnitude():
+class OrderOfMagnitude:
 
-    KILO = 'k'
-    MEGA = 'M'
-    GIGA = 'G'
-    TERA = 'T'
+    KILO = "k"
+    MEGA = "M"
+    GIGA = "G"
+    TERA = "T"
 
-    magnitude_factor = {
-        KILO: 10 ** 3,
-        MEGA: 10 ** 6,
-        GIGA: 10 ** 9,
-        TERA: 10 ** 12
-    }
+    magnitude_factor = {KILO: 10**3, MEGA: 10**6, GIGA: 10**9, TERA: 10**12}
 
 
-class LandUseV2():
+class LandUseV2:
     """
     Land use pyworld3 class
 
-    basic for now, to evolve 
+    basic for now, to evolve
 
     source: https://ourworldindata.org/land-use
     """
 
-    KM_2_unit = 'km2'
-    HECTARE = 'ha'
+    KM_2_unit = "km2"
+    HECTARE = "ha"
 
-    LAND_DEMAND_DF = 'land_demand_df'
+    LAND_DEMAND_DF = "land_demand_df"
     YEAR_START = GlossaryCore.YearStart
     YEAR_END = GlossaryCore.YearEnd
-    INIT_UNMANAGED_FOREST_SURFACE = 'initial_unmanaged_forest_surface'
+    INIT_UNMANAGED_FOREST_SURFACE = "initial_unmanaged_forest_surface"
 
-    TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
-    FOREST_SURFACE_DF = 'forest_surface_df'
+    TOTAL_FOOD_LAND_SURFACE = "total_food_land_surface"
+    FOREST_SURFACE_DF = "forest_surface_df"
 
-    LAND_DEMAND_CONSTRAINT = 'land_demand_constraint'
-    LAND_DEMAND_CONSTRAINT_REF = 'land_demand_constraint_ref'
+    LAND_DEMAND_CONSTRAINT = "land_demand_constraint"
+    LAND_DEMAND_CONSTRAINT_REF = "land_demand_constraint_ref"
 
-    LAND_SURFACE_DF = 'land_surface_df'
-    LAND_SURFACE_DETAIL_DF = 'land_surface_detail_df'
-    LAND_SURFACE_FOR_FOOD_DF = 'land_surface_for_food_df'
+    LAND_SURFACE_DF = "land_surface_df"
+    LAND_SURFACE_DETAIL_DF = "land_surface_detail_df"
+    LAND_SURFACE_FOR_FOOD_DF = "land_surface_for_food_df"
 
-    AGRICULTURE_COLUMN = 'Agriculture (Gha)'
-    FOREST_COLUMN = 'Forest (Gha)'
+    AGRICULTURE_COLUMN = "Agriculture (Gha)"
+    FOREST_COLUMN = "Forest (Gha)"
 
     # Technologies filtered by land type
-    FOREST_TECHNO = ['']
-    AGRICULTURE_TECHNO = ['Crop (Gha)', 'SolarPv (Gha)', 'SolarThermal (Gha)']
-
+    FOREST_TECHNO = [""]
+    AGRICULTURE_TECHNO = ["Crop (Gha)", "SolarPv (Gha)", "SolarThermal (Gha)"]
 
     def __init__(self, param):
-        '''
+        """
         Constructor
-        '''
+        """
         self.param = param
         self.world_surface_data = None
         self.ha2km2 = 0.01
-        self.km2toha = 100.
-        self.surface_file = 'world_surface_data.csv'
+        self.km2toha = 100.0
+        self.surface_file = "world_surface_data.csv"
         self.surface_df = None
         self.import_world_surface_data()
 
@@ -99,40 +93,47 @@ class LandUseV2():
         curr_dir = os.path.dirname(__file__)
         data_file = os.path.join(curr_dir, self.surface_file)
         self.surface_df = pd.read_csv(data_file)
-        self.total_agriculture_surfaces = self.__extract_and_convert_superficie('Habitable', GlossaryCore.SectorAgriculture) / \
-                                          OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
-        self.total_forest_surfaces = self.__extract_and_convert_superficie('Habitable', 'Forest') / \
-                                     OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
-        self.total_shrub_surfaces = self.__extract_and_convert_superficie('Habitable', 'Shrub') / \
-                                     OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
-
+        self.total_agriculture_surfaces = (
+            self.__extract_and_convert_superficie("Habitable", GlossaryCore.SectorAgriculture)
+            / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
+        )
+        self.total_forest_surfaces = (
+            self.__extract_and_convert_superficie("Habitable", "Forest")
+            / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
+        )
+        self.total_shrub_surfaces = (
+            self.__extract_and_convert_superficie("Habitable", "Shrub")
+            / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
+        )
 
     def compute(self, land_demand_df, total_food_land_surface, total_forest_surface_df):
-        ''' 
+        """
         Computation methods, comput land demands and constraints
 
         @param land_demand_df:  land demands from all techno in inputs
         @type land_demand_df: dataframe
 
-        '''
+        """
 
-        number_of_data = (self.year_end - self.year_start + 1)
+        number_of_data = self.year_end - self.year_start + 1
         self.land_demand_df = land_demand_df
 
         # add years
         self.land_surface_df[GlossaryCore.Years] = np.arange(self.year_start, self.year_end + 1, 1)
-        #------------------------------------------------
+        # ------------------------------------------------
         # Add available surfaces to df
-        self.land_surface_df['Available Agriculture Surface (Gha)'] = np.ones(number_of_data)*self.total_agriculture_surfaces
-        self.land_surface_df['Available Forest Surface (Gha)'] = np.ones(number_of_data)*self.total_forest_surfaces
-        self.land_surface_df['Available Shrub Surface (Gha)'] = np.ones(number_of_data)*self.total_shrub_surfaces
+        self.land_surface_df["Available Agriculture Surface (Gha)"] = (
+            np.ones(number_of_data) * self.total_agriculture_surfaces
+        )
+        self.land_surface_df["Available Forest Surface (Gha)"] = np.ones(number_of_data) * self.total_forest_surfaces
+        self.land_surface_df["Available Shrub Surface (Gha)"] = np.ones(number_of_data) * self.total_shrub_surfaces
 
-        #------------------------------------------------
+        # ------------------------------------------------
         # Add global forest and food surface from agriculture mix sub models
-        self.land_surface_df['Forest Surface (Gha)'] = total_forest_surface_df['global_forest_surface'].values
-        self.land_surface_df['Total Forest Surface (Gha)'] = self.land_surface_df['Forest Surface (Gha)']
-        self.land_surface_df['Food Surface (Gha)'] = total_food_land_surface['total surface (Gha)'].values
-        self.land_surface_df['Total Agriculture Surface (Gha)'] = self.land_surface_df['Food Surface (Gha)']
+        self.land_surface_df["Forest Surface (Gha)"] = total_forest_surface_df["global_forest_surface"].values
+        self.land_surface_df["Total Forest Surface (Gha)"] = self.land_surface_df["Forest Surface (Gha)"]
+        self.land_surface_df["Food Surface (Gha)"] = total_food_land_surface["total surface (Gha)"].values
+        self.land_surface_df["Total Agriculture Surface (Gha)"] = self.land_surface_df["Food Surface (Gha)"]
 
         # Loop on techno using agriculture or forest surfaces
         agri_techno = []
@@ -146,21 +147,26 @@ class LandUseV2():
                 forest_techno.append(techno)
         for techno in agri_techno:
             self.land_surface_df[techno] = self.land_demand_df[techno]
-            self.land_surface_df['Total Agriculture Surface (Gha)'] += self.land_surface_df[techno]
+            self.land_surface_df["Total Agriculture Surface (Gha)"] += self.land_surface_df[techno]
         for techno in forest_techno:
             self.land_surface_df[techno] = self.land_demand_df[techno]
-            self.land_surface_df['Total Forest Surface (Gha)'] += self.land_surface_df[techno]
+            self.land_surface_df["Total Forest Surface (Gha)"] += self.land_surface_df[techno]
 
         # Calculate the land_use_constraint
         # By comparing the total available land surface to the demands
-        self.land_demand_constraint = np.asarray((\
-            (self.total_agriculture_surfaces + self.total_forest_surfaces + self.total_shrub_surfaces) -\
-            (self.land_surface_df['Total Agriculture Surface (Gha)'] +
-             self.land_surface_df['Total Forest Surface (Gha)']))\
-                                      / self.ref_land_use_constraint)
+        self.land_demand_constraint = np.asarray(
+            (
+                (self.total_agriculture_surfaces + self.total_forest_surfaces + self.total_shrub_surfaces)
+                - (
+                    self.land_surface_df["Total Agriculture Surface (Gha)"]
+                    + self.land_surface_df["Total Forest Surface (Gha)"]
+                )
+            )
+            / self.ref_land_use_constraint
+        )
 
     def __extract_and_convert_superficie(self, category, name):
-        '''
+        """
         Regarding the available surface dataframe extract a specific surface value and convert into
         our unit pyworld3 (ha)
 
@@ -171,13 +177,16 @@ class LandUseV2():
         @type name: str
 
         @return: number in ha unit
-        '''
-        surface = self.surface_df[(self.surface_df['Category'] == category) &
-                                  (self.surface_df['Name'] == name)]['Surface'].values[0]
-        unit = self.surface_df[(self.surface_df['Category'] == category) &
-                               (self.surface_df['Name'] == name)]['Unit'].values[0]
-        magnitude = self.surface_df[(self.surface_df['Category'] == category) &
-                                    (self.surface_df['Name'] == name)]['Magnitude'].values[0]
+        """
+        surface = self.surface_df[(self.surface_df["Category"] == category) & (self.surface_df["Name"] == name)][
+            "Surface"
+        ].values[0]
+        unit = self.surface_df[(self.surface_df["Category"] == category) & (self.surface_df["Name"] == name)][
+            "Unit"
+        ].values[0]
+        magnitude = self.surface_df[(self.surface_df["Category"] == category) & (self.surface_df["Name"] == name)][
+            "Magnitude"
+        ].values[0]
 
         # unit conversion factor
         unit_factor = 1.0
@@ -189,4 +198,3 @@ class LandUseV2():
             magnitude_factor = OrderOfMagnitude.magnitude_factor[magnitude]
 
         return surface * unit_factor * magnitude_factor
-

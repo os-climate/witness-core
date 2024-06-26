@@ -1,3 +1,3 @@
 # DICE Model
 
-DICE multi-scenario not documented yet (in *dice_ms*)
+DICE multi-scenario not documented yet (in _dice_ms_)

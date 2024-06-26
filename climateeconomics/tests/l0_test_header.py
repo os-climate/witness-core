@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,8 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
-
+"""
 
 import json
 import os
@@ -29,22 +28,22 @@ class Testheader(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
+        """
         Initialize third data needed for testing
-        '''
+        """
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
 
-        with open(os.path.join(os.path.dirname(__file__),"..","..","headers_ignore_config.json"),"r",encoding="utf-8") as f:
+        with open(
+            os.path.join(os.path.dirname(__file__), "..", "..", "headers_ignore_config.json"), "r", encoding="utf-8"
+        ) as f:
 
-            headers_ignore_config=json.load(f)
+            headers_ignore_config = json.load(f)
 
             self.extension_to_ignore = headers_ignore_config["extension_to_ignore"]
-            #Add here the files to ignore
+            # Add here the files to ignore
             self.files_to_ignore = headers_ignore_config["files_to_ignore"]
-            #commit from where to compare added, modeified deleted ...
+            # commit from where to compare added, modeified deleted ...
             self.airbus_rev_commit = headers_ignore_config["airbus_rev_commit"]
-
-        
 
     def test_Headers(self):
         ht = HeaderTools()

@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -38,22 +38,32 @@ INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
-DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': 'energy', 'value': ['RenewableSimpleTechno']},
-                              'fossil': {'type': 'energy', 'value': ['FossilSimpleTechno']},
-                              'carbon_capture': {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
-                                                                           'flue_gas_capture.FlueGasTechno']},
-                              'carbon_storage': {'type': 'CCUS', 'value': ['CarbonStorageTechno']}}
-DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
-) if value['type'] == 'energy']
-DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
-) if value['type'] == 'CCUS']
+DEFAULT_COARSE_TECHNO_DICT = {
+    "renewable": {"type": "energy", "value": ["RenewableSimpleTechno"]},
+    "fossil": {"type": "energy", "value": ["FossilSimpleTechno"]},
+    "carbon_capture": {
+        "type": "CCUS",
+        "value": ["direct_air_capture.DirectAirCaptureTechno", "flue_gas_capture.FlueGasTechno"],
+    },
+    "carbon_storage": {"type": "CCUS", "value": ["CarbonStorageTechno"]},
+}
+DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items() if value["type"] == "energy"]
+DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items() if value["type"] == "CCUS"]
 
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=True, run_usecase=False,
-                 execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT):
+    def __init__(
+        self,
+        year_start=GlossaryCore.YearStartDefault,
+        year_end=GlossaryCore.YearEndDefault,
+        time_step=1,
+        bspline=True,
+        run_usecase=False,
+        execution_engine=None,
+        invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
+        techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
+    ):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -63,36 +73,40 @@ class Study(ClimateEconomicsStudyManager):
         self.energy_list = DEFAULT_ENERGY_LIST
         self.ccs_list = DEFAULT_CCS_LIST
         self.dc_energy = datacase_energy(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
+            self.year_start,
+            self.year_end,
+            self.time_step,
+            bspline=self.bspline,
+            execution_engine=execution_engine,
+            invest_discipline=self.invest_discipline,
+            techno_dict=techno_dict,
+            main_study=False,
+        )
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_process(self):
         datacase_energy.setup_process(self)
 
     def setup_constraint_land_use(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
+        func_df = DataFrame(columns=["variable", "parent", "ftype", "weight", AGGR_TYPE])
         list_var = []
         list_parent = []
         list_ftype = []
         list_weight = []
         list_aggr_type = []
         list_ns = []
-        list_var.extend(
-            ['land_demand_constraint_df'])
+        list_var.extend(["land_demand_constraint_df"])
         list_parent.extend([None])
         list_ftype.extend([INEQ_CONSTRAINT])
         list_weight.extend([-1.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
+        list_aggr_type.extend([AGGR_TYPE_SUM])
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
+        func_df["variable"] = list_var
+        func_df["parent"] = list_parent
+        func_df["ftype"] = list_ftype
+        func_df["weight"] = list_weight
         func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+        func_df["namespace"] = list_ns
 
         return func_df
 
@@ -105,8 +119,7 @@ class Study(ClimateEconomicsStudyManager):
         self.energy_mda_usecase = self.dc_energy
 
         # -- load data from witness
-        dc_witness = datacase_witness(
-            self.year_start, self.year_end, self.time_step)
+        dc_witness = datacase_witness(self.year_start, self.year_end, self.time_step)
         dc_witness.study_name = self.study_name
 
         witness_input_list = dc_witness.setup_usecase()
@@ -124,20 +137,21 @@ class Study(ClimateEconomicsStudyManager):
         self.dict_technos = self.dc_energy.dict_technos
 
         numerical_values_dict = {
-            f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
-            f'{self.study_name}.tolerance': 1.0e-10,
-            f'{self.study_name}.n_processes': 1,
-            f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
-            f'{self.study_name}.cache_type': 'SimpleCache'}
+            f"{self.study_name}.epsilon0": 1.0,
+            f"{self.study_name}.max_mda_iter": 50,
+            f"{self.study_name}.tolerance": 1.0e-10,
+            f"{self.study_name}.n_processes": 1,
+            f"{self.study_name}.linearization_mode": "adjoint",
+            f"{self.study_name}.sub_mda_class": "GSPureNewtonMDA",
+            f"{self.study_name}.cache_type": "SimpleCache",
+        }
 
         setup_data_list.append(numerical_values_dict)
 
         return setup_data_list
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()

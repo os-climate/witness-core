@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 27/11/2023-2024/06/24 Copyright 2023 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from os.path import dirname, join
 
 import numpy as np
@@ -33,35 +34,35 @@ class Study(StudyManager):
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
-        self.data_dir = join(dirname(__file__), 'data')
+        self.data_dir = join(dirname(__file__), "data")
 
     def setup_usecase(self, study_folder_path=None):
-        witness_ms_usecase = witness_optim_usecase(
-            execution_engine=self.execution_engine)
+        witness_ms_usecase = witness_optim_usecase(execution_engine=self.execution_engine)
 
-        self.scatter_scenario = 'optimization scenarios'
+        self.scatter_scenario = "optimization scenarios"
         # Set public values at a specific namespace
-        witness_ms_usecase.study_name = f'{self.study_name}.{self.scatter_scenario}'
+        witness_ms_usecase.study_name = f"{self.study_name}.{self.scatter_scenario}"
 
         values_dict = {}
         scenario_list = []
         alpha_list = np.linspace(0.0, 100.0, 11, endpoint=True) / 100.0
         for alpha_i in alpha_list:
-            scenario_i = 'scenario_\u03B1=%.2f' % alpha_i
-            scenario_i = scenario_i.replace('.', ',')
+            scenario_i = "scenario_\u03B1=%.2f" % alpha_i
+            scenario_i = scenario_i.replace(".", ",")
             scenario_list.append(scenario_i)
-            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = alpha_i
+            values_dict[
+                f"{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha"
+            ] = alpha_i
 
-        values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 11
+        values_dict[f"{self.study_name}.epsilon0"] = 1.0
+        values_dict[f"{self.study_name}.n_subcouplings_parallel"] = 11
         len_scenarios = len(scenario_list)
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
+        scenario_df = pd.DataFrame({"selected_scenario": [True] * len_scenarios, "scenario_name": scenario_list})
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
+        values_dict[f"{self.study_name}.{self.scatter_scenario}.samples_df"] = scenario_df
         for scenario in scenario_list:
-            scenarioUseCase = witness_optim_usecase(
-                bspline=self.bspline, execution_engine=self.execution_engine)
-            scenarioUseCase.optim_name = f'{scenario}.{scenarioUseCase.optim_name}'
+            scenarioUseCase = witness_optim_usecase(bspline=self.bspline, execution_engine=self.execution_engine)
+            scenarioUseCase.optim_name = f"{scenario}.{scenarioUseCase.optim_name}"
             scenarioUseCase.study_name = witness_ms_usecase.study_name
             scenarioData = scenarioUseCase.setup_usecase()
 
@@ -71,14 +72,15 @@ class Study(StudyManager):
         return values_dict
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
 
     post_processing_factory = PostProcessingFactory()
     post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
+        uc_cls.execution_engine, f"{uc_cls.study_name}.Post-processing", []
+    )
 #     all_post_processings = post_processing_factory.get_all_post_processings(
 #         uc_cls.execution_engine, False, as_json=False, for_test=False)
 #

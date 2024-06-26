@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import json
 from datetime import date
 from os.path import dirname, join
@@ -25,7 +26,7 @@ data_folder = join(dirname(dirname(__file__)), "data")
 
 
 class DatabaseWitnessCore:
-    '''Stocke les valeurs utilisées dans witness core'''
+    """Stocke les valeurs utilisées dans witness core"""
 
     FoodWastePercentage = ColectedData(
         value=30,
@@ -33,7 +34,7 @@ class DatabaseWitnessCore:
         description="Share of food production that is not consumed (wasted). From harvest to retail: 13%, Retail and conso:17% ",
         link="https://www.fao.org/platform-food-loss-waste/flw-data/en",
         source="Food and Agriculture Organization of the United Nations",
-        last_update_date=date(2024, 2, 28)
+        last_update_date=date(2024, 2, 28),
     )
 
     ENSOTemperatureAnomaly = ColectedData(
@@ -42,7 +43,7 @@ class DatabaseWitnessCore:
         description="Global temperature anomaly due to El Nino - Southern Oscillation phenomenon",
         link="https://berkeleyearth.org/global-temperature-report-for-2023/#:~:text=Annual%20Temperature%20Anomaly&text=As%20a%20result%2C%202023%20is,C%20(2.7%20%C2%B0F).",
         source="BerkleyEarth",
-        last_update_date=date(2024, 2, 27)
+        last_update_date=date(2024, 2, 27),
     )
 
     TemperatureAnomalyPreIndustrialYearStart = ColectedData(
@@ -51,7 +52,7 @@ class DatabaseWitnessCore:
         description="Global average temperature anomaly relative to 1850-1900 average",
         link="https://berkeleyearth.org/global-temperature-report-for-2023/#:~:text=Annual%20Temperature%20Anomaly&text=As%20a%20result%2C%202023%20is,C%20(2.7%20%C2%B0F).",
         source="BerkleyEarth",
-        last_update_date=date(2024, 2, 27)
+        last_update_date=date(2024, 2, 27),
     )
 
     # Data for sectorization
@@ -263,23 +264,26 @@ class DatabaseWitnessCore:
     )
 
     LinearParemetersGDPperRegion = ColectedData(
-        value={'a': [[1588.20633202],
-                     [1959.02654051],
-                     [365.116917],
-                     [310.57653261],
-                     [326.54836759],
-                     [164.98219368]],
-               'b': [-3149086.04111858, -3913390.07132115, -727002.61494862,
-                     -616562.71581522, -648579.38856917, -328849.45974308]},
+        value={
+            "a": [[1588.20633202], [1959.02654051], [365.116917], [310.57653261], [326.54836759], [164.98219368]],
+            "b": [
+                -3149086.04111858,
+                -3913390.07132115,
+                -727002.61494862,
+                -616562.71581522,
+                -648579.38856917,
+                -328849.45974308,
+            ],
+        },
         unit="$",
         description="Linear parameters for the equation y=ax+b for each region to compute GDP share percentage for each region",
         link="Check macroeconomics documentation and jupyter notebook",
         source="",
-        last_update_date=date(2024, 3, 18)
+        last_update_date=date(2024, 3, 18),
     )
 
     # read json for countries per region
-    with open(join(dirname(dirname(__file__)) , 'data', 'countries_per_region.json'), 'r') as fp:
+    with open(join(dirname(dirname(__file__)), "data", "countries_per_region.json"), "r") as fp:
         countries_per_region = json.load(fp)
 
     CountriesPerRegionIMF = ColectedData(
@@ -288,77 +292,107 @@ class DatabaseWitnessCore:
         description="breakdown of countries according to IMF",
         link="https://www.imf.org/en/Publications/WEO/weo-database/2023/April/groups-and-aggregates",
         source="World Economic Outlook : International Monetary Fund",
-        last_update_date=date(2024, 3, 18)
+        last_update_date=date(2024, 3, 18),
     )
 
-    gdp_percentage_per_country = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'mean_gdp_country_percentage_in_group.csv'))
+    gdp_percentage_per_country = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "mean_gdp_country_percentage_in_group.csv")
+    )
     GDPPercentagePerCountry = ColectedData(
         value=gdp_percentage_per_country,
         unit="%",
         description="mean percentage GDP of each country in the group",
         link="",
         source="mean percentages were computed based on official GDP data from international organizations and on the IMF grouping",
-        last_update_date=date(2024, 3, 18)
+        last_update_date=date(2024, 3, 18),
     )
-    energy_consumption_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_services_sections.csv'))
-    energy_consumption_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_agriculture_sections.csv'))
-    energy_consumption_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_industry_sections.csv'))
-    energy_consumption_household = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'energy_consumption_percentage_household_sections.csv'))
-
+    energy_consumption_services = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "energy_consumption_percentage_services_sections.csv")
+    )
+    energy_consumption_agriculture = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "energy_consumption_percentage_agriculture_sections.csv")
+    )
+    energy_consumption_industry = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "energy_consumption_percentage_industry_sections.csv")
+    )
+    energy_consumption_household = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "energy_consumption_percentage_household_sections.csv")
+    )
 
     EnergyConsumptionPercentageSectionsDict = ColectedData(
-        value= {"Agriculture": energy_consumption_agriculture,
-                 "Services": energy_consumption_services,
-                 "Industry": energy_consumption_industry,
-                "Household": energy_consumption_household},
+        value={
+            "Agriculture": energy_consumption_agriculture,
+            "Services": energy_consumption_services,
+            "Industry": energy_consumption_industry,
+            "Household": energy_consumption_household,
+        },
         unit="%",
         description="energy consumption of each section for all sectors",
         link="",
-        source="", # multiples sources TODO
-        last_update_date=date(2024,3,26)
+        source="",  # multiples sources TODO
+        last_update_date=date(2024, 3, 26),
     )
 
-    non_energy_emissions_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_services_sections.csv'))
-    non_energy_emissions_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_agriculture_sections.csv'))
-    non_energy_emissions_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_industry_sections.csv'))
-    non_energy_emissions_household = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'non_energy_emission_gdp_household_sections.csv'))
+    non_energy_emissions_services = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "non_energy_emission_gdp_services_sections.csv")
+    )
+    non_energy_emissions_agriculture = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "non_energy_emission_gdp_agriculture_sections.csv")
+    )
+    non_energy_emissions_industry = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "non_energy_emission_gdp_industry_sections.csv")
+    )
+    non_energy_emissions_household = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "non_energy_emission_gdp_household_sections.csv")
+    )
 
     SectionsNonEnergyEmissionsDict = ColectedData(
-        value={"Agriculture": non_energy_emissions_agriculture,
-                 "Services": non_energy_emissions_services,
-                 "Industry": non_energy_emissions_industry,
-               "Household": non_energy_emissions_household},
+        value={
+            "Agriculture": non_energy_emissions_agriculture,
+            "Services": non_energy_emissions_services,
+            "Industry": non_energy_emissions_industry,
+            "Household": non_energy_emissions_household,
+        },
         unit="tCO2eq/M$",
         description="Non energy CO2 emission per $GDP",
         link="",
-        source="", # multiples sources TODO
-        last_update_date=date(2024,3,26)
+        source="",  # multiples sources TODO
+        last_update_date=date(2024, 3, 26),
     )
 
-    energy_consumption_per_sector = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_per_sector.csv'))
+    energy_consumption_per_sector = pd.read_csv(
+        join(dirname(dirname(__file__)), "data", "energy_consumption_percentage_per_sector.csv")
+    )
 
     EnergyConsumptionPercentageSectorDict = ColectedData(
         value=energy_consumption_per_sector,
         unit="%",
         description="energy consumption of each sector",
         link="",
-        source="", # multiples sources TODO
-        last_update_date=date(2024,3,26)
+        source="",  # multiples sources TODO
+        last_update_date=date(2024, 3, 26),
     )
 
-
-    atmosphere_total_mass_kg = 5.1480 * 10 ** 18
+    atmosphere_total_mass_kg = 5.1480 * 10**18
     molar_mass_atmosphere = 0.02897  # kg/mol
     n_moles_in_atmosphere = atmosphere_total_mass_kg / molar_mass_atmosphere
     kg_to_gt = 10 ** (-12)
     molar_mass_co2, molar_mass_ch4, molar_mass_n2o = 0.04401, 0.016_04, 0.044_013  # kg/mol
 
     pp_to_gt = {
-        "CO2": n_moles_in_atmosphere * molar_mass_co2 * kg_to_gt * 10 ** -6,  # ppm
-        "CH4": n_moles_in_atmosphere * molar_mass_ch4 * kg_to_gt * 10 ** -6 * 1e-3,  # ppb
-        "N2O": n_moles_in_atmosphere * molar_mass_n2o * kg_to_gt * 10 ** -6 * 1e-3,  # ppb
+        "CO2": n_moles_in_atmosphere * molar_mass_co2 * kg_to_gt * 10**-6,  # ppm
+        "CH4": n_moles_in_atmosphere * molar_mass_ch4 * kg_to_gt * 10**-6 * 1e-3,  # ppb
+        "N2O": n_moles_in_atmosphere * molar_mass_n2o * kg_to_gt * 10**-6 * 1e-3,  # ppb
     }
-    del atmosphere_total_mass_kg, molar_mass_atmosphere, n_moles_in_atmosphere, kg_to_gt, molar_mass_co2, molar_mass_ch4, molar_mass_n2o
+    del (
+        atmosphere_total_mass_kg,
+        molar_mass_atmosphere,
+        n_moles_in_atmosphere,
+        kg_to_gt,
+        molar_mass_co2,
+        molar_mass_ch4,
+        molar_mass_n2o,
+    )
 
     PandemicParamsDf = HeavyCollectedData(
         value=join(data_folder, "pandemic_param.csv"),
@@ -369,22 +403,21 @@ class DatabaseWitnessCore:
         last_update_date=date(2023, 3, 1),
     )
 
-
     GWP_2020_100_year_basis = ColectedData(
         value=51.46,
         unit="GtCO2Eq",
         description="Global warming potential for year 2020 on 100-year basis",
         link="https://ourworldindata.org/greenhouse-gas-emissions",
         source="Our wourld in data",
-        last_update_date=date(2024,4,22)
+        last_update_date=date(2024, 4, 22),
     )
     InitialProductionCropForEnergy = ColectedData(
-        value = 3333.24,
+        value=3333.24,
         unit="TWh",
         description="Initial production of crop for energy",
         link="https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use",
-        source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050", # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops
-        last_update_date=date(2024, 4, 24)
+        source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050",  # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops
+        last_update_date=date(2024, 4, 24),
     )
 
     CropInvestmentNZE = HeavyCollectedData(
@@ -393,7 +426,7 @@ class DatabaseWitnessCore:
         description="Investment obtained based on the expected production in NZE scenario, production values are in the link below",
         link="https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use",
         source="Investments are obtained manualy based on production of IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050",
-        last_update_date=date(2024, 4, 24)
+        last_update_date=date(2024, 4, 24),
     )
 
     InvestFossil2020 = ColectedData(

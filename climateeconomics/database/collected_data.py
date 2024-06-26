@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from datetime import date
 from os.path import isfile
 
@@ -48,10 +49,12 @@ class ColectedData:
     @property
     def gui_description(self) -> str:
         """returns a description for displaying in GUI"""
-        gui_descr = f"Defaults values infos :" \
-                    f"{self.description}.\n" \
-                    f"source : {self.source} ({self.link})\n" \
-                    f"Lastly checked on {self.last_update_date.isoformat()}"
+        gui_descr = (
+            f"Defaults values infos :"
+            f"{self.description}.\n"
+            f"source : {self.source} ({self.link})\n"
+            f"Lastly checked on {self.last_update_date.isoformat()}"
+        )
         return gui_descr
 
 

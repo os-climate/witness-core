@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import logging
 import unittest
 from tempfile import gettempdir
@@ -31,16 +32,15 @@ class DICEMDAPrerunTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.name = 'Test'
+        self.name = "Test"
         self.root_dir = gettempdir()
         self.ee = ExecutionEngine(self.name)
         logging.disable(logging.INFO)
 
     def test_execute(self):
 
-        repo = 'climateeconomics.sos_processes.iam.dice'
-        builder = self.ee.factory.get_builder_from_process(
-            repo, 'dice_model')
+        repo = "climateeconomics.sos_processes.iam.dice"
+        builder = self.ee.factory.get_builder_from_process(repo, "dice_model")
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
@@ -51,17 +51,16 @@ class DICEMDAPrerunTest(unittest.TestCase):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
-        print('first execution with eco_df as input')
+        print("first execution with eco_df as input")
         self.ee.load_study_from_input_dict(values_dict)
 
         t0 = time()
         self.ee.execute()
         t1 = time() - t0
-        print('time for first exec : ', t1, 's')
+        print("time for first exec : ", t1, "s")
         # print(residual_history_1)
         ee2 = ExecutionEngine(self.name)
-        builder = ee2.factory.get_builder_from_process(
-            repo, 'dice_model')
+        builder = ee2.factory.get_builder_from_process(repo, "dice_model")
 
         ee2.factory.set_builders_to_coupling_builder(builder)
 
@@ -72,67 +71,79 @@ class DICEMDAPrerunTest(unittest.TestCase):
         values_dict = {}
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
-        values_dict.pop(usecase.study_name + f'.{GlossaryCore.EconomicsDfValue}')
+        values_dict.pop(usecase.study_name + f".{GlossaryCore.EconomicsDfValue}")
 
         dice_input = {}
-        years = np.arange(usecase.year_start,
-                          usecase.year_end + 1, usecase.time_step)
+        years = np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step)
         data = np.zeros(len(years))
-        df = DataFrame({'year': years,
-                        GlossaryCore.Damages: data,
-                        GlossaryCore.DamageFractionOutput: data,
-                        'backstop_price': data,
-                        'adj_backstop_cost': data,
-                        'abatecost': data,
-                        'marg_abatecost': data,
-                        'carbon_price': data,
-                        GlossaryCore.BaseCarbonPrice: data},
-                       index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+        df = DataFrame(
+            {
+                "year": years,
+                GlossaryCore.Damages: data,
+                GlossaryCore.DamageFractionOutput: data,
+                "backstop_price": data,
+                "adj_backstop_cost": data,
+                "abatecost": data,
+                "marg_abatecost": data,
+                "carbon_price": data,
+                GlossaryCore.BaseCarbonPrice: data,
+            },
+            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step),
+        )
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
 
         values_dict.update(dice_input)
 
-        print('second execution with damage_df as input')
+        print("second execution with damage_df as input")
 
         ee2.load_study_from_input_dict(values_dict)
         t0 = time()
         ee2.execute()
         t1 = time() - t0
-        print('time for second exec : ', t1, 's')
+        print("time for second exec : ", t1, "s")
         # print(residual_history_2)
 
-        CO2_emissions_df = DataFrame({
-            'year': years,
-            'gr_sigma': data,
-            'sigma': data,
-            'land_emissions': data,
-            'cum_land_emissions': data,
-            'indus_emissions': data,
-            'cum_indus_emissions': data,
-            'total_emissions': data,
-            'cum_total_emissions': data,
-            'emissions_control_rate': data},
-            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+        CO2_emissions_df = DataFrame(
+            {
+                "year": years,
+                "gr_sigma": data,
+                "sigma": data,
+                "land_emissions": data,
+                "cum_land_emissions": data,
+                "indus_emissions": data,
+                "cum_indus_emissions": data,
+                "total_emissions": data,
+                "cum_total_emissions": data,
+                "emissions_control_rate": data,
+            },
+            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step),
+        )
 
-        carboncycle_df = DataFrame({
-            'year': years,
-            'atmo_conc': data,
-            'lower_ocean_conc': data,
-            'shallow_ocean_conc': data,
-            'ppm': data,
-            'atmo_share_since1850': data,
-            'atmo_share_sinceystart': data},
-            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+        carboncycle_df = DataFrame(
+            {
+                "year": years,
+                "atmo_conc": data,
+                "lower_ocean_conc": data,
+                "shallow_ocean_conc": data,
+                "ppm": data,
+                "atmo_share_since1850": data,
+                "atmo_share_sinceystart": data,
+            },
+            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step),
+        )
 
-        temperature_df = DataFrame({'year': years,
-                                    GlossaryCore.ExoGForcing: data,
-                                    GlossaryCore.Forcing: data,
-                                    GlossaryCore.TempAtmo: data,
-                                    GlossaryCore.TempOcean: data},
-                                   index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+        temperature_df = DataFrame(
+            {
+                "year": years,
+                GlossaryCore.ExoGForcing: data,
+                GlossaryCore.Forcing: data,
+                GlossaryCore.TempAtmo: data,
+                GlossaryCore.TempOcean: data,
+            },
+            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step),
+        )
         ee2 = ExecutionEngine(self.name)
-        builder = ee2.factory.get_builder_from_process(
-            repo, 'dice_model')
+        builder = ee2.factory.get_builder_from_process(repo, "dice_model")
 
         ee2.factory.set_builders_to_coupling_builder(builder)
 
@@ -151,16 +162,15 @@ class DICEMDAPrerunTest(unittest.TestCase):
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
         values_dict.update(dice_input)
 
-        print('all inputs execution with all inputs')
+        print("all inputs execution with all inputs")
         ee2.load_study_from_input_dict(values_dict)
         t0 = time()
         ee2.execute()
         t1 = time() - t0
-        print('time for all inputs exec : ', t1, 's')
+        print("time for all inputs exec : ", t1, "s")
 
         ee2 = ExecutionEngine(self.name)
-        builder = ee2.factory.get_builder_from_process(
-            repo, 'dice_model')
+        builder = ee2.factory.get_builder_from_process(repo, "dice_model")
 
         ee2.factory.set_builders_to_coupling_builder(builder)
 
@@ -177,9 +187,9 @@ class DICEMDAPrerunTest(unittest.TestCase):
 
         values_dict.update(dice_input)
 
-        values_dict.pop(usecase.study_name + f'.{GlossaryCore.EconomicsDfValue}')
+        values_dict.pop(usecase.study_name + f".{GlossaryCore.EconomicsDfValue}")
 
-        print('only carbon cycle execution will crash')
+        print("only carbon cycle execution will crash")
         ee2.load_study_from_input_dict(values_dict)
 
         self.assertRaises(Exception, ee2.execute)

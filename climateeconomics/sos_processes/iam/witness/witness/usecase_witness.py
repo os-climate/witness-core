@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import cProfile
 import pstats
@@ -53,11 +53,19 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=True, run_usecase=False,
-                 execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[
-                     2], techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
-                 process_level='val'):
+    def __init__(
+        self,
+        year_start=GlossaryCore.YearStartDefault,
+        year_end=GlossaryCore.YearEndDefault,
+        time_step=1,
+        bspline=True,
+        run_usecase=False,
+        execution_engine=None,
+        invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
+        techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT,
+        agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+        process_level="val",
+    ):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -68,20 +76,29 @@ class Study(ClimateEconomicsStudyManager):
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.dc_energy = datacase_energy(
-            year_start=self.year_start, year_end=self.year_end, time_step=self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
+            year_start=self.year_start,
+            year_end=self.year_end,
+            time_step=self.time_step,
+            bspline=self.bspline,
+            execution_engine=execution_engine,
+            invest_discipline=self.invest_discipline,
+            techno_dict=techno_dict,
+            main_study=False,
+        )
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_constraint_land_use(self):
 
-        func_df = pd.DataFrame({
-            'variable': ['land_demand_constraint'],
-            'parent': ['agriculture_constraint'],
-            'ftype': [INEQ_CONSTRAINT],
-            'weight': [-1.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS]
-        })
+        func_df = pd.DataFrame(
+            {
+                "variable": ["land_demand_constraint"],
+                "parent": ["agriculture_constraint"],
+                "ftype": [INEQ_CONSTRAINT],
+                "weight": [-1.0],
+                AGGR_TYPE: [AGGR_TYPE_SUM],
+                "namespace": [GlossaryCore.NS_FUNCTIONS],
+            }
+        )
 
         return func_df
 
@@ -94,12 +111,12 @@ class Study(ClimateEconomicsStudyManager):
         self.dc_energy.study_name = self.study_name
         self.energy_mda_usecase = self.dc_energy
         # -- load data from witness
-        if self.process_level == 'val':
-            dc_witness = datacase_witness(
-                self.year_start, self.year_end, self.time_step)
+        if self.process_level == "val":
+            dc_witness = datacase_witness(self.year_start, self.year_end, self.time_step)
         else:
             dc_witness = datacase_witness_dev(
-                self.year_start, self.year_end, self.time_step, agri_techno_list=self.agri_techno_list)
+                self.year_start, self.year_end, self.time_step, agri_techno_list=self.agri_techno_list
+            )
 
         dc_witness.study_name = self.study_name
         witness_input_list = dc_witness.setup_usecase()
@@ -118,8 +135,14 @@ class Study(ClimateEconomicsStudyManager):
         # WITNESS
         # setup objectives
         self.func_df = concat(
-            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(),
-             self.dc_energy.setup_objectives(), land_use_df_constraint])
+            [
+                dc_witness.setup_objectives(),
+                dc_witness.setup_constraints(),
+                self.dc_energy.setup_constraints(),
+                self.dc_energy.setup_objectives(),
+                land_use_df_constraint,
+            ]
+        )
 
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
@@ -131,36 +154,34 @@ class Study(ClimateEconomicsStudyManager):
 
     def setup_mda(self):
         numerical_values_dict = {
-            f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 2,
-            f'{self.study_name}.tolerance': 1.0e-10,
-            f'{self.study_name}.n_processes': 1,
-            f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
-            f'{self.study_name}.cache_type': 'SimpleCache', }
+            f"{self.study_name}.epsilon0": 1.0,
+            f"{self.study_name}.max_mda_iter": 2,
+            f"{self.study_name}.tolerance": 1.0e-10,
+            f"{self.study_name}.n_processes": 1,
+            f"{self.study_name}.linearization_mode": "adjoint",
+            f"{self.study_name}.sub_mda_class": "GSPureNewtonMDA",
+            f"{self.study_name}.cache_type": "SimpleCache",
+        }
         # f'{self.study_name}.gauss_seidel_execution': True}
         return numerical_values_dict
 
-    def run(self, logger_level=None,
-            dump_study=False,
-            for_test=False):
+    def run(self, logger_level=None, dump_study=False, for_test=False):
 
         profil = cProfile.Profile()
         profil.enable()
-        ClimateEconomicsStudyManager.run(
-            self, logger_level=logger_level, dump_study=dump_study, for_test=for_test)
+        ClimateEconomicsStudyManager.run(self, logger_level=logger_level, dump_study=dump_study, for_test=for_test)
         profil.disable()
 
         result = StringIO()
 
         ps = pstats.Stats(profil, stream=result)
-        ps.sort_stats('cumulative')
+        ps.sort_stats("cumulative")
         ps.print_stats(500)
         result = result.getvalue()
         print(result)
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
 
     # TODO : careful, this usecase is quite long to test ! 800 sec
     uc_cls = Study(run_usecase=True)

@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 27/11/2023-2024/06/24 Copyright 2023 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 from os.path import dirname, join
 
 import numpy as np
@@ -29,28 +30,26 @@ class Study(StudyManager):
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
-        self.data_dir = join(dirname(__file__), 'data')
+        self.data_dir = join(dirname(__file__), "data")
 
     def setup_usecase(self, study_folder_path=None):
-        witness_ms_usecase = witness_dev_usecase(
-            execution_engine=self.execution_engine)
+        witness_ms_usecase = witness_dev_usecase(execution_engine=self.execution_engine)
 
-        self.scatter_scenario = 'multiscenario'
+        self.scatter_scenario = "multiscenario"
         # Set public values at a specific namespace
-        witness_ms_usecase.study_name = f'{self.study_name}.{self.scatter_scenario}'
+        witness_ms_usecase.study_name = f"{self.study_name}.{self.scatter_scenario}"
 
         values_dict = {}
         scenario_list = []
         alpha_list = np.arange(0, 500, 1)
         for alpha_i in alpha_list:
-            scenario_i = f'scenario_{alpha_i}'
+            scenario_i = f"scenario_{alpha_i}"
             scenario_list.append(scenario_i)
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        values_dict[f"{self.study_name}.{self.scatter_scenario}.scenario_list"] = scenario_list
 
         for scenario in scenario_list:
-            scenarioUseCase = witness_dev_usecase(
-                bspline=self.bspline, execution_engine=self.execution_engine)
+            scenarioUseCase = witness_dev_usecase(bspline=self.bspline, execution_engine=self.execution_engine)
             scenarioUseCase.study_name = witness_ms_usecase.study_name
             scenarioData = scenarioUseCase.setup_usecase()
 
@@ -60,7 +59,7 @@ class Study(StudyManager):
         return values_dict
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()

@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
@@ -13,7 +13,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
+
 import pandas as pd
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -29,36 +30,33 @@ from climateeconomics.glossarycore import GlossaryCore
 class UtilityModelDiscipline(SoSWrapp):
     "UtilityModel discipline for DICE"
 
-
     # ontology information
     _ontology_data = {
-        'label': 'Utility DICE Model',
-        'type': 'Research',
-        'source': 'SoSTrades Project',
-        'validated': '',
-        'validated_by': 'SoSTrades Project',
-        'last_modification_date': '',
-        'category': '',
-        'definition': '',
-        'icon': 'fas fa-child fa-fw',
-        'version': '',
+        "label": "Utility DICE Model",
+        "type": "Research",
+        "source": "SoSTrades Project",
+        "validated": "",
+        "validated_by": "SoSTrades Project",
+        "last_modification_date": "",
+        "category": "",
+        "definition": "",
+        "icon": "fas fa-child fa-fw",
+        "version": "",
     }
-    _maturity = 'Research'
+    _maturity = "Research"
     DESC_IN = {
-        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'scaleone': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},
-        'scaletwo': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': -10993.704},
-        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
-        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
+        GlossaryCore.YearStart: {"type": "int", "visibility": "Shared", "namespace": "ns_dice"},
+        GlossaryCore.YearEnd: {"type": "int", "visibility": "Shared", "namespace": "ns_dice"},
+        GlossaryCore.TimeStep: {"type": "int", "visibility": "Shared", "namespace": "ns_dice"},
+        "conso_elasticity": {"type": "float", "visibility": "Shared", "namespace": "ns_dice"},
+        "init_rate_time_pref": {"type": "float", "visibility": "Shared", "namespace": "ns_dice"},
+        "scaleone": {"type": "float", "visibility": SoSWrapp.INTERNAL_VISIBILITY, "default": 0.0302455265681763},
+        "scaletwo": {"type": "float", "visibility": SoSWrapp.INTERNAL_VISIBILITY, "default": -10993.704},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, "ns_scenario"),
+        "emissions_df": {"type": "dataframe", "visibility": "Shared", "namespace": "ns_scenario"},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, "ns_scenario"),
     }
-    DESC_OUT = {
-        GlossaryCore.UtilityDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
-    }
+    DESC_OUT = {GlossaryCore.UtilityDfValue: {"type": "dataframe", "visibility": "Shared", "namespace": "ns_scenario"}}
 
     def run(self):
         # get inputs
@@ -67,11 +65,10 @@ class UtilityModelDiscipline(SoSWrapp):
 
         # compute utility
         economics_df = inp_dict.pop(GlossaryCore.EconomicsDfValue)
-        emissions_df = inp_dict.pop('emissions_df')
+        emissions_df = inp_dict.pop("emissions_df")
         temperature_df = inp_dict.pop(GlossaryCore.TemperatureDfValue)
         utility_m = UtilityModel(inp_dict)
-        utility_df = utility_m.compute(
-            economics_df, emissions_df, temperature_df)
+        utility_df = utility_m.compute(economics_df, emissions_df, temperature_df)
 
         # store output data
         dict_values = {GlossaryCore.UtilityDfValue: utility_df}
@@ -84,10 +81,9 @@ class UtilityModelDiscipline(SoSWrapp):
 
         chart_filters = []
 
-        chart_list = ['Utility', 'Utility of pc consumption']
+        chart_list = ["Utility", "Utility of pc consumption"]
         # First filter to deal with the view : program or actor
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
 
         return chart_filters
 
@@ -101,10 +97,10 @@ class UtilityModelDiscipline(SoSWrapp):
 
         if chart_filters is not None:
             for chart_filter in chart_filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     chart_list = chart_filter.selected_values
 
-        if 'Utility' in chart_list:
+        if "Utility" in chart_list:
 
             to_plot = [GlossaryCore.DiscountedUtility]
             utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
@@ -119,32 +115,34 @@ class UtilityModelDiscipline(SoSWrapp):
 
             max_value = discounted_utility.values.max()
 
-            chart_name = 'Utility'
+            chart_name = "Utility"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Discounted Utility (trill $)',
-                                                 [year_start - 5, year_end + 5], [
-                                                     0, max_value * 1.1],
-                                                 chart_name)
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                "Discounted Utility (trill $)",
+                [year_start - 5, year_end + 5],
+                [0, max_value * 1.1],
+                chart_name,
+            )
 
             for key in to_plot:
                 visible_line = True
 
                 c_emission = list(utility_df[key])
 
-                new_series = InstanciatedSeries(
-                    years, c_emission, key, 'lines', visible_line)
+                new_series = InstanciatedSeries(years, c_emission, key, "lines", visible_line)
 
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
-        if 'Utility of pc consumption' in chart_list:
+        if "Utility of pc consumption" in chart_list:
 
-            to_plot = ['period_utility']
+            to_plot = ["period_utility"]
             utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
             utility_df = resize_df(utility_df)
 
-            utility = utility_df['period_utility']
+            utility = utility_df["period_utility"]
 
             years = list(utility_df.index)
 
@@ -153,20 +151,22 @@ class UtilityModelDiscipline(SoSWrapp):
 
             max_value = utility.values.max()
 
-            chart_name = 'Utility of per capita consumption'
+            chart_name = "Utility of per capita consumption"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Utility of pc consumption',
-                                                 [year_start - 5, year_end + 5], [
-                                                     0, max_value * 1.1],
-                                                 chart_name)
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                "Utility of pc consumption",
+                [year_start - 5, year_end + 5],
+                [0, max_value * 1.1],
+                chart_name,
+            )
 
             for key in to_plot:
                 visible_line = True
 
                 c_emission = list(utility_df[key])
 
-                new_series = InstanciatedSeries(
-                    years, c_emission, key, 'lines', visible_line)
+                new_series = InstanciatedSeries(years, c_emission, key, "lines", visible_line)
 
                 new_chart.series.append(new_series)
 
@@ -193,8 +193,8 @@ def resize_df(df):
         new_df = df
     else:
         for element in key:
-            new_df[element] = df[element][0:i + 1]
-            new_df.index = index[0: i + 1]
+            new_df[element] = df[element][0 : i + 1]
+            new_df.index = index[0 : i + 1]
 
     return new_df
 
