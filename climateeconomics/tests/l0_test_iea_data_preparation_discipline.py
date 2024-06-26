@@ -21,6 +21,7 @@ import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy as Glossary
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 import random
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 
 class IEADataPreparationTest(unittest.TestCase):
 
@@ -62,6 +63,14 @@ class IEADataPreparationTest(unittest.TestCase):
 
         temperature_df = pd.DataFrame({Glossary.Years: years,
                                       Glossary.TempAtmo: [2.2, 2.7, 2.75, 2.78]})
+        land_use_df = pd.DataFrame({Glossary.Years: years,
+                                      'Crop (Gha)': [2.2, 2.7, 2.75, 2.78],
+                                    'Food Surface (Gha)': [3.2, 3.7, 3.75, 3.78],
+                                    'Total Agriculture Surface (Gha)': [4.2, 4.7, 4.75, 4.78],
+                                    'Total Forest Surface (Gha)': [5.2, 5.7, 5.75, 5.78],
+                                    })
+        natural_gas_price = pd.DataFrame({Glossary.Years: years,
+                                          Glossary.FossilGas: [2.3, 2.8, 2.95, 2.58]})
 
         l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}',
                             f'{Glossary.electricity}_{Glossary.Hydropower}',
@@ -82,10 +91,12 @@ class IEADataPreparationTest(unittest.TestCase):
             f'{self.name}.{self.model_name}.{Glossary.EnergyProductionValue}': energy_production_df,
             f'{self.name}.{self.model_name}.{Glossary.TemperatureDfValue}': temperature_df,
             f'{self.name}.{self.model_name}.{Glossary.PopulationDfValue}': population_df,
+            f'{self.name}.{self.model_name}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
+            f'{self.name}.{self.model_name}.{Glossary.methane}_{Glossary.EnergyPricesValue}': natural_gas_price,
         }
         # random values for techno
         for techno in l_technos_to_add:
-            values_dict.update({f'{self.name}.{self.model_name}.{techno}_techno_production' : pd.DataFrame({Glossary.Years: years,
+            values_dict.update({f'{self.name}.{self.model_name}.{techno}_techno_production': pd.DataFrame({Glossary.Years: years,
                                 Glossary.TechnoProductionValue: [random.randint(15, 100) for _ in range(4)]})})
 
         values_dict.update({

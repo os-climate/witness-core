@@ -27,6 +27,7 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 import plotly.graph_objects as go
 
 def update_variable_name(list_var_value, suffix):
@@ -90,19 +91,32 @@ class IEADataPreparationDiscipline(SoSWrapp):
     co2_tax_dict_value = Glossary.get_dynamic_variable(Glossary.CO2Taxes)
     energy_production_dict_value = Glossary.get_dynamic_variable(Glossary.EnergyProductionDf)
     temperature_dict_value = Glossary.get_dynamic_variable(Glossary.TemperatureDf)
+    land_use_surface_dict_value = {'var_name': LandUseV2.LAND_SURFACE_DETAIL_DF,
+                                   'type': 'dataframe', 'unit': 'Gha',
+                                   'dataframe_descriptor': {Glossary.Years: ('float', None, False),
+                                                            'Crop (Gha)': ('float', None, False),
+                                                            'Food Surface (Gha)': ('float', None, False),
+                                                            'Total Agriculture Surface (Gha)': ('float', None, False),
+                                                            'Total Forest Surface (Gha)': ('float', None, False),
+                                                            }
+                                   }
     # list of dictionaries to update
     l_dict_to_update = [co2_emissions_dict_variable, gdp_dict_variable, population_dict_variable, co2_tax_dict_value,
-                        energy_production_dict_value, temperature_dict_value]
+                        energy_production_dict_value, temperature_dict_value, land_use_surface_dict_value,
+                        ]
     # compute the updated dictionaries to be used in both desc_in and desc_out
     desc_in_updated, desc_out_updated = update_variable_name(l_dict_to_update, SUFFIX_VAR_INTERPOLATED)
 
     # add techno production
-    l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}', f'{Glossary.electricity}_{Glossary.Hydropower}',
+    l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}',
+                        f'{Glossary.electricity}_{Glossary.Hydropower}',
                         f'{Glossary.electricity}_{Glossary.Solar}',
                         f'{Glossary.electricity}_{Glossary.WindOnshoreAndOffshore}',
-                        f'{Glossary.solid_fuel}_{Glossary.CoalExtraction}', f'{Glossary.methane}_{Glossary.FossilGas}',
-                        f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}', f'{Glossary.CropEnergy}',
-                        f'{Glossary.ForestProduction}'
+                        f'{Glossary.solid_fuel}_{Glossary.CoalExtraction}',
+                        f'{Glossary.methane}_{Glossary.FossilGas}',
+                        f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}',
+                        f'{Glossary.CropEnergy}',
+                        f'{Glossary.ForestProduction}',
                         ]
     # get techno production metadata from glossary and modify them with the correct name
     dict_values_techno_production = create_production_variables(l_technos_to_add)
@@ -110,14 +124,15 @@ class IEADataPreparationDiscipline(SoSWrapp):
     # update created desc_in and desc_out with the new variables
     desc_in_updated.update(dict_in_production)
     desc_out_updated.update(dict_out_production)
-    # add energy prices variable for electricity
-    energy_prices_dict = Glossary.get_dynamic_variable(Glossary.EnergyPricesDf)
-    # only energy price to compare is for electricity technologies. No need to call a function
-    energy_prices_dict['var_name'] = f'{Glossary.electricity}_{Glossary.EnergyPricesValue}'
-    desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict], SUFFIX_VAR_INTERPOLATED)
-    # update desc_in and desc_out with energy prices variable
-    desc_in_updated.update(desc_in_energy_prices)
-    desc_out_updated.update(desc_out_energy_prices)
+    # add energy prices variable for electricity and natural gas
+    for energy in [f'{Glossary.electricity}', f'{Glossary.methane}']:
+        energy_prices_dict = Glossary.get_dynamic_variable(Glossary.EnergyPricesDf)
+        # only energy price to compare is for electricity technologies. No need to call a function
+        energy_prices_dict['var_name'] = f'{energy}_{Glossary.EnergyPricesValue}'
+        desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict], SUFFIX_VAR_INTERPOLATED)
+        # update desc_in and desc_out with energy prices variable
+        desc_in_updated.update(desc_in_energy_prices)
+        desc_out_updated.update(desc_out_energy_prices)
     # store list of input variables for later use
     variables_to_store = list(desc_in_updated.keys())
 

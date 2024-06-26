@@ -44,6 +44,7 @@ from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
 from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import IEADataPreparationDiscipline
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -235,6 +236,8 @@ class Study(ClimateEconomicsStudyManager):
         crop_production_df = create_df_from_csv("IEA_NZE_crop_mix_detailed_production.csv")
         forest_production_df = create_df_from_csv("IEA_NZE_forest_techno_production.csv")
         electricity_prices_df = create_df_from_csv("IEA_NZE_electricity_Technologies_Mix_prices.csv")
+        natural_gas_price_df = create_df_from_csv("IEA_NZE_EnergyMix.methane.FossilGas.techno_prices.csv")
+        land_use_df = create_df_from_csv("IEA_NZE_Land_Use.land_surface_detail_df.csv")
 
         values_dict.update({
             f'{ns}.{GlossaryEnergy.YearStart}': self.year_start,
@@ -255,8 +258,10 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production': biogas_production_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.CropEnergy}_techno_production': crop_production_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.ForestProduction}_techno_production': forest_production_df,
+            f'{ns}.{IEA_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
             # energy prices
-            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': electricity_prices_df
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': electricity_prices_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.EnergyPricesValue}': natural_gas_price_df
             })
 
         return [values_dict] + [optim_values_dict]
