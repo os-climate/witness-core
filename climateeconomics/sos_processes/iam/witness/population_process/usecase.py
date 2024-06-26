@@ -76,6 +76,7 @@ class Study(StudyManager):
         economics_df_y.index = years
         temperature_df_all = read_csv(
             join(global_data_dir, 'temperature_data_onestep.csv'))
+        temperature_df_all = temperature_df_all[GlossaryCore.TemperatureDf['dataframe_descriptor'].keys()]
 
         population_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df_y
         population_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df_all
@@ -87,16 +88,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        filters = ppf.get_post_processing_filters_by_discipline(
-            disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
-
-        for graph in graph_list:
-            graph.to_plotly().show()
+    uc_cls.test()
