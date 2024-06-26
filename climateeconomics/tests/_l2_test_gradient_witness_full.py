@@ -1,7 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 06/07/2024 Copyright 2024 Capgemini
-
+Modifications on {} Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -17,15 +16,15 @@ limitations under the License.
 '''
 from os.path import dirname, exists, join
 
-from tqdm import tqdm
-
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
-    Study as witness_sub_proc_usecase,
-)
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
+)
+from tqdm import tqdm
+
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
 )
 
 

@@ -19,18 +19,19 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
+        self.override_dump_jacobian = 1
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -39,7 +40,10 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.,
         })
+
 
         self.energy_supply_df = pd.DataFrame({
             GlossaryCore.Years: self.years,

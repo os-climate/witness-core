@@ -19,17 +19,18 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
+        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.model_name = GlossaryCore.Consumption
         self.year_start =GlossaryCore.YearStartDefault
@@ -59,7 +60,9 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
             GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.PerCapitaConsumption: 0.,
         })
         self.population_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -143,8 +146,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_03_consumption_with_low_economy(self):
 
-        economics_df = self.economics_df[[
-            GlossaryCore.Years, GlossaryCore.OutputNetOfDamage]]
+        economics_df = self.economics_df
         economics_df[GlossaryCore.OutputNetOfDamage] = self.economics_df[GlossaryCore.OutputNetOfDamage] / 2
         np.set_printoptions(threshold=np.inf)
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,

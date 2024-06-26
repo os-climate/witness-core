@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/21-2024/06/07 Copyright 2023 Capgemini
+Modifications on 2023/06/21-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class OrderOfMagnitude():
@@ -246,7 +246,7 @@ class Crop():
             raise Exception(
                 f'The distribution sum is not equal to 100 % : {sum_distrib}')
         self.population_df = inputs_dict[GlossaryCore.PopulationDfValue]
-        self.temperature_df = inputs_dict[GlossaryCore.TemperatureDfValue]
+        self.temperature_df = inputs_dict[GlossaryCore.TemperatureDfValue].set_index(GlossaryCore.Years)
         self.co2_emissions_per_kg = inputs_dict['co2_emissions_per_kg']
         self.ch4_emissions_per_kg = inputs_dict['ch4_emissions_per_kg']
         self.n2o_emissions_per_kg = inputs_dict['n2o_emissions_per_kg']

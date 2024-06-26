@@ -18,9 +18,9 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.study_manager.study_manager import StudyManager
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
@@ -115,12 +115,7 @@ class Study(StudyManager):
         # Damage
         damage_df = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
-             GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-
-        total_invests = pd.DataFrame(
-            {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))})
+             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),})
 
         invest_indus = pd.DataFrame(
             {GlossaryCore.Years: years,

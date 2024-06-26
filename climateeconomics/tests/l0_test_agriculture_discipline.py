@@ -18,10 +18,10 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.core.core_agriculture.agriculture import Agriculture
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class AgricultureTestCase(unittest.TestCase):
@@ -41,8 +41,10 @@ class AgricultureTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0, 0.0, year_range))
-        self.temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
+        self.temperature_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.TempAtmo: temperature,
+        })
         self.temperature_df.index = years
 
         self.default_kg_to_m2 = {'red meat': 360,

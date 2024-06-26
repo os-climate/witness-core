@@ -19,19 +19,18 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
 
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class PopulationJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
 
         self.name = 'Test'
@@ -66,7 +65,10 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
             temp_serie.append(temp_serie[year - 1] * 1.01)
 
-        self.economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        self.economics_df_y = pd.DataFrame({GlossaryCore.Years: years,
+                                            GlossaryCore.OutputNetOfDamage: gdp_serie,
+                                            GlossaryCore.GrossOutput: 0.,
+                                            GlossaryCore.PerCapitaConsumption: 0.,})
         self.economics_df_y.index = years
         self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         self.temperature_df.index = years
@@ -190,7 +192,11 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.05)
             temp_serie.append(temp_serie[year - 1] - 0.85)
-        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        economics_df_y = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OutputNetOfDamage: gdp_serie,
+            GlossaryCore.GrossOutput: gdp_serie,
+            GlossaryCore.PerCapitaConsumption: 0})
         economics_df_y.index = years
         temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
@@ -233,9 +239,13 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         gdp_serie.append(gdp_year_start)
         temp_serie.append(0.85)
         for year in np.arange(1, nb_per):
-            gdp_serie.append(gdp_serie[year - 1] * 1000)
+            gdp_serie.append(gdp_serie[year - 1] * 1.05)
             temp_serie.append(temp_serie[year - 1] * 1.02)
-        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        economics_df_y = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OutputNetOfDamage: gdp_serie,
+            GlossaryCore.GrossOutput: gdp_serie,
+            GlossaryCore.PerCapitaConsumption: 0})
         economics_df_y.index = years
         temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
@@ -281,7 +291,11 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.05)
             temp_serie.append(temp_serie[year - 1] + 8.05)
-        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        economics_df_y = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OutputNetOfDamage: gdp_serie,
+            GlossaryCore.GrossOutput: gdp_serie,
+            GlossaryCore.PerCapitaConsumption: 0})
         economics_df_y.index = years
         temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
@@ -327,7 +341,11 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
             temp_serie.append(temp_serie[year - 1] * 1.02)
-        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        economics_df_y = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OutputNetOfDamage: gdp_serie,
+            GlossaryCore.GrossOutput: gdp_serie,
+            GlossaryCore.PerCapitaConsumption: 0})
         economics_df_y.index = years
         temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
@@ -379,7 +397,11 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.05)
             temp_serie.append(temp_serie[year - 1] * 1.02)
-        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        economics_df_y = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OutputNetOfDamage: gdp_serie,
+            GlossaryCore.GrossOutput: gdp_serie,
+            GlossaryCore.PerCapitaConsumption: 0})
         economics_df_y.index = years
         temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years

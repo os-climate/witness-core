@@ -16,17 +16,17 @@ limitations under the License.
 '''
 
 import numpy as np
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.utility_model import UtilityModel
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class UtilityModelDiscipline(ClimateEcoDiscipline):
@@ -54,24 +54,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'strech_scurve': {'type': 'float', 'default': 1.7},
         'shift_scurve': {'type': 'float', 'default': -0.2},
         'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-',
-                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                  GlossaryCore.GrossOutput: ('float', None, False),
-                                                  GlossaryCore.PopulationValue: ('float', None, False),
-                                                  GlossaryCore.Productivity: ('float', None, False),
-                                                  GlossaryCore.ProductivityGrowthRate: ('float', None, False),
-                                                  'energy_productivity_gr': ('float', None, False),
-                                                  'energy_productivity': ('float', None, False),
-                                                  GlossaryCore.Consumption: ('float', None, False),
-                                                  GlossaryCore.Capital: ('float', None, False),
-                                                  GlossaryCore.InvestmentsValue: ('float', None, False),
-                                                  'interest_rate': ('float', None, False),
-                                                  GlossaryCore.OutputGrowth: ('float', None, False),
-                                                  GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
-                                                  GlossaryCore.PerCapitaConsumption: ('float', None, False),
-                                                  GlossaryCore.OutputNetOfDamage: ('float', None, False),
-                                                  GlossaryCore.NetOutput: ('float', None, False),
-                                                  }},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX, 'unit': '$/MWh',
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), GlossaryCore.EnergyPriceValue: ('float', None, True)}},
@@ -230,7 +213,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         years = list(utility_df[GlossaryCore.Years].values)
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Utility gain',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Utility gain',
                                                  chart_name='Quantity utility')
 
             values = utility_df[GlossaryCore.PerCapitaUtilityQuantity].values

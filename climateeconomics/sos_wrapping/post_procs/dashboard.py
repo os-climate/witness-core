@@ -16,15 +16,9 @@ limitations under the License.
 
 import numpy as np
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-
-import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
-import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
-from climateeconomics.core.tools.post_proc import get_scenario_value
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
+from plotly.subplots import make_subplots
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     TwoAxesInstanciatedChart,
@@ -32,6 +26,12 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+
+import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
+import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
+from climateeconomics.core.tools.post_proc import get_scenario_value
+from climateeconomics.glossarycore import GlossaryCore
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -67,7 +67,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 chart_list = chart_filter.selected_values
 
     if 'temperature and ghg evolution' in chart_list:
-        temperature_df = get_scenario_value(execution_engine, 'temperature_detail_df', scenario_name)
+        temperature_df = get_scenario_value(execution_engine, GlossaryCore.TemperatureDetailedDfValue, scenario_name)
         total_ghg_df = get_scenario_value(execution_engine, GlossaryCore.GHGEmissionsDfValue, scenario_name)
         carbon_captured = get_scenario_value(execution_engine, GlossaryEnergy.CarbonCapturedValue, scenario_name)
         co2_emissions = get_scenario_value(execution_engine, 'co2_emissions_ccus_Gt', scenario_name)

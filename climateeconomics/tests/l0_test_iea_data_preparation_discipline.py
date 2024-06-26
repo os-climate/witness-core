@@ -15,9 +15,7 @@ limitations under the License.
 '''
 import unittest
 
-import numpy as np
 import pandas as pd
-
 from energy_models.glossaryenergy import GlossaryEnergy as Glossary
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 import random
@@ -50,7 +48,9 @@ class IEADataPreparationTest(unittest.TestCase):
                                          Glossary.TotalCO2Emissions: [60, 40, 20, 30]})
         GDP_values = [120, 140, 145, 160]
         GDP_df = pd.DataFrame({Glossary.Years: years,
-                               Glossary.OutputNetOfDamage: GDP_values
+                               Glossary.OutputNetOfDamage: GDP_values,
+                               Glossary.GrossOutput: 0.,
+                               Glossary.PerCapitaConsumption: 0.
                                })
         CO2_tax_df = pd.DataFrame({Glossary.Years: years,
                                    Glossary.CO2Tax: [370, 500, 700, 800]})

@@ -18,12 +18,12 @@ import random as rd
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(StudyManager):
@@ -36,11 +36,12 @@ class Study(StudyManager):
 
         year, year_end = GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault
 
-        copper_demand = pd.DataFrame(columns=['Year', 'Demand'])
+        copper_demand = pd.DataFrame(columns=['Year', 'Demand', 'unit'])
 
         period_of_exploitation = np.arange(year, year_end + 1, 1)
 
         copper_demand['Year'] = period_of_exploitation
+        copper_demand['unit'] = 'set-unit'
         copper_demand.index = copper_demand['Year'].values
         copper_demand['Demand'] = [0] * len(period_of_exploitation)
         annual_extraction = []

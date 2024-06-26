@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2024/06/07 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_model import (
     CoalResourceModel,
@@ -26,7 +27,6 @@ from climateeconomics.core.core_resources.resource_model.resource_disc import (
     ResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class CoalResourceDiscipline(ResourceDiscipline):
@@ -73,7 +73,6 @@ class CoalResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_coal_resource',
                                                    'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'coal_type': ('string', None, False),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -95,7 +94,7 @@ class CoalResourceDiscipline(ResourceDiscipline):
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_coal_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
-                                          'user_level': 2, 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                          'user_level': 2, 'dataframe_descriptor': {
                                                                                     'sub_bituminous_and_lignite_consumption': ('float', None, False),
                                                                                     'bituminous_and_anthracite_consumption': ('float', None, False)}},
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',

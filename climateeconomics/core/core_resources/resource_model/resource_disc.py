@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/05/12-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/05/12-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,17 +17,17 @@ limitations under the License.
 import logging
 
 import numpy as np
-
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class ResourceDiscipline(SoSWrapp):
@@ -60,16 +60,7 @@ class ResourceDiscipline(SoSWrapp):
 
     DESC_IN = {'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                    'dataframe_descriptor': {
-                                        GlossaryCore.Years: ('float', None, False),
-                                        'natural_gas_resource': ('float', None, True),
-                                    'uranium_resource': ('float', None, True),
-                                    'coal_resource': ('float', None, True),
-                                    'oil_resource': ('float', None, True),
-                                    'copper_resource': ('float', None, True),
-                                    'platinum_resource': ('float', None, True),},
-
-                                    },
+                                    'dynamic_dataframe_columns': True,},
                GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
 

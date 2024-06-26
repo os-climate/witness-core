@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2024/06/07 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_model import (
     NaturalGasResourceModel,
@@ -26,7 +27,6 @@ from climateeconomics.core.core_resources.resource_model.resource_disc import (
     ResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class NaturalGasResourceDiscipline(ResourceDiscipline):
@@ -71,8 +71,7 @@ class NaturalGasResourceDiscipline(ResourceDiscipline):
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '-', 'default': default_resource_data,
                                  'user_level': 2, 'namespace': 'ns_natural_gas_resource',
-                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                          'Region': ('string', None, False),
+                                 'dataframe_descriptor': {'Region': ('string', None, False),
                                                           'gas_type': ('string', None, False),
                                                           'Price': ('float', None, False),
                                                           'Price_unit': ('string', None, False),
@@ -96,8 +95,7 @@ class NaturalGasResourceDiscipline(ResourceDiscipline):
                                        'namespace': 'ns_natural_gas_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'bcm', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_natural_gas_resource',
-                                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                   'Conventional_consumption': ('float', None, False),
+                                          'dataframe_descriptor': {'Conventional_consumption': ('float', None, False),
                                                                    'tight_consumption': ('float', None, False),
                                                                    'shale_consumption': ('float', None, False),
                                                                    'other_consumption': ('float', None, False),

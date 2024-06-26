@@ -17,12 +17,6 @@ limitations under the License.
 from copy import deepcopy
 
 import plotly.graph_objects as go
-
-from climateeconomics.core.core_land_use.land_use_v1 import LandUseV1
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -32,6 +26,12 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
     InstantiatedPlotlyNativeChart,
 )
+
+from climateeconomics.core.core_land_use.land_use_v1 import LandUseV1
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class LandUseV1Discipline(SoSWrapp):
@@ -91,7 +91,6 @@ class LandUseV1Discipline(SoSWrapp):
                                                                    'UnmanagedWood (Gha)': ('float', None, False),
                                                                    'ManagedWoodResidues (Gha)': ('float', None, False),
                                                                    'UnmanagedWoodResidues (Gha)': ('float', None, False),
-                                                                   'Crop (Gha)': ('float', None, False),
                                                                    'Flue_gas_capture.Calcium_Looping (ha)': ('float', None, False),
                                                                    'Flue_gas_capture.Chilled_ammonia_process (ha)': ('float', None, False),
                                                                    'Flue_gas_capture.CO2_Membranes (ha)': ('float', None, False),
@@ -107,7 +106,6 @@ class LandUseV1Discipline(SoSWrapp):
                                                                    'Pure_Carbon_Solid_Storage (ha)': ('float', None, False),
                                                                    'Reforestation (ha)': ('float', None, False),
                                                                    'Reforestation (Gha)': ('float', None, False),
-                                                                   'Forest (Gha)': ('float', None, False),
                                                                    'Direct_air_capture.Amine_scrubbing (ha)': ('float', None, False),
                                                                    'Direct_air_capture.Calcium_Potassium_scrubbing (ha)': ('float', None, False),
                                                                    'CropEnergy (Gha)': (

@@ -20,13 +20,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.core.core_agriculture.crop import Crop
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
-from climateeconomics.database import DatabaseWitnessCore
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -36,6 +29,13 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import (
     InstanciatedPieChart,
 )
+
+from climateeconomics.core.core_agriculture.crop import Crop
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.database import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CropDiscipline(ClimateEcoDiscipline):
@@ -438,8 +438,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                               'default': techno_infos_dict_default},
         'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
         'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                         'age': ('float', None, True),
+                                'dataframe_descriptor': {'age': ('float', None, True),
                                                          'distrib': ('float', None, True)}},
         'co2_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg',
                                  'default': default_co2_emissions},

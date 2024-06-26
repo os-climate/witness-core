@@ -18,9 +18,9 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class UtilityDiscTest(unittest.TestCase):
@@ -34,6 +34,7 @@ class UtilityDiscTest(unittest.TestCase):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: 0.,
             GlossaryCore.PerCapitaConsumption: np.linspace(12, 6, len(self.years)),
         })
 
@@ -73,7 +74,6 @@ class UtilityDiscTest(unittest.TestCase):
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.initial_raw_energy_price': energy_price[0],
-
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,}

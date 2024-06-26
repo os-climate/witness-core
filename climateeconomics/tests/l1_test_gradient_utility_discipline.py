@@ -19,12 +19,12 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class UtilityJacobianDiscTest(AbstractJacobianUnittest):
@@ -58,6 +58,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
             GlossaryCore.PerCapitaConsumption: np.linspace(12, 6, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: 0.,
         })
 
         self.population_df = pd.DataFrame({

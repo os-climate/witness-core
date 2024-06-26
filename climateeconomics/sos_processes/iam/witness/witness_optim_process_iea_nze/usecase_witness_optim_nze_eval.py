@@ -40,9 +40,6 @@ from sostrades_core.execution_engine.design_var.design_var_disc import (
 from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
 from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import IEADataPreparationDiscipline
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 
@@ -133,6 +130,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "xtol_abs": 1e-16,
                                                                       "max_iter": 700,
                                                                       "disp": 30},
+                             f'{ns}.{self.optim_name}.desactivate_optim_out_storage': True,
 
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
                                  'tol': 1.0e-10,
@@ -282,3 +280,4 @@ if '__main__' == __name__:
     for graph in graph_list:
         graph.to_plotly().show()
     '''
+

@@ -17,9 +17,9 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
@@ -32,6 +32,8 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.,
         })
 
         self.energy_supply_df_all = pd.DataFrame({
@@ -78,10 +80,6 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-        self.economics_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
-        })
 
         CO2_emissions_by_use_sources = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -93,7 +91,8 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
 
         CO2_emitted_forest = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            'emitted_CO2_evol_cumulative': np.cumsum(np.linspace(0.01, 0.10, len(self.years))) + 3.21
+            'emitted_CO2_evol': np.linspace(0.01, 0.10, len(self.years)),
+            'emitted_CO2_evol_cumulative': np.cumsum(np.linspace(0.01, 0.10, len(self.years))) + 3.21,
         })
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,

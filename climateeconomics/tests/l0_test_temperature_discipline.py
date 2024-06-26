@@ -19,9 +19,9 @@ from os.path import dirname, join
 
 import numpy as np
 from pandas import read_csv
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TemperatureDiscTest(unittest.TestCase):
@@ -54,6 +54,7 @@ class TemperatureDiscTest(unittest.TestCase):
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
         carboncycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
+        carboncycle_df = carboncycle_df[[GlossaryCore.Years, "atmo_conc"]]
 
         # put manually the index
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
