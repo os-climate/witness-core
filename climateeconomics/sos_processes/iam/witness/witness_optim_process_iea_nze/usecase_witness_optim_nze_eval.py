@@ -18,7 +18,16 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
@@ -32,16 +41,9 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_optim_sub_usecase,
 )
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.design_var.design_var_disc import (
-    DesignVarDiscipline,
+from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import (
+    IEADataPreparationDiscipline,
 )
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import IEADataPreparationDiscipline
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT

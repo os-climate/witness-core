@@ -15,6 +15,7 @@ limitations under the License.
 '''
 
 import numpy as np
+import plotly.graph_objects as go
 from energy_models.glossaryenergy import GlossaryEnergy as Glossary
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -22,14 +23,14 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
     InstantiatedPlotlyNativeChart,
 )
 
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
-import plotly.graph_objects as go
 from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation import (
     IEADataPreparation,
 )
+
 
 def update_variable_name(list_var_value, suffix):
     """

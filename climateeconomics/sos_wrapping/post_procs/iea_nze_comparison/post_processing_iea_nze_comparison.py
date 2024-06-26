@@ -25,12 +25,12 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import (
     IEADataPreparationDiscipline,
 )
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 
 IEA_NAME = IEADataPreparationDiscipline.IEA_NAME
 # to plot interpolated IEA data, use SUFFIX_VAR_IEA = IEADataPreparationDiscipline.SUFFIX_VAR_INTERPOLATED
