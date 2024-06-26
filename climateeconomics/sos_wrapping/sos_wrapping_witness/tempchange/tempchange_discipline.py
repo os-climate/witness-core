@@ -147,7 +147,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             temperature_df_2 = temperature_df.copy()
             temperature_df_2[GlossaryCore.TempAtmo] = [0.1 for i in range (len(temperature_df[GlossaryCore.TempAtmo]))]
 
-            out_dict = {GlossaryCore.TemperatureDetailedDf: temperature_df,
+            out_dict = {GlossaryCore.TemperatureDetailedDfValue: temperature_df,
                         GlossaryCore.TemperatureDfValue: temperature_df_2[GlossaryCore.TemperatureDf['dataframe_descriptor'].keys()],
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
