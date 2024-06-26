@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 27/11/2023 Copyright 2023 Capgemini
+Modifications on 27/11/2023-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
+
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import (
     CopperResourceDiscipline,
 )
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):

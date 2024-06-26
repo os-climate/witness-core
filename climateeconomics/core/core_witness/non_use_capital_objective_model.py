@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class NonUseCapitalObjective():

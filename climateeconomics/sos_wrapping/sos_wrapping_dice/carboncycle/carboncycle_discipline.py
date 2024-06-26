@@ -16,8 +16,6 @@ limitations under the License.
 '''
 import pandas as pd
 
-from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
-from climateeconomics.glossarycore import GlossaryCore
 # coding: utf-8
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -25,6 +23,9 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
+
+from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CarbonCycleDiscipline(SoSWrapp):

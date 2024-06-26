@@ -17,6 +17,13 @@ limitations under the License.
 from os.path import dirname, join
 
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
+    INVEST_DISC_NAME,
+)
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -24,13 +31,6 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import (
     Study as usecase_witness_mda,
-)
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
-    INVEST_DISC_NAME,
-)
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
 )
 
 

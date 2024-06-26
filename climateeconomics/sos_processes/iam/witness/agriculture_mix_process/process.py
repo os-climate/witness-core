@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,11 +17,12 @@ limitations under the License.
 
 import re
 
+from energy_models.core.energy_process_builder import EnergyProcessBuilder
+
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     AGRI_MIX_MODEL_LIST,
 )
-from energy_models.core.energy_process_builder import EnergyProcessBuilder
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -89,12 +90,12 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def get_techno_disc_path(self, techno_name, techno_dir_path, sub_dir=None):
         list_name = re.findall('[A-Z][^A-Z]*', techno_name)
-        test = [len(l) for l in list_name]
+        test = [len(element) for element in list_name]
         # -- in case only one letter is capital, support all are capital and don't add _
         if 1 in test:
-            mod_name = "".join(l.lower() for l in list_name)
+            mod_name = "".join(element.lower() for element in list_name)
         else:
-            mod_name = "_".join(l.lower() for l in list_name)
+            mod_name = "_".join(element.lower() for element in list_name)
         # --case of CO2... to be generalized
         if '2' in mod_name:
             mod_name = "2_".join(mod_name.split('2'))

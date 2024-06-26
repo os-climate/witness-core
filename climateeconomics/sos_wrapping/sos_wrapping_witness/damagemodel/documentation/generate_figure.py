@@ -13,8 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 def generate_fig_tipping_point_model(tp_a3):
     tp_a1 = 20.46

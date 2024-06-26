@@ -20,6 +20,10 @@ import numpy as np
 import pandas as pd
 from numpy import arange, asarray
 from pandas import DataFrame
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
@@ -36,10 +40,6 @@ from climateeconomics.sos_processes.iam.witness.resources_process.usecase import
 )
 from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
     Study as usecase_sectorization,
-)
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

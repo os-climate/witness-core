@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,16 @@ import pstats
 from io import StringIO
 
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
+    Study as datacase_energy,
+)
 from pandas import concat
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -34,15 +43,6 @@ from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_en
 )
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import (
     DataStudy as datacase_witness_dev,
-)
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
-    Study as datacase_energy,
-)
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
