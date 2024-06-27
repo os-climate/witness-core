@@ -88,7 +88,7 @@ class TempChangeDiscipline(SoSWrapp):
 
         chart_filters = []
 
-        chart_list = ['temperature evolution']
+        chart_list = ['Temperature evolution']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -109,7 +109,7 @@ class TempChangeDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'temperature evolution' in chart_list:
+        if 'Temperature evolution' in chart_list:
 
             to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
             temperature_df = self.get_sosdisc_outputs(GlossaryCore.TemperatureDfValue)

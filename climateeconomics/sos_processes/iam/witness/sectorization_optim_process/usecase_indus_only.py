@@ -146,6 +146,7 @@ class Study(StudyManager):
                                'Industry.energy_eff_error',
                                ]
         func_df['ftype'] = [OBJECTIVE, OBJECTIVE]
+        func_df['parent'] = [OBJECTIVE, OBJECTIVE]
         func_df['weight'] = [1, 1]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM]
         func_df['namespace'] = ['ns_obj', 'ns_obj']

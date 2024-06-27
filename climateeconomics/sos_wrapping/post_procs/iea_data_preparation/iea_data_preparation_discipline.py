@@ -23,6 +23,7 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
     InstantiatedPlotlyNativeChart,
 )
 
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
@@ -31,7 +32,7 @@ from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_prep
 )
 
 
-def update_variable_name(list_var_value):
+def update_variable_name(list_var_value, suffix):
     """
     Update variable name and add an additional extension to variable name and to variable name in var_value
     """
@@ -46,7 +47,7 @@ def update_variable_name(list_var_value):
         var_name = variable_dict['var_name']
         # copy dict before storing it as we do a modification later
         dict_in[var_name] = variable_dict.copy()
-        var_name_updated = var_name + '_interpolated'
+        var_name_updated = var_name + suffix
         variable_dict['var_name'] = var_name_updated
         dict_out[var_name_updated] = variable_dict
     return dict_in, dict_out
@@ -80,6 +81,9 @@ class IEADataPreparationDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
 
+    SUFFIX_VAR_INTERPOLATED = '_interpolated'  # var_out = var_in + SUFFIX_VAR_INTERPOLATED
+    IEA_NAME = 'IEA'
+
     # all input variables are in output as well, only difference is that we add _interpolated to output variables
     years = np.arange(Glossary.YearStartDefault, Glossary.YearEndDefault + 1)
     # get variables from glossary to update either namespace or dataframe descriptor
@@ -89,34 +93,48 @@ class IEADataPreparationDiscipline(SoSWrapp):
     co2_tax_dict_value = Glossary.get_dynamic_variable(Glossary.CO2Taxes)
     energy_production_dict_value = Glossary.get_dynamic_variable(Glossary.EnergyProductionDf)
     temperature_dict_value = Glossary.get_dynamic_variable(Glossary.TemperatureDf)
+    land_use_surface_dict_value = {'var_name': LandUseV2.LAND_SURFACE_DETAIL_DF,
+                                   'type': 'dataframe', 'unit': 'Gha',
+                                   'dataframe_descriptor': {Glossary.Years: ('float', None, False),
+                                                            'Crop (Gha)': ('float', None, False),
+                                                            'Food Surface (Gha)': ('float', None, False),
+                                                            'Total Agriculture Surface (Gha)': ('float', None, False),
+                                                            'Total Forest Surface (Gha)': ('float', None, False),
+                                                            }
+                                   }
     # list of dictionaries to update
     l_dict_to_update = [co2_emissions_dict_variable, gdp_dict_variable, population_dict_variable, co2_tax_dict_value,
-                        energy_production_dict_value, temperature_dict_value]
+                        energy_production_dict_value, temperature_dict_value, land_use_surface_dict_value,
+                        ]
     # compute the updated dictionaries to be used in both desc_in and desc_out
-    desc_in_updated, desc_out_updated = update_variable_name(l_dict_to_update)
+    desc_in_updated, desc_out_updated = update_variable_name(l_dict_to_update, SUFFIX_VAR_INTERPOLATED)
 
     # add techno production
-    l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}', f'{Glossary.electricity}_{Glossary.Hydropower}',
+    l_technos_to_add = [f'{Glossary.electricity}_{Glossary.Nuclear}',
+                        f'{Glossary.electricity}_{Glossary.Hydropower}',
                         f'{Glossary.electricity}_{Glossary.Solar}',
                         f'{Glossary.electricity}_{Glossary.WindOnshoreAndOffshore}',
-                        f'{Glossary.solid_fuel}_{Glossary.CoalExtraction}', f'{Glossary.methane}_{Glossary.FossilGas}',
-                        f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}', f'{Glossary.CropEnergy}',
-                        f'{Glossary.ForestProduction}'
+                        f'{Glossary.solid_fuel}_{Glossary.CoalExtraction}',
+                        f'{Glossary.methane}_{Glossary.FossilGas}',
+                        f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}',
+                        f'{Glossary.CropEnergy}',
+                        f'{Glossary.ForestProduction}',
                         ]
     # get techno production metadata from glossary and modify them with the correct name
     dict_values_techno_production = create_production_variables(l_technos_to_add)
-    dict_in_production, dict_out_production = update_variable_name(list(dict_values_techno_production.values()))
+    dict_in_production, dict_out_production = update_variable_name(list(dict_values_techno_production.values()), SUFFIX_VAR_INTERPOLATED)
     # update created desc_in and desc_out with the new variables
     desc_in_updated.update(dict_in_production)
     desc_out_updated.update(dict_out_production)
-    # add energy prices variable for electricity
-    energy_prices_dict = Glossary.get_dynamic_variable(Glossary.EnergyPricesDf)
-    # only energy price to compare is for electricity technologies. No need to call a function
-    energy_prices_dict['var_name'] = f'{Glossary.electricity}_{Glossary.EnergyPricesValue}'
-    desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict])
-    # update desc_in and desc_out with energy prices variable
-    desc_in_updated.update(desc_in_energy_prices)
-    desc_out_updated.update(desc_out_energy_prices)
+    # add energy prices variable for electricity and natural gas
+    for energy in [f'{Glossary.electricity}', f'{Glossary.methane}']:
+        energy_prices_dict = Glossary.get_dynamic_variable(Glossary.EnergyPricesDf)
+        # only energy price to compare is for electricity technologies. No need to call a function
+        energy_prices_dict['var_name'] = f'{energy}_{Glossary.EnergyPricesValue}'
+        desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict], SUFFIX_VAR_INTERPOLATED)
+        # update desc_in and desc_out with energy prices variable
+        desc_in_updated.update(desc_in_energy_prices)
+        desc_out_updated.update(desc_out_energy_prices)
     # store list of input variables for later use
     variables_to_store = list(desc_in_updated.keys())
 
@@ -176,7 +194,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
         # loop on all output keys
         for key, df_processed in data_out.items():
             # recompute data_in key (without _interpolated)
-            original_key = key.replace('_interpolated', '')
+            original_key = key.replace(self.SUFFIX_VAR_INTERPOLATED, '')
             df_original = data_in[original_key]
 
             fig = go.Figure()
@@ -184,8 +202,8 @@ class IEADataPreparationDiscipline(SoSWrapp):
             for col in df_original.columns:
                 if col != Glossary.Years:
                     fig.add_trace(go.Scatter(
-                        x=df_original[Glossary.Years],
-                        y=df_original[col],
+                        x=df_original[Glossary.Years].tolist(),
+                        y=df_original[col].tolist(),
                         mode='markers',
                         name=f'{col} (IEA)',
                         marker=dict(symbol='circle', size=8)
@@ -195,8 +213,8 @@ class IEADataPreparationDiscipline(SoSWrapp):
             for col in df_processed.columns:
                 if col != Glossary.Years:
                     fig.add_trace(go.Scatter(
-                        x=df_processed[Glossary.Years],
-                        y=df_processed[col],
+                        x=df_processed[Glossary.Years].tolist(),
+                        y=df_processed[col].tolist(),
                         mode='lines',
                         name=f'{col} (Interpolated/Extrapolated)',
                         line=dict(dash='dash')

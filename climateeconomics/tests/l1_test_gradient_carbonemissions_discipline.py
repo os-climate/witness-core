@@ -31,6 +31,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
+        self.override_dump_jacobian = 1
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -39,7 +40,10 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.,
         })
+
 
         self.energy_supply_df = pd.DataFrame({
             GlossaryCore.Years: self.years,

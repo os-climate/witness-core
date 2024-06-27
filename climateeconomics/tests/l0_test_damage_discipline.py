@@ -34,10 +34,7 @@ class DamageDiscTest(unittest.TestCase):
 
         self.temperature_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            "exog_forcing": np.linspace(.5, 1., len(self.years)),
-            "forcing": np.linspace(2.46, 3.02, len(self.years)),
-            "temp_atmo": np.linspace(.85, 2.25, len(self.years)),
-            "temp_ocean": np.linspace(.006, 0.61, len(self.years)),
+            GlossaryCore.TempAtmo: np.linspace(.85, 2.25, len(self.years)),
         })
 
         self.damage_df = pd.DataFrame({

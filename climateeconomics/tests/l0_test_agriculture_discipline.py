@@ -41,8 +41,10 @@ class AgricultureTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0, 0.0, year_range))
-        self.temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
+        self.temperature_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.TempAtmo: temperature,
+        })
         self.temperature_df.index = years
 
         self.default_kg_to_m2 = {'red meat': 360,
