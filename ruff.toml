@@ -1,6 +1,6 @@
 [lint]
+select = ["I", "TCH", "PLC", "PLE"]
 # extend-select = ["ALL"]
-extend-select = ["I"]
 
 ignore  = ["E722", "F841", "E501"]
 # E722 Do not use bare `except`
