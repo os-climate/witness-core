@@ -246,7 +246,7 @@ class Crop():
             raise Exception(
                 f'The distribution sum is not equal to 100 % : {sum_distrib}')
         self.population_df = inputs_dict[GlossaryCore.PopulationDfValue]
-        self.temperature_df = inputs_dict[GlossaryCore.TemperatureDfValue]
+        self.temperature_df = inputs_dict[GlossaryCore.TemperatureDfValue].set_index(GlossaryCore.Years)
         self.co2_emissions_per_kg = inputs_dict['co2_emissions_per_kg']
         self.ch4_emissions_per_kg = inputs_dict['ch4_emissions_per_kg']
         self.n2o_emissions_per_kg = inputs_dict['n2o_emissions_per_kg']

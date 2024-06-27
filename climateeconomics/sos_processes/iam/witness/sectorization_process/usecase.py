@@ -83,7 +83,7 @@ class Study(StudyManager):
         damage_fraction_df = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
-             GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
+})
 
 
         # economisc df to init mda
@@ -192,8 +192,7 @@ class Study(StudyManager):
 
             # data for consumption
             temperature = np.linspace(1, 3, len(years))
-            temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature,
-                                           GlossaryCore.TempOcean: temperature / 100})
+            temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
             energy_price = np.arange(110, 110 + len(years))
             energy_mean_price = pd.DataFrame(
                 {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})

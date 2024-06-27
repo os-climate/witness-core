@@ -6,19 +6,39 @@ with
 $$energy\_price\_ratio_t =\frac{energy\_price_{t=0}}{energy\_price_t}$$
 where $energy\_price$ is the mean price of energy in dollars per MWh and comes from the energy model, $\alpha$ is the elasticity of marginal utility ($conso\_elasticity$). We set it by default to 2. A higher $\alpha$ means that marginal utility decreases faster with increase in income. $c_t = \frac{C_t}{L_t}$ is the per capita consumption. $L_t$ is the population in millions of people.
 
-### Objectives   
-The DICE's objective function is the social welfare, the discounted sum of utility: 
-$$W = \sum_{t=1}^{t_{max}}U_{pc}(c_t)R_tL_t$$
-with $R_t$ the discount factor, a discount on the economic well-being of future generations: 
-$$R_t = \frac{1}{(1+\rho)^t}$$ 
-and $\rho$ is the pure rate of social time preference. 
-The discount rate is a very debated parameter as it can change drastically the results and no consensus exists on its value. This topic has been extensively analysed by Gaullier (2011)[^2].
+### Objective
 
-Another objective value is calculated and set as an output of the utility model, based on the minimum value of the discounted utility:
+$$\text{maximize}_{x \in \text{design space}} \text{ Population utility objective (x)}$$
 
-$$ utility_{min} = \alpha \times (1 - \gamma) \times utility_{min}^{ref} / min(U_{pc}(c_t)R_tL_t)$$ 
 
-where $\gamma$ is a trade variable between the objectives based on the economy and $\alpha$ is the global tradeof variable between global warming and the economy.
+The `Population utility objective` (a float) is the average over the years of utility of the population.
+$$\text{Population utility objective} = \frac{1}{\text{nb years}}\sum_{\text{year in years}} \text{Population utility (year)}$$
+
+with 
+
+$$\text{Population utility} = \frac{\text{Population}}{\text{Population at year start}} \text{Utility per capita}$$
+
+The next section described the notion of  *Utility per capita*.
+
+#### Utility per capita
+
+The utility per capita relies on two variables available in witness, *Consumption per capita* and *Energy price*. The next two sections gives a quick explanation of these variables.
+
+In our optimization formulation, we want to maximize the quantity of things consumed. For that, we can see *Consumption per capita* can be seen as 
+
+$$C^{pc} = Q^{pc} \times P$$
+
+that is, a quantity (of "things" consumed) $\times$ Price ("average price of things consumed"). 
+The assumption we make is that the average price of things that are consumed is driven by energy price, leading to :
+
+
+$$\text{quantity per capita} = \frac{\text{consumption per capita}}{\text{energy price}}$$
+
+If we take year start as a reference point, and apply a function $f$ to mimic saturation to consumption (having more when your poor is huge, but having more when you already have a lot doesnt mean much to you), we defined the gain of utility as
+
+$$\text{utility per capita (year)} = f \left(\frac{\text{quantity per capita (year)}}{\text{quantity per capita (year start)}} \right)$$
+
+> This saturation function is an S-curve, whose parameters have been fine-tuned, but can be tweeked based on your preferences. 
 
 
 ### References

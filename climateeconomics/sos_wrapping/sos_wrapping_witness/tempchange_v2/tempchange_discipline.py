@@ -93,7 +93,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
-        'temperature_detail_df': {'type': 'dataframe', 'unit': '°C'},
+        GlossaryCore.TemperatureDetailedDfValue: GlossaryCore.TemperatureDetailedDf,
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_constraint': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS}}
 
@@ -164,9 +164,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         temperature_df = self.model.compute(in_dict)
 
         # store output data
-        out_dict = {"temperature_detail_df": temperature_df,
-                    # disable pylint warning, known issue for pylint >2.4, pylint cannot get some variable type even if it has been set
-                    GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],  # pylint: disable=unsubscriptable-object
+        out_dict = {GlossaryCore.TemperatureDetailedDfValue: temperature_df,
+                    GlossaryCore.TemperatureDfValue: temperature_df[GlossaryCore.TemperatureDf['dataframe_descriptor'].keys()],
                     'forcing_detail_df': self.model.forcing_df,
                     'temperature_constraint': self.model.temperature_end_constraint}
         
@@ -298,7 +297,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['temperature evolution', 'Radiative forcing']
+        chart_list = ['Temperature evolution', 'Radiative forcing']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -319,11 +318,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'temperature evolution' in chart_list:
+        if 'Temperature evolution' in chart_list:
 
             model = self.get_sosdisc_inputs('temperature_model')
             temperature_df = deepcopy(
-                self.get_sosdisc_outputs('temperature_detail_df'))
+                self.get_sosdisc_outputs(GlossaryCore.TemperatureDetailedDfValue))
 
             instanciated_charts = temperature_evolution(model, temperature_df, instanciated_charts)
 

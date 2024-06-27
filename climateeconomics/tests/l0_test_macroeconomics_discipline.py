@@ -96,7 +96,7 @@ class MacroDiscTest(unittest.TestCase):
 
         self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
                                                 GlossaryCore.DamageFractionOutput: np.linspace(0.01, 0.05, nb_per),
-                                                GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
+                                   })
 
         default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 50.0}, index=years)
