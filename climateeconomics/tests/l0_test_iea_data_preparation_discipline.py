@@ -119,10 +119,10 @@ class IEADataPreparationTest(unittest.TestCase):
         gdp_interpolated = disc.get_sosdisc_outputs(f'{Glossary.EconomicsDfValue}_interpolated')
         # check that input value is unchanged
         assert gdp_interpolated.loc[
-                   gdp_interpolated[Glossary.Years].isin(years), Glossary.OutputNetOfDamage].tolist() == GDP_values
+                   gdp_interpolated[Glossary.Years].isin(years), f"{Glossary.OutputNetOfDamage} [T$]"].tolist() == GDP_values
         # check that the value at 2035 is the expected : 2030 : 140, 2040: 145 => 2035 should be equal to (140+145)/2
         expected_value_2035 = (140+145)/2
-        assert gdp_interpolated.loc[gdp_interpolated[Glossary.Years] == 2035, Glossary.OutputNetOfDamage].values[0] == expected_value_2035
+        assert gdp_interpolated.loc[gdp_interpolated[Glossary.Years] == 2035, f"{Glossary.OutputNetOfDamage} [T$]"].values[0] == expected_value_2035
 
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)

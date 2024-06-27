@@ -23,7 +23,7 @@ from sostrades_core.tools.post_processing.post_processing_factory import (
 from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import (
-    Study as Study,
+    Study,
 )
 
 
