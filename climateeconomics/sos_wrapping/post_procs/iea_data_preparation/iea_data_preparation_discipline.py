@@ -16,6 +16,7 @@ limitations under the License.
 
 import numpy as np
 import plotly.graph_objects as go
+import re
 from energy_models.glossaryenergy import GlossaryEnergy as Glossary
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -59,7 +60,7 @@ def create_production_variables(list_technologies):
     """
     dict_in = {}
     for techno_name in list_technologies:
-        var_name = f'{techno_name}_techno_production'
+        var_name = f'{techno_name}_{Glossary.TechnoProductionValue}'
         dict_in[var_name] = Glossary.get_dynamic_variable(Glossary.TechnoProductionDf)
         dict_in[var_name]['var_name'] = var_name
     return dict_in
@@ -137,6 +138,9 @@ class IEADataPreparationDiscipline(SoSWrapp):
         desc_out_updated.update(desc_out_energy_prices)
     # store list of input variables for later use
     variables_to_store = list(desc_in_updated.keys())
+    # create list of units by hand as very generic in Glossary TODO use glossary later
+    list_units = ['Gt', 'T$', 'millions of people', '$/tCO2Eq', 'TWh', '°C', 'Gha', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh','TWh','TWh', '$/MWh', '$/MWh']
+    variables_to_store_with_units = dict(zip(variables_to_store, list_units))
 
     DESC_IN = {
         Glossary.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -150,7 +154,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
         """
         Init execution of model
         """
-        self.iea_data_preparation_model = IEADataPreparation()
+        self.iea_data_preparation_model = IEADataPreparation(self.variables_to_store_with_units)
 
     def run(self):
         """
@@ -158,7 +162,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
         """
         # get input of discipline
         param_in = self.get_sosdisc_inputs()
-        self.iea_data_preparation_model.configure_parameters(param_in, variables_to_store = self.variables_to_store)
+        self.iea_data_preparation_model.configure_parameters(param_in)
 
         # compute output
         self.iea_data_preparation_model.compute(
@@ -208,7 +212,8 @@ class IEADataPreparationDiscipline(SoSWrapp):
                         name=f'{col} (IEA)',
                         marker=dict(symbol='circle', size=8)
                     ))
-
+            # initialize unit variable
+            unit = None
             # Plot interpolated and extrapolated values with dashed lines
             for col in df_processed.columns:
                 if col != Glossary.Years:
@@ -219,13 +224,32 @@ class IEADataPreparationDiscipline(SoSWrapp):
                         name=f'{col} (Interpolated/Extrapolated)',
                         line=dict(dash='dash')
                     ))
+                    # by construction of the model, the units of all columns of a dataframe are the same
+                    # we just need to get at least one column to get the unit
+                    # unit is stored in all columns name (except years) between brackets [ ]
+                    unit = self.preprocess_column_name_to_get_unit(col)
+            # preprocess name of key to obtain unit of variable
+            yaxis_title = unit
+            if yaxis_title is None :
+                yaxis_title = "Unit undefined"
 
             fig.update_layout(
                 title=f'Interpolated and Extrapolated Data for {original_key}',
                 xaxis_title=Glossary.Years,
-                yaxis_title='Values',
-                legend_title='Legend'
+                yaxis_title=yaxis_title,
             )
             new_chart = InstantiatedPlotlyNativeChart(fig, f'Interpolated and Extrapolated Data for {original_key}')
             instanciated_charts.append(new_chart)
         return instanciated_charts
+
+    @staticmethod
+    def preprocess_column_name_to_get_unit(col):
+        """
+        Get unit from column name
+        All columns in the model are named as followed col [unit]
+        The method extracts the unit
+        col : string column name to extract
+        """
+        match = re.search(r'\[(.*?)\]', col)
+        # return found unit in column name
+        return f"[{match.group(1)}]" if match else None
