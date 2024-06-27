@@ -31,6 +31,8 @@ class Study(StudySubOptim):
         
         data_witness = super().setup_usecase()
 
+        self.study_name += '_no_damage_low_tax'
+
         # Deactivate damage
         updated_data = {
             f'{self.study_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.assumptions_dict': {
