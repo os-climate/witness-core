@@ -38,7 +38,7 @@ def post_processing_filters(execution_engine, namespace):
                   'CO2 Emissions vs Utility min',
                   'PPM vs Utility',
                   'Consumption vs Mean Energy Price']
-    selected_chart_list = ['Consumption vs Mean Energy Price']
+    selected_chart_list = []
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
