@@ -14,9 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import re
+
 import numpy as np
 import plotly.graph_objects as go
-import re
 from energy_models.glossaryenergy import GlossaryEnergy as Glossary
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
