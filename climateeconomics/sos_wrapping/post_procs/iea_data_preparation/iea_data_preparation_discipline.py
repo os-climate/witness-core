@@ -99,8 +99,6 @@ class IEADataPreparationDiscipline(SoSWrapp):
                                    'type': 'dataframe', 'unit': 'Gha',
                                    'dataframe_descriptor': {Glossary.Years: ('float', None, False),
                                                             'Crop (Gha)': ('float', None, False),
-                                                            'Food Surface (Gha)': ('float', None, False),
-                                                            'Total Agriculture Surface (Gha)': ('float', None, False),
                                                             'Total Forest Surface (Gha)': ('float', None, False),
                                                             }
                                    }
