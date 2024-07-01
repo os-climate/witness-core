@@ -34,7 +34,7 @@ class PostProcessEnergy(unittest.TestCase):
         """
         self.study_name = 'post-processing'
         self.repo = 'climateeconomics.sos_processes.iam.witness'
-        self.proc_name = 'witness_coarse_dev'
+        self.proc_name = 'witness_optim_process_iea_nze'
 
         self.ee = ExecutionEngine(self.study_name)
         builder = self.ee.factory.get_builder_from_process(repo=self.repo,
@@ -49,12 +49,11 @@ class PostProcessEnergy(unittest.TestCase):
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
 
-        self.namespace_list = [self.ee.ns_manager.get_all_namespace_with_name('ns_dashboard')[0].value]
+        self.namespace_list = ['usecase_witness_optim_nze_eval']
 
-    def test_post_processing_Table_plots(self):
+    def test_post_processing(self):
         """
-        Test to compare WITNESS energy capex, opex, CO2 tax prices
-        tables for each energy / each techno per energy
+        test postprocessing
         """
         from os.path import dirname, exists, join
 
@@ -75,11 +74,11 @@ class PostProcessEnergy(unittest.TestCase):
                                                               as_json=False)
 
             for graph in graph_list:
-                #graph.to_plotly().show()
-                pass
+                graph.to_plotly().show()
+
 
 
 if '__main__' == __name__:
     cls = PostProcessEnergy()
     cls.setUp()
-    cls.test_post_processing_Table_plots()
+    cls.test_post_processing()
