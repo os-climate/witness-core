@@ -31,7 +31,6 @@ from climateeconomics.glossarycore import GlossaryCore
 class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
-        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.model_name = 'utility'
         self.year_start =GlossaryCore.YearStartDefault
