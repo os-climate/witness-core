@@ -285,7 +285,7 @@ class DataStudy():
                 GlossaryCore.EnergyWastedObjective,
                 GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
-                GlossaryCore.ConsumptionObjective,
+                GlossaryCore.NetGdpGrowthRateObjectiveValue,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
                 GlossaryCore.DecreasingGdpIncrementsObjectiveValue,
             ],

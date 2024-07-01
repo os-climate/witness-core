@@ -1108,6 +1108,17 @@ class GlossaryCore:
         "unit": "-",
     }
 
+    NetGdpGrowthRateObjectiveValue = "net_gdp_growth_rate_obj"
+
+    NetGdpGrowthRateObjective = {
+        "var_name": NetGdpGrowthRateObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Net Gdp growth rate obj",
+        "unit": "-",
+    }
+
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,

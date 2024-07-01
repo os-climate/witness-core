@@ -102,5 +102,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
                                      f'{self.name}.{GlossaryCore.LastYearUtilityObjectiveValue}',
                                      f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
+                                     f'{self.name}.{GlossaryCore.NetGdpGrowthRateObjectiveValue}',
                             ],
                             derr_approx='complex_step')

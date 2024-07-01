@@ -68,6 +68,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.QuantityObjectiveValue: GlossaryCore.QuantityObjective,
         GlossaryCore.LastYearUtilityObjectiveValue: GlossaryCore.LastYearUtilityObjective,
         GlossaryCore.DecreasingGdpIncrementsObjectiveValue: GlossaryCore.DecreasingGdpIncrementsObjective,
+        GlossaryCore.NetGdpGrowthRateObjectiveValue: GlossaryCore.NetGdpGrowthRateObjective,
     }
 
     def init_execution(self):
@@ -89,6 +90,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             GlossaryCore.QuantityObjectiveValue: self.utility_m.discounted_utility_quantity_objective,
             GlossaryCore.LastYearUtilityObjectiveValue: self.utility_m.last_year_utility_objective,
             GlossaryCore.DecreasingGdpIncrementsObjectiveValue: self.utility_m.decreasing_gpd_obj,
+            GlossaryCore.NetGdpGrowthRateObjectiveValue: self.utility_m.net_gdp_growth_rate_obj
         }
 
         self.store_sos_outputs_values(dict_values)

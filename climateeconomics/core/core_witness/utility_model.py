@@ -30,6 +30,7 @@ class UtilityModel():
         Constructor
         '''
         self.decreasing_gpd_obj = None
+        self.net_gdp_growth_rate_obj = None
         self.shift_scurve = 0.
         self.strech_scurve = 0.
         self.discounted_utility_quantity_objective = 0.
@@ -104,6 +105,7 @@ class UtilityModel():
         self.compute_last_year_utility_objective()
 
         self.compute_decreasing_gdp_obj()
+        self.compute_net_gdp_growth_rate_obj()
 
         return self.utility_df
 
@@ -232,9 +234,6 @@ class UtilityModel():
         increments[-1] = 0
 
         self.decreasing_gpd_obj = - np.array([np.mean(increments)])
-        print('----------------')
-        print(self.decreasing_gpd_obj)
-        print('----------------')
 
     def d_decreasing_gdp_obj(self):
         output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
@@ -250,6 +249,46 @@ class UtilityModel():
         derivative = np.diag(a) + np.diag(1/output_net_of_damage[:-1], k=1)
 
         derivative[increments > 1] = 0.
+        for i, incr in enumerate(increments):
+            if incr == 1:
+                derivative[i, i+1] = 0.
+        derivative = -np.mean(derivative, axis=0)
+
+        return derivative
+
+    def compute_net_gdp_growth_rate_obj(self):
+        """
+        decreasing net gdp obj =   Sum_i [Qi+1/Qi, 1 - 1] / nb_years
+
+        Note: this objective is self normalized to [0,1], no need for reference.
+        It should be minimized and not maximized !
+        :return:
+        :rtype:
+        """
+        output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
+        increments = list(output_net_of_damage[1:]/output_net_of_damage[:-1])
+        increments.append(0)
+        increments = np.array(increments)
+
+        increments -= 1
+        increments[-1] = 0
+
+        self.net_gdp_growth_rate_obj = - np.array([np.mean(increments)])
+        print(self.net_gdp_growth_rate_obj)
+
+    def d_net_gdp_growth_rate_obj(self):
+        output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
+        output_shift = list(output_net_of_damage[1:])
+        output_shift.append(0)
+        output_shift = np.array(output_shift)
+
+        increments = list(output_net_of_damage[1:] / output_net_of_damage[:-1])
+        increments.append(0)
+        increments = np.array(increments)
+
+        a = list(- output_shift / output_net_of_damage**2)
+        derivative = np.diag(a) + np.diag(1/output_net_of_damage[:-1], k=1)
+
         for i, incr in enumerate(increments):
             if incr == 1:
                 derivative[i, i+1] = 0.
