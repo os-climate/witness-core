@@ -217,7 +217,8 @@ class UtilityModel():
         """
         decreasing net gdp obj =   Sum_i [min(Qi+1/Qi, 1) - 1] / nb_years
 
-        Note: this objective is self normalized to [0,1], no need for reference
+        Note: this objective is self normalized to [0,1], no need for reference.
+        It should be minimized and not maximized !
         :return:
         :rtype:
         """
@@ -229,7 +230,7 @@ class UtilityModel():
         increments[increments >= 1] = 1.
         increments -= 1
 
-        self.decreasing_gpd_obj = np.array([np.mean(increments)])
+        self.decreasing_gpd_obj = - np.array([np.mean(increments)])
 
     def d_decreasing_gdp_obj(self):
         output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
@@ -248,6 +249,6 @@ class UtilityModel():
         for i, incr in enumerate(increments):
             if incr == 1:
                 derivative[i, i+1] = 0.
-        derivative = np.mean(derivative, axis=0)
+        derivative = -np.mean(derivative, axis=0)
 
         return derivative

@@ -1103,7 +1103,8 @@ class GlossaryCore:
         "type": "array",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
-        "description": "",
+        "description": "Here to minimize areas where net gpp is decreasing. Objective should be minimized. "
+                       "Self normalized, no need for reference division.",
         "unit": "-",
     }
 
