@@ -229,8 +229,12 @@ class UtilityModel():
 
         increments[increments >= 1] = 1.
         increments -= 1
+        increments[-1] = 0
 
         self.decreasing_gpd_obj = - np.array([np.mean(increments)])
+        print('----------------')
+        print(self.decreasing_gpd_obj)
+        print('----------------')
 
     def d_decreasing_gdp_obj(self):
         output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
