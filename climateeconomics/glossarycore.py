@@ -1096,6 +1096,17 @@ class GlossaryCore:
         "unit": "-",
     }
 
+    DecreasingGdpIncrementsObjectiveValue = "decreasing_gdp_increments_obj"
+
+    DecreasingGdpIncrementsObjective = {
+        "var_name": DecreasingGdpIncrementsObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "",
+        "unit": "-",
+    }
+
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,

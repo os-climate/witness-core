@@ -67,6 +67,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.UtilityDfValue: GlossaryCore.UtilityDf,
         GlossaryCore.QuantityObjectiveValue: GlossaryCore.QuantityObjective,
         GlossaryCore.LastYearUtilityObjectiveValue: GlossaryCore.LastYearUtilityObjective,
+        GlossaryCore.DecreasingGdpIncrementsObjectiveValue: GlossaryCore.DecreasingGdpIncrementsObjective,
     }
 
     def init_execution(self):
@@ -87,6 +88,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             GlossaryCore.UtilityDfValue: utility_df[GlossaryCore.UtilityDf['dataframe_descriptor'].keys()],
             GlossaryCore.QuantityObjectiveValue: self.utility_m.discounted_utility_quantity_objective,
             GlossaryCore.LastYearUtilityObjectiveValue: self.utility_m.last_year_utility_objective,
+            GlossaryCore.DecreasingGdpIncrementsObjectiveValue: self.utility_m.decreasing_gpd_obj,
         }
 
         self.store_sos_outputs_values(dict_values)
@@ -112,6 +114,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         d_pop_discounted_utility_quantity_denergy_price, d_pop_discounted_utility_quantity_dpcc, d_pop_discounted_utility_quantity_dpop, \
         d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop,\
         d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop= self.utility_m.d_utility_quantity()
+
+        d_decreasing_obj_d_economic = self.utility_m.d_decreasing_gdp_obj()
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaUtilityQuantity),
@@ -177,6 +181,11 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.LastYearUtilityObjectiveValue,),
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             d_ly_utility_obj_dpop)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.DecreasingGdpIncrementsObjectiveValue,),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            d_decreasing_obj_d_economic)
 
 
     def get_chart_filter_list(self):

@@ -29,6 +29,7 @@ class UtilityModel():
         '''
         Constructor
         '''
+        self.decreasing_gpd_obj = None
         self.shift_scurve = 0.
         self.strech_scurve = 0.
         self.discounted_utility_quantity_objective = 0.
@@ -101,6 +102,8 @@ class UtilityModel():
         self.compute_discounted_utility_population()
         self.compute_quantity_objective()
         self.compute_last_year_utility_objective()
+
+        self.compute_decreasing_gdp_obj()
 
         return self.utility_df
 
@@ -209,3 +212,42 @@ class UtilityModel():
                d_pop_discounted_utility_quantity_denergy_price, d_pop_discounted_utility_quantity_dpcc, d_pop_discounted_utility_quantity_dpop,\
                d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop, \
                d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop
+
+    def compute_decreasing_gdp_obj(self):
+        """
+        decreasing net gdp obj =   Sum_i [min(Qi+1/Qi, 1) - 1] / nb_years
+
+        Note: this objective is self normalized to [0,1], no need for reference
+        :return:
+        :rtype:
+        """
+        output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
+        increments = list(output_net_of_damage[1:]/output_net_of_damage[:-1])
+        increments.append(0)
+        increments = np.array(increments)
+
+        increments[increments >= 1] = 1.
+        increments -= 1
+
+        self.decreasing_gpd_obj = np.array([np.mean(increments)])
+
+    def d_decreasing_gdp_obj(self):
+        output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
+        output_shift = list(output_net_of_damage[1:])
+        output_shift.append(0)
+        output_shift = np.array(output_shift)
+
+        increments = list(output_net_of_damage[1:] / output_net_of_damage[:-1])
+        increments.append(0)
+        increments = np.array(increments)
+
+        a = list(- output_shift / output_net_of_damage**2)
+        derivative = np.diag(a) + np.diag(1/output_net_of_damage[:-1], k=1)
+
+        derivative[increments > 1] = 0.
+        for i, incr in enumerate(increments):
+            if incr == 1:
+                derivative[i, i+1] = 0.
+        derivative = np.mean(derivative, axis=0)
+
+        return derivative
