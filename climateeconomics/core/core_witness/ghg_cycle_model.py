@@ -328,7 +328,7 @@ class GHGCycle():
         C(t+1) = C(t) + E(t) * E_to_ppm - decay_rate * (C(t) - Cpreindus)
         So for derivative :
         d C[j] / d E[i] = d (C[j-1] + E[j-1] * E_to_ppm - decay_rate * C[j-1]) / d E[i]
-		                = (1 - decay_rate) * (d C[j-1] / d E[i]) + E_to_ppm * (j-1 == i)
+                    = (1 - decay_rate) * (d C[j-1] / d E[i]) + E_to_ppm * (j-1 == i)
         """
         n_years = len(self.years_range)
         d_conc_d_emissions = np.zeros((n_years, n_years))

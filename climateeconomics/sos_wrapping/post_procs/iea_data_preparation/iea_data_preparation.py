@@ -24,37 +24,27 @@ class IEADataPreparation:
     IEA Data Preparation Model
     """
 
-    def __init__(self):
+    def __init__(self, variables_to_store_dict):
         '''
         Constructor
+        variables_to_store_dict : dict of variables to store with the associated unites
+
         '''
         self.year_start = None
         self.year_end = None
-        self.CO2_emissions_df_in = None
-        self.CO2_emissions_df_out = None
-        self.population_in = None
-        self.population_out = None
-        self.gdp_in = None
-        self.gdp_out = None
-        self.energy_prices_in = None
-        self.energy_prices_out = None
-        self.CO2_tax_in = None
-        self.CO2_tax_out = None
-        self.energy_production_in = None
-        self.energy_production_out = None
-        self.temperature_in = None
-        self.temperature_out = None
         self.dict_df_in = None
         self.dict_df_out = None
+        self.variables_to_store_dict = variables_to_store_dict
 
-    def configure_parameters(self, input_dict, variables_to_store):
+    def configure_parameters(self, input_dict):
         """
         Configure parameters of model
+        input_dict : dict of inputs of discipline
         """
 
         self.year_start = input_dict[Glossary.YearStart]
         self.year_end = input_dict[Glossary.YearEnd]
-        self.dict_df_in = {key_name: input_dict[key_name] for key_name in variables_to_store if key_name in input_dict}
+        self.dict_df_in = {key_name: input_dict[key_name] for key_name in list(self.variables_to_store_dict.keys()) if key_name in input_dict}
     def compute(self):
         """
         Interpolate between year start and year end all the dataframes
@@ -122,6 +112,12 @@ class IEADataPreparation:
 
             # Reset the index to bring 'years' back as a column
             df.reset_index(inplace=True)
+
+            # rename all columns to include column in name
+            columns_to_rename = [col for col in df.columns if col != Glossary.Years]
+
+            # rename all columns of df dataframe inplace
+            df.rename(columns={col: f"{col} [{self.variables_to_store_dict[key]}]" for col in columns_to_rename}, inplace=True)
 
             # Add the interpolated DataFrame to the dictionary
             interpolated_dfs_dict[key+'_interpolated'] = df
