@@ -18,9 +18,9 @@ import unittest
 from os.path import dirname, join
 
 from pandas import read_csv
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class UraniumModelTestCase(unittest.TestCase):
@@ -85,5 +85,6 @@ class UraniumModelTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
         #for graph in graph_list:
         #    graph.to_plotly().show()
+
 if __name__ =="__main__" :
     unittest.main()

@@ -13,16 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     INVEST_DISC_NAME,
 )
+
 # -*- coding: utf-8 -*-
 from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -76,6 +78,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.ee.factory.update_builder_list_with_extra_name(
             extra_name, builder_list=chain_builders)
 
+        # design variables builder
+        design_var_path = 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
+        design_var_builder = self.ee.factory.get_builder_from_module(
+            f'{designvariable_name}', design_var_path)
+        chain_builders.append(design_var_builder)
 
         # function manager builder
         fmanager_path = 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
@@ -98,7 +105,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         coupling_builder = self.ee.factory.create_builder_coupling(
             coupling_name)
         coupling_builder.set_builder_info('cls_builder', chain_builders)
-        #coupling_builder.set_builder_info('with_data_io', True)
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(GlossaryCore.NS_WITNESS,
                                                                                 'climateeconomics.sos_wrapping.post_procs.compare_gradients')

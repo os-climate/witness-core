@@ -15,10 +15,17 @@ limitations under the License.
 '''
 import os.path
 
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tp35 import Study as StudyMSmdaTippingPoint35
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios import Study as StudyToExport, __file__ as module_file
 from sostrades_core.datasets.dataset_mapping import DatasetsMapping
+
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios import (
+    Study as StudyToExport,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios import (
+    __file__ as module_file,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tp35 import (
+    Study as StudyMSmdaTippingPoint35,
+)
 
 class Study(StudyMSmdaTippingPoint35):
 

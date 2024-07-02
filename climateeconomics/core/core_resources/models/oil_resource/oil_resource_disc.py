@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2024/06/07 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import (
     OilResourceModel,
@@ -26,7 +27,6 @@ from climateeconomics.core.core_resources.resource_model.resource_disc import (
     ResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class OilResourceDiscipline(ResourceDiscipline):
@@ -73,7 +73,6 @@ class OilResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_oil_resource',
                                  'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'oil_type': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -99,7 +98,6 @@ class OilResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_oil_resource',
                                           'dataframe_descriptor': {
-                                              GlossaryCore.Years: ('float', None, False),
                                               'light_consumption': ('float', None, True),
                                               'medium_consumption': ('float', None, True),
                                               'heavy_consumption': ('float', None, True),

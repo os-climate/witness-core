@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_model import (
     UraniumResourceModel,
@@ -26,7 +27,6 @@ from climateeconomics.core.core_resources.resource_model.resource_disc import (
     ResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class UraniumResourceDiscipline(ResourceDiscipline):
@@ -75,7 +75,6 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_uranium_resource',
                                  'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'Accessibility': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -92,15 +91,9 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                                  'uranium_80': ('float', None, True),
                                                  'uranium_130': ('float', None, True),
                                                  'uranium_260': ('float', None, True),
-                                                 'uranium_260_consumption': ('float', None, True),
                                               }},
                'resource_price_data': {'type': 'dataframe', 'unit': '$/kg', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {
-                                                 GlossaryCore.Years: ('float', None, False),
-                                                 'uranium_40_consumption': ('float', None, True),
-                                                 'uranium_80_consumption': ('float', None, True),
-                                                 'uranium_130_consumption': ('float', None, True),
-                                                 'uranium_260_consumption': ('float', None, True),
                                                  'resource_type': ('string', None, True),
                                            'price': ('float', None, True),
                                            'unit': ('string', None, True),
@@ -110,12 +103,10 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                           'user_level': 2, 'namespace': 'ns_uranium_resource',
                                           'dataframe_descriptor':
                                              {
-                                                 GlossaryCore.Years: ('float', None, False),
                                                  'uranium_40_consumption': ('float', None, True),
                                                  'uranium_80_consumption': ('float', None, True),
                                                  'uranium_130_consumption': ('float', None, True),
                                                  'uranium_260_consumption': ('float', None, True),
-                                                 'Reserve_unit': ('float', None, True),
                                               }
                                          },
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2024/06/07 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,11 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 
 from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_model import (
     PlatinumResourceModel,
@@ -26,11 +31,6 @@ from climateeconomics.core.core_resources.resource_model.resource_disc import (
     ResourceDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    InstanciatedSeries,
-    TwoAxesInstanciatedChart,
-)
 
 
 class PlatinumResourceDiscipline(ResourceDiscipline):
@@ -88,7 +88,6 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_platinum_resource',
                                  'dataframe_descriptor':
                                      {
-                                         GlossaryCore.Years: ('float', None, False),
                                          'platinum_type': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -111,7 +110,6 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_platinum_resource',
                                           'dataframe_descriptor': {
-                                              GlossaryCore.Years: ('float', None, False),
                                               'platinum_consumption': ('float', None, True),}
                                           },
                'production_start': {'type': 'int', 'default': default_regression_start, 'unit': '-',

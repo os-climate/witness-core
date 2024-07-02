@@ -18,12 +18,12 @@ import unittest
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class PolicyDiscTest(unittest.TestCase):

@@ -14,10 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from os.path import dirname, join
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
@@ -31,16 +41,8 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_optim_sub_usecase,
 )
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.design_var.design_var_disc import (
-    DesignVarDiscipline,
-)
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
+from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import (
+    IEADataPreparationDiscipline,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -50,6 +52,13 @@ OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
+IEA_DISC = IEADataPreparationDiscipline.IEA_NAME
+
+DATA_DIR = Path(__file__).parents[4] / "data"
+
+def create_df_from_csv(filename: str, data_dir=DATA_DIR, **kwargs):
+    """Creates a pandas DataFrame from a given filename"""
+    return pd.read_csv(str(data_dir / filename), **kwargs)
 
 # usecase of witness full to evaluate a design space with NZE investments
 class Study(ClimateEconomicsStudyManager):
@@ -123,6 +132,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "xtol_abs": 1e-16,
                                                                       "max_iter": 700,
                                                                       "disp": 30},
+                             f'{ns}.{self.optim_name}.desactivate_optim_out_storage': True,
 
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
                                  'tol': 1.0e-10,
@@ -146,7 +156,7 @@ class Study(ClimateEconomicsStudyManager):
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl',
                                     'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl',
                                     'forest_investment_array_mix', 'crop_investment_array_mix']
-        diet_mortality_df = pd.read_csv(join(dirname(__file__), 'data', 'diet_mortality.csv'))
+        diet_mortality_df = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', 'diet_mortality.csv'))
 
         # clean dspace
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
@@ -158,7 +168,7 @@ class Study(ClimateEconomicsStudyManager):
 
 
         dspace_file_name = 'invest_design_space_NZE.csv'
-        dspace_out = pd.read_csv(join(dirname(__file__), 'data', dspace_file_name))
+        dspace_out = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', dspace_file_name))
 
 
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
@@ -191,9 +201,9 @@ class Study(ClimateEconomicsStudyManager):
         dspace_df['enable_variable'] = True
 
         invest_mix_file = 'investment_mix.csv'
-        invest_mix = pd.read_csv(join(dirname(__file__), 'data', invest_mix_file))
+        invest_mix = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', invest_mix_file))
         forest_invest_file = 'forest_investment.csv'
-        forest_invest = pd.read_csv(join(dirname(__file__), 'data', forest_invest_file))
+        forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
         #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
@@ -208,20 +218,68 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict.update(values_dict_updt)
         optim_values_dict.update(values_dict_updt)
+
+        # input for IEA data
+        CO2_emissions_df = create_df_from_csv("IEA_NZE_co2_emissions_Gt.csv")
+        GDP_df = create_df_from_csv("IEA_NZE_output_net_of_d.csv")
+        CO2_tax_df = create_df_from_csv("IEA_NZE_CO2_taxes.csv")
+        population_df = create_df_from_csv("IEA_NZE_population.csv")
+        temperature_df = create_df_from_csv("IEA_NZE_temp_atmo.csv")
+        energy_production_df = create_df_from_csv("IEA_NZE_energy_production_brut.csv")
+        nuclear_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.Nuclear.techno_production.csv")
+        hydro_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv")
+        solar_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.SolarPv.techno_production.csv")
+        wind_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.WindXXshore.techno_production.csv")
+        coal_production_df = create_df_from_csv("IEA_NZE_EnergyMix_solid_fuel_CoalExtraction_techno_production.csv")
+        fossil_gas_production_df = create_df_from_csv("IEA_NZE_EnergyMix.methane.FossilGas.techno_detailed_production.csv")
+        biogas_production_df = create_df_from_csv("IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv")
+        crop_production_df = create_df_from_csv("IEA_NZE_crop_mix_detailed_production.csv")
+        forest_production_df = create_df_from_csv("IEA_NZE_forest_techno_production.csv")
+        electricity_prices_df = create_df_from_csv("IEA_NZE_electricity_Technologies_Mix_prices.csv")
+        natural_gas_price_df = create_df_from_csv("IEA_NZE_EnergyMix.methane.FossilGas.techno_prices.csv")
+        land_use_df = create_df_from_csv("IEA_NZE_Land_Use.land_surface_detail_df.csv")
+
+        values_dict.update({
+            f'{ns}.{GlossaryEnergy.YearStart}': self.year_start,
+            f'{ns}.{GlossaryEnergy.YearEnd}': self.year_end,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.CO2EmissionsGtValue}': CO2_emissions_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.EconomicsDfValue}': GDP_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.CO2TaxesValue}': CO2_tax_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.EnergyProductionValue}': energy_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.TemperatureDfValue}': temperature_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.PopulationDfValue}': population_df,
+            # energy production
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production': nuclear_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production': hydro_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}_techno_production': solar_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}_techno_production': wind_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production': coal_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.FossilGas}_techno_production': fossil_gas_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production': biogas_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.CropEnergy}_techno_production': crop_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.ForestProduction}_techno_production': forest_production_df,
+            f'{ns}.{IEA_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
+            # energy prices
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': electricity_prices_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.EnergyPricesValue}': natural_gas_price_df
+            })
+
         return [values_dict] + [optim_values_dict]
 
 
 if '__main__' == __name__:
+    uc_cls = Study()
+    uc_cls.test()
+    '''
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
-        if 'Forest' in disc.get_disc_full_name():
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
+    ns = f'usecase_witness_optim_nze_eval'
+    filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
 
-            for graph in graph_list:
-                graph.to_plotly().show()
+    graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
+    for graph in graph_list:
+        graph.to_plotly().show()
+    '''
+

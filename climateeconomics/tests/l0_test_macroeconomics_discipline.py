@@ -20,9 +20,9 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class MacroDiscTest(unittest.TestCase):
@@ -96,7 +96,7 @@ class MacroDiscTest(unittest.TestCase):
 
         self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
                                                 GlossaryCore.DamageFractionOutput: np.linspace(0.01, 0.05, nb_per),
-                                                GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
+                                   })
 
         default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 50.0}, index=years)

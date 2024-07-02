@@ -18,9 +18,9 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CarbonEmissionDiscTest(unittest.TestCase):
@@ -33,6 +33,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.,
         })
 
         self.energy_supply_df_all = pd.DataFrame({

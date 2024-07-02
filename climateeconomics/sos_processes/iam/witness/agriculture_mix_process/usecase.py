@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.study_manager.study_manager import StudyManager
 
 AGRI_MIX_MODEL_LIST = ['Crop', 'Forest']
 AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = [
@@ -80,8 +80,9 @@ class Study(StudyManager):
         year_range = self.year_end - self.year_start + 1
 
         temperature = np.array(np.linspace(1.05, 5.0, year_range))
-        temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
+        temperature_df = pd.DataFrame({
+            GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature,
+        })
         temperature_df.index = years
 
         population = np.array(np.linspace(7800.0, 9000.0, year_range))

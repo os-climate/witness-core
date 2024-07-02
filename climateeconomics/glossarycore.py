@@ -268,10 +268,7 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-    df_descriptor_section_df = {
-        section: ("float", [0.0, 1e30], True) for section in SectionsPossibleValues
-    }
-    df_descriptor_section_df.update({Years: ("int", [1900, YearEndDefault], False)})
+
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
@@ -279,7 +276,7 @@ class GlossaryCore:
         "description": "Percentage of the GDP for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": df_descriptor_section_df,
+        "dataframe_descriptor": {Years: ("int", [1900, YearEndDefault], False)},
     }
     SectionEnergyConsumptionPercentageDf = {
         "var_name": SectionEnergyConsumptionPercentageDfValue,
@@ -288,7 +285,7 @@ class GlossaryCore:
         "description": "Percentage of the energy consumption for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": df_descriptor_section_df,
+        "dataframe_descriptor": {Years: ("int", [1900, YearEndDefault], False)},
     }
     SectorEnergyConsumptionPercentageDf = {
         "var_name": SectorEnergyConsumptionPercentageDfName,
@@ -314,7 +311,7 @@ class GlossaryCore:
         "description": "Non energy CO2 emission per $GDP per section",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": df_descriptor_section_df,
+        "dataframe_descriptor": {Years: ("int", [1900, YearEndDefault], False)},
     }
 
     SectionNonEnergyEmissionGDPDfSector = {
@@ -578,7 +575,6 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             DamageFractionOutput: ("float", [0.0, 1.0], False),
-            BaseCarbonPrice: ("float", [0, 1e30], False),
         },
     }
     Damages = "Damages [G$]"
@@ -1039,6 +1035,17 @@ class GlossaryCore:
         "unit": "°C",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
+            TempAtmo: ("float", None, False),
+        },
+    }
+
+    TemperatureDetailedDfValue = "temperature_detailed_df"
+    TemperatureDetailedDf = {
+        "var_name": TemperatureDetailedDfValue,
+        "type": "dataframe",
+        "unit": "-",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
             ExoGForcing: ("float", None, False),
             Forcing: ("float", None, False),
             TempAtmo: ("float", None, False),
@@ -1047,10 +1054,9 @@ class GlossaryCore:
     }
 
     UtilityDiscountRate = "u_discount_rate"
-    UtilityPopulation = "Utility population"
-    UtilityEnergyPrice = "Utility energy price"
-    UtilityQuantity = "Utility quantity"
-    DiscountedUtilityQuantity = "Discounted utility quantity"
+    DiscountedQuantityUtilityPopulation = "Discounted quantity utility population"
+    PerCapitaUtilityQuantity = "Utility quantity per capita"
+    DiscountedUtilityQuantityPerCapita = "Discounted utility quantity per capita"
     PeriodUtilityPerCapita = "period_utility_pc"
     DiscountedUtility = "discounted_utility"
     Welfare = "welfare"
@@ -1062,14 +1068,15 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             UtilityDiscountRate: ("float", [0, 100], False),
-            UtilityQuantity: ("float", None, False),
-            DiscountedUtilityQuantity: ("float", None, False),
+            PerCapitaUtilityQuantity: ("float", None, False),
+            DiscountedUtilityQuantityPerCapita: ("float", None, False),
+            DiscountedQuantityUtilityPopulation: ("float", None, False),
         },
         "unit": "-",
     }
 
-
     QuantityObjectiveValue = "Quantity_objective"
+    LastYearUtilityObjectiveValue = "last_year_utility_obj"
 
     QuantityObjective = {
         "var_name": QuantityObjectiveValue,
@@ -1077,6 +1084,38 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
         "description": "objective of quantity of things consumed. Quantity  = Consumption / Price",
+        "unit": "-",
+    }
+
+    LastYearUtilityObjective = {
+        "var_name": LastYearUtilityObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "utility of last year",
+        "unit": "-",
+    }
+
+    DecreasingGdpIncrementsObjectiveValue = "decreasing_gdp_increments_obj"
+
+    DecreasingGdpIncrementsObjective = {
+        "var_name": DecreasingGdpIncrementsObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Here to minimize areas where net gpp is decreasing. Objective should be minimized. "
+                       "Self normalized, no need for reference division.",
+        "unit": "-",
+    }
+
+    NetGdpGrowthRateObjectiveValue = "net_gdp_growth_rate_obj"
+
+    NetGdpGrowthRateObjective = {
+        "var_name": NetGdpGrowthRateObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Net Gdp growth rate obj",
         "unit": "-",
     }
 

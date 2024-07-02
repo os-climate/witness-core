@@ -4,9 +4,10 @@
    2. [Problem Formulation](#problem-formulation)
       1. [Design Space](#design-space)
       2. [Lower and Upper Bounds](#lower-and-upper-bounds)
-      3. [Objectives](#objectives)
-         1. [Energy Mean Price](#energy-mean-price)
-         2. [Consumption Objective](#consumption-objective)
+      3. [Objective](#objective)
+         1. [Utility per capita](#utility-per-capita)
+            1. [Consumption per capita in Witness](#consumption-per-capita-in-witness)
+            2. [Energy price in Witness](#energy-price-in-witness)
       4. [Constraints](#constraints)
    3. [Main MDA/MDO Algorithm Parameters](#main-mdamdo-algorithm-parameters)
 
@@ -67,28 +68,58 @@ Better managing the bounds could also potentially improve the mda convergence.
 Indeed, in the GS pure Newton mda algorithm, a gradient is computed using the same analytical formulas as for the MDO. 
 Matrix inversion can be difficult and if preconditionning does not help, the gradients at the bounds could be a root cause of the issue.
 
-### Objectives
+### Objective
 
-#### Energy mean price
-$$energy \textunderscore price_{mean \textunderscore objective} = \frac{1}{n_{years}} \times \sum_{years}\frac{energy \textunderscore price_{mean}[years]}{energy \textunderscore price_{ref}}$$
-where the $energy \textunderscore price_{mean}[years]$ is the average of the prices of all the energy mix technologies at a given year, namely:
-$$energy \textunderscore price_{mean}[years] = \frac{1}{n_{technos}} \times \sum_{technos}energy \textunderscore price[years, technos]$$
-The $energy \textunderscore price_{ref}$ default value is 100 <span>$</span> so that $energy \textunderscore price_{mean \textunderscore objective}$ values are around 1.
+$$\text{maximize}_{x \in \text{design space}} \text{ Population utility objective (x)}$$
 
-The energy mean price is affected by the value of the CO2 tax. If the CO2 tax is deactivated, fossil energies are preferred since they are cheaper. 
-However, if CO2 tax is activated, renewable energies are preferred as they emit less CO2 and eventually lead to a energy mean price (including CO2 tax) that is lower.
 
-#### Consumption objective
-$$consumption_{objective} = \frac{1}{n_{years}} \times \sum_{years}\frac{consumption[years]}{consumption_{ref}}$$
-As defined in the documentation of the macroeconomics discipline, consumption C is the part of the net output not invested, namely:
+The `Population utility objective` (a float) is the average over the years of utility of the population.
+$$\text{Population utility objective} = \frac{1}{\text{nb years}}\sum_{\text{year in years}} \text{Population utility (year)}$$
+
+with 
+
+$$\text{Population utility} = \frac{\text{Population}}{\text{Population at year start}} \text{Utility per capita}$$
+
+The next section described the notion of  *Utility per capita*.
+
+#### Utility per capita
+
+The utility per capita relies on two variables available in witness, *Consumption per capita* and *Energy price*. The next two sections gives a quick explanation of these variables.
+
+In our optimization formulation, we want to maximize the quantity of things consumed. For that, we can see *Consumption per capita* can be seen as 
+
+$$C^{pc} = Q^{pc} \times P$$
+
+that is, a quantity (of "things" consumed) $\times$ Price ("average price of things consumed"). 
+The assumption we make is that the average price of things that are consumed is driven by energy price, leading to :
+
+
+$$\text{quantity per capita} = \frac{\text{consumption per capita}}{\text{energy price}}$$
+
+If we take year start as a reference point, and apply a function $f$ to mimic saturation to consumption (having more when your poor is huge, but having more when you already have a lot doesnt mean much to you), we defined the gain of utility as
+
+$$\text{utility per capita (year)} = f \left(\frac{\text{quantity per capita (year)}}{\text{quantity per capita (year start)}} \right)$$
+
+> This saturation function is an S-curve, whose parameters have been fine-tuned, but can be tweeked based on your preferences. 
+
+##### Consumption per capita in Witness
+
+Consumption $C$ is the part of the net output not invested, namely:
 $$C = Q - I$$
 where Net output $Q$ is the output net of climate damage explained in the macroeconomics discipline documentation.
 
-The $consumption_{ref}$ default value is 250 T\$ so that $consumption_{objective}$ values are around 1.
-In witness, it is assumed that the larger the consumption per capita, the better the wealth of the population over the entire period of the study, which is what is aimed at. The consumption objective is therefore a quantity to be maximized.
-
 From the equation above, one could think that reducing the investments (I) would maximize the consumption (C). However, reducing the investments in energy also reduces the net output (see the impact of energy investments on usable capital Ku in the macroeconomics documentation).
-Because of this coupling between energy and economy, finding the optimum investments is not straightforward.
+Because of this coupling between energy and economy, finding the optimum investments is not straightforward, therefore showing the need for an optimizer to find the perfect balance.
+
+Consumption per capita $C^{pc}$ is simply the $C$ divided by the population.
+
+##### Energy price in witness
+
+The energy price in Witness is the average of the prices of all the energy mix technologies at a given year, namely:
+$$energy \textunderscore price_{mean}[years] = \frac{1}{n_{technos}} \times \sum_{technos}energy \textunderscore price[years, technos]$$
+
+The energy price is affected by the value of the CO2 tax. If the CO2 tax is deactivated, fossil energies are preferred since they are cheaper. 
+However, if CO2 tax is activated, renewable energies are preferred as they emit less CO2 and eventually lead to a energy mean price (including CO2 tax) that is lower.
 
 ### Constraints
 No equality or inequality constraint has been activated in this optimization.

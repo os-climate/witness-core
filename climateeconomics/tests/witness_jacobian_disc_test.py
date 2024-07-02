@@ -18,11 +18,10 @@ limitations under the License.
 import platform
 from os.path import dirname, exists, join
 
-from tqdm import tqdm
-
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+from tqdm import tqdm
 
 
 class WitnessJacobianDiscTest(AbstractJacobianUnittest):
@@ -59,7 +58,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
 
         # specify a list of disciplines to check
         if optional_disciplines_list:
-            all_disc = [disc for disc in all_disc if disc.name in optional_disciplines_list]
+            all_disc = [disc for disc in all_disc if disc.sos_name in optional_disciplines_list]
 
         total_disc = len(all_disc)
         counter = 0
@@ -70,7 +69,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
             outputs = [output for output in outputs if self.ee.dm.get_data(
                 output, 'coupling')]
 
-            if disc.name == 'FunctionsManager':
+            if disc.sos_name == 'FunctionsManager':
                 outputs.append(self.ee.dm.get_all_namespaces_from_var_name(
                     'objective_lagrangian')[0])
             inputs = disc.get_input_data_names()
@@ -81,12 +80,12 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
             # remove excluded
             outputs = list(set(outputs) - set(excluded_outputs))
 
-            print('\nTesting', disc.name, '...')
+            print('\nTesting', disc.sos_name, '...')
 
-            pkl_name = f'jacobian_{disc.name}.pkl'
+            pkl_name = f'jacobian_{disc.sos_name}.pkl'
             filepath = join(dirname(__file__), directory, pkl_name)
 
-            if len(inputs) != 0 and disc.name not in excluded_disc:
+            if len(inputs) != 0 and disc.sos_name not in excluded_disc:
                 counter += 1
 
                 if not exists(filepath):
@@ -126,10 +125,10 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                                                 directory=directory,
                                                 parallel=WitnessJacobianDiscTest.PARALLEL)
                         except:
-                            print(f'Jacobian for {disc.name} is false')
-                            excluded_disc.append(disc.name)
+                            print(f'Jacobian for {disc.sos_name} is false')
+                            excluded_disc.append(disc.sos_name)
             else:
-                untested_disc.append(disc.name)
+                untested_disc.append(disc.sos_name)
 
         print('excluded ', excluded_disc)
         print('untested ', untested_disc)
@@ -194,20 +193,20 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
     #         outputs = [output for output in outputs if self.ee.dm.get_data(
     #             output, 'coupling')]
     #
-    #         if disc.name == 'FunctionsManager':
+    #         if disc.sos_name == 'FunctionsManager':
     #             outputs.append(self.ee.dm.get_all_namespaces_from_var_name(
     #                 'objective_lagrangian')[0])
     #         inputs = disc.get_input_data_names()
     #
     #         inputs = [input for input in inputs if self.ee.dm.get_data(
     #             input, 'coupling')]
-    #         print('\nTesting', disc.name, '...')
+    #         print('\nTesting', disc.sos_name, '...')
     #
-    #         pkl_name = f'jacobian_{disc.name}.pkl'
+    #         pkl_name = f'jacobian_{disc.sos_name}.pkl'
     #         filepath = join(dirname(__file__),
     #                         AbstractJacobianUnittest.PICKLE_DIRECTORY, pkl_name)
     #
-    #         if len(inputs) != 0 and disc.name not in excluded_disc:
+    #         if len(inputs) != 0 and disc.sos_name not in excluded_disc:
     #             counter += 1
     #
     #             if not exists(filepath):

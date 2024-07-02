@@ -21,10 +21,10 @@ from time import time
 
 import numpy as np
 from pandas.core.frame import DataFrame
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.dice.dice_model.usecase import Study
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class DICEMDAPrerunTest(unittest.TestCase):
@@ -85,8 +85,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
                         'adj_backstop_cost': data,
                         'abatecost': data,
                         'marg_abatecost': data,
-                        'carbon_price': data,
-                        GlossaryCore.BaseCarbonPrice: data},
+                        'carbon_price': data,},
                        index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
 

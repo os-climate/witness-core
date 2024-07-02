@@ -13,17 +13,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import (
-    Study as usecase_ms_mdo,
-)
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
-    Study as usecase_ms_mda,
-)
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
-    Study as usecase_ms_mda_tipping_point,
-)
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -35,6 +24,17 @@ from sostrades_core.tools.post_processing.charts.two_axes_chart_template import 
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import (
+    Study as usecase_ms_mdo,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
+    Study as usecase_ms_mda,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
+    Study as usecase_ms_mda_tipping_point,
 )
 
 TAX_NAME = 'with tax'
@@ -173,7 +173,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            'Temperature_change.temperature_detail_df', ]
+            f'Temperature_change.{GlossaryCore.TemperatureDetailedDfValue}', ]
         (temperature_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         temperature_dict = {}
@@ -444,7 +444,7 @@ def post_processings(execution_engine, namespace, filters):
 
         utility_dict = {}
         for scenario in scenario_list:
-            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtilityQuantity].values.tolist(
+            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtilityQuantityPerCapita].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, utility_dict,

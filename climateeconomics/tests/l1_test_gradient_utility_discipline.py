@@ -15,16 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from scipy.interpolate import interp1d
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class UtilityJacobianDiscTest(AbstractJacobianUnittest):
@@ -53,11 +54,14 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        
+
+        f = interp1d([self.year_start, self.year_start + 1, self.year_start +2, (self.year_start + self.year_end) / 2, self.year_end], [100, 100, 100, 200, 100])
+        gdp_net = f(self.years)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
             GlossaryCore.PerCapitaConsumption: np.linspace(12, 6, len(self.years)),
+            GlossaryCore.OutputNetOfDamage: gdp_net,
         })
 
         self.population_df = pd.DataFrame({
@@ -96,5 +100,8 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                             ],
                             outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
+                                     f'{self.name}.{GlossaryCore.LastYearUtilityObjectiveValue}',
+                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
+                                     f'{self.name}.{GlossaryCore.NetGdpGrowthRateObjectiveValue}',
                             ],
                             derr_approx='complex_step')

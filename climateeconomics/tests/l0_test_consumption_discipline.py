@@ -19,9 +19,9 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class ConsumptionDiscTest(unittest.TestCase):
@@ -35,6 +35,8 @@ class ConsumptionDiscTest(unittest.TestCase):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.,
         })
 
     def test_execute(self):

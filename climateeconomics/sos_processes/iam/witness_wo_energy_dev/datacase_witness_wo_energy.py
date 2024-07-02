@@ -21,6 +21,10 @@ import numpy as np
 import pandas as pd
 from numpy import arange, asarray
 from pandas import DataFrame
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
@@ -38,10 +42,6 @@ from climateeconomics.sos_processes.iam.witness.resources_process.usecase import
 )
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import (
     CropDiscipline,
-)
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -105,7 +105,6 @@ class DataStudy():
         damage_fraction_initialisation = pd.DataFrame({
             GlossaryCore.Years: years,
             GlossaryCore.DamageFractionOutput: np.linspace(0.001, 0.1, len(years)),
-            GlossaryCore.BaseCarbonPrice: np.zeros_like(years),
         })
         witness_input[f'{self.study_name}.{GlossaryCore.DamageFractionDfValue}'] = damage_fraction_initialisation
         share_non_energy_investment = DataFrame(
@@ -286,8 +285,9 @@ class DataStudy():
                 GlossaryCore.EnergyWastedObjective,
                 GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
-                GlossaryCore.ConsumptionObjective,
+                GlossaryCore.NetGdpGrowthRateObjectiveValue,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
+                GlossaryCore.DecreasingGdpIncrementsObjectiveValue,
             ],
             'parent': [
                 'invest_objective',
@@ -295,11 +295,12 @@ class DataStudy():
                 'invest_objective',
                 'invest_objective',
                 'invest_objective',
+                'utility_objective',
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [0.1, -1., -0., 0.0, 0.],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS  , GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
+            'ftype': [OBJECTIVE] * 6,
+            'weight': [0.1, -1., 0., 0., 0., 1.],
+            AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
+            'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
         }
 
         func_df = DataFrame(data)

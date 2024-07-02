@@ -68,7 +68,7 @@ class Study(ClimateEconomicsStudyManager):
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{scatter_scenario}.samples_df': scenario_df,
-            f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario'] == True]))
+            f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
         }
 
         for scenario_name, studyClass in scenario_dict.items():
