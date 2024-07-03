@@ -1096,6 +1096,29 @@ class GlossaryCore:
         "unit": "-",
     }
 
+    DecreasingGdpIncrementsObjectiveValue = "decreasing_gdp_increments_obj"
+
+    DecreasingGdpIncrementsObjective = {
+        "var_name": DecreasingGdpIncrementsObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Here to minimize areas where net gpp is decreasing. Objective should be minimized. "
+                       "Self normalized, no need for reference division.",
+        "unit": "-",
+    }
+
+    NetGdpGrowthRateObjectiveValue = "net_gdp_growth_rate_obj"
+
+    NetGdpGrowthRateObjective = {
+        "var_name": NetGdpGrowthRateObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Net Gdp growth rate obj",
+        "unit": "-",
+    }
+
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,
