@@ -1,19 +1,19 @@
 {
   "techno_infos_dict": {
-    "maturity": 0,
-    "Opex_percentage": 0.15,
-    "WACC": 0.058,
-    "learning_rate": 0.0,
-    "lifetime": 30,
-    "Capex_init": 245.0,
-    "Capex_init_unit": "$/MWh",
-    "techno_evo_eff": "no",
-    "efficiency": 1.0,
-    "CO2_from_production": 0.0,
-    "CO2_from_production_unit": "kg/kg",
-    "construction_delay": 3,
-    "resource_price": 75.0,
-    "resource_price_unit": "$/MWh"
+    "maturity": {"value": 0},
+    "Opex_percentage": {"value": 0.15},
+    "WACC": {"value": 0.058},
+    "learning_rate": {"value": 0.0},
+    "lifetime": {"value": 30},
+    "Capex_init": {"value": 245.0},
+    "Capex_init_unit": {"value": "$/MWh"},
+    "techno_evo_eff": {"value": "no"},
+    "efficiency": {"value": 1.0},
+    "CO2_from_production": {"value": 0.0},
+    "CO2_from_production_unit": {"value": "kg/kg"},
+    "construction_delay": {"value": 3},
+    "resource_price": {"value": 75.0},
+    "resource_price_unit": {"value": "$/MWh"}
   },
-  "margin": "@dataframe@margin.csv"
+  "margin": {"value": "@dataframe@margin.csv"}
 }
