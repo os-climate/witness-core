@@ -285,9 +285,9 @@ class DataStudy():
                 GlossaryCore.EnergyWastedObjective,
                 GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
-                GlossaryCore.ConsumptionObjective,
+                GlossaryCore.NetGdpGrowthRateObjectiveValue,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
-                GlossaryCore.LastYearUtilityObjectiveValue,
+                GlossaryCore.DecreasingGdpIncrementsObjectiveValue,
             ],
             'parent': [
                 'invest_objective',
@@ -298,7 +298,7 @@ class DataStudy():
                 'utility_objective',
             ],
             'ftype': [OBJECTIVE] * 6,
-            'weight': [0.1, -1., 0., 0., 0., 0.],
+            'weight': [0.1, -1., 0., 0., 0., 1.],
             AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
             'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
         }
