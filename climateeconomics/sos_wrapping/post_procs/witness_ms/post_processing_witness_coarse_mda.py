@@ -168,14 +168,14 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Temperature' in graphs_list:
 
-        chart_name = 'Atmosphere temperature evolution'
         x_axis_name = 'Years'
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            f'Temperature_change.{GlossaryCore.TemperatureDetailedDfValue}', ]
-        (temperature_detail_df_dict,) = get_df_per_scenario_dict(
+            f'Temperature_change.{GlossaryCore.TemperatureDetailedDfValue}','tp_a3' ]
+        (temperature_detail_df_dict, tipping_points_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
+        chart_name = f'Atmosphere temperature evolution (tipping point {list(tipping_points_dict.values())[0]}°C)'
         temperature_dict = {}
         for scenario in scenario_list:
             temperature_dict[scenario] = temperature_detail_df_dict[scenario][GlossaryCore.TempAtmo].values.tolist(
