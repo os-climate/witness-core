@@ -799,19 +799,11 @@ class GlossaryCore:
         "unit": "$/t",
         "visibility": "Shared",
         "namespace": "ns_resource",
-        "dynamic_dataframe_columns": True,
     }
 
     EnergyPrices = {
         "type": "dataframe",
         "unit": "$/MWh",
-        "visibility": "Shared",
-        "namespace": "ns_energy",
-    }
-
-    EnergyCO2Emissions = {
-        "type": "dataframe",
-        "unit": "kg/kWh",
         "visibility": "Shared",
         "namespace": "ns_energy",
     }
