@@ -711,6 +711,17 @@ class GlossaryCore:
         },
     }
 
+    AllSectionsGdpDfValue = "all_sections_gdp_df"
+    AllSectionsGdpDf = {
+        "var_name": AllSectionsGdpDfValue,
+        "type": "dataframe",
+        "description": "GDP of all sections",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+        },
+    }
+
     EconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",

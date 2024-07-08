@@ -4,12 +4,13 @@
    2. [Problem Formulation](#problem-formulation)
       1. [Design Space](#design-space)
       2. [Lower and Upper Bounds](#lower-and-upper-bounds)
-      3. [Objective](#objective)
+      3. [Objective Population Utility](#objective-population-utility)
          1. [Utility per capita](#utility-per-capita)
             1. [Consumption per capita in Witness](#consumption-per-capita-in-witness)
             2. [Energy price in Witness](#energy-price-in-witness)
-      4. [Constraints](#constraints)
-   3. [Main MDA/MDO Algorithm Parameters](#main-mdamdo-algorithm-parameters)
+      4. [Anti decreasing net GDP objective](#anti-decreasing-net-gdp-objective)
+      5. [Constraints](#constraints)
+   4. [Main MDA/MDO Algorithm Parameters](#main-mdamdo-algorithm-parameters)
 
 # WITNESS Coarse Optimisation problem documentation
 
@@ -26,26 +27,35 @@ Multi-disciplinary design optimization (MDO) is a field of engineering that uses
 The problem is given with an objective to be minimized without constraints. As a result, the optimized solution will reach the lowest objective.
 
 Witness coarse formulation on 22-May-2024 reads:
-$$minimize \quad obj = \alpha \times energy \textunderscore price_{mean \textunderscore objective} - (1-\alpha) \times consumption_{objective}$$
-$$\text{wrt} \quad invest \textunderscore mix \in [1,3000]$$
-$$\text{wrt} \quad utilization \textunderscore ratios \in [30,100]$$
+$$minimize \quad obj = \alpha_1 \text{Population utility} + \alpha_2 \text{Anti-decreasing net GDP} + \alpha_3 \text{Energy Wasted Objective}$$
+$$\text{wrt }\text{design variables} \in \text{design space}$$
 
-$\alpha$ allows to define the weight of each component of the objective.
-Since the $consumption_{objective}$ needs to be maximized and since the global objective function is minimized, $-consumption_{objective}$ is considered (with the minus sign). 
-$\alpha$ is chosen so that the weighted components of the objective functions are of the same order of magnitude. 
+The $\alpha$'s are the weights before each objective. Their values are:-
+1. $\alpha_1=1$, objective should be minimized
+2. $\alpha_2=-1$, objective should be maximized
+3. $\alpha_3=0.1$, objective is of a reduced importance and  should be minimized.
 
+More details on the definitions of the objectives can be found in later sections.
 
-### Design space
+### Design variables
 In this optimization process, there are two categories of design variables: the investments and the utilization ratios.
 They are all inputs of the five witness coarse energy models, namely:
+
+#### Design variables controling energy and CCUS techno production
+
+##### Energy technos:
+The energies in witness coarse are 
 - **Fossil simple techno**: a simplified model that mimics all fossil energies (gas, fuel, coal, etc.)
 - **Renewable simple techno**: a simplified model that mimics all the renewable energies (wind energy, solar energy, etc.) or energy with low carbon footprint such as nuclear energy
+
+##### CCUS technos
 - **Carbon capture direct air capture**: CCUS technology that models carbon dioxide capture directly from the air 
 - **Carbon capture flue gas capture**: CCUS technology that models carbon dioxide capture directly from flue gas
 - **Carbon storage**: CCUS technology that models storage of carbon dioxide that has been captured through the two previous models  
 
-An investment describes the capital invested in one of the five aforementioned technologies during the study period (typically between 2020 and 2100). An investment is > 0. To reduce the complexity of the optimization, the value of the investment is adjusted by the optimizer on a reduced number of years referred to as poles. For instance, if 7 poles are used, investments are optimized for years 2020, 2033, 2046, 2060, 2073, 2086, 2010 and investment values for the remaining years are deduced by b-spline interpolation of the values obtained at the poles. 
-An utilization ratio describes the percentage of one of the five aforementioned technologies that is used during the study periof. Its value ranges between 0 and 100. For instance, an utilization ratio of 50% means that the technology is used at 50% of its maximum capacity. Similar to the investments, the utilization ratios are adjusted by the optimizer on a reduced number of poles.
+For each techno there are design variables controling 
+- The investement : a investement leads to a given maximal production capacity (mimics building new plants of the techno).
+- An utilization ratio : describes the intensity, in percent, at which the techno is used. For instance, an utilization ratio of 50% means that the technology is used at 50% of its maximum capacity.
 Introducing poles reduces the dimensionality of the optimization problem. For instance if 7 and 11 poles are used for the investments and utilization ratios respectively, then the number of design variables reaches:
 $$5 \times models \times (7 \times poles_{investments} + 11 \times poles_{utilization \textunderscore ratio}) = 90 \times design \textunderscore variables$$
 
@@ -68,7 +78,7 @@ Better managing the bounds could also potentially improve the mda convergence.
 Indeed, in the GS pure Newton mda algorithm, a gradient is computed using the same analytical formulas as for the MDO. 
 Matrix inversion can be difficult and if preconditionning does not help, the gradients at the bounds could be a root cause of the issue.
 
-### Objective
+### Objective Population Utility
 
 $$\text{maximize}_{x \in \text{design space}} \text{ Population utility objective (x)}$$
 
@@ -120,6 +130,18 @@ $$energy \textunderscore price_{mean}[years] = \frac{1}{n_{technos}} \times \sum
 
 The energy price is affected by the value of the CO2 tax. If the CO2 tax is deactivated, fossil energies are preferred since they are cheaper. 
 However, if CO2 tax is activated, renewable energies are preferred as they emit less CO2 and eventually lead to a energy mean price (including CO2 tax) that is lower.
+
+
+### Anti decreasing net GDP objective
+
+To prevent an edge effect at end of simulation, we introduce this anti-decreasing objective for the GDP net of damages, denoted by $Q$.
+Indeed, the population utility objective mentioned above tends to maximize the integral of utility per capita, causing most of the time a peak at mid-scenario, and a sudden drop at the very end, to maximize surface. The objective introduce here is there to smooth the curve, and prevent this edge effect.
+
+$$\text{anti decreasing net GDP obj} = \frac{\sum_i \left( \min\left(\frac{Q_{i+1}}{Q_i}, 1\right) - 1 \right)}{\text{nb years}}$$
+
+where $Q_i$ represents the GDP net of damage at year $i$. This function captures the relative change in GDP over successive years, focusing on periods of decline. By utilizing the minimum function, $\min\left(\frac{Q_{i+1}}{Q_i}, 1\right)$, the objective ensures that only negative or no growth affects the result, normalizing any growth periods to zero.
+
+An important feature of this objective function is its self-normalization within the range $[0, 1]$, obviating the need for any external reference values. The value of the function should be minimized, reflecting the goal of reducing the frequency and magnitude of GDP decline.
 
 ### Constraints
 No equality or inequality constraint has been activated in this optimization.
