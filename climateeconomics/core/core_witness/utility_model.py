@@ -274,7 +274,6 @@ class UtilityModel():
         increments[-1] = 0
 
         self.net_gdp_growth_rate_obj = - np.array([np.mean(increments)])
-        print(self.net_gdp_growth_rate_obj)
 
     def d_net_gdp_growth_rate_obj(self):
         output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values

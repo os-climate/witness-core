@@ -4,7 +4,7 @@
 # sostrades_core
 
 # External libraries
-matplotlib==3.4.3
+matplotlib>=3.4.3
 numpy==1.24.4
 pandas==2.2.2
 plotly==5.3.0

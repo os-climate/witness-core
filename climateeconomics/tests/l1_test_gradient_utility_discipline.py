@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from scipy.interpolate import interp1d
 from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from scipy.interpolate import interp1d
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,

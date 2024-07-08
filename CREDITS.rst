@@ -3,7 +3,7 @@ External Dependencies
 
 witness-core depends on software with compatible licenses that are listed below.
 
-`matplotlib (3.4.3) <https://matplotlib.org>`_
+`matplotlib (>=3.4.3) <https://matplotlib.org>`_
     PSF
 
 `numpy (1.24.3) <https://numpy.org>`_
