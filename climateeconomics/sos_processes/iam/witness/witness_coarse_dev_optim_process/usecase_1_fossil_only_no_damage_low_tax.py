@@ -39,7 +39,7 @@ class Study(StudyOptimInvestDistrib):
         min_invest = 1.
         max_invest = 3000.
         dspace_invests = {
-            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [300., 300., 3000., True],
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [300., 300., 5000., True],
             'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [min_invest, min_invest, max_invest, True],
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [min_invest, min_invest, max_invest, False],
