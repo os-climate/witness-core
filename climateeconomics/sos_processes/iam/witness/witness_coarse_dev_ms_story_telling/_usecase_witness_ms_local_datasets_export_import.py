@@ -27,6 +27,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_tell
     Study as StudyMSmdaTippingPoint35,
 )
 
+
 class Study(StudyMSmdaTippingPoint35):
 
     def __init__(self, run_usecase=False, execution_engine=None):
