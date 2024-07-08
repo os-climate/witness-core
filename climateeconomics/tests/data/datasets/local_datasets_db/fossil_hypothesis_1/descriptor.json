@@ -1,24 +1,40 @@
 {
   "techno_infos_dict": {
-    "maturity": 0,
-    "Opex_percentage": 0.028,
-    "WACC": 0.058,
-    "learning_rate": 0.0,
-    "lifetime": 25,
-    "lifetime_unit": "years",
-    "Capex_init": 105.0,
-    "Capex_init_unit": "$/MWh",
-    "techno_evo_eff": "no",
-    "efficiency": 1.0,
-    "CO2_from_production": 0.36,
-    "CO2_from_production_unit": "kg/kg",
-    "construction_delay": 3,
-    "resource_price": 80.0,
-    "resource_price_unit": "$/MWh",
-    "CH4_venting_emission_factor": 0.0005736137667304014,
-    "CH4_flaring_emission_factor": 0.00016360805030454754,
-    "CH4_unintended_leakage_emission_factor": 4.5337170566320396e-05,
-    "CH4_emission_factor_unit": "Mt/TWh"
+    "value": {
+      "maturity": 0,
+      "Opex_percentage": 0.028,
+      "WACC": 0.058,
+      "learning_rate": 0.0,
+      "lifetime": 25,
+      "lifetime_unit": "years",
+      "Capex_init": 105.0,
+      "Capex_init_unit": "$/MWh",
+      "techno_evo_eff": "no",
+      "efficiency": 1.0,
+      "CO2_from_production": 0.36,
+      "CO2_from_production_unit": "kg/kg",
+      "construction_delay": 3,
+      "resource_price": 80.0,
+      "resource_price_unit": "$/MWh",
+      "CH4_venting_emission_factor": 0.0005736137667304014,
+      "CH4_flaring_emission_factor": 0.00016360805030454754,
+      "CH4_unintended_leakage_emission_factor": 4.5337170566320396e-05,
+      "CH4_emission_factor_unit": "Mt/TWh"
+    },
+    "name": "Production Technology Properties",
+    "unit": "defined in dict",
+    "description": "Properties and information of the technology considered.",
+    "source": "IEA",
+    "link": "https://www.iea.org/",
+    "last_update_date": "2024-08-07"
   },
-  "margin": "@dataframe@margin.csv"
+  "margin": {
+    "value": "@dataframe@margin.csv",
+    "name": "Price Margin",
+    "unit": "%",
+    "description": "Energy price profit margin."
+    "source": "IEA",
+    "link": "https://www.iea.org/",
+    "last_update_date": "2024-08-07"
+  }
 }

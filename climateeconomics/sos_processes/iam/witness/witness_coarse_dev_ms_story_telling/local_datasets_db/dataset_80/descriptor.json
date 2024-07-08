@@ -1,0 +1,101 @@
+{
+    "co2_emissions_ccus_Gt": {
+        "value": "@object@co2_emissions_ccus_Gt",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "linearization_mode": {
+        "value": "adjoint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_type": {
+        "value": "None",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_file_path": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "debug_mode": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "co2_emissions_ccus": {
+        "value": "@object@co2_emissions_ccus",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "carbon_storage_by_invest": {
+        "value": "@object@carbon_storage_by_invest",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "carbon_capture.direct_air_capture.DirectAirCaptureTechno.invest_level": {
+        "value": "@object@carbon_capture.direct_air_capture.DirectAirCaptureTechno.invest_level",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "carbon_capture.flue_gas_capture.FlueGasTechno.invest_level": {
+        "value": "@object@carbon_capture.flue_gas_capture.FlueGasTechno.invest_level",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "carbon_storage.CarbonStorageTechno.invest_level": {
+        "value": "@object@carbon_storage.CarbonStorageTechno.invest_level",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "carbon_capture.direct_air_capture.DirectAirCaptureTechno.flue_gas_co2_ratio": {
+        "value": "@object@carbon_capture.direct_air_capture.DirectAirCaptureTechno.flue_gas_co2_ratio",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}

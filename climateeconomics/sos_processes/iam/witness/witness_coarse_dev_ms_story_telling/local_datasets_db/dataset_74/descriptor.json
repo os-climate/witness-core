@@ -1,0 +1,209 @@
+{
+    "init_temp_ocean": {
+        "value": 0.02794825,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "init_temp_atmo": {
+        "value": 1.3,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "eq_temp_impact": {
+        "value": 3.1,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "temperature_model": {
+        "value": "FUND",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "climate_upper": {
+        "value": 0.1005,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "transfer_upper": {
+        "value": 0.088,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "transfer_lower": {
+        "value": 0.025,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "forcing_eq_co2": {
+        "value": 3.74,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "pre_indus_co2_concentration_ppm": {
+        "value": 280,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "lo_tocean": {
+        "value": -1.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "up_tatmo": {
+        "value": 12.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "up_tocean": {
+        "value": 20.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "temperature_end_constraint_limit": {
+        "value": 1.5,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "temperature_end_constraint_ref": {
+        "value": 3.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "linearization_mode": {
+        "value": "adjoint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_type": {
+        "value": "None",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_file_path": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "debug_mode": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "temperature_detailed_df": {
+        "value": "@object@temperature_detailed_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "forcing_detail_df": {
+        "value": "@object@forcing_detail_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "forcing_model": {
+        "value": "Meinshausen",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "pre_indus_ch4_concentration_ppm": {
+        "value": 790.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "pre_indus_n2o_concentration_ppm": {
+        "value": 285.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}

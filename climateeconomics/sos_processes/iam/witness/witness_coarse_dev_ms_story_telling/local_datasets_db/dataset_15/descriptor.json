@@ -1,0 +1,213 @@
+{
+    "technologies_list": {
+        "value": [
+            "FossilSimpleTechno"
+        ],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "data_fuel_dict": {
+        "value": {
+            "CO2_per_use": 2.7963142702581356,
+            "CO2_per_use_unit": "kg/kg",
+            "density": 744.227970273751,
+            "density_unit": "kg/m^3",
+            "calorific_value": 10.159849167185547,
+            "calorific_value_unit": "kWh/kg",
+            "high_calorific_value": 11.639718870191457,
+            "high_calorific_value_unit": "kWh/kg",
+            "petrochemical_use_part": 0.14,
+            "construction_use_part": 0.08
+        },
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "exp_min": {
+        "value": true,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "linearization_mode": {
+        "value": "adjoint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_type": {
+        "value": "None",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_file_path": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "debug_mode": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_emissions": {
+        "value": "@object@CO2_emissions",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_per_use": {
+        "value": "@object@CO2_per_use",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CH4_per_use": {
+        "value": "@object@CH4_per_use",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "N2O_per_use": {
+        "value": "@object@N2O_per_use",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_prices": {
+        "value": "@object@energy_prices",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_detailed_techno_prices": {
+        "value": "@object@energy_detailed_techno_prices",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_consumption": {
+        "value": "@object@energy_consumption",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_consumption_woratio": {
+        "value": "@object@energy_consumption_woratio",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_production": {
+        "value": "@object@energy_production",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_production_detailed": {
+        "value": "@object@energy_production_detailed",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_mix": {
+        "value": "@object@techno_mix",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "land_use_required": {
+        "value": "@object@land_use_required",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_type_capital": {
+        "value": "@object@energy_type_capital",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "transport_cost": {
+        "value": "@dataframe@transport_cost.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "transport_margin": {
+        "value": "@dataframe@transport_margin.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}

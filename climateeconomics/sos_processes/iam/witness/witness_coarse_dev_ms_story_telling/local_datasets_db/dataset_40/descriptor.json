@@ -1,0 +1,219 @@
+{
+    "technologies_list": {
+        "value": [
+            "Crop",
+            "Forest"
+        ],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "data_fuel_dict": {
+        "value": {
+            "maturity": 5,
+            "WACC": 0.1,
+            "CO2_per_use": 1.5586874999999998,
+            "CO2_per_use_unit": "kg/kg",
+            "N2O_per_use": 0.0003,
+            "N2O_per_use_unit": "kg/kg",
+            "CH4_per_energy": 0.01,
+            "CH4_per_energy_unit": "kg/kg",
+            "density": 380,
+            "density_unit": "kg/m^3",
+            "calorific_value": 5.61,
+            "calorific_value_unit": "kWh/kg",
+            "high_calorific_value": 5.61,
+            "high_calorific_value_unit": "kWh/kg",
+            "moisture": 0.15
+        },
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "exp_min": {
+        "value": true,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "linearization_mode": {
+        "value": "adjoint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_type": {
+        "value": "None",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_file_path": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "debug_mode": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_emissions": {
+        "value": "@dataframe@CO2_emissions.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_per_use": {
+        "value": "@dataframe@CO2_per_use.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CH4_per_use": {
+        "value": "@dataframe@CH4_per_use.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "N2O_per_use": {
+        "value": "@dataframe@N2O_per_use.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_prices": {
+        "value": "@dataframe@energy_prices.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_detailed_techno_prices": {
+        "value": "@object@energy_detailed_techno_prices",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_consumption": {
+        "value": "@dataframe@energy_consumption.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_consumption_woratio": {
+        "value": "@dataframe@energy_consumption_woratio.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_production": {
+        "value": "@dataframe@energy_production.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_production_detailed": {
+        "value": "@object@energy_production_detailed",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_mix": {
+        "value": "@object@techno_mix",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "land_use_required": {
+        "value": "@dataframe@land_use_required.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_type_capital": {
+        "value": "@object@energy_type_capital",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Crop.techno_capital": {
+        "value": "@dataframe@Crop.techno_capital.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Forest.techno_capital": {
+        "value": "@dataframe@Forest.techno_capital.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}
