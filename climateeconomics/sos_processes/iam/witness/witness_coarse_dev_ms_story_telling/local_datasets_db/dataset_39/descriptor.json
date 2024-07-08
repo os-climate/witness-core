@@ -1,0 +1,756 @@
+{
+    "year_start": {
+        "value": 2020,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "year_end": {
+        "value": 2100,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "time_step": {
+        "value": 1,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "init_gross_output": {
+        "value": 130.187,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "damage_fraction_df": {
+        "value": "@dataframe@damage_fraction_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "population_df": {
+        "value": "@dataframe@population_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "working_age_population_df": {
+        "value": "@dataframe@working_age_population_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "init_rate_time_pref": {
+        "value": 0.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "conso_elasticity": {
+        "value": 1.45,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "sector_list": {
+        "value": [
+            "Services",
+            "Agriculture",
+            "Industry"
+        ],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "frac_damage_prod": {
+        "value": 0.3,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_investment_wo_tax": {
+        "value": "@dataframe@energy_investment_wo_tax.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "share_non_energy_investment": {
+        "value": "@dataframe@share_non_energy_investment.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_taxes": {
+        "value": "@dataframe@CO2_taxes.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_capital": {
+        "value": "@object@energy_capital",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "assumptions_dict": {
+        "value": {
+            "compute_gdp": true,
+            "compute_climate_impact_on_gdp": true,
+            "activate_climate_effect_population": true,
+            "activate_pandemic_effects": true,
+            "invest_co2_tax_in_renewables": false
+        },
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "section_list": {
+        "value": [
+            "Agriculture, forestry and fishing",
+            "Mining and quarrying",
+            "Manufacturing",
+            "Electricity, gas, steam and air conditioning supply",
+            "Water supply; sewerage, waste management and remediation activities",
+            "Construction",
+            "Wholesale and retail trade; repair of motor vehicles and motorcycles",
+            "Transportation and storage",
+            "Accommodation and food service activities",
+            "Information and communication",
+            "Financial and insurance activities",
+            "Real estate activities",
+            "Professional, scientific and technical activities",
+            "Administrative and support service activities",
+            "Public administration and defence; compulsory social security",
+            "Education",
+            "Human health and social work activities",
+            "Arts, entertainment and recreation",
+            "Other service activities",
+            "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
+        ],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "check_range_before_run_bool_name": {
+        "value": false,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "pandemic_param_df": {
+        "value": "@dataframe@pandemic_param_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "share_residential_energy_df": {
+        "value": "@dataframe@share_residential_energy_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "economics_df": {
+        "value": "@dataframe@economics_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "damage_df": {
+        "value": "@object@damage_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "damage_detailed_df": {
+        "value": "@object@damage_detailed_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_investment": {
+        "value": "@dataframe@energy_investment.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "GHG_emissions_df": {
+        "value": "@object@GHG_emissions_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "GHG_global_warming_potential20": {
+        "value": {
+            "CO2": 1.0,
+            "CH4": 85.0,
+            "N2O": 265.0
+        },
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "GHG_global_warming_potential100": {
+        "value": {
+            "CO2": 1.0,
+            "CH4": 28.0,
+            "N2O": 265.0
+        },
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "ghg_cycle_df": {
+        "value": "@object@ghg_cycle_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "ghg_cycle_df_detailed": {
+        "value": "@object@ghg_cycle_df_detailed",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "gwp20_objective": {
+        "value": "@object@gwp20_objective",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "gwp100_objective": {
+        "value": "@object@gwp100_objective",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "rockstrom_limit_constraint": {
+        "value": "@object@rockstrom_limit_constraint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "minimum_ppm_constraint": {
+        "value": "@object@minimum_ppm_constraint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Extra CO2Eq since pre-industrial era": {
+        "value": "@object@Extra CO2Eq since pre-industrial era",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Extra CO2Eq since pre-industrial era (detailed)": {
+        "value": "@object@Extra CO2Eq since pre-industrial era (detailed)",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cheat_var_to_update_ns_dashboard_in_ms_mdo": {
+        "value": 0.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "co2_damage_price_dev_formula": {
+        "value": false,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "temperature_df": {
+        "value": "@dataframe@temperature_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_damage_price": {
+        "value": "@object@CO2_damage_price",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "alpha": {
+        "value": 0.5,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "beta": {
+        "value": 1.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "temperature_obj_option": {
+        "value": "integral",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "scale_factor_atmo_conc": {
+        "value": 0.01,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "temperature_constraint": {
+        "value": "@object@temperature_constraint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "initial_raw_energy_price": {
+        "value": 110,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "utility_df": {
+        "value": "@object@utility_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CCS_price": {
+        "value": "@object@CCS_price",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "ccs_price_percentage": {
+        "value": 0.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "co2_damage_price_percentage": {
+        "value": 0.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "total_food_land_surface": {
+        "value": "@dataframe@total_food_land_surface.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "forest_surface_df": {
+        "value": "@dataframe@forest_surface_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "land_surface_for_food_df": {
+        "value": "@object@land_surface_for_food_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "scaling_factor_energy_production": {
+        "value": 1000.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "scaling_factor_energy_consumption": {
+        "value": 1000.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "scaling_factor_techno_consumption": {
+        "value": 1000.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "scaling_factor_techno_production": {
+        "value": 1000.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "margin": {
+        "value": "@dataframe@margin.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "transport_cost": {
+        "value": "@dataframe@transport_cost.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "transport_margin": {
+        "value": "@dataframe@transport_margin.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "data_fuel_dict": {
+        "value": {
+            "maturity": 5,
+            "WACC": 0.1,
+            "CO2_per_use": 1.5586874999999998,
+            "CO2_per_use_unit": "kg/kg",
+            "N2O_per_use": 0.0003,
+            "N2O_per_use_unit": "kg/kg",
+            "CH4_per_energy": 0.01,
+            "CH4_per_energy_unit": "kg/kg",
+            "density": 380,
+            "density_unit": "kg/m^3",
+            "calorific_value": 5.61,
+            "calorific_value_unit": "kWh/kg",
+            "high_calorific_value": 5.61,
+            "high_calorific_value_unit": "kWh/kg",
+            "moisture": 0.15
+        },
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "calories_pc_df": {
+        "value": "@object@calories_pc_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "biomass_dry_df": {
+        "value": "@object@biomass_dry_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Agriculture & Land Use CO2 emissions": {
+        "value": "@dataframe@Agriculture & Land Use CO2 emissions.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Agriculture & Land Use CH4 emissions": {
+        "value": "@object@Agriculture & Land Use CH4 emissions",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Agriculture & Land Use N2O emissions": {
+        "value": "@object@Agriculture & Land Use N2O emissions",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "GHG_total_energy_emissions": {
+        "value": "@dataframe@GHG_total_energy_emissions.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "co2_eq_20": {
+        "value": "@object@co2_eq_20",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "co2_eq_100": {
+        "value": "@object@co2_eq_100",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "smooth_type": {
+        "value": "cons_smooth_max",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "is_apply_ratio": {
+        "value": true,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "is_stream_demand": {
+        "value": true,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "is_apply_resource_ratio": {
+        "value": false,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "energy_list": {
+        "value": [
+            "renewable",
+            "fossil"
+        ],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "ccs_list": {
+        "value": [
+            "carbon_capture",
+            "carbon_storage"
+        ],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "minimum_energy_production": {
+        "value": 10000.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "section_gdp_percentage_df": {
+        "value": "@dataframe@section_gdp_percentage_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "sector_gdp_df": {
+        "value": "@object@sector_gdp_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}

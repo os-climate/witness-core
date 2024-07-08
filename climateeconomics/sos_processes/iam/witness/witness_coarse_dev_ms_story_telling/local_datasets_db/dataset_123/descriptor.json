@@ -1,0 +1,318 @@
+{
+    "techno_infos_dict": {
+        "value": {
+            "maturity": 0,
+            "Opex_percentage": 0,
+            "WACC": 0.1,
+            "learning_rate": 0,
+            "lifetime": 35,
+            "Capex_init": 0.0175,
+            "Capex_init_unit": "$/kgCO2",
+            "efficiency": 1,
+            "CO2_capacity_peryear": 360000000.0,
+            "CO2_capacity_peryear_unit": "kg CO2/year",
+            "real_factor_CO2": 1.0,
+            "transport_cost": 0.0,
+            "transport_cost_unit": "$/kgCO2",
+            "enthalpy": 1.124,
+            "enthalpy_unit": "kWh/kgC02",
+            "energy_efficiency": 1,
+            "construction_delay": 0,
+            "techno_evo_eff": "no"
+        },
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "initial_production": {
+        "value": 0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "initial_age_distrib": {
+        "value": "@dataframe@initial_age_distrib.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "invest_before_ystart": {
+        "value": "@dataframe@invest_before_ystart.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "margin": {
+        "value": "@dataframe@margin.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Utilisation Ratio [%]": {
+        "value": "@dataframe@Utilisation Ratio [%].csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "scaling_factor_invest_level": {
+        "value": 1000.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Resources used for production": {
+        "value": [],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Energies used for production": {
+        "value": [],
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "linearization_mode": {
+        "value": "adjoint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_type": {
+        "value": "None",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_file_path": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "debug_mode": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_detailed_prices": {
+        "value": "@object@techno_detailed_prices",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_prices": {
+        "value": "@object@techno_prices",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_detailed_consumption": {
+        "value": "@object@techno_detailed_consumption",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_consumption": {
+        "value": "@object@techno_consumption",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_consumption_woratio": {
+        "value": "@object@techno_consumption_woratio",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_detailed_production": {
+        "value": "@object@techno_detailed_production",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_production": {
+        "value": "@object@techno_production",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_production_woratio": {
+        "value": "@object@techno_production_woratio",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "age_distrib_production": {
+        "value": "@object@age_distrib_production",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "mean_age_production": {
+        "value": "@object@mean_age_production",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_emissions": {
+        "value": "@object@CO2_emissions",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "CO2_emissions_detailed": {
+        "value": "@object@CO2_emissions_detailed",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "land_use_required": {
+        "value": "@object@land_use_required",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "applied_ratio": {
+        "value": "@object@applied_ratio",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "non_use_capital": {
+        "value": "@object@non_use_capital",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "power_production": {
+        "value": "@object@power_production",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_capital": {
+        "value": "@object@techno_capital",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "Specific costs for production": {
+        "value": "@object@Specific costs for production",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cost_of_resources_usage": {
+        "value": "@object@cost_of_resources_usage",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cost_of_energies_usage": {
+        "value": "@object@cost_of_energies_usage",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}
