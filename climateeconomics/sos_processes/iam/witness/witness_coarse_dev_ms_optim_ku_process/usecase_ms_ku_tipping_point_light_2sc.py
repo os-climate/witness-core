@@ -13,21 +13,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from os.path import join, dirname
+from os.path import dirname, join
+
 # from os import environ
 # environ['USE_PETSC'] = "False"
-
 import pandas as pd
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2_optim_story_telling import \
-    Study as Study1
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_4_optim_story_telling import \
-    Study as Study3
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_7_optim_story_telling import \
-    Study as Study4
-
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import Study as uc_ms_mda
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
+    Study as uc_ms_mda,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2_optim_story_telling import (
+    Study as Study1,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_4_optim_story_telling import (
+    Study as Study3,
+)
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -64,7 +67,7 @@ class Study(ClimateEconomicsStudyManager):
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{scatter_scenario}.samples_df': scenario_df,
-            f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario'] == True]))
+            f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
         }
 
         for scenario_name, studyClass in scenario_dict.items():
