@@ -37,7 +37,6 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 
 from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import (
     IEADataPreparationDiscipline,
-)
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_optimization_plugins.models.design_var.design_var_disc import (
