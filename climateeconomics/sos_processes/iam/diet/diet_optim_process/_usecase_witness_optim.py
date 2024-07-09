@@ -15,6 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
@@ -26,14 +35,6 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
     COUPLING_NAME,
     EXTRA_NAME,
     OPTIM_NAME,
-)
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.models.design_var.design_var_disc import (
-    DesignVarDiscipline,
-)
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

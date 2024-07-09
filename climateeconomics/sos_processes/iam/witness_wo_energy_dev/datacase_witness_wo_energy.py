@@ -21,6 +21,12 @@ import numpy as np
 import pandas as pd
 from numpy import arange, asarray
 from pandas import DataFrame
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
@@ -38,10 +44,6 @@ from climateeconomics.sos_processes.iam.witness.resources_process.usecase import
 )
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import (
     CropDiscipline,
-)
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

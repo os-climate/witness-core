@@ -14,6 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
+
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
@@ -26,9 +30,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
     EXTRA_NAME,
     OPTIM_NAME,
 )
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
+
 
 class Study(ClimateEconomicsStudyManager):
 

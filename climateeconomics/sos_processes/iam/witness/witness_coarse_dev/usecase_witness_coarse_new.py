@@ -21,6 +21,12 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import
     Study as datacase_energy,
 )
 from pandas import DataFrame
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -29,8 +35,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import (
     DataStudy as datacase_witness,
 )
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE

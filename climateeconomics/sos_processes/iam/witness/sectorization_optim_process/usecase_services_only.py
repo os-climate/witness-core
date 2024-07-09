@@ -20,16 +20,18 @@ import numpy as np
 import pandas as pd
 from numpy import arange
 from scipy.interpolate import interp1d
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
     Study as witness_sect_usecase,
 )
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-from sostrades_core.study_manager.study_manager import StudyManager
 
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM

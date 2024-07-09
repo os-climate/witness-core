@@ -18,14 +18,15 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_optimization_plugin.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
-)
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
 )
 
 from climateeconomics.glossarycore import GlossaryCore

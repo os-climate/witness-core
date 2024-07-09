@@ -16,6 +16,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -34,10 +37,6 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
 )
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import (
     Study as witness_usecase7_story_telling,
-)
-
-from sostrades_optimization_plugin.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

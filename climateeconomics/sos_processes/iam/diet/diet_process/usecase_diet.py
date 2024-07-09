@@ -21,6 +21,12 @@ import numpy as np
 import pandas as pd
 from numpy import arange, asarray
 from pandas import DataFrame
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -35,10 +41,7 @@ from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase impo
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
+
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
