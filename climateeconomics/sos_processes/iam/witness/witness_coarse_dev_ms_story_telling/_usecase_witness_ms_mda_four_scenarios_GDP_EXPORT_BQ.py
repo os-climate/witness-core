@@ -14,14 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import os
+
 from sostrades_core.datasets.dataset_mapping import DatasetsMapping
+
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tp35 import (
-    Study as StudyMSmdaTippingPoint35,
-)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios import (
     __file__ as module_file,
 )
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tp35 import (
+    Study as StudyMSmdaTippingPoint35,
+)
+
 
 class Study(StudyMSmdaTippingPoint35):
 
