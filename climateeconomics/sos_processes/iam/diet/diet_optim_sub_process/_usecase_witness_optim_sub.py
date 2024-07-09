@@ -17,11 +17,6 @@ from collections import defaultdict
 
 import numpy as np
 
-# mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
-
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
@@ -31,6 +26,10 @@ from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import (
 )
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+)
+# mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
