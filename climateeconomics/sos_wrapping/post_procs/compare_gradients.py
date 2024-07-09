@@ -23,8 +23,7 @@ import numpy as np
 from energy_models.glossaryenergy import GlossaryEnergy
 from gemseo.utils.derivatives_approx import DisciplineJacApprox
 from gemseo.utils.pkl_tools import dump_compressed_pickle, load_compressed_pickle
-from gemseo.utils.derivatives_approx import DisciplineJacApprox
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
