@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,16 +18,16 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
 )
+
+from climateeconomics.glossarycore import GlossaryCore
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
