@@ -1,0 +1,65 @@
+{
+    "forest_investment": {
+        "value": "@dataframe@forest_investment.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "techno_invest_percentage": {
+        "value": "@dataframe@techno_invest_percentage.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "percentage_of_gdp_energy_invest": {
+        "value": "@dataframe@percentage_of_gdp_energy_invest.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "linearization_mode": {
+        "value": "adjoint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_type": {
+        "value": "None",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_file_path": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "debug_mode": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}

@@ -1,0 +1,290 @@
+{
+    "population_start": {
+        "value": "@dataframe@population_start.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "climate_mortality_param_df": {
+        "value": "@dataframe@climate_mortality_param_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "calibration_temperature_increase": {
+        "value": 2.5,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "theta": {
+        "value": 2,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "death_rate_param": {
+        "value": "@dataframe@death_rate_param.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "birth_rate_upper": {
+        "value": 0.112545946,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "birth_rate_lower": {
+        "value": 0.0202192894,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "birth_rate_delta": {
+        "value": 0.000619058508,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "birth_rate_phi": {
+        "value": 4033.6,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "birth_rate_nu": {
+        "value": 0.175808789,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "lower_knowledge": {
+        "value": 10,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "upper_knowledge": {
+        "value": 100,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "delta_knowledge": {
+        "value": 0.0293357,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "phi_knowledge": {
+        "value": 149.7919,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "nu_knowledge": {
+        "value": 1.144062855,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "constant_birthrate_know": {
+        "value": 0.0199999838,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "alpha_birthrate_know": {
+        "value": 0.102007061,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "beta_birthrate_know": {
+        "value": 0.801923418,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "share_know_birthrate": {
+        "value": 0.789207064,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "diet_mortality_param_df": {
+        "value": "@dataframe@diet_mortality_param_df.csv",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "theta_diet": {
+        "value": 5.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "kcal_pc_ref": {
+        "value": 2000.0,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "linearization_mode": {
+        "value": "adjoint",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_type": {
+        "value": "None",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "cache_file_path": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "debug_mode": {
+        "value": "",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "population_detail_df": {
+        "value": "@object@population_detail_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "birth_rate_df": {
+        "value": "@object@birth_rate_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "death_rate_dict": {
+        "value": null,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "death_dict": {
+        "value": null,
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "birth_df": {
+        "value": "@object@birth_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    },
+    "life_expectancy_df": {
+        "value": "@object@life_expectancy_df",
+        "name": "",
+        "unit": "",
+        "description": "",
+        "source": "",
+        "link": "",
+        "last_update_date": ""
+    }
+}

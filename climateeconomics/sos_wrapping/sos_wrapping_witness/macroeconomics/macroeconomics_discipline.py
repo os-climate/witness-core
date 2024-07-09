@@ -225,6 +225,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
                 dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,
                                         })
+
+                # all sections gdp df
+
+                all_sections_var = GlossaryCore.AllSectionsGdpDf.copy()
+                for sector in sectorlist:
+                    all_sections_var["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                dynamic_outputs.update({GlossaryCore.AllSectionsGdpDfValue: all_sections_var})
+
             # add section gdp percentage variable
             if sectionlist is not None:
                 section_gdp_percentage = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionGdpPercentageDf)
@@ -350,7 +358,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.PercentageGDPGroupDFName: percentage_gdp_group_df,
                        GlossaryCore.GDPCountryDFName: gdp_per_country_df,
                        GlossaryCore.ResidentialEnergyConsumptionDfValue: self.macro_model.energy_consumption_households_df,
-                       GlossaryCore.TempOutput: self.macro_model.capital_df[[GlossaryCore.Years, GlossaryCore.NonEnergyCapital, GlossaryCore.UsableCapital, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage, GlossaryCore.NonEnergyInvestmentsValue, GlossaryCore.Consumption, GlossaryCore.PerCapitaConsumption, GlossaryCore.EnergyWasted]]
+                       GlossaryCore.TempOutput: self.macro_model.capital_df[[GlossaryCore.Years, GlossaryCore.NonEnergyCapital, GlossaryCore.UsableCapital, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage, GlossaryCore.NonEnergyInvestmentsValue, GlossaryCore.Consumption, GlossaryCore.PerCapitaConsumption, GlossaryCore.EnergyWasted]],
+                       GlossaryCore.AllSectionsGdpDfValue: self.macro_model.section_gdp_df
                    }
         dict_values.update({
             f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.macro_model.dict_energy_consumption_detailed[sector]['detailed'] # todo : delete detailed and total

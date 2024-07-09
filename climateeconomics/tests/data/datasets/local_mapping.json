@@ -1,0 +1,7 @@
+{
+    "process_module_path": "climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling",
+    "namespace_datasets_mapping": {
+        "v0|<study_ph>.EnergyMix.renewable.RenewableSimpleTechno|*": ["MVP0_local_datasets_connector_for_witness_coarse_dev|renewable_hypothesis_1|*"],
+        "v0|<study_ph>.EnergyMix.fossil.FossilSimpleTechno|*": ["MVP0_local_datasets_connector_for_witness_coarse_dev|fossil_hypothesis_1|*"]
+    }
+}

@@ -1,0 +1,5 @@
+selected_scenario,scenario_name
+True,"- damage - tax, fossil 100%"
+True,"+ damage - tax, fossil 100%"
+True,"+ damage - tax, fossil 40%"
+True,"+ damage + tax, NZE"
