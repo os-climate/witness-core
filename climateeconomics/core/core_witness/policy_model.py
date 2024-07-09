@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/06-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from sostrades_core.tools.cst_manager.func_manager_common import (
+
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
     get_dsmooth_dvariable_vect,
     smooth_maximum_vect,
 )
-
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class PolicyModel():

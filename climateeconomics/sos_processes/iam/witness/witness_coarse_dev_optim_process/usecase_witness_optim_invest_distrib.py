@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,14 +16,6 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.design_var.design_var_disc import (
-    DesignVarDiscipline,
-)
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
@@ -40,6 +32,14 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 )
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_optim_sub_usecase,
+)
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.design_var.design_var_disc import (
+    DesignVarDiscipline,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -140,8 +140,8 @@ class Study(ClimateEconomicsStudyManager):
         return pd.DataFrame({
             "variable": ["share_non_energy_invest_ctrl"],
             "value": [[25.5] * GlossaryCore.NB_POLES_COARSE],
-            "lower_bnd": [[24.5] * GlossaryCore.NB_POLES_COARSE],
-            "upper_bnd": [[35.0] * GlossaryCore.NB_POLES_COARSE],
+            "lower_bnd": [[5.0] * GlossaryCore.NB_POLES_COARSE],
+            "upper_bnd": [[30.0] * GlossaryCore.NB_POLES_COARSE],
             "enable_variable": [True],
             "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
         })

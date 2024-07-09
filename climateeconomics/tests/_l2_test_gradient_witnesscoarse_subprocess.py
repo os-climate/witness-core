@@ -277,7 +277,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_optim': self.name + '.' + func_mng_name}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_list = 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        mod_list = 'sostrades_optimization_plugins.models.func_manager.func_manager_disc.FunctionManagerDisc'
         fm_builder = ee.factory.get_builder_from_module(
             'WITNESS_Eval.FunctionsManager', mod_list)
         ee.factory.set_builders_to_coupling_builder(fm_builder)
