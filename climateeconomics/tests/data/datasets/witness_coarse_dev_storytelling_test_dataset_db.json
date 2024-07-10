@@ -1,0 +1,84 @@
+{
+    "renewable_hypothesis_1": {
+          "techno_infos_dict": {
+            "value": {
+              "maturity": 0,
+              "Opex_percentage": 0.15,
+              "WACC": 0.058,
+              "learning_rate": 0.0,
+              "lifetime": 30,
+              "Capex_init": 245.0,
+              "Capex_init_unit": "$/MWh",
+              "techno_evo_eff": "no",
+              "efficiency": 1.0,
+              "CO2_from_production": 0.0,
+              "CO2_from_production_unit": "kg/kg",
+              "construction_delay": 3,
+              "resource_price": 75.0,
+              "resource_price_unit": "$/MWh"
+            },
+            "name": "Production Technology Properties",
+            "unit": "defined in dict",
+            "description": "Properties and information of the technology considered.",
+            "source": "IEA",
+            "link": "https://www.iea.org/",
+            "last_update_date": "2024-08-07"
+          },
+          "margin": {
+            "value": {
+                "years": [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050, 2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067, 2068, 2069, 2070, 2071, 2072, 2073, 2074, 2075, 2076, 2077, 2078, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089, 2090, 2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099, 2100],
+                "margin": [115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0]
+            },
+            "name": "Price Margin",
+            "unit": "%",
+            "description": "Energy price profit margin."
+            "source": "IEA",
+            "link": "https://www.iea.org/",
+            "last_update_date": "2024-08-07"
+          }
+    },
+
+    "fossil_hypothesis_1": {
+        "techno_infos_dict": {
+            "value": {
+              "maturity": 0,
+              "Opex_percentage": 0.028,
+              "WACC": 0.058,
+              "learning_rate": 0.0,
+              "lifetime": 25,
+              "lifetime_unit": "years",
+              "Capex_init": 105.0,
+              "Capex_init_unit": "$/MWh",
+              "techno_evo_eff": "no",
+              "efficiency": 1.0,
+              "CO2_from_production": 0.36,
+              "CO2_from_production_unit": "kg/kg",
+              "construction_delay": 3,
+              "resource_price": 80.0,
+              "resource_price_unit": "$/MWh",
+              "CH4_venting_emission_factor": 0.0005736137667304014,
+              "CH4_flaring_emission_factor": 0.00016360805030454754,
+              "CH4_unintended_leakage_emission_factor": 4.5337170566320396e-05,
+              "CH4_emission_factor_unit": "Mt/TWh"
+        },
+        "name": "Production Technology Properties",
+        "unit": "defined in dict",
+        "description": "Properties and information of the technology considered.",
+        "source": "IEA",
+        "link": "https://www.iea.org/",
+        "last_update_date": "2024-08-07"
+      },
+      "margin": {
+        "value": {
+            "years": [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050, 2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060, 2061, 2062, 2063, 2064, 2065, 2066, 2067, 2068, 2069, 2070, 2071, 2072, 2073, 2074, 2075, 2076, 2077, 2078, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089, 2090, 2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099, 2100],
+            "margin": [115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0, 115.0]
+        },
+        "name": "Price Margin",
+        "unit": "%",
+        "description": "Energy price profit margin."
+        "source": "IEA",
+        "link": "https://www.iea.org/",
+        "last_update_date": "2024-08-07"
+      }
+    }
+}
