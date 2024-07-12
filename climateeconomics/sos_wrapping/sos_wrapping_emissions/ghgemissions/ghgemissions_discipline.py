@@ -155,6 +155,14 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     emission_df_disc['visibility'] = "Shared"
                     dynamic_outputs[f"{sector}.{GlossaryCore.EmissionsDfValue}"] = emission_df_disc
 
+                # Agriculture sector is not included in sector list and it inputs are handled differently
+                section_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEmissionDf)
+                section_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
+                section_emissions_df_variable['visibility'] = "Shared"
+                section_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[GlossaryCore.SectorAgriculture]})
+                dynamic_outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectionEmissionDfValue}"] = section_emissions_df_variable
+
+
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
 
@@ -189,6 +197,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             dict_values.update({f"{sector}.{GlossaryCore.SectionEmissionDfValue}": self.emissions_model.dict_sector_sections_emissions[sector]})
             dict_values.update({f"{sector}.{GlossaryCore.EmissionsDfValue}": self.emissions_model.dict_sector_emissions[sector][GlossaryCore.EmissionDf['dataframe_descriptor'].keys()]})
 
+        # add emissions of agriculture sector
+        dict_values.update({f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectionEmissionDfValue}": self.emissions_model.dict_sector_sections_energy_emissions[GlossaryCore.SectorAgriculture]})
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

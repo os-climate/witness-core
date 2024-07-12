@@ -247,6 +247,47 @@ class GHGEmissions:
 
             self.dict_sector_sections_emissions[sector] = pd.DataFrame(sections_emissions)
 
+    def compute_total_emissions_for_section_agriculture(self):
+        """
+        Agriculture is not computed with the other sectors as there is no energy and non energy emissions
+        Calculate the total Global Warming Potential (GWP) over a 100-year time horizon for CO2, CH4, and N2O emissions
+        for agriculture sector (and the associated section)
+
+        This method combines the greenhouse gas emissions data from self.ghg_emissions_df with the GWP100 conversion
+        factors stored . It calculates the GWP100 for each gas and then sums them up to get the
+        total GWP100 for each year.
+
+        Returns:
+        --------
+        pandas.DataFrame
+            A DataFrame containing two columns:
+            - 'Year': The year of the emissions
+            - 'Total_GWP100': The total GWP100 value for all three gases combined for each year
+        """
+        # List of greenhouse gases
+        gases = [GlossaryCore.CO2, GlossaryCore.CH4, GlossaryCore.N2O]
+
+        # Create a dictionary with emission columns for each gas
+        emissions_columns = {
+            gas: GlossaryCore.insertGHGAgriLandEmissions.format(gas)
+            for gas in gases
+        }
+
+        # Calculate GWP100 for each gas and year
+        gwp_100_by_gas = {
+            gas: self.ghg_emissions_df[emissions_columns[gas]] * self.gwp_100[gas]
+            for gas in gases
+        }
+
+        # Calculate total GWP100 per year
+        total_gwp_100 = pd.DataFrame({
+            GlossaryCore.Years: self.ghg_emissions_df[GlossaryCore.Years],
+            GlossaryCore.SectionA: sum(gwp_100_by_gas.values())  #store values in the only section of agriculture sector
+        })
+
+        # add it to dictionary
+        self.dict_sector_sections_energy_emissions[GlossaryCore.SectorAgriculture] = total_gwp_100
+
     def compute_total_emission_sectors(self):
         """
         Computing the total emissions for each sector
@@ -286,6 +327,7 @@ class GHGEmissions:
         self.compute_energy_emission_per_section()
         self.compute_non_energy_emission_per_section()
         self.compute_total_emission_per_section()
+        self.compute_total_emissions_for_section_agriculture()
         self.compute_total_emission_sectors()
         self.compute_total_economics_emission()
 
