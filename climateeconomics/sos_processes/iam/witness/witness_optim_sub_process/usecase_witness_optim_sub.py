@@ -157,7 +157,7 @@ class Study(ClimateEconomicsStudyManager):
                 activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
 
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
+                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
                     activated_value
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': GlossaryCore.invest_mix,
@@ -171,9 +171,9 @@ class Study(ClimateEconomicsStudyManager):
 
                 design_var_utilization_ratio_value = dspace_df[f'{ccs}.{technology}_utilization_ratio_array']['value']
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
+                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
                     data={GlossaryCore.Years: years,
                           GlossaryCore.UtilisationRatioValue: 100.})
                 # add design variable for utilization ratio per technology
@@ -308,7 +308,7 @@ class Study(ClimateEconomicsStudyManager):
 
         keys_to_update = ['carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
                           'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
-                          'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
+                          'carbon_capture.direct_air_capture.{GlossaryEnergy.DirectAirCaptureTechno}.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
         for key in keys_to_update:
             self.dspace.loc[self.dspace['variable'] == key, 'value'] = \
                 np.array(self.dspace.loc[self.dspace['variable'] == key, 'lower_bnd'])

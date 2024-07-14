@@ -452,7 +452,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Natural gas price",
             y_axis_name="$/MWh",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.EnergyMix.methane.FossilGas.techno_prices",
+            witness_variable="WITNESS.EnergyMix.methane.{GlossaryEnergy.FossilGas}.techno_prices",
             columns_to_plot=[GlossaryEnergy.FossilGas],
             args_to_plot={
                 "args_1": {"df_label": "WITNESS"},

@@ -290,22 +290,22 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_names = [
             f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_prices' for energy in energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']]
+            energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
         inputs_names.extend([
             f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']])
+            energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_consumption' for energy in energy_list if
-             energy not in ['carbon_capture', 'carbon_storage']])
+             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_consumption' for energy in
-             ['carbon_capture', 'carbon_storage']])
+             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in
-             ['carbon_capture', 'carbon_storage']])
+             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
             f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_prices' for energy in
-            ['carbon_capture', 'carbon_storage']])
+            [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.syngas.syngas_ratio'])
         i = 0

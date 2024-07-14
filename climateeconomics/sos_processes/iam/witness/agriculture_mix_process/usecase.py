@@ -17,6 +17,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -76,7 +77,7 @@ class Study(StudyManager):
         energy_name = f'{agriculture_mix}'
         years = np.arange(self.year_start, self.year_end + 1)
         self.stream_prices = pd.DataFrame({GlossaryCore.Years: years,
-                                           'electricity': 16.0})
+                                           GlossaryEnergy.electricity: 16.0})
         year_range = self.year_end - self.year_start + 1
 
         temperature = np.array(np.linspace(1.05, 5.0, year_range))
@@ -152,8 +153,8 @@ class Study(StudyManager):
             {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
         self.stream_co2_emissions = pd.DataFrame(
-            {GlossaryCore.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0,
-             'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryCore.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, GlossaryEnergy.electricity: 0.0,
+             GlossaryEnergy.methane: 0.123 / 15.4, 'syngas': 0.0, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}": 0.0, 'crude oil': 0.02533})
 
         deforestation_surface = np.linspace(10, 5, year_range)
         self.deforestation_surface_df = pd.DataFrame(
@@ -222,19 +223,19 @@ class Study(StudyManager):
             f'{self.study_name}.transport_cost': self.transport,
             f'{self.study_name}.transport_margin': self.margin,
             f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-            f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df_default,
-            f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_ca_per_day,
-            f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_ca_per_day,
-            f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.{GlossaryCore.FishDailyCal}': self.fish_ca_per_day,
-            f'{self.study_name}.{energy_name}.Crop.{GlossaryCore.OtherDailyCal}': self.other_ca_per_day,
-            f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.diet_df': diet_df_default,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.red_meat_calories_per_day': self.red_meat_ca_per_day,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.white_meat_calories_per_day': self.white_meat_ca_per_day,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.{GlossaryCore.FishDailyCal}': self.fish_ca_per_day,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.{GlossaryCore.OtherDailyCal}': self.other_ca_per_day,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.crop_investment': self.crop_investment,
             f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
-            f'{self.study_name}.{energy_name}.Forest.managed_wood_investment': self.mw_invest_df,
-            f'{self.study_name}.{energy_name}.Forest.deforestation_investment': deforest_invest_df,
-            f'{self.study_name}.{energy_name}.Forest.techno_capital': techno_capital,
-            f'{self.study_name}.{energy_name}.Crop.techno_capital': techno_capital,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.managed_wood_investment': self.mw_invest_df,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.deforestation_investment': deforest_invest_df,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.techno_capital': techno_capital,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.techno_capital': techno_capital,
             f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
             f'{self.study_name}.{GlossaryCore.TemperatureDfValue}': temperature_df
         }

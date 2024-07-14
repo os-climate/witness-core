@@ -72,7 +72,7 @@ class GlossaryCore:
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
-    CCUS = "CCUS"
+    ccus_type = "CCUS"
     CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
