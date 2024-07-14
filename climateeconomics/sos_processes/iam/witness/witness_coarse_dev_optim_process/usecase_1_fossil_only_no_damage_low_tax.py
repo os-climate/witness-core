@@ -31,6 +31,8 @@ class Study(StudyOptimInvestDistrib):
                          run_usecase=run_usecase,
                          execution_engine=execution_engine)
 
+        self.test_post_procs = False
+
     def setup_usecase(self, study_folder_path=None):
         self.test_post_procs = False
         data_witness = super().setup_usecase()
