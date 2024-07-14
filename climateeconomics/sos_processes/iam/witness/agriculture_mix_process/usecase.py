@@ -75,7 +75,7 @@ class Study(StudyManager):
         agriculture_mix = 'AgricultureMix'
         energy_name = f'{agriculture_mix}'
         years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
+        self.stream_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'electricity': 16.0})
         year_range = self.year_end - self.year_start + 1
 
@@ -151,7 +151,7 @@ class Study(StudyManager):
         self.transport = pd.DataFrame(
             {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        self.stream_co2_emissions = pd.DataFrame(
             {GlossaryCore.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0,
              'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 

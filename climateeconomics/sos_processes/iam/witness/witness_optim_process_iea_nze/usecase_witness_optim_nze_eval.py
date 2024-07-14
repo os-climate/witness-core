@@ -222,6 +222,8 @@ class Study(ClimateEconomicsStudyManager):
         # input for IEA data
         CO2_emissions_df = create_df_from_csv("IEA_NZE_co2_emissions_Gt.csv")
         GDP_df = create_df_from_csv("IEA_NZE_output_net_of_d.csv")
+        GDP_df[GlossaryCore.GrossOutput] = 0.
+        GDP_df[GlossaryCore.PerCapitaConsumption] = 0.
         CO2_tax_df = create_df_from_csv("IEA_NZE_CO2_taxes.csv")
         population_df = create_df_from_csv("IEA_NZE_population.csv")
         temperature_df = create_df_from_csv("IEA_NZE_temp_atmo.csv")
@@ -261,7 +263,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{IEA_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
             # energy prices
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': electricity_prices_df,
-            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.EnergyPricesValue}': natural_gas_price_df
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}': natural_gas_price_df
             })
 
         return [values_dict] + [optim_values_dict]

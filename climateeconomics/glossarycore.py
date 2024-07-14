@@ -802,7 +802,7 @@ class GlossaryCore:
         default_value=100.0,
     )
 
-    EnergyPricesValue = "energy_prices"
+    StreamPricesValue = "energy_prices"  # todo : rename streams_prices, but it will break all l1
     ResourcesPriceValue = "resources_price"
 
     ResourcesPrice = {
@@ -812,12 +812,6 @@ class GlossaryCore:
         "namespace": "ns_resource",
     }
 
-    EnergyPrices = {
-        "type": "dataframe",
-        "unit": "$/MWh",
-        "visibility": "Shared",
-        "namespace": "ns_energy",
-    }
 
     ResourcesCO2Emissions = {
         "type": "dataframe",
@@ -1598,11 +1592,11 @@ class GlossaryCore:
         "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
     }
 
-    EnergyCO2EmissionsValue = "energy_CO2_emissions"
-    EnergyCO2Emissions = {
-        "var_name": EnergyCO2EmissionsValue,
+    StreamsCO2EmissionsValue = "energy_CO2_emissions"  # todo : rename streams_co2_emissions, but it will break all l1
+    StreamsCO2Emissions = {
+        "var_name": StreamsCO2EmissionsValue,
         "type": "dataframe",
-        "unit": "kg/kWh",
+        "unit": "kg/kWh ... to be checked for CCUS streams", # fixme todo
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dynamic_dataframe_columns": True,

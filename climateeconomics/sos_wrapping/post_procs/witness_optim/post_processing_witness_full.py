@@ -858,7 +858,7 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 # stream_disc.get_sosdisc_inputs(
 # 'scaling_factor_energy_production')
 # production_techno = techno_disc.get_sosdisc_outputs(
-# 'techno_production')[f'{stream} (Mt)'].values *\
+# 'techno_production')[f'{stream} ({GlossaryEnergy.mass_unit})'].values *\
 # techno_disc.get_sosdisc_inputs(
 # 'scaling_factor_techno_production')
 # techno_mix = stream_disc.get_sosdisc_outputs('techno_mix')[

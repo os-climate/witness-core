@@ -36,7 +36,7 @@ class EnergyMix_co2emissions_nonreg_test():
     def setUp(self):
 
         self.compare_list = [
-            'energy_CO2_emissions', 'energy_CO2_emissions_after_use', 'co2_emissions',
+            GlossaryEnergy.StreamsCO2EmissionsValue, 'energy_CO2_emissions_after_use', 'co2_emissions',
             'co2_emissions_by_energy', GlossaryCore.CO2EmissionsGtValue, 'CCS_price'
         ]
 

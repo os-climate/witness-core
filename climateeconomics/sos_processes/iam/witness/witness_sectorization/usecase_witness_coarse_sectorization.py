@@ -37,7 +37,7 @@ DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': 'energy', 'value': ['Renewab
                               'fossil': {'type': 'energy', 'value': ['FossilSimpleTechno']},
                               'carbon_capture': {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
                                                                            'flue_gas_capture.FlueGasTechno']},
-                              'carbon_storage': {'type': 'CCUS', 'value': ['CarbonStorageTechno']}}
+                              'carbon_storage': {'type': 'CCUS', 'value': [GlossaryEnergy.CarbonStorageTechno]}}
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 ) if value['type'] == 'energy']
 DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
