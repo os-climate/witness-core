@@ -20,6 +20,7 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     Study as EnergyMDA,
 )
