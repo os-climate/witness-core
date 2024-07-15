@@ -1,6 +1,7 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on {} Copyright 2024 Capgemini
+Modifications on 06/07/2024 Copyright 2024 Capgemini
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,13 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.design_var.design_var_disc import (
+from sostrades_optimization_plugins.models.design_var.design_var_disc import (
     DesignVarDiscipline,
 )
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

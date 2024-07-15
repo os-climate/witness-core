@@ -18,7 +18,7 @@ from collections import defaultdict
 import numpy as np
 
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

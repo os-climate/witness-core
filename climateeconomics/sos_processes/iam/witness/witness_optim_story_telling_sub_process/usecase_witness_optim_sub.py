@@ -16,7 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
