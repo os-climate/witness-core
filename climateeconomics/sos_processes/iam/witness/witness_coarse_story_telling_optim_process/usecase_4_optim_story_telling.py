@@ -47,6 +47,7 @@ class Study(ClimateEconomicsStudyManager):
         self.extra_name = EXTRA_NAME
         self.witness_uc = witness_optim_sub_usecase(
             self.year_start, self.year_end, self.time_step, execution_engine=execution_engine,  sub_usecase='uc4')
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
 

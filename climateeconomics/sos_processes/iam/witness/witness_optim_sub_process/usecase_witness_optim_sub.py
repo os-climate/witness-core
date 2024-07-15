@@ -77,6 +77,7 @@ class Study(ClimateEconomicsStudyManager):
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process

@@ -65,6 +65,7 @@ class Study(ClimateEconomicsStudyManager):
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
+        self.test_post_procs = False
 
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
