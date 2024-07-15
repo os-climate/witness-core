@@ -75,6 +75,7 @@ class Study(ClimateEconomicsStudyManager):
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
+        self.test_post_procs = False
 
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
@@ -94,7 +95,7 @@ class Study(ClimateEconomicsStudyManager):
         initial_values_first_pole = {
             'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': DatabaseWitnessCore.InvestFossil2020.value,
             'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': DatabaseWitnessCore.InvestCleanEnergy2020.value,
-            'carbon_capture.direct_air_capture.{GlossaryEnergy.DirectAirCaptureTechno}.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
+            'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': DatabaseWitnessCore.InvestCCUS2020.value / 3,
         }

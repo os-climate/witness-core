@@ -73,6 +73,7 @@ class Study(ClimateEconomicsStudyManager):
             self.witness_uc = usecase2b(self.year_start, self.year_end, self.time_step)
         elif sub_usecase == 'uc4':
             self.witness_uc = usecase4(self.year_start, self.year_end, self.time_step)
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process

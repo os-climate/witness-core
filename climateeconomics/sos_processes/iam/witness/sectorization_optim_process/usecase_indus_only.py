@@ -150,6 +150,7 @@ class Study(StudyManager):
                                ]
         func_df['ftype'] = [OBJECTIVE, OBJECTIVE]
         func_df['weight'] = [1, 1]
+        func_df['parent'] = ["parent", "parent"]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM]
         func_df['namespace'] = ['ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'

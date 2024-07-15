@@ -1,0 +1,57 @@
+[1mdiff --cc climateeconomics/tests/jacobian_pkls/jacobian_population_discipline_augmente_temp.pkl[m
+[1mindex d4c87918,127cb9e1..00000000[m
+Binary files differ
+[1mdiff --cc climateeconomics/tests/jacobian_pkls/jacobian_population_discipline_big_gdp.pkl[m
+[1mindex fd91e613,a435f27b..00000000[m
+Binary files differ
+[1mdiff --cc climateeconomics/tests/jacobian_pkls/jacobian_population_discipline_output.pkl[m
+[1mindex 54969cbc,0788b626..00000000[m
+Binary files differ
+[1mdiff --git a/climateeconomics/sos_processes/iam/diet/diet_optim_process/process.py b/climateeconomics/sos_processes/iam/diet/diet_optim_process/process.py[m
+[1mindex 753470a2..735174ff 100644[m
+[1m--- a/climateeconomics/sos_processes/iam/diet/diet_optim_process/process.py[m
+[1m+++ b/climateeconomics/sos_processes/iam/diet/diet_optim_process/process.py[m
+[36m@@ -15,7 +15,6 @@[m [mSee the License for the specific language governing permissions and[m
+ limitations under the License.[m
+ '''[m
+ [m
+[31m-from energy_models.glossaryenergy import GlossaryEnergy[m
+ from energy_models.sos_processes.witness_sub_process_builder import ([m
+     WITNESSSubProcessBuilder,[m
+ )[m
+[1mdiff --git a/climateeconomics/sos_processes/iam/witness/witness/process.py b/climateeconomics/sos_processes/iam/witness/witness/process.py[m
+[1mindex b3bc741a..b4e116c6 100644[m
+[1m--- a/climateeconomics/sos_processes/iam/witness/witness/process.py[m
+[1m+++ b/climateeconomics/sos_processes/iam/witness/witness/process.py[m
+[36m@@ -15,7 +15,6 @@[m [mSee the License for the specific language governing permissions and[m
+ limitations under the License.[m
+ '''[m
+ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS[m
+[31m-from energy_models.glossaryenergy import GlossaryEnergy[m
+ from energy_models.sos_processes.witness_sub_process_builder import ([m
+     WITNESSSubProcessBuilder,[m
+ )[m
+[1mdiff --git a/climateeconomics/tests/l1_test_gradient_population_discipline.py b/climateeconomics/tests/l1_test_gradient_population_discipline.py[m
+[1mindex 01274947..ab08a0f1 100644[m
+[1m--- a/climateeconomics/tests/l1_test_gradient_population_discipline.py[m
+[1m+++ b/climateeconomics/tests/l1_test_gradient_population_discipline.py[m
+[36m@@ -32,6 +32,7 @@[m [mfrom climateeconomics.glossarycore import GlossaryCore[m
+ [m
+ class PopulationJacobianDiscTest(AbstractJacobianUnittest):[m
+     def setUp(self):[m
+[32m+[m[32m        self.override_dump_jacobian = 1[m
+ [m
+         self.name = 'Test'[m
+         self.ee = ExecutionEngine(self.name)[m
+[1mdiff --git a/climateeconomics/tests/utility_tests/_l2_test_EnergyMix_co2emissions_nonreg.py b/climateeconomics/tests/utility_tests/_l2_test_EnergyMix_co2emissions_nonreg.py[m
+[1mindex a8a340eb..1c9e9fa1 100644[m
+[1m--- a/climateeconomics/tests/utility_tests/_l2_test_EnergyMix_co2emissions_nonreg.py[m
+[1m+++ b/climateeconomics/tests/utility_tests/_l2_test_EnergyMix_co2emissions_nonreg.py[m
+[36m@@ -20,6 +20,7 @@[m [mfrom os.path import dirname, join[m
+ [m
+ import numpy as np[m
+ import pandas as pd[m
+[32m+[m[32mfrom energy_models.glossaryenergy import GlossaryEnergy[m
+ from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import ([m
+     Study as EnergyMDA,[m
+ )[m

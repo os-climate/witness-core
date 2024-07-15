@@ -70,6 +70,7 @@ class Study(StudyManager):
         self.energy_name = None
         self.nb_poles = 8
         self.additional_ns = ''
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
 

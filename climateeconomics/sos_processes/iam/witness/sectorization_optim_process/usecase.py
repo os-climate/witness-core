@@ -61,7 +61,6 @@ class Study(StudyManager):
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
-        INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
 
         dspace_dict = {
@@ -231,6 +230,7 @@ class Study(StudyManager):
                          'Services.gdp_error', 'Industry.energy_eff_error',
                          'Agriculture.energy_eff_error', 'Services.energy_eff_error'],
             'ftype': [OBJECTIVE] * 7,
+            'parent': ['parent'] * 7,
             'weight': [1] * 7,
             AGGR_TYPE: [AGGR_TYPE_SUM] * 7,
             'namespace': ['ns_obj'] * 7
@@ -353,5 +353,4 @@ class ComplexJsonEncoder(_json.JSONEncoder):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
     uc_cls.test()

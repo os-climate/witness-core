@@ -70,6 +70,7 @@ class Study(ClimateEconomicsStudyManager):
             invest_discipline=self.invest_discipline,
             techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
+        self.test_post_procs = False
 
     def setup_process(self):
         datacase_energy.setup_process(self)

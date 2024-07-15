@@ -22,9 +22,6 @@ import pandas as pd
 from numpy import arange
 from pandas import read_csv
 from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
 )
@@ -50,6 +47,7 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
@@ -69,8 +67,12 @@ class Study(StudyManager):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
 
-        economics_df_y = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
+        economics_df_y = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.OutputNetOfDamage: gdp_serie,
+            GlossaryCore.PerCapitaConsumption: 0.
+        })
         economics_df_y.index = years
         temperature_df_all = read_csv(
             join(global_data_dir, 'temperature_data_onestep.csv'))
