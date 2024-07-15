@@ -20,6 +20,7 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     Study as EnergyMDA,
 )
@@ -36,7 +37,7 @@ class EnergyMix_co2emissions_nonreg_test():
     def setUp(self):
 
         self.compare_list = [
-            'energy_CO2_emissions', 'energy_CO2_emissions_after_use', 'co2_emissions',
+            GlossaryEnergy.StreamsCO2EmissionsValue, 'energy_CO2_emissions_after_use', 'co2_emissions',
             'co2_emissions_by_energy', GlossaryCore.CO2EmissionsGtValue, 'CCS_price'
         ]
 

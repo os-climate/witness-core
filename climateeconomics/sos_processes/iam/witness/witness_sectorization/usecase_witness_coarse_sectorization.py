@@ -37,9 +37,9 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': 'energy', 'value': ['RenewableSimpleTechno']},
                               'fossil': {'type': 'energy', 'value': ['FossilSimpleTechno']},
-                              'carbon_capture': {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
+                              GlossaryEnergy.carbon_capture: {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
                                                                            'flue_gas_capture.FlueGasTechno']},
-                              'carbon_storage': {'type': 'CCUS', 'value': ['CarbonStorageTechno']}}
+                              GlossaryEnergy.carbon_storage: {'type': 'CCUS', 'value': [GlossaryEnergy.CarbonStorageTechno]}}
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 ) if value['type'] == 'energy']
 DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(

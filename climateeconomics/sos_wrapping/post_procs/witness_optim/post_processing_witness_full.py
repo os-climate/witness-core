@@ -310,7 +310,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
     total_carbon_emissions = None
     for energy in energy_list:
-        if energy == 'biomass_dry':
+        if energy == GlossaryEnergy.biomass_dry:
             namespace_disc = f'{namespace}.AgricultureMix'
         else:
             namespace_disc = f'{namespace}.EnergyMix.{energy}'
@@ -858,16 +858,16 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 # stream_disc.get_sosdisc_inputs(
 # 'scaling_factor_energy_production')
 # production_techno = techno_disc.get_sosdisc_outputs(
-# 'techno_production')[f'{stream} (Mt)'].values *\
+# 'techno_production')[f'{stream} ({GlossaryEnergy.mass_unit})'].values *\
 # techno_disc.get_sosdisc_inputs(
 # 'scaling_factor_techno_production')
 # techno_mix = stream_disc.get_sosdisc_outputs('techno_mix')[
 # f'{techno}'].values
 # weighted_techno_price = techno_price * techno_mix
 # weighted_stream_price = stream_price
-# if stream == 'carbon_capture':
+# if stream == GlossaryEnergy.carbon_capture:
 # stream_category = 'CCUS.CarbonCapture'
-# if stream == 'carbon_storage':
+# if stream == GlossaryEnergy.carbon_storage:
 # stream_category = 'CCUS.CarbonStorage'
 # # Data for scatter plot
 # invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[

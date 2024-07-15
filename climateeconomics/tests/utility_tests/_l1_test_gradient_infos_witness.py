@@ -70,15 +70,15 @@ class WitnessFullGradient(AbstractJacobianUnittest):
 
         values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         # values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
-        values_dict['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix'] = 81 * [30.]
+        values_dict['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.{GlossaryEnergy.FossilGas}.methane_FossilGas_array_mix'] = 81 * [30.]
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.load_study_from_input_dict(values_dict)
 
         output_full_names = ['Test.WITNESS_Eval.WITNESS.invest_objective_sum']
-        # ['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
+        # ['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.{GlossaryEnergy.FossilGas}.methane_FossilGas_array_mix']
         input_full_names = [
-            'Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
+            'Test.WITNESS_Eval.WITNESS.EnergyMix.methane.{GlossaryEnergy.FossilGas}.methane_FossilGas_array_mix']
 
         disc = self.ee.root_process.proxy_disciplines[0]
         disc.add_differentiated_inputs(input_full_names)
