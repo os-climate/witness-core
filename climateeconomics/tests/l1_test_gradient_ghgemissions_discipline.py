@@ -16,6 +16,7 @@ limitations under the License.
 '''
 
 from os.path import dirname
+
 import numpy as np
 import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine

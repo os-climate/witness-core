@@ -15,10 +15,10 @@ limitations under the License.
 
 '''
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
-import matplotlib.pyplot as plt
 from plotly import graph_objects as go
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
