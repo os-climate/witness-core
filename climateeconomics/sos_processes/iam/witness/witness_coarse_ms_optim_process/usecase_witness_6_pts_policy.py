@@ -33,6 +33,7 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         witness_ms_usecase = witness_optim_usecase(

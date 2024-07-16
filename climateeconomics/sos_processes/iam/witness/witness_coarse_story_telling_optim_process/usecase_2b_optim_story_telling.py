@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -46,6 +46,7 @@ class Study(ClimateEconomicsStudyManager):
         self.extra_name = EXTRA_NAME
         self.witness_uc = witness_optim_sub_usecase(
             self.year_start, self.year_end, self.time_step, execution_engine=execution_engine,  sub_usecase='uc2b')
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
 

@@ -466,22 +466,22 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_names = [
             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_prices' for energy in energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']]
+            energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
         inputs_names.extend([
             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in
-            energy_list if energy not in ['carbon_capture', 'carbon_storage']])
+            energy_list if energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_consumption' for energy in
-             energy_list if energy not in ['carbon_capture', 'carbon_storage']])
+             energy_list if energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_consumption' for energy in
-             ['carbon_capture', 'carbon_storage']])
+             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in
-             ['carbon_capture', 'carbon_storage']])
+             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
             f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_prices' for energy in
-            ['carbon_capture', 'carbon_storage']])
+            [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.syngas.syngas_ratio'])
         i = 0
@@ -755,9 +755,9 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                     step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                     inputs=[
-                                        f'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.{GlossaryCore.InvestLevelValue}'],
+                                        f'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.{GlossaryEnergy.Refinery}.{GlossaryCore.InvestLevelValue}'],
                                     outputs=[
-                                        'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'])
+                                        'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.{GlossaryEnergy.Refinery}.techno_production'])
 
             print('--------------------------------------------------------------------')
             print('Then check col by col')
@@ -770,10 +770,10 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                         step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                         inputs=[
-                                            f'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.{GlossaryCore.InvestLevelValue}'],
+                                            f'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.{GlossaryEnergy.Refinery}.{GlossaryCore.InvestLevelValue}'],
                                         input_column=input_column,
                                         outputs=[
-                                            'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'],
+                                            'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.{GlossaryEnergy.Refinery}.techno_production'],
                                         output_column=output_column)
 
 

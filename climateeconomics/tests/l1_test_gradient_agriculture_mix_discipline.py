@@ -181,8 +181,8 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         self.transport = pd.DataFrame(
             {GlossaryCore.Years: self.years, 'transport': np.ones(len(self.years)) * 7.6})
 
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+        self.stream_co2_emissions = pd.DataFrame(
+            {GlossaryCore.Years: self.years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4, 'syngas': 0.0, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}": 0.0, 'crude oil': 0.02533})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]

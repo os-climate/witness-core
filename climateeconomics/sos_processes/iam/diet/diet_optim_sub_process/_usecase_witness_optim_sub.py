@@ -18,7 +18,7 @@ from collections import defaultdict
 import numpy as np
 
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -61,7 +61,7 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        GlossaryCore.CCUS = 'CCUS'
+        GlossaryCore.ccus_type = 'CCUS'
         self.bspline = bspline
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level

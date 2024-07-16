@@ -185,9 +185,6 @@ class ResourceMixDiscipline(SoSWrapp):
         # -- compute
         self.all_resource_model.compute(inputs_dict)
 
-        years = np.arange(inputs_dict[GlossaryCore.YearStart],
-                          inputs_dict[GlossaryCore.YearEnd] + 1)
-
         outputs_dict = {
             ResourceMixModel.ALL_RESOURCE_STOCK: self.all_resource_model.all_resource_stock.reset_index(),
             GlossaryCore.ResourcesPriceValue: self.all_resource_model.all_resource_price.reset_index(),
@@ -199,7 +196,6 @@ class ResourceMixDiscipline(SoSWrapp):
             ResourceMixModel.ALL_RESOURCE_CO2_EMISSIONS: self.all_resource_model.all_resource_co2_emissions.reset_index(),
         }
 
-        
         self.store_sos_outputs_values(outputs_dict)
 
     def get_chart_filter_list(self):

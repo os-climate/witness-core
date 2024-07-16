@@ -159,8 +159,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         for reactant in energy_production_detailed.columns:
             if reactant not in [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue, 'Total production (uncut)'] \
-                    and 'carbon_capture' not in reactant \
-                    and 'carbon_storage' not in reactant:
+                    and GlossaryEnergy.carbon_capture not in reactant \
+                    and GlossaryEnergy.carbon_storage not in reactant:
                 energy_twh = energy_production_detailed[reactant].values
                 legend_title = f'{reactant}'.replace(
                     "(TWh)", "").replace('production', '')

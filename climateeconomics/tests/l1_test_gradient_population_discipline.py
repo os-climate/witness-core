@@ -50,7 +50,6 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
         self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2035
         years = np.arange(self.year_start, self.year_end + 1)

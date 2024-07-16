@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/13-2024/06/24 Copyright 2023 Capgemini
+Modifications on 2023/06/13-2023/11/06 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ limitations under the License.
 from collections import defaultdict
 
 import numpy as np
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -62,7 +62,7 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        GlossaryCore.CCUS = 'CCUS'
+        GlossaryCore.ccus_type = 'CCUS'
         self.bspline = bspline
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
