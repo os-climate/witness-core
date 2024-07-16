@@ -81,13 +81,17 @@ class GHGEmissionDiscTest(unittest.TestCase):
         residential_energy_consumption = pd.DataFrame({GlossaryCore.Years: years,
                                                        GlossaryCore.TotalProductionValue: 1.2})
 
+        all_sections = []
+        for sector in GlossaryCore.SectorsPossibleValues:
+            all_sections.extend(GlossaryCore.SectionDictSectors[sector])
 
         def generate_energy_consumption_df_sector(sector_name):
             out = {GlossaryCore.Years: years}
-            out.update({section: 10. for section in GlossaryCore.SectionDictSectors[sector_name]})
+            out.update({section: 10. for section in all_sections})
             return pd.DataFrame(out)
 
-        ghg_eenergy_consumptions_sectors = {f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": generate_energy_consumption_df_sector(sector) for sector in
+        ghg_eenergy_consumptions_sectors = {
+            f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": generate_energy_consumption_df_sector(sector) for sector in
                                             GlossaryCore.SectorsPossibleValues}
 
         ghg_non_energy_emissions_sectors = {
