@@ -222,6 +222,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         population = self.get_sosdisc_inputs(GlossaryCore.PopulationDfValue)[GlossaryCore.PopulationValue].values
         energy_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)[GlossaryCore.EnergyPriceValue].values
         years = list(utility_df[GlossaryCore.Years].values)
+        self.utility_m = None
+        self.utility_m = UtilityModel(self.get_sosdisc_inputs())
 
         if GlossaryCore.QuantityObjectiveValue in chart_list:
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Utility gain',
