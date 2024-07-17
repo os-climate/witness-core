@@ -49,6 +49,7 @@ class GHGEmissions:
         self.create_dataframe()
         self.total_energy_production = None
         self.epsilon = 1.e-5 # for the CO2 objective function
+        self.all_sections_emissions_df = None
 
     def configure_parameters(self):
         self.year_start = self.param[GlossaryCore.YearStart]
@@ -286,7 +287,28 @@ class GHGEmissions:
         })
 
         # add it to dictionary
-        self.dict_sector_sections_energy_emissions[GlossaryCore.SectorAgriculture] = total_gwp_100
+        self.dict_sector_sections_emissions[GlossaryCore.SectorAgriculture] = total_gwp_100
+
+    def aggregate_emissions_per_section(self):
+        """
+        Aggregates emissions data from all sectors and converts units from Gt to Mt.
+
+        This method processes the emissions data stored in self.dict_sector_sections_emissions,
+        which contains emissions data for different sectors and their subsections.
+        """
+        # Get all DataFrames in a list
+        all_dfs = [sector_data for sector_data in self.dict_sector_sections_emissions.values()
+                   ]
+
+        # Extract the 'years' column from the first DataFrame
+        years = all_dfs[0][GlossaryCore.Years]
+
+        # Aggregate all DataFrames without the 'years' column and convert Gt to Mt
+        aggregated_df = pd.concat([df.drop(columns='years').mul(1000) for df in all_dfs], axis=1)
+
+        # Add the 'years' column at the beginning
+        aggregated_df.insert(0, GlossaryCore.Years, years)
+        self.all_sections_emissions_df = aggregated_df
 
     def compute_total_emission_sectors(self):
         """
@@ -333,6 +355,7 @@ class GHGEmissions:
 
         # compute total emissions
         self.compute_total_emissions()
+        self.aggregate_emissions_per_section()
 
         # compute other indicators
         self.compute_total_gwp()

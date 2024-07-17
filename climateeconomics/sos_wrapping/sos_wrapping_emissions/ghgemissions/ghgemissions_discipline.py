@@ -108,7 +108,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.TotalEnergyEmissions: GlossaryCore.TotalEnergyCO2eqEmissionsDf,
         GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf,
         GlossaryCore.EconomicsEmissionDfValue: GlossaryCore.EmissionDf,
-        GlossaryCore.ResidentialEmissionsDfValue: GlossaryCore.ResidentialEmissionsDf
+        GlossaryCore.ResidentialEmissionsDfValue: GlossaryCore.ResidentialEmissionsDf,
+        GlossaryCore.AllSectionsEmissionsDfValue: GlossaryCore.AllSectionsEmissionsDf
     }
 
     def setup_sos_disciplines(self):
@@ -198,7 +199,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             dict_values.update({f"{sector}.{GlossaryCore.EmissionsDfValue}": self.emissions_model.dict_sector_emissions[sector][GlossaryCore.EmissionDf['dataframe_descriptor'].keys()]})
 
         # add emissions of agriculture sector
-        dict_values.update({f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectionEmissionDfValue}": self.emissions_model.dict_sector_sections_energy_emissions[GlossaryCore.SectorAgriculture]})
+        dict_values.update({f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectionEmissionDfValue}": self.emissions_model.dict_sector_sections_emissions[GlossaryCore.SectorAgriculture],
+                           f"{GlossaryCore.AllSectionsEmissionsDfValue}": self.emissions_model.all_sections_emissions_df})
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

@@ -196,7 +196,7 @@ class Study(StudyMSmdaTippingPoint35):
 if '__main__' == __name__:
     # FIXME: CONNECTORS INSTANTIATIONS TO REMOVE WHEN CONNECTORS ON PLATFORMS
     os.environ[
-        "GOOGLE_APPLICATION_CREDENTIALS"] = ""
+        "GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\ybekkali\Documents\SoSTrades\gcp-businessplanet-b0018b9d9a11.json"
     from sostrades_core.datasets.datasets_connectors.datasets_connector_factory import (
         DatasetConnectorType,
     )
