@@ -19,6 +19,7 @@ import pandas as pd
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -107,7 +108,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     resource_consumed = pd.DataFrame({GlossaryCore.Years: years})
     energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
     for energy in energy_list:
-        if energy == 'biomass_dry':
+        if energy == GlossaryEnergy.biomass_dry:
             namespace_disc = f'{WITNESS_ns}.AgricultureMix'
         else:
             namespace_disc = f'{WITNESS_ns}.EnergyMix.{energy}'

@@ -18,11 +18,13 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as datacase_energy,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
-from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_sect_wo_energy.datacase_witness_wo_energy import (
@@ -35,9 +37,9 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': 'energy', 'value': ['RenewableSimpleTechno']},
                               'fossil': {'type': 'energy', 'value': ['FossilSimpleTechno']},
-                              'carbon_capture': {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
+                              GlossaryEnergy.carbon_capture: {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
                                                                            'flue_gas_capture.FlueGasTechno']},
-                              'carbon_storage': {'type': 'CCUS', 'value': ['CarbonStorageTechno']}}
+                              GlossaryEnergy.carbon_storage: {'type': 'CCUS', 'value': [GlossaryEnergy.CarbonStorageTechno]}}
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 ) if value['type'] == 'energy']
 DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(

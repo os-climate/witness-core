@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on {} Copyright 2024 Capgemini
+Modifications on 2024/07/12 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -15,10 +15,10 @@ limitations under the License.
 
 '''
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
-from matplotlib.pyplot import cm
 from plotly import graph_objects as go
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
@@ -310,7 +310,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
     total_carbon_emissions = None
     for energy in energy_list:
-        if energy == 'biomass_dry':
+        if energy == GlossaryEnergy.biomass_dry:
             namespace_disc = f'{namespace}.AgricultureMix'
         else:
             namespace_disc = f'{namespace}.EnergyMix.{energy}'
@@ -429,8 +429,8 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     # i_label_dict associates each label with an integer value
     i_label_dict = dict((key, i) for i, key in enumerate(label_list))
     fig = go.Figure()
-    cmap_over = cm.get_cmap('Reds')
-    cmap_under = cm.get_cmap('Greens')
+    cmap_over = plt.get_cmap('Reds')
+    cmap_under = plt.get_cmap('Greens')
     if summary:
         source, target = [], []
         source_name, target_name = [], []
@@ -858,16 +858,16 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 # stream_disc.get_sosdisc_inputs(
 # 'scaling_factor_energy_production')
 # production_techno = techno_disc.get_sosdisc_outputs(
-# 'techno_production')[f'{stream} (Mt)'].values *\
+# 'techno_production')[f'{stream} ({GlossaryEnergy.mass_unit})'].values *\
 # techno_disc.get_sosdisc_inputs(
 # 'scaling_factor_techno_production')
 # techno_mix = stream_disc.get_sosdisc_outputs('techno_mix')[
 # f'{techno}'].values
 # weighted_techno_price = techno_price * techno_mix
 # weighted_stream_price = stream_price
-# if stream == 'carbon_capture':
+# if stream == GlossaryEnergy.carbon_capture:
 # stream_category = 'CCUS.CarbonCapture'
-# if stream == 'carbon_storage':
+# if stream == GlossaryEnergy.carbon_storage:
 # stream_category = 'CCUS.CarbonStorage'
 # # Data for scatter plot
 # invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[

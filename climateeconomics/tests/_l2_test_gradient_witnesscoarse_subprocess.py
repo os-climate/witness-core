@@ -115,7 +115,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         for name in inputs_name:
             inputs.extend(self.ee.dm.get_all_namespaces_from_var_name(name))
         inputs = [
-            'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
+            'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.{GlossaryEnergy.DirectAirCaptureTechno}.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
         pkl_name = 'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
 
         # self.override_dump_jacobian = True
@@ -210,7 +210,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             for name in inputs_name:
                 inputs.extend(self.ee.dm.get_all_namespaces_from_var_name(name))
             #inputs = [
-            #    'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
+            #    'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.{GlossaryEnergy.DirectAirCaptureTechno}.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
             pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess_iter_{iter}.pkl'
 
             # store all these variables for next test
@@ -277,7 +277,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_optim': self.name + '.' + func_mng_name}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_list = 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        mod_list = 'sostrades_optimization_plugins.models.func_manager.func_manager_disc.FunctionManagerDisc'
         fm_builder = ee.factory.get_builder_from_module(
             'WITNESS_Eval.FunctionsManager', mod_list)
         ee.factory.set_builders_to_coupling_builder(fm_builder)

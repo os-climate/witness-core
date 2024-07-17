@@ -16,7 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -63,7 +63,7 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        GlossaryCore.CCUS = 'CCUS'
+        GlossaryCore.ccus_type = 'CCUS'
         if sub_usecase == 'uc2':
             self.witness_uc = witness_usecase2_story_telling(
                 self.year_start, self.year_end, self.time_step)
@@ -73,6 +73,7 @@ class Study(ClimateEconomicsStudyManager):
             self.witness_uc = usecase2b(self.year_start, self.year_end, self.time_step)
         elif sub_usecase == 'uc4':
             self.witness_uc = usecase4(self.year_start, self.year_end, self.time_step)
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process

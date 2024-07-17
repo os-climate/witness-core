@@ -16,20 +16,12 @@ limitations under the License.
 '''
 
 from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.base_functions.specific_check import specific_check_years
 
 
 class ClimateEconomicsStudyManager(StudyManager):
     '''
     Class that overloads study manager to define a specific check for climate economics usecases
     '''
-
-    def specific_check_inputs(self):
-        """
-        Check that the column years of the input dataframes are in [year_start, year_end]
-        """
-        specific_check_years(self.execution_engine.dm)
-
     def should_be_lower(self, actual_value, ref_value, varname: str) -> str:
         msg = ''
         if actual_value > ref_value:

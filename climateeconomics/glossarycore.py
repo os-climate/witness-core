@@ -52,9 +52,7 @@ class GlossaryCore:
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
-    NB_POLES_UTILIZATION_RATIO = (
-        10  # number of poles for bspline design variables utilization ratio
-    )
+    NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
     Years = "years"
     YearStart = "year_start"
     YearStartDefault = 2020
@@ -74,7 +72,7 @@ class GlossaryCore:
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
-    CCUS = "CCUS"
+    ccus_type = "CCUS"
     CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
@@ -115,8 +113,8 @@ class GlossaryCore:
     SectionNonEnergyEmissionDfValue = "section_non_energy_emission_df"
     SectionEnergyConsumptionDfValue = "section_energy_consumption_df"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
-    SectionEnergyConsumptionPercentageDfValue = 'section_energy_consumption_percentage_df'
-    SectionNonEnergyEmissionGdpDfValue = 'section_non_energy_emission_gdp_df'
+    SectionEnergyConsumptionPercentageDfValue = "section_energy_consumption_percentage_df"
+    SectionNonEnergyEmissionGdpDfValue = "section_non_energy_emission_gdp_df"
     SectorEnergyConsumptionPercentageDfName = "sector_emission_consumption_percentage_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
@@ -155,9 +153,7 @@ class GlossaryCore:
     TotalNonEnergyEmissionsSectorName = "total_non_energy_emissions_sector"
     TotalEmissionsName = "total_emissions"
     ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
-    ConsumptionObjectiveRef = get_ref_variable(
-        var_name=ConsumptionObjectiveRefValue, unit="T$", default_value=250
-    )
+    ConsumptionObjectiveRef = get_ref_variable(var_name=ConsumptionObjectiveRefValue, unit="T$", default_value=250)
 
     # Diet
     Fish = "fish"
@@ -181,7 +177,7 @@ class GlossaryCore:
     NS_SECTORS_POST_PROC_EMISSIONS = "ns_sectors_postproc"
     NS_SECTORS_POST_PROC_GDP = "ns_sectors_postproc_gdp"
     NS_GHGEMISSIONS = "ns_ghg_emissions"
-    NS_HOUSEHOLDS_EMISSIONS ="ns_households_emissions"
+    NS_HOUSEHOLDS_EMISSIONS = "ns_households_emissions"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -293,7 +289,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Percentage of the energy consumption for each sector",
         "dynamic_dataframe_columns": True,
-        "default": DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.value
+        "default": DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.value,
     }
 
     SectionNonEnergyEmissionGdpDf = {
@@ -503,15 +499,9 @@ class GlossaryCore:
             ExtraCO2EqSincePreIndustrialValue: ("float", [0, 1e30], False),
         },
     }
-    ExtraCO2EqSincePreIndustrialDetailedValue = (
-        f"{ExtraCO2EqSincePreIndustrialValue} (detailed)"
-    )
-    ExtraCO2EqSincePreIndustrial2OYbasisValue = (
-        f"{ExtraCO2EqSincePreIndustrialValue} (20-year basis)"
-    )
-    ExtraCO2EqSincePreIndustrial10OYbasisValue = (
-        f"{ExtraCO2EqSincePreIndustrialValue} (100-year basis)"
-    )
+    ExtraCO2EqSincePreIndustrialDetailedValue = f"{ExtraCO2EqSincePreIndustrialValue} (detailed)"
+    ExtraCO2EqSincePreIndustrial2OYbasisValue = f"{ExtraCO2EqSincePreIndustrialValue} (20-year basis)"
+    ExtraCO2EqSincePreIndustrial10OYbasisValue = f"{ExtraCO2EqSincePreIndustrialValue} (100-year basis)"
     ExtraCO2EqSincePreIndustrialDetailedDf = {
         "var_name": ExtraCO2EqSincePreIndustrialDetailedValue,
         "type": "dataframe",
@@ -595,9 +585,7 @@ class GlossaryCore:
         },
     }
 
-    EstimatedDamagesFromProductivityLoss = (
-        "Estimated damages from productivity loss (not applied) [G$]"
-    )
+    EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied) [G$]"
     EstimatedDamagesFromClimate = "Estimated damages from climate (not applied) [G$]"
     DamageDetailedDfValue = "damage_detailed_df"
     DamageDetailedDf = {
@@ -627,9 +615,7 @@ class GlossaryCore:
         "user_level": 2,
     }
 
-    Output = (
-        "output"  # todo in the future: delete this key, it corresponds to gross output
-    )
+    Output = "output"  # todo in the future: delete this key, it corresponds to gross output
     GrossOutput = "gross_output"  # trillion $
     NetOutput = "net_output"  # todo in the future: delete this key, it corresponds to gross output net of damage,
     OutputNetOfDamage = "output_net_of_d"  # trillion $
@@ -816,7 +802,7 @@ class GlossaryCore:
         default_value=100.0,
     )
 
-    EnergyPricesValue = "energy_prices"
+    StreamPricesValue = "energy_prices"  # todo : rename streams_prices, but it will break all l1
     ResourcesPriceValue = "resources_price"
 
     ResourcesPrice = {
@@ -824,7 +810,14 @@ class GlossaryCore:
         "unit": "$/t",
         "visibility": "Shared",
         "namespace": "ns_resource",
-        "dynamic_dataframe_columns": True,
+    }
+
+
+    ResourcesCO2Emissions = {
+        "type": "dataframe",
+        "unit": "kgCO2/kg",
+        "visibility": "Shared",
+        "namespace": "ns_resource",
     }
 
     EnergyPriceValue = "energy_price"
@@ -919,20 +912,18 @@ class GlossaryCore:
     }
 
     EnergyInvestmentsMinimizationObjective = "Energy invest minimization objective"
-    EnergyInvestmentsWoTax = (
-        {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
-            "var_name": EnergyInvestmentsWoTaxValue,
-            "type": "dataframe",
-            "unit": "T$",
-            "dataframe_descriptor": {
-                Years: ("int", [1900, YearEndDefault], False),
-                EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
-            },
-            "dataframe_edition_locked": False,
-            "visibility": "Shared",
-            "namespace": NS_WITNESS,
-        }
-    )
+    EnergyInvestmentsWoTax = {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
+        "var_name": EnergyInvestmentsWoTaxValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
+        },
+        "dataframe_edition_locked": False,
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+    }
 
     FoodWastePercentageValue = "food_waste_percentage"
     FoodWastePercentage = {
@@ -1115,7 +1106,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
         "description": "Here to minimize areas where net gpp is decreasing. Objective should be minimized. "
-                       "Self normalized, no need for reference division.",
+        "Self normalized, no need for reference division.",
         "unit": "-",
     }
 
@@ -1521,9 +1512,7 @@ class GlossaryCore:
     }
 
     MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
-    MaxBudgetConstraintRef = get_ref_variable(
-        var_name=MaxBudgetConstraintRefValue, unit="T$", default_value=1e4
-    )
+    MaxBudgetConstraintRef = get_ref_variable(var_name=MaxBudgetConstraintRefValue, unit="T$", default_value=1e4)
 
     UsableCapitalObjective = {
         "var_name": UsableCapitalObjectiveName,
@@ -1569,9 +1558,7 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
     }
 
-    TargetProductionConstraintRefValue = get_ref_var_name(
-        TargetProductionConstraintValue
-    )
+    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
     TargetProductionConstraintRef = get_ref_variable(
         var_name=TargetProductionConstraintRefValue, unit="TWh", default_value=1e5
     )
@@ -1598,19 +1585,18 @@ class GlossaryCore:
     CO2EmissionsRef = {
         "var_name": "CO2EmissionsRef",
         "type": "float",
-        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value
-        / (2022 - 1750 + 1.0),
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.0),
         "unit": "Gt",
         "visibility": "Shared",
         "namespace": NS_REFERENCE,
         "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
     }
 
-    EnergyCO2EmissionsValue = "energy_CO2_emissions"
-    EnergyCO2Emissions = {
-        "var_name": EnergyCO2EmissionsValue,
+    StreamsCO2EmissionsValue = "energy_CO2_emissions"  # todo : rename streams_co2_emissions, but it will break all l1
+    StreamsCO2Emissions = {
+        "var_name": StreamsCO2EmissionsValue,
         "type": "dataframe",
-        "unit": "kg/kWh",
+        "unit": "kg/kWh ... to be checked for CCUS streams", # fixme todo
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dynamic_dataframe_columns": True,
@@ -1639,8 +1625,8 @@ class GlossaryCore:
     }
     GDPCountryDF = {
         "var_name": GDPCountryDFName,
-        'type': 'dataframe',
-        'unit': 'G$',
+        "type": "dataframe",
+        "unit": "G$",
     }
 
     TempOutput = "TempOutput"
@@ -1679,9 +1665,9 @@ class GlossaryCore:
         return out
 
     @staticmethod
-    def get_random_dataframe(years, df_variable, min_val: float = 0., max_val: float = 100.):
+    def get_random_dataframe(years, df_variable, min_val: float = 0.0, max_val: float = 100.0):
         out = {}
-        for key in df_variable['dataframe_descriptor'].keys():
+        for key in df_variable["dataframe_descriptor"].keys():
             if key == GlossaryCore.Years:
                 out[key] = years
             else:
@@ -1689,7 +1675,7 @@ class GlossaryCore:
         return pd.DataFrame(out)
 
     @staticmethod
-    def get_random_dataframe_columns(years, columns: list[str], min_val: float = 0., max_val: float = 100.):
+    def get_random_dataframe_columns(years, columns: list[str], min_val: float = 0.0, max_val: float = 100.0):
         out = {GlossaryCore.Years: years}
         for key in columns:
             out[key] = np.random.uniform(min_val, max_val)

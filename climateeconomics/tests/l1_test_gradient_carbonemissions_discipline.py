@@ -31,8 +31,6 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
-        self.override_dump_jacobian = 1
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 

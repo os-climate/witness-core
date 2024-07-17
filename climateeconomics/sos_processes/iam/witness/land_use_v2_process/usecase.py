@@ -18,13 +18,15 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
-)
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import (
     PostProcessingFactory,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
 )
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -47,6 +49,7 @@ class Study(StudyManager):
         self.year_end = year_end
         self.time_step = time_step
         self.extra_name = extra_name
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         years = np.arange(self.year_start, self.year_end + 1, 1)

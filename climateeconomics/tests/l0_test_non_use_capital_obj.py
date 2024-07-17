@@ -18,6 +18,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -61,13 +62,13 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         loss_ref = 3
         loss_reforest = 3
         non_use_capital_fg = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
-                                           'FossilGas': loss_fg})
+                                           GlossaryEnergy.FossilGas: loss_fg})
         non_use_capital_ub = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
-                                           'UpgradingBiogas': loss_ub})
+                                           GlossaryEnergy.UpgradingBiogas: loss_ub})
         non_use_capital_rf = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
-                                           'Refinery': loss_rf})
+                                           GlossaryEnergy.Refinery: loss_rf})
         non_use_capital_ft = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
-                                           'FischerTropsch': loss_ft})
+                                           GlossaryEnergy.FischerTropsch: loss_ft})
         non_use_capital_ct = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                            'direct_air_capture.AmineScrubbing': loss_ct})
         non_use_capital_ref = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
@@ -86,22 +87,22 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.is_dev': True,
                        f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
-                       f'{self.name}.{GlossaryCore.energy_list}': ['fuel.liquid_fuel', 'methane'],
-                       f'{self.name}.{GlossaryCore.ccs_list}': ['carbon_capture'],
+                       f'{self.name}.{GlossaryCore.energy_list}': ['fuel.liquid_fuel', GlossaryEnergy.methane],
+                       f'{self.name}.{GlossaryCore.ccs_list}': [GlossaryEnergy.carbon_capture],
                        f'{self.name}.agri_capital_techno_list': ['Forest'],
-                       f'{self.name}.EnergyMix.methane.{GlossaryCore.techno_list}': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.{GlossaryCore.techno_list}': ['Refinery', 'FischerTropsch'],
+                       f'{self.name}.EnergyMix.methane.{GlossaryCore.techno_list}': [GlossaryEnergy.FossilGas, GlossaryEnergy.UpgradingBiogas],
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.{GlossaryCore.techno_list}': [GlossaryEnergy.Refinery, GlossaryEnergy.FischerTropsch],
                        f'{self.name}.CCUS.carbon_capture.{GlossaryCore.techno_list}': ['direct_air_capture.AmineScrubbing'],
                        f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital': non_use_capital_ct,
-                       f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
+                       f'{self.name}.EnergyMix.methane.{GlossaryEnergy.FossilGas}.non_use_capital': non_use_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital': non_use_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital': non_use_capital_ft,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.Refinery}.non_use_capital': non_use_capital_rf,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.FischerTropsch}.non_use_capital': non_use_capital_ft,
                        f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_capital': non_use_capital_ct,
-                       f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': non_use_capital_fg,
+                       f'{self.name}.EnergyMix.methane.{GlossaryEnergy.FossilGas}.techno_capital': non_use_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.Refinery}.techno_capital': non_use_capital_rf,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.FischerTropsch}.techno_capital': non_use_capital_ft,
                        f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
                        f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref,
                        f'{self.name}.AgricultureMix.Forest.forest_lost_capital': forest_lost_capital,

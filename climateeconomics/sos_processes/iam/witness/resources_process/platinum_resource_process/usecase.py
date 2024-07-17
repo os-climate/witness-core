@@ -33,6 +33,7 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
