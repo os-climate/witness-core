@@ -722,6 +722,18 @@ class GlossaryCore:
         },
     }
 
+    AllSectionsEmissionsDfValue = "all_sections_emissions_df"
+    AllSectionsEmissionsDf = {
+        "var_name": AllSectionsGdpDfValue,
+        "type": "dataframe",
+        "description": "CO2 equivalent emissions of all sections",
+        "unit": "GtCO2eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+        },
+    }
+
+
     EconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",

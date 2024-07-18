@@ -49,6 +49,7 @@ class GHGEmissions:
         self.create_dataframe()
         self.total_energy_production = None
         self.epsilon = 1.e-5 # for the CO2 objective function
+        self.all_sections_emissions_df = None
 
     def configure_parameters(self):
         self.year_start = self.param[GlossaryCore.YearStart]
@@ -247,6 +248,68 @@ class GHGEmissions:
 
             self.dict_sector_sections_emissions[sector] = pd.DataFrame(sections_emissions)
 
+    def compute_total_emissions_for_section_agriculture(self):
+        """
+        Agriculture is not computed with the other sectors as there is no energy and non energy emissions
+        Calculate the total Global Warming Potential (GWP) over a 100-year time horizon for CO2, CH4, and N2O emissions
+        for agriculture sector (and the associated section)
+
+        This method combines the greenhouse gas emissions data from self.ghg_emissions_df with the GWP100 conversion
+        factors stored . It calculates the GWP100 for each gas and then sums them up to get the
+        total GWP100 for each year.
+
+        Returns:
+        --------
+        pandas.DataFrame
+            A DataFrame containing two columns:
+            - 'Year': The year of the emissions
+            - 'Total_GWP100': The total GWP100 value for all three gases combined for each year
+        """
+        # List of greenhouse gases
+        gases = [GlossaryCore.CO2, GlossaryCore.CH4, GlossaryCore.N2O]
+
+        # Create a dictionary with emission columns for each gas
+        emissions_columns = {
+            gas: GlossaryCore.insertGHGAgriLandEmissions.format(gas)
+            for gas in gases
+        }
+
+        # Calculate GWP100 for each gas and year
+        gwp_100_by_gas = {
+            gas: self.ghg_emissions_df[emissions_columns[gas]] * self.gwp_100[gas]
+            for gas in gases
+        }
+
+        # Calculate total GWP100 per year
+        total_gwp_100 = pd.DataFrame({
+            GlossaryCore.Years: self.ghg_emissions_df[GlossaryCore.Years],
+            GlossaryCore.SectionA: sum(gwp_100_by_gas.values())  #store values in the only section of agriculture sector
+        })
+
+        # add it to dictionary
+        self.dict_sector_sections_emissions[GlossaryCore.SectorAgriculture] = total_gwp_100
+
+    def aggregate_emissions_per_section(self):
+        """
+        Aggregates emissions data from all sectors and converts units from Gt to Mt.
+
+        This method processes the emissions data stored in self.dict_sector_sections_emissions,
+        which contains emissions data for different sectors and their subsections.
+        """
+        # Get all DataFrames in a list
+        all_dfs = [sector_data for sector_data in self.dict_sector_sections_emissions.values()
+                   ]
+
+        # Extract the 'years' column from the first DataFrame
+        years = all_dfs[0][GlossaryCore.Years]
+
+        # Aggregate all DataFrames without the 'years' column and convert Gt to Mt
+        aggregated_df = pd.concat([df.drop(columns='years').mul(1000) for df in all_dfs], axis=1)
+
+        # Add the 'years' column at the beginning
+        aggregated_df.insert(0, GlossaryCore.Years, years)
+        self.all_sections_emissions_df = aggregated_df
+
     def compute_total_emission_sectors(self):
         """
         Computing the total emissions for each sector
@@ -286,11 +349,13 @@ class GHGEmissions:
         self.compute_energy_emission_per_section()
         self.compute_non_energy_emission_per_section()
         self.compute_total_emission_per_section()
+        self.compute_total_emissions_for_section_agriculture()
         self.compute_total_emission_sectors()
         self.compute_total_economics_emission()
 
         # compute total emissions
         self.compute_total_emissions()
+        self.aggregate_emissions_per_section()
 
         # compute other indicators
         self.compute_total_gwp()
