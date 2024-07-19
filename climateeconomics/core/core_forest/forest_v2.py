@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_optimization_plugins.tools.cst_manager.constraint_manager import (
     compute_func_with_exp_min,
 )
@@ -212,12 +213,12 @@ class Forest():
         self.compute_carbon_emissions()
 
         # CO2 consumed
-        self.techno_consumption[f'{CO2.name} ({self.mass_unit})'] = -self.techno_wood_info['CO2_from_production'] / \
+        self.techno_consumption[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_wood_info['CO2_from_production'] / \
                                                                     self.biomass_dry_high_calorific_value * \
                                                                     self.techno_production[
                                                                         f'{BiomassDry.name} ({BiomassDry.unit})']
 
-        self.techno_consumption_woratio[f'{CO2.name} ({self.mass_unit})'] = -self.techno_wood_info[
+        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_wood_info[
             'CO2_from_production'] / \
                                                                             self.biomass_dry_high_calorific_value * \
                                                                             self.techno_production[
