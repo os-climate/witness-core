@@ -18,7 +18,6 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 
