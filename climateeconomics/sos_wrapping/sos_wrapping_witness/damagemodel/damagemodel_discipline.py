@@ -47,11 +47,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
 
-    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-    CO2_tax = np.asarray([500.] * len(years))
-    default_CO2_tax = pd.DataFrame(
-        {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)
-
     # fixme : dict of variables used to force update of namespace used only by post-proc modules OR namespace that only belongs to dynamic variables
     cheat_variables_dict = \
         {'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
@@ -92,7 +87,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'init_damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_quad': {'type': 'float', 'default': 0.0022, 'unit': '-', 'user_level': 3},
         'damag_expo': {'type': 'float', 'default': 2.0, 'unit': '-', 'user_level': 3},
