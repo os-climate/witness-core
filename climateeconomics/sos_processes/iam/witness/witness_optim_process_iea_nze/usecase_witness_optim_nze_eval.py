@@ -20,10 +20,10 @@ import numpy as np
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.design_var.design_var_disc import (
+from sostrades_optimization_plugins.models.design_var.design_var_disc import (
     DesignVarDiscipline,
 )
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -264,7 +264,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{IEA_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
             # energy prices
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': electricity_prices_df,
-            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.EnergyPricesValue}': natural_gas_price_df
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}': natural_gas_price_df
             })
 
         return [values_dict] + [optim_values_dict]

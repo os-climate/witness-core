@@ -21,8 +21,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as datacase_energy,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -58,6 +60,7 @@ class Study(ClimateEconomicsStudyManager):
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
+        self.test_post_procs = False
 
     def setup_constraint_land_use(self):
 

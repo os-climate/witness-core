@@ -23,8 +23,10 @@ from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
 from numpy import arange
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 

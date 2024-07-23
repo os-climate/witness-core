@@ -18,8 +18,8 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -427,30 +427,30 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_techno_prod_d_mw_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} ({self.forest_model.mass_unit})'),
             (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
             d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} ({self.forest_model.mass_unit})'),
             (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
             d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} ({self.forest_model.mass_unit})'),
             ('managed_wood_investment', GlossaryCore.InvestmentsValue),
             d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
 
         # gradient of techno consumption wo ratio (same as techno_consumption
         # here)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} ({self.forest_model.mass_unit})'),
             (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
             d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} ({self.forest_model.mass_unit})'),
             (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
             d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} ({self.forest_model.mass_unit})'),
             ('managed_wood_investment', GlossaryCore.InvestmentsValue),
             d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
 

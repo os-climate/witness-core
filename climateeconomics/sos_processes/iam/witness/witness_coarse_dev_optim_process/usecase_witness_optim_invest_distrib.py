@@ -18,10 +18,10 @@ import numpy as np
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.design_var.design_var_disc import (
+from sostrades_optimization_plugins.models.design_var.design_var_disc import (
     DesignVarDiscipline,
 )
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -75,6 +75,7 @@ class Study(ClimateEconomicsStudyManager):
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
+        self.test_post_procs = False
 
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
@@ -141,7 +142,7 @@ class Study(ClimateEconomicsStudyManager):
             "variable": ["share_non_energy_invest_ctrl"],
             "value": [[25.5] * GlossaryCore.NB_POLES_COARSE],
             "lower_bnd": [[24.5] * GlossaryCore.NB_POLES_COARSE],
-            "upper_bnd": [[30.0] * GlossaryCore.NB_POLES_COARSE],
+            "upper_bnd": [[35.0] * GlossaryCore.NB_POLES_COARSE],
             "enable_variable": [True],
             "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
         })

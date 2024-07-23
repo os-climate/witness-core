@@ -544,8 +544,8 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
             chart_name="Natural gas price",
             y_axis_name="$/MWh",
-            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.methane}_{GlossaryEnergy.EnergyPricesValue}{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.EnergyMix.methane.FossilGas.techno_prices",
+            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}{SUFFIX_VAR_IEA}",
+            witness_variable="WITNESS.EnergyMix.methane.{GlossaryEnergy.FossilGas}.techno_prices",
             columns_to_plot=[GlossaryEnergy.FossilGas],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -556,12 +556,12 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
         # get the technos
-        electricity_prices_df = get_scenario_value(execution_engine, f'{GlossaryEnergy.electricity}_{GlossaryEnergy.EnergyPricesValue}', namespace + IEA_NAME)
+        electricity_prices_df = get_scenario_value(execution_engine, f'{GlossaryEnergy.electricity}_{GlossaryEnergy.StreamPricesValue}', namespace + IEA_NAME)
         for techno in [var for var in electricity_prices_df.keys() if var != GlossaryEnergy.Years]:
             new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name=f"Electricity price for {techno}",
                 y_axis_name="$/MWh",
-                iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.EnergyPricesValue}{SUFFIX_VAR_IEA}",
+                iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.StreamPricesValue}{SUFFIX_VAR_IEA}",
                 witness_variable=f"WITNESS.EnergyMix.electricity.{techno}.techno_prices",
                 columns_to_plot=[techno],
                 args_to_plot={

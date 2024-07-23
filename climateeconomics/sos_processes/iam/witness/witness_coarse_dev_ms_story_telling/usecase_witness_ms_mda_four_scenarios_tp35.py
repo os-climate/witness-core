@@ -52,6 +52,7 @@ class Study(ClimateEconomicsStudyManager):
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
         self.check_outputs = False
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
 

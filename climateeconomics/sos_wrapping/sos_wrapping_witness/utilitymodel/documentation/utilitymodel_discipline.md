@@ -6,7 +6,7 @@ with
 $$energy\_price\_ratio_t =\frac{energy\_price_{t=0}}{energy\_price_t}$$
 where $energy\_price$ is the mean price of energy in dollars per MWh and comes from the energy model, $\alpha$ is the elasticity of marginal utility ($conso\_elasticity$). We set it by default to 2. A higher $\alpha$ means that marginal utility decreases faster with increase in income. $c_t = \frac{C_t}{L_t}$ is the per capita consumption. $L_t$ is the population in millions of people.
 
-### Objective
+### Population utility objective
 
 $$\text{maximize}_{x \in \text{design space}} \text{ Population utility objective (x)}$$
 
@@ -19,6 +19,18 @@ with
 $$\text{Population utility} = \frac{\text{Population}}{\text{Population at year start}} \text{Utility per capita}$$
 
 The next section described the notion of  *Utility per capita*.
+
+### Anti decreasing net GDP objective
+
+To prevent an edge effect at end of simulation, we introduce this anti-decreasing objective for the GDP net of damages, denoted by $Q$.
+Indeed, the population utility objective mentioned above tends to maximize the integral of utility per capita, causing most of the time a peak at mid-scenario, and a sudden drop at the very end, to maximize surface. The objective introduce here is there to smooth the curve, and prevent this edge effect.
+
+$$\text{anti decreasing net GDP obj} = \frac{\sum_i \left( \min\left(\frac{Q_{i+1}}{Q_i}, 1\right) - 1 \right)}{\text{nb years}}$$
+
+where $Q_i$ represents the GDP net of damage at year $i$. This function captures the relative change in GDP over successive years, focusing on periods of decline. By utilizing the minimum function, $\min\left(\frac{Q_{i+1}}{Q_i}, 1\right)$, the objective ensures that only negative or no growth affects the result, normalizing any growth periods to zero.
+
+An important feature of this objective function is its self-normalization within the range $[0, 1]$, obviating the need for any external reference values. The value of the function should be minimized, reflecting the goal of reducing the frequency and magnitude of GDP decline.
+
 
 #### Utility per capita
 

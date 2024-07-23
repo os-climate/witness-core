@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2024/06/26 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,11 +21,13 @@ import numpy as np
 import pandas as pd
 from numpy import arange
 from pandas import read_csv
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
-from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -45,6 +47,7 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
@@ -66,14 +69,13 @@ class Study(StudyManager):
 
         economics_df_y = pd.DataFrame({
             GlossaryCore.Years: years,
+            GlossaryCore.GrossOutput: 0.,
             GlossaryCore.OutputNetOfDamage: gdp_serie,
-            GlossaryCore.GrossOutput: gdp_serie,
-            GlossaryCore.PerCapitaConsumption: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.
         })
         economics_df_y.index = years
         temperature_df_all = read_csv(
             join(global_data_dir, 'temperature_data_onestep.csv'))
-        temperature_df_all = temperature_df_all[GlossaryCore.TemperatureDf['dataframe_descriptor'].keys()]
 
         population_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df_y
         population_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df_all
@@ -85,4 +87,6 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
+

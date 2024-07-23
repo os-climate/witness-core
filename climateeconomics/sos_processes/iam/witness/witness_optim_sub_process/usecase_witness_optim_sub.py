@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -77,6 +77,7 @@ class Study(ClimateEconomicsStudyManager):
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
@@ -156,7 +157,7 @@ class Study(ClimateEconomicsStudyManager):
                 activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
 
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
+                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
                     activated_value
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': GlossaryCore.invest_mix,
@@ -170,9 +171,9 @@ class Study(ClimateEconomicsStudyManager):
 
                 design_var_utilization_ratio_value = dspace_df[f'{ccs}.{technology}_utilization_ratio_array']['value']
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
+                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
                     data={GlossaryCore.Years: years,
                           GlossaryCore.UtilisationRatioValue: 100.})
                 # add design variable for utilization ratio per technology

@@ -17,6 +17,7 @@ limitations under the License.
 from os.path import dirname
 
 import numpy as np
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -240,7 +241,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename='jacobian_residus_wrt_design_var_on_witness_full.pkl',
                             local_data={}, discipline=disc,
                             inputs=[f'{namespace}.EnergyMix.electricity.CoalGen.electricity_CoalGen_array_mix',
-                                    f'{namespace}.EnergyMix.liquid_fuel.Refinery.liquid_fuel_Refinery_array_mix',
+                                    f'{namespace}.EnergyMix.liquid_fuel.{GlossaryEnergy.Refinery}.liquid_fuel_Refinery_array_mix',
                                     f'{namespace}.CO2_taxes_array'],
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
 

@@ -21,8 +21,10 @@ import numpy as np
 import pandas as pd
 from numpy import arange, asarray
 from pandas import DataFrame
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import (
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
@@ -285,9 +287,9 @@ class DataStudy():
                 GlossaryCore.EnergyWastedObjective,
                 GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
-                GlossaryCore.ConsumptionObjective,
+                GlossaryCore.NetGdpGrowthRateObjectiveValue,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
-                GlossaryCore.LastYearUtilityObjectiveValue,
+                GlossaryCore.DecreasingGdpIncrementsObjectiveValue,
             ],
             'parent': [
                 'invest_objective',
@@ -298,7 +300,7 @@ class DataStudy():
                 'utility_objective',
             ],
             'ftype': [OBJECTIVE] * 6,
-            'weight': [0.1, -1., 0., 0., 0., 0.],
+            'weight': [0.1, -1., 0., 0., 0., 1.],
             AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
             'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
         }
