@@ -18,7 +18,7 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -1324,10 +1324,10 @@ class Crop():
                                                       self.mix_detailed_production['Crop residues (TWh)']
 
     def compute_techno_consumption(self):
-        self.techno_consumption[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
+        self.techno_consumption[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
                                                                     self.data_fuel_dict['high_calorific_value'] * \
                                                                     self.mix_detailed_production['Total (TWh)']
-        self.techno_consumption_woratio[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict[
+        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_infos_dict[
             'CO2_from_production'] / \
                                                                             self.data_fuel_dict[
                                                                                 'high_calorific_value'] * \
