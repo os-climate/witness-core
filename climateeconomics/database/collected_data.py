@@ -121,20 +121,30 @@ class HeavyCollectedData(ColectedData):
         self.__value = val
 
     def get_value_at_year(self, year: int) -> float:
+        """Returns the dataframe value at the selected year. Interpolate data if needed when possible"""
         year = int(year)
         df = self.value
         years_int = df['years'].values.astype(int)
         if year in years_int:
             return float(df.loc[df["years"] == year, self.column_to_pick])
 
-        if year >= years_int.min() and year <= years_int.max():
+        if years_int.min() <= year <= years_int.max():
             # we will interpolate missing year data
             f = interp1d(x=years_int, y=df[self.column_to_pick].values)
             return float(f(year))
         else:
             raise Exception("Donnée indisponible pour cette année")
 
+    def is_available_at_year(self, year: int) -> bool:
+        """Indicate if data is available or can be interpolated at specified year"""
+        year = int(year)
+        df = self.value
+        years_int = df['years'].values.astype(int)
+
+        return years_int.min() <= year <= years_int.max()
+
     def get_between_years(self, year_start: int, year_end: int) -> pd.DataFrame:
+        """Returns the dataframe between selected years. Interpolate data if needed when possible"""
         df = self.value
         sub_df = df.loc[(df["years"] >= year_start) & (df["years"] <= year_end)]
         years = sub_df["years"].values
@@ -143,6 +153,6 @@ class HeavyCollectedData(ColectedData):
         all_years = np.arange(year_start, year_end + 1)
         out = pd.DataFrame({
             "years": all_years,
-            self.column_to_pick: f_interp(all_years)
+            self.column_to_pick: f_interp(all_years) if len(all_years) > 1 else float(sub_df[self.column_to_pick].values[0])
         })
         return out

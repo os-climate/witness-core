@@ -347,15 +347,15 @@ class DatabaseWitnessCore:
         last_update_date=date(2023, 3, 1),
     )
 
-    InitialProductionCropForEnergy = ColectedData(
-        value = 3333.24,
+    ProductionCropForEnergy = HeavyCollectedData(
+        value=join(data_folder, "crop_energy_historic_prod.csv"),
         unit="TWh",
-        description="Initial production of crop for energy",
+        description="Production of crop for energy (2010-2020)",
         link="https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use",
-        source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050", # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops
-        last_update_date=date(2024, 4, 24),
+        source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050", # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops. So we sum them and then convert exajoules (EJ) to TWh
+        last_update_date=date(2024, 7, 24),
         critical_at_year_start=True,
-        year_value=2020
+        column_to_pick="prod"
     )
 
     CropInvestmentNZE = HeavyCollectedData(
@@ -392,7 +392,7 @@ class DatabaseWitnessCore:
     InvestCCUSYearStart = HeavyCollectedData(
         value=join(data_folder, "ccus_historic_invests.csv"),
         unit="G$",
-        description="Investment in all CCUS in G US$",
+        description="Investment in all CCUS in G US$. \n Data is mocked until 2020 but invest are so low it wont change anything ",
         link=["https://iea.blob.core.windows.net/assets/181b48b4-323f-454d-96fb-0bb1889d96a9/CCUS_in_clean_energy_transitions.pdf",
               "https://www.mckinsey.com/industries/oil-and-gas/our-insights/global-energy-perspective-2023-ccus-outlook",
               "https://about.bnef.com/blog/ccus-market-outlook-2023-announced-capacity-soars-by-50/"],
