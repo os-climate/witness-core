@@ -15,12 +15,12 @@ limitations under the License.
 '''
 
 import logging
-from typing import Union
-
-import pandas as pd
-import numpy as np
 from os.path import join
 from pathlib import Path
+from typing import Union
+
+import numpy as np
+import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
