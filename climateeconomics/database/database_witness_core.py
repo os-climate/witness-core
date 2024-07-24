@@ -45,83 +45,85 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 2, 27)
     )
 
-    TemperatureAnomalyPreIndustrialYearStart = ColectedData(
-        value=+1.3,
+    TemperatureAnomalyPreIndustrialYearStart = HeavyCollectedData(
+        value=join(data_folder, "temp_anomaly_pre_industrial.csv"),
         unit="°C",
-        description="Global average temperature anomaly relative to 1850-1900 average",
+        description="Global average temperature anomaly historic (2010-2023) relative to 1850-1900 average",
         link="https://berkeleyearth.org/global-temperature-report-for-2023/#:~:text=Annual%20Temperature%20Anomaly&text=As%20a%20result%2C%202023%20is,C%20(2.7%20%C2%B0F).",
         source="BerkleyEarth",
-        last_update_date=date(2024, 2, 27)
+        last_update_date=date(2024, 2, 27),
+        critical_at_year_start=True,
+        column_to_pick="Warming"
     )
 
     # Data for sectorization
     InvestInduspercofgdp2020 = ColectedData(
         value=5.831,
         unit="%",
-        description="Investment in Industry sector as percentage of GDP for year 2020",
+        description="Investment in Industry sector as percentage of GDP for year start (2020)",
         link="",
         source="Computed from World bank,IMF and IEA data",
         last_update_date=date(2023, 10, 23),
     )
 
-    InvestServicespercofgdp2020 = ColectedData(
+    InvestServicespercofgdpYearStart = ColectedData(
         value=19.231,
         unit="%",
-        description="Investment in Services sector as percentage of GDP for year 2020",
+        description="Investment in Services sector as percentage of GDP for year start (2020)",
         link="",
         source="Computed from World bank and IMF data",
         last_update_date=date(2023, 10, 23),
     )
 
-    InvestAgriculturepercofgdp2020 = ColectedData(
+    InvestAgriculturepercofgdpYearStart = ColectedData(
         value=0.4531,
         unit="%",
-        description="Investment in Agriculture sector as percentage of GDP for year 2020",
+        description="Investment in Agriculture sector as percentage of GDP for year start (2020)",
         link="",
         source="Computed from World bank, IMF, and FAO gross capital formation data",
         last_update_date=date(2023, 10, 23),
     )
 
-    EnergyshareAgriculture2020 = ColectedData(
+    EnergyshareAgricultureYearStart = ColectedData(
         value=2.1360,
         unit="%",
-        description="Share of net energy production dedicated to Agriculture sector in % in 2020",
+        description="Share of net energy production dedicated to Agriculture sector in % for year start (2020)",
         link="",
         source="IEA",
         last_update_date=date(2023, 10, 23),
     )
 
-    EnergyshareIndustry2020 = ColectedData(
+    EnergyshareIndustryYearStart = ColectedData(
         value=28.9442,
         unit="%",
-        description="Share of net energy production dedicated to Industry sector in % in 2020",
+        description="Share of net energy production dedicated to Industry sector in % for year start (2020)",
         link="",
         source="IEA",
         last_update_date=date(2023, 10, 23),
     )
 
-    EnergyshareServices2020 = ColectedData(
+    EnergyshareServicesYearStart = ColectedData(
         value=36.9954,
         unit="%",
-        description="Share of net energy production dedicated to Services sector in % in 2020",
+        description="Share of net energy production dedicated to Services sector in % for year start (2020)",
         link="",
         source="IEA",
         last_update_date=date(2023, 10, 23),
     )
 
-    EnergyshareResidential2020 = ColectedData(
+    EnergyshareResidentialYearStart = ColectedData(
         value=21.00,
         unit="%",
-        description="Share of net energy production dedicated to Residential in % in 2020",
+        description="Share of net energy production dedicated to Residential in % for year start (2020)",
         link="",
         source="IEA",
         last_update_date=date(2023, 10, 23),
     )
 
-    EnergyshareOther2020 = ColectedData(
+    EnergyshareOtherYearStart = ColectedData(
         value=10.9230,
         unit="%",
-        description="Share of net energy production dedicated to other consumption in % in 2020",
+        description="Share of net energy production dedicated to other consumption in % for year start (2020)",
         link="",
         source="IEA",
         last_update_date=date(2023, 10, 23),
@@ -199,33 +201,6 @@ class DatabaseWitnessCore:
         last_update_date=date(2023, 12, 1),
     )
 
-    C02YearStartConcentration = ColectedData(
-        value=414,
-        unit="ppm",
-        description="Concentration of CO2 in atmosphere for year start (2020)",
-        link="https://gml.noaa.gov/ccgg/trends/",
-        source="US Department of Commerce",
-        last_update_date=date(2024, 1, 12),
-    )
-
-    CH4YearStartConcentration = ColectedData(
-        value=1872,
-        unit="ppb",
-        description="Concentration of CH4 in atmosphere for year start (2020)",
-        link="https://gml.noaa.gov/ccgg/trends_ch4/",
-        source="US Department of Commerce",
-        last_update_date=date(2024, 1, 12),
-    )
-
-    N2OYearStartConcentration = ColectedData(
-        value=333,
-        unit="ppb",
-        description="Concentration of N2O in atmosphere for year start (2020)",
-        link="https://gml.noaa.gov/ccgg/trends_n2o/",
-        source="US Department of Commerce",
-        last_update_date=date(2024, 1, 12),
-    )
-
     HistoricCO2Concentration = HeavyCollectedData(
         value=join(data_folder, "co2_annmean_mlo.csv"),
         unit="PPM",
@@ -233,6 +208,7 @@ class DatabaseWitnessCore:
         link="https://gml.noaa.gov/ccgg/trends/data.html",
         source="Earth System Research Laboratorie; Global Monitoring Laboratory",
         last_update_date=date(2023, 1, 18),
+        column_to_pick="mean"
     )
 
     HistoricCH4Concentration = HeavyCollectedData(
@@ -242,6 +218,7 @@ class DatabaseWitnessCore:
         link="https://gml.noaa.gov/ccgg/trends/data.html",
         source="Earth System Research Laboratorie; Global Monitoring Laboratory",
         last_update_date=date(2023, 1, 18),
+        column_to_pick="mean"
     )
 
     HistoricN2OConcentration = HeavyCollectedData(
@@ -251,6 +228,8 @@ class DatabaseWitnessCore:
         link="https://gml.noaa.gov/ccgg/trends/data.html",
         source="Earth System Research Laboratorie; Global Monitoring Laboratory",
         last_update_date=date(2023, 1, 18),
+        column_to_pick="mean",
+        critical_at_year_start=True
     )
 
     CumulativeCO2Emissions = ColectedData(
@@ -346,7 +325,6 @@ class DatabaseWitnessCore:
         last_update_date=date(2024,3,26)
     )
 
-
     atmosphere_total_mass_kg = 5.1480 * 10 ** 18
     molar_mass_atmosphere = 0.02897  # kg/mol
     n_moles_in_atmosphere = atmosphere_total_mass_kg / molar_mass_atmosphere
@@ -369,22 +347,15 @@ class DatabaseWitnessCore:
         last_update_date=date(2023, 3, 1),
     )
 
-
-    GWP_2020_100_year_basis = ColectedData(
-        value=51.46,
-        unit="GtCO2Eq",
-        description="Global warming potential for year 2020 on 100-year basis",
-        link="https://ourworldindata.org/greenhouse-gas-emissions",
-        source="Our wourld in data",
-        last_update_date=date(2024,4,22)
-    )
     InitialProductionCropForEnergy = ColectedData(
         value = 3333.24,
         unit="TWh",
         description="Initial production of crop for energy",
         link="https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use",
         source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050", # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops
-        last_update_date=date(2024, 4, 24)
+        last_update_date=date(2024, 4, 24),
+        critical_at_year_start=True,
+        year_value=2020
     )
 
     CropInvestmentNZE = HeavyCollectedData(
@@ -396,30 +367,37 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 4, 24)
     )
 
-    InvestFossil2020 = ColectedData(
-        value=839.0,
+    InvestFossilYearStart = HeavyCollectedData(
+        value=join(data_folder, "fossil_energy_historic_invests.csv"),
         unit="G$",
-        description="Investment in fossil in 2020 in G US$",
-        link="https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings",
+        description="Investment in fossil energy 2015-2023",
+        link="https://www.iea.org/data-and-statistics/charts/global-energy-investment-in-clean-energy-and-in-fossil-fuels-2015-2023",
         source="World energy investment - IEA",
-        last_update_date=date(2023, 10, 26),
+        last_update_date=date(2024, 7, 23),
+        critical_at_year_start=True,
+        column_to_pick="Fossil fuels"
     )
 
-    InvestCleanEnergy2020 = ColectedData(
-        value=1259.0,
+    InvestCleanEnergyYearStart = HeavyCollectedData(
+        value=join(data_folder, "renewable_energy_historic_invests.csv"),
         unit="G$",
-        description="Investment in clean energy in 2020 in G US$",
-        link="https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings",
+        description="Investment in clean energy 2015-2023",
+        link="https://www.iea.org/data-and-statistics/charts/global-energy-investment-in-clean-energy-and-in-fossil-fuels-2015-2023",
         source="World energy investment - IEA",
-        last_update_date=date(2023, 10, 26),
+        last_update_date=date(2024, 7, 23),
+        critical_at_year_start=True,
+        column_to_pick="Clean energy"
     )
 
-    InvestCCUS2020 = ColectedData(
-        value=4.0,
+    InvestCCUSYearStart = HeavyCollectedData(
+        value=join(data_folder, "ccus_historic_invests.csv"),
         unit="G$",
-        description="Investment in all CCUS technos in 2020 in G US$",
-        link="https://iea.blob.core.windows.net/assets/181b48b4-323f-454d-96fb-0bb1889d96a9/CCUS_in_clean_energy_transitions.pdf",
-        # page 13
-        source="CCUS in clean energy transitions - IEA",
-        last_update_date=date(2023, 10, 26),
+        description="Investment in all CCUS in G US$",
+        link=["https://iea.blob.core.windows.net/assets/181b48b4-323f-454d-96fb-0bb1889d96a9/CCUS_in_clean_energy_transitions.pdf",
+              "https://www.mckinsey.com/industries/oil-and-gas/our-insights/global-energy-perspective-2023-ccus-outlook",
+              "https://about.bnef.com/blog/ccus-market-outlook-2023-announced-capacity-soars-by-50/"],
+        source="",
+        last_update_date=date(2024, 7, 23),
+        critical_at_year_start=True,
+        column_to_pick="invests"
     )

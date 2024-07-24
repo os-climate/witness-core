@@ -15,8 +15,11 @@ limitations under the License.
 '''
 from datetime import date
 from os.path import isfile
+from typing import Union
 
+import numpy as np
 import pandas as pd
+from scipy.interpolate import interp1d
 
 
 class ColectedData:
@@ -25,9 +28,12 @@ class ColectedData:
         value,
         unit: str,
         description: str,
-        link: str,
+        link: Union[str, list[str]],
         source: str,
         last_update_date: date,
+        critical_at_year_start: bool = False,
+        year_value: Union[int, None] = None,
+        do_check: bool = True
     ):
         self.value = value
         self.unit = unit
@@ -35,6 +41,11 @@ class ColectedData:
         self.link = link
         self.source = source
         self.last_update_date = last_update_date
+        self.critical_at_year_start = critical_at_year_start
+        self.year_value = year_value
+        if do_check and critical_at_year_start and year_value is None:
+            raise Exception(
+                "Value is critical for year start, please specify what is the year of the value")
 
     @property
     def value(self):
@@ -69,12 +80,29 @@ class HeavyCollectedData(ColectedData):
         value: str,
         unit: str,
         description: str,
-        link: str,
+        link: Union[str, list[str]],
         source: str,
         last_update_date: date,
+        critical_at_year_start: bool = False,
+        column_to_pick: str = None,
+
     ):
-        super().__init__(value, unit, description, link, source, last_update_date)
+        """
+
+        :param value:
+        :param unit:
+        :param description:
+        :param link:
+        :param source:
+        :param last_update_date:
+        :param critical_at_year_start: If the data is used to initiate value at year start of discipline, set to True
+        :param column_to_pick: when the dataframe is called at a specific, indicates which column to collect the value
+        """
+        if critical_at_year_start and column_to_pick is None:
+            raise Exception("Dataframe is critical for year start, please specify in which column should the year start value be picked")
+        super().__init__(value, unit, description, link, source, last_update_date, critical_at_year_start=critical_at_year_start, do_check=False)
         self.__cached_value = None
+        self.column_to_pick = column_to_pick
 
     @property
     def value(self):
@@ -91,3 +119,30 @@ class HeavyCollectedData(ColectedData):
         if not isfile(val):
             raise ValueError(f"{val} must be a file")
         self.__value = val
+
+    def get_value_at_year(self, year: int) -> float:
+        year = int(year)
+        df = self.value
+        years_int = df['years'].values.astype(int)
+        if year in years_int:
+            return float(df.loc[df["years"] == year, self.column_to_pick])
+
+        if year >= years_int.min() and year <= years_int.max():
+            # we will interpolate missing year data
+            f = interp1d(x=years_int, y=df[self.column_to_pick].values)
+            return float(f(year))
+        else:
+            raise Exception("Donnée indisponible pour cette année")
+
+    def get_between_years(self, year_start: int, year_end: int) -> pd.DataFrame:
+        df = self.value
+        sub_df = df.loc[(df["years"] >= year_start) & (df["years"] <= year_end)]
+        years = sub_df["years"].values
+        values = sub_df[self.column_to_pick]
+        f_interp = interp1d(x=years, y=values)
+        all_years = np.arange(year_start, year_end + 1)
+        out = pd.DataFrame({
+            "years": all_years,
+            self.column_to_pick: f_interp(all_years)
+        })
+        return out
