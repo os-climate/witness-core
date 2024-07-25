@@ -42,6 +42,8 @@ variables defined in the design_space. Therefore, this post-processing only work
 an optim process, namely optimization and multi-scenario optimization processes
 The gradient is computed at the last iteration of the optimization problem
 Does not work for optim sub-processes, since mdo_disc._differentiated_inputs=[] 
+NB: the mdo_discipline is set to None in the execution engine when the graphs are updated => the gradients must be computed 
+at the end of a computation
 '''
 
 TEMP_PKL_PATH = 'temp_pkl'
@@ -86,10 +88,10 @@ def post_processing_filters(execution_engine, namespace):
     '''
     chart_filters = []
 
-    chart_list = ['No_grad_check', 'Check_grad_Obj_Lagr']
+    chart_list = ['Objective Lagrangian']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
-        'Charts_grad', chart_list, 'No_grad_check', 'No_grad_check', multiple_selection=False)) # name 'Charts' is already used by ssp_comparison post-proc
+        'Charts_grad', chart_list, chart_list, 'Charts_grad')) # name 'Charts' is already used by ssp_comparison post-proc
 
     return chart_filters
 
@@ -110,7 +112,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             if chart_filter.filter_key == 'No_grad_check':
                 chart_list = chart_filter.selected_values
 
-    if 'Check_grad_Obj_Lagr' in chart_list:
+    if 'Objective Lagrangian' in chart_list:
         '''
         The l1s_test compare the variables before and after the post-processing. 
         In the post-processing below, the approx gradient computes the mda in X+h as opposed to X for the initial mda
