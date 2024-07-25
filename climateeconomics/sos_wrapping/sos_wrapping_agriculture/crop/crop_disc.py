@@ -266,7 +266,6 @@ class CropDiscipline(ClimateEcoDiscipline):
     density_per_ha = 2903 * 1.25
     # reference of the value in database
     initial_production = DatabaseWitnessCore.ProductionCropForEnergy.get_value_at_year(GlossaryCore.YearStartDefault)
-    construction_delay = 1  # years
     # defined lifetime here is the supposed lifetime of crop farm
     lifetime = 50
 
@@ -306,7 +305,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         'efficiency': 1.0,
         'techno_evo_eff': 'no',
         'crop_residue_price_percent_dif': crop_residue_price_percent_dif,
-        GlossaryCore.ConstructionDelay: construction_delay,  # years
     }
 
     # Age distribution of forests in 2008 (
