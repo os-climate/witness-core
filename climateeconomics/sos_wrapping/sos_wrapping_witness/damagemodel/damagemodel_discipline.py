@@ -17,7 +17,6 @@ limitations under the License.
 from copy import deepcopy
 
 import numpy as np
-import pandas as pd
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -46,11 +45,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-exclamation-triangle fa-fw',
         'version': '',
     }
-
-    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-    CO2_tax = np.asarray([500.] * len(years))
-    default_CO2_tax = pd.DataFrame(
-        {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)
 
     # fixme : dict of variables used to force update of namespace used only by post-proc modules OR namespace that only belongs to dynamic variables
     cheat_variables_dict = \
@@ -92,7 +86,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'init_damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_quad': {'type': 'float', 'default': 0.0022, 'unit': '-', 'user_level': 3},
         'damag_expo': {'type': 'float', 'default': 2.0, 'unit': '-', 'user_level': 3},

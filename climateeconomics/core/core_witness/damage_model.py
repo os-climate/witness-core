@@ -36,7 +36,6 @@ class DamageModel:
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
         self.time_step = self.param[GlossaryCore.TimeStep]
-        self.init_damag_int = self.param["init_damag_int"]
         self.damag_int = self.param['damag_int']
         self.damag_quad = self.param['damag_quad']
         self.damag_expo = self.param['damag_expo']
