@@ -44,11 +44,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-tree fa-fw',
         'version': 'Version 1',
     }
-    default_year_start = GlossaryCore.YearStartDefault
-    default_year_end = 2050
-
-    deforestation_limit = 1000
-    initial_emissions = 3.21
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
@@ -57,9 +52,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
-               Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha', 'default': deforestation_limit,
+               Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha', 'default': 1000,
                                                             'namespace': 'ns_forest', },
-               Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
+               Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': 3.21,
                                                       'namespace': 'ns_forest', },
                Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 3800, 'namespace': 'ns_forest'},

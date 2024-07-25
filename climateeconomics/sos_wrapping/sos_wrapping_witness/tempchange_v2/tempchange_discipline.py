@@ -52,13 +52,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-thermometer-three-quarters fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
-        'init_temp_atmo': {'type': 'float', 'default': DatabaseWitnessCore.TemperatureAnomalyPreIndustrialYearStart.value, 'user_level': 2, 'unit': '°C'},
+        'init_temp_atmo': {'type': 'float', 'default': DatabaseWitnessCore.TemperatureAnomalyPreIndustrialYearStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
         'temperature_model': {'type': 'string', 'default': 'FUND', 'possible_values': ['DICE', 'FUND', 'FAIR'],
                               'structuring': True},

@@ -93,8 +93,8 @@ class Study(StudyManager):
 
         #Investment
         invest_indus_start = DatabaseWitnessCore.InvestInduspercofgdp2020.value
-        invest_agri_start = DatabaseWitnessCore.InvestAgriculturepercofgdp2020.value
-        invest_services_start = DatabaseWitnessCore.InvestServicespercofgdp2020.value
+        invest_agri_start = DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value
+        invest_services_start = DatabaseWitnessCore.InvestServicespercofgdpYearStart.value
         invest_energy_start = 1.077
         total_invest_start = invest_indus_start + invest_agri_start + invest_services_start + invest_energy_start
 
@@ -164,10 +164,10 @@ class Study(StudyManager):
                  GlossaryCore.ShareInvestment: invest_agri_start})
 
             # Energy
-            share_energy_resi_2020 = DatabaseWitnessCore.EnergyshareResidential2020.value
-            share_energy_other_2020 = DatabaseWitnessCore.EnergyshareOther2020.value
-            share_energy_agri_2020 = DatabaseWitnessCore.EnergyshareAgriculture2020.value
-            share_energy_services_2020 = DatabaseWitnessCore.EnergyshareServices2020.value
+            share_energy_resi_2020 = DatabaseWitnessCore.EnergyshareResidentialYearStart.value
+            share_energy_other_2020 = DatabaseWitnessCore.EnergyshareOtherYearStart.value
+            share_energy_agri_2020 = DatabaseWitnessCore.EnergyshareAgricultureYearStart.value
+            share_energy_services_2020 = DatabaseWitnessCore.EnergyshareServicesYearStart.value
             share_energy_agriculture = pd.DataFrame({GlossaryCore.Years: years,
                                                      GlossaryCore.ShareSectorEnergy: share_energy_agri_2020})
             share_energy_services = pd.DataFrame({GlossaryCore.Years: years,
