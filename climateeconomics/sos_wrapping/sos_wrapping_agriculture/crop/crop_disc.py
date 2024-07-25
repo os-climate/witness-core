@@ -265,7 +265,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     # residue is 0.25 more than that
     density_per_ha = 2903 * 1.25
     # reference of the value in database
-    initial_production = DatabaseWitnessCore.InitialProductionCropForEnergy.value
+    initial_production = DatabaseWitnessCore.ProductionCropForEnergy.get_value_at_year(GlossaryCore.YearStartDefault)
     construction_delay = 1  # years
     # defined lifetime here is the supposed lifetime of crop farm
     lifetime = 50

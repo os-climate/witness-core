@@ -205,9 +205,6 @@ class Study(StudyManager):
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{'capital_start'}"] = 4.035565
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{'capital_start'}"] = 139.1369
             sect_input[f"{self.study_name}.{GlossaryCore.DamageToProductivity}"] = True
-            sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{'init_output_growth'}"] = 0
-            sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{'init_output_growth'}"] = 0
-            sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'init_output_growth'}"] = 0
 
         setup_data_list.append(sect_input)
 

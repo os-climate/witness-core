@@ -206,7 +206,7 @@ class DataStudy():
 
         share_residential_energy = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value},)
+             GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidentialYearStart.value},)
 
         # ------------------ mda initialisation data
         co2_emissions_Gt = pd.DataFrame({
@@ -219,7 +219,7 @@ class DataStudy():
         # ------------------ end mda initialisation
         share_residential_energy = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value
+            GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidentialYearStart.value
         })
 
         for sector in GlossaryCore.SectorsPossibleValues:

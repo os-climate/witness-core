@@ -1464,7 +1464,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "G$",
         "dataframe_descriptor": {
-            "past years": ("int", [-20, -1], True),
+            Years: ("int", [1900, 2100], True),
             "invest": ("float", [0, 1e30], True),
         },
         "dataframe_edition_locked": False,

@@ -71,7 +71,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                              'dataframe_edition_locked': False},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                   'user_level': 1, 'unit': '-'},
-        'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3,
                                      'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE,
                                      'unit': '-'},

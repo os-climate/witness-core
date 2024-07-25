@@ -228,7 +228,7 @@ class DataStudy():
 
         share_residential_energy = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value}, )
+             GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidentialYearStart.value}, )
 
         witness_input[f'{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}'] = share_residential_energy
         witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'] = energy_investment_wo_tax
@@ -250,7 +250,7 @@ class DataStudy():
         # ------------------ end mda initialisation
         share_residential_energy = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidential2020.value
+            GlossaryCore.ShareSectorEnergy: DatabaseWitnessCore.EnergyshareResidentialYearStart.value
         })
 
         for sector in GlossaryCore.SectorsPossibleValues:
