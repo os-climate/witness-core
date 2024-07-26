@@ -99,7 +99,7 @@ class YearStartTest(unittest.TestCase):
                 msg = "OK"
                 valid_years.append(year)
             output_msg += f"{year}: {msg}\n"
-        #print(output_msg)
+        print(output_msg)
         self.assertIn(GlossaryCore.YearStartDefault, valid_years,
                       msg=f"There are some missing inputs for the selected year start ({GlossaryCore.YearStartDefault})")
 
