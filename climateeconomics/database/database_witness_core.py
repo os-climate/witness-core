@@ -13,7 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import datetime
 import json
+import os
 from datetime import date
 from os.path import dirname, join
 
@@ -401,3 +403,205 @@ class DatabaseWitnessCore:
         critical_at_year_start=True,
         column_to_pick="invests"
     )
+
+    PopulationYearStart = ColectedData(
+        value=pd.read_csv(join(data_folder, "population_by_age_2020.csv")),
+        unit="millions of people",
+        description="repartition of the population by age in 2020",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 25),
+    )
+
+    MacroProductivityStart = ColectedData(
+        value=0.27357,
+        unit="-",
+        description="Productivity factor at year start",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 25),
+    )
+
+    MacroInitGrossOutput = ColectedData(
+        value=130.187,
+        unit="G$",
+        description="Global GDP",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 25),
+    )
+
+    MacroNonEnergyCapitalStart = ColectedData(
+        value=360.5487346,
+        unit="G$",
+        description="Capital at year start",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 25),
+    )
+
+    MacroProductivityGrowthStart = ColectedData(
+        value=0.004781,
+        unit="-",
+        description="Productivity growth at year start",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 25),
+    )
+
+    SectorServiceCapitalStart = ColectedData(
+        value=281.2092,
+        unit="G$",
+        description="Sector Service capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorServiceProductivityStart = ColectedData(
+        value=0.1328496,
+        unit="-",
+        description="Sector Service capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorServiceProductivityGrowthStart = ColectedData(
+        value=0.00161432,
+        unit="-",
+        description="Sector Service capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorIndustryCapitalStart = ColectedData(
+        value=88.5051,
+        unit="G$",
+        description="Sector Industry capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorIndustryProductivityStart = ColectedData(
+        value=0.4903228,
+        unit="-",
+        description="Sector Industry capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorIndustryProductivityGrowthStart = ColectedData(
+        value=0.00019,
+        unit="-",
+        description="Sector Industry capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorAgricultureCapitalStart = ColectedData(
+        value=6.92448579,
+        unit="G$",
+        description="Sector Agriculture capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorAgricultureProductivityStart = ColectedData(
+        value=1.31162,
+        unit="-",
+        description="Sector Agriculture capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    SectorAgricultureProductivityGrowthStart = ColectedData(
+        value=0.0027844,
+        unit="-",
+        description="Sector Agriculture capital",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    ForestEmissions = ColectedData(
+        value=-7.6,
+        unit="GtCO2",
+        description="Forest emissions",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    OceanWarmingAnomalySincePreindustrial = ColectedData(
+        value=0.02794825,
+        unit="°C",
+        description="Warming anomaly of ocean since pre-industrial era",
+        year_value=2020,
+        link="",
+        critical_at_year_start=True,
+        source="",
+        last_update_date=date(2024, 7, 26),
+    )
+
+    @classmethod
+    def get_forest_invest_before_year_start(cls, year_start: int, construction_delay: int,
+                                            is_available_at_year: bool = False):
+
+        path_to_csv = os.path.join(data_folder, "forest_invests") + ".csv"
+        df = pd.read_csv(path_to_csv)
+        heavy_collected_data = HeavyCollectedData(
+            value=path_to_csv,
+            description="",
+            unit="G$",
+            link="",
+            source="",
+            last_update_date=datetime.datetime.today(),
+            critical_at_year_start=True,
+            column_to_pick="investment"
+        )
+        out_df = df
+        if is_available_at_year:
+            return construction_delay == 0 or (heavy_collected_data.is_available_at_year(
+                year_start - construction_delay) and heavy_collected_data.is_available_at_year(year_start - 1))
+        if construction_delay > 0:
+            out_df = heavy_collected_data.get_between_years(year_start=year_start - construction_delay,
+                                                            year_end=year_start - 1)
+        return out_df, heavy_collected_data
+
