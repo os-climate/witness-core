@@ -52,16 +52,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
         self.temperature_df.index = years
 
-        lifetime = 50
-
         # Age distribution of forests in 2008 (
-        initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                                 'distrib': [0.16, 0.24, 0.31, 0.39, 0.47, 0.55, 0.63, 0.71, 0.78, 0.86,
-                                                             0.94, 1.02, 1.1, 1.18, 1.26, 1.33, 1.41, 1.49, 1.57, 1.65,
-                                                             1.73, 1.81, 1.88, 1.96, 2.04, 2.12, 2.2, 2.28, 2.35, 2.43,
-                                                             2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
-                                                             3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
-
         self.default_kg_to_m2 = {'red meat': 345.,
                             'white meat': 14.5,
                             'milk': 8.95,
