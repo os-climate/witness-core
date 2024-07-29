@@ -109,7 +109,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
     # Overload default value with chart filter
     if chart_filters is not None:
         for chart_filter in chart_filters:
-            if chart_filter.filter_key == 'No_grad_check':
+            if chart_filter.filter_key == 'Charts_grad':
                 chart_list = chart_filter.selected_values
 
     if 'Objective Lagrangian' in chart_list:
