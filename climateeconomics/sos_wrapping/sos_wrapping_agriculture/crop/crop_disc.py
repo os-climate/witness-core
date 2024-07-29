@@ -266,10 +266,9 @@ class CropDiscipline(ClimateEcoDiscipline):
     density_per_ha = 2903 * 1.25
     # reference of the value in database
     initial_production = DatabaseWitnessCore.ProductionCropForEnergy.get_value_at_year(GlossaryCore.YearStartDefault)
-    construction_delay = 1  # years
     # defined lifetime here is the supposed lifetime of crop farm
     lifetime = 50
-
+    construction_delay = 1  # years
     techno_infos_dict_default = {
         'maturity': 5,
         # computed 87.7euro/ha, counting harvest,
