@@ -16,8 +16,6 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-import numpy as np
-import pandas as pd
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -30,6 +28,7 @@ from climateeconomics.core.core_forest.forest_v2 import Forest
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -124,9 +123,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
-    invest_before_year_start = pd.DataFrame(
-        {'past_years': np.arange(-construction_delay, 0),
-         GlossaryCore.InvestmentsValue: [1.135081, 1.135081, 1.135081]})
+    invest_before_year_start = DatabaseWitnessCore.get_forest_invest_before_year_start(year_start=GlossaryCore.YearStartDefault, construction_delay=construction_delay)[0]
 
     # protected forest are 21% of total forest
     # https://research.wri.org/gfr/forest-designation-indicators/protected-forests
@@ -166,9 +163,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'default': wood_production_surface,
                                     'namespace': 'ns_forest'},
         Forest.MW_INVEST_BEFORE_YEAR_START: {'type': 'dataframe', 'unit': 'G$',
-                                             'dataframe_descriptor': {'past_years': ('float', None, False),
-                                                                      GlossaryCore.InvestmentsValue: (
-                                                                          'float', [0, 1e9], True)},
+                                             'dataframe_descriptor': {GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)},
                                              'dataframe_edition_locked': False,
                                              'default': invest_before_year_start,
                                              'namespace': 'ns_forest'},

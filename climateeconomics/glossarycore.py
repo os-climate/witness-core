@@ -610,7 +610,7 @@ class GlossaryCore:
         "type": "float",
         "unit": "G$",
         "visibility": "Shared",
-        "default": 130.187,
+        "default": DatabaseWitnessCore.MacroInitGrossOutput.value,
         "namespace": NS_WITNESS,
         "user_level": 2,
     }

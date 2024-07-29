@@ -32,6 +32,7 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.population_model import Population
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -53,8 +54,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     }
     years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     global_data_dir = join(Path(__file__).parents[3], 'data')
-    pop_init_df = pd.read_csv(
-        join(global_data_dir, 'population_by_age_2020.csv'))
     default_death_rate_params_df = pd.read_csv(
         join(global_data_dir, 'death_rate_params_v2.csv'))
     # Provided by WHO. (2014). Quantitative risk assessment of the effects of climate
@@ -71,7 +70,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'population_start': {'type': 'dataframe', 'default': pop_init_df, 'unit': 'millions of people',
+        'population_start': {'type': 'dataframe', 'default': DatabaseWitnessCore.PopulationYearStart.value, 'unit': 'millions of people',
                              'dataframe_descriptor': {'age': ('string', None, False),
                                                       GlossaryCore.PopulationValue: ('float', None, False),}
                              },

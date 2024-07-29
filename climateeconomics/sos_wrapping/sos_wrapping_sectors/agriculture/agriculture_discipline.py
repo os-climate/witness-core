@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import (
     SectorDiscipline,
@@ -42,9 +43,9 @@ class AgricultureDiscipline(SectorDiscipline):
     # update default values:
     def setup_sos_disciplines(self):
         SectorDiscipline.setup_sos_disciplines(self)
-        self.update_default_value('capital_start', 'in', 6.92448579)
-        self.update_default_value('productivity_start', 'in', 1.31162)
-        self.update_default_value('productivity_gr_start', 'in', 0.0027844)
+        self.update_default_value('capital_start', 'in', DatabaseWitnessCore.SectorAgricultureCapitalStart.value)
+        self.update_default_value('productivity_start', 'in', DatabaseWitnessCore.SectorAgricultureProductivityStart.value)
+        self.update_default_value('productivity_gr_start', 'in', DatabaseWitnessCore.SectorAgricultureProductivityGrowthStart.value)
         self.update_default_value('decline_rate_tfp', 'in', 0.098585)
         self.update_default_value('energy_eff_k', 'in', 0.1)
         self.update_default_value('energy_eff_cst', 'in', 0.490463)
