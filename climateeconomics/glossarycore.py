@@ -1212,9 +1212,9 @@ class GlossaryCore:
         },
     }
 
-    SectorizedConsumptionName = "sectorized_consumption_df"
+    SectorizedConsumptionDfValue = "sectorized_consumption_df"
     SectorizedConsumptionDf = {
-        "var_name": SectorizedConsumptionName,
+        "var_name": SectorizedConsumptionDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_SECTORS,
@@ -1227,9 +1227,9 @@ class GlossaryCore:
         },
     }
 
-    ConsumptionName = "consumption_df"
+    ConsumptionDfValue = "consumption_df"
     ConsumptionDf = {
-        "var_name": ConsumptionName,
+        "var_name": ConsumptionDfValue,
         "type": "dataframe",
         "visibility": "Local",
         "unit": "",
