@@ -15,16 +15,16 @@ limitations under the License.
 """
 
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model import (
+    DemandModel,
+)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
-)
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model import (
-    DemandModel,
 )
 
 
@@ -49,9 +49,14 @@ class ConsumptionDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
+        GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
+        GlossaryCore.AllSectorsShareEnergyDfValue: GlossaryCore.AllSectorsShareEnergyDf,
     }
 
-    DESC_OUT = {GlossaryCore.AllSectorsDemandDfValue: GlossaryCore.AllSectorsDemandDf}
+    DESC_OUT = {
+        GlossaryCore.AllSectorsDemandDfValue: GlossaryCore.AllSectorsDemandDf,
+        GlossaryCore.ConsumptionDfValue: GlossaryCore.ConsumptionDf,
+    }
 
     def setup_sos_disciplines(self):
         """setup dynamic inputs and outputs"""
@@ -73,6 +78,9 @@ class ConsumptionDiscipline(SoSWrapp):
                 dynamic_inputs[f"{sector}.{GlossaryCore.ProductionDfValue}"] = (
                     GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
                 )
+                dynamic_inputs[f"{sector}.{GlossaryCore.DamageDfValue}"] = (
+                    GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDf)
+                )
 
                 dynamic_outputs[f"{sector}.{GlossaryCore.SectorGDPDemandDfValue}"] = (
                     GlossaryCore.get_dynamic_variable(GlossaryCore.SectorGDPDemandDf)
@@ -87,12 +95,13 @@ class ConsumptionDiscipline(SoSWrapp):
 
         model = DemandModel()
 
-        sectors_demand, all_sectors_demand_df = model.compute(inputs)
+        sectors_demand, all_sectors_demand_df, total_demand_df = model.compute(inputs)
 
         sector_list = inputs[GlossaryCore.SectorListValue]
 
         outputs = {
             GlossaryCore.AllSectorsDemandDfValue: all_sectors_demand_df,
+            GlossaryCore.ConsumptionDf: total_demand_df,
         }
 
         for sector in sector_list:
