@@ -60,7 +60,7 @@ class SectorDemandDisciplineTest(unittest.TestCase):
     def test(self):
         """Check discipline setup and run"""
         name = 'Test'
-        model_name = 'demand_discipline.DemandDiscipline'
+        model_name = 'demand_discipline.ConsumptionDiscipline'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}',
@@ -71,7 +71,7 @@ class SectorDemandDisciplineTest(unittest.TestCase):
                    GlossaryCore.NS_SECTORS: f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_discipline.DemandDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_discipline.ConsumptionDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)

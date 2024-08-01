@@ -27,7 +27,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model impo
 )
 
 
-class DemandDiscipline(SoSWrapp):
+class ConsumptionDiscipline(SoSWrapp):
     """Discipline demand"""
     # ontology information
     _ontology_data = {

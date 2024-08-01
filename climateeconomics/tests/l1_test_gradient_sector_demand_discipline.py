@@ -79,7 +79,7 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
                    GlossaryCore.NS_SECTORS: f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_discipline.DemandDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_discipline.ConsumptionDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
