@@ -1212,6 +1212,33 @@ class GlossaryCore:
         },
     }
 
+    SectorizedConsumptionName = "sectorized_consumption_df"
+    SectorizedConsumptionDf = {
+        "var_name": SectorizedConsumptionName,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
+        "unit": "",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            SectorServices: ("float", [0, 1e30], False),
+            SectorIndustry: ("float", [0, 1e30], False),
+            SectorAgriculture: ("float", [0, 1e30], False),
+        },
+    }
+
+    ConsumptionName = "consumption_df"
+    ConsumptionDf = {
+        "var_name": ConsumptionName,
+        "type": "dataframe",
+        "visibility": "Local",
+        "unit": "",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Consumption: ("float", [0, 1e30], False),
+        },
+    }
+
     SectorizedEconomicsDetailDf = {  # todo: miss per capita consumption !
         "var_name": EconomicsDfValue,
         "type": "dataframe",
