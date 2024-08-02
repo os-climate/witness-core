@@ -16,16 +16,19 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model import (
-    DemandModel,
-)
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
+)
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
+    InstantiatedPlotlyNativeChart,
+)
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model import (
+    DemandModel,
 )
 
 
@@ -179,7 +182,7 @@ class ConsumptionDiscipline(SoSWrapp):
         outputs = self.get_sosdisc_outputs()
 
         if all_filters or "Sectorized GDP Breakdown" in charts:
-            gdp_unit = "T$"
+            gdp_unit = "G$"
             sector_list = inputs[GlossaryCore.SectorListValue]
 
             # Years are the same for all sectors
@@ -201,8 +204,8 @@ class ConsumptionDiscipline(SoSWrapp):
                     f"{sector}.{GlossaryCore.InvestmentDfValue}"
                 ][GlossaryCore.InvestmentsValue].values.tolist()
                 investments_energy = (
-                    share_sectors_df[sector].values
-                    * investments_energy_df[GlossaryCore.EnergyInvestmentsWoTaxValue]
+                        share_sectors_df[sector].values
+                        * investments_energy_df[GlossaryCore.EnergyInvestmentsWoTaxValue]
                 )
 
                 new_chart = TwoAxesInstanciatedChart(
@@ -210,13 +213,13 @@ class ConsumptionDiscipline(SoSWrapp):
                     chart_name=f"GDP Breakdown of {sector}"
                 )
                 for data, name in zip(
-                    [consumption, damage, investments_sector, investments_energy],
-                    [
-                        "Consumption",
-                        "Damage",
-                        "Investments in Sector",
-                        "Investments in Energy",
-                    ],
+                        [consumption, damage, investments_sector, investments_energy],
+                        [
+                            "Consumption",
+                            "Damage",
+                            "Investments in Sector",
+                            "Investments in Energy",
+                        ],
                 ):
                     new_chart.add_series(
                         InstanciatedSeries(
@@ -227,10 +230,10 @@ class ConsumptionDiscipline(SoSWrapp):
                         )
                     )
 
-                instanciated_charts.append(new_chart)
+                instanciated_charts.append(add_unified_x_to_plot(new_chart))
 
         if all_filters or "Total GDP Breakdown" in charts:
-            gdp_unit = "T$"
+            gdp_unit = "G$"
             sector_list = inputs[GlossaryCore.SectorListValue]
 
             years = inputs[GlossaryCore.DamageDfValue][
@@ -245,32 +248,32 @@ class ConsumptionDiscipline(SoSWrapp):
 
             for sector in sector_list:
                 consumption_dfs.append(outputs[GlossaryCore.ConsumptionDfValue][
-                    GlossaryCore.Consumption
-                ])
+                                           GlossaryCore.Consumption
+                                       ])
                 damage_dfs.append(inputs[f"{sector}.{GlossaryCore.DamageDfValue}"][
-                    GlossaryCore.Damages
-                ])
+                                      GlossaryCore.Damages
+                                  ])
                 investments_dfs.append(inputs[
-                    f"{sector}.{GlossaryCore.InvestmentDfValue}"
-                ][GlossaryCore.InvestmentsValue])
+                                           f"{sector}.{GlossaryCore.InvestmentDfValue}"
+                                       ][GlossaryCore.InvestmentsValue])
 
             # Compute total values across all sectors
-            consumption = pd.DataFrame(consumption_dfs).T.sum().values.tolist()
-            damage = pd.DataFrame(damage_dfs).T.sum().values.tolist()
-            investments = pd.DataFrame(investments_dfs).T.sum().values.tolist()
+            consumption = pd.DataFrame(consumption_dfs).sum(axis=0).values.tolist()
+            damage = pd.DataFrame(damage_dfs).sum(axis=0).values.tolist()
+            investments = pd.DataFrame(investments_dfs).sum(axis=0).values.tolist()
 
             new_chart = TwoAxesInstanciatedChart(
                 GlossaryCore.Years, f"GDP Part ({gdp_unit})", stacked_bar=True,
                 chart_name="GDP Breakdown",
             )
             for data, name in zip(
-                [consumption, damage, investments, investments_energy],
-                [
-                    "Consumption",
-                    "Damage",
-                    "Investments in Sector",
-                    "Investments in Energy",
-                ],
+                    [consumption, damage, investments, investments_energy],
+                    [
+                        "Consumption",
+                        "Damage",
+                        "Investments in Sector",
+                        "Investments in Energy",
+                    ],
             ):
                 new_chart.add_series(
                     InstanciatedSeries(
@@ -281,8 +284,7 @@ class ConsumptionDiscipline(SoSWrapp):
                     )
                 )
 
-            instanciated_charts.append(new_chart)
-
+            instanciated_charts.append(add_unified_x_to_plot(new_chart))
 
         if all_filters or GlossaryCore.SectorGDPDemandDf:
             # first graph
@@ -334,7 +336,7 @@ class ConsumptionDiscipline(SoSWrapp):
                 )
                 new_chart.series.append(new_series)
 
-            instanciated_charts.append(new_chart)
+            instanciated_charts.append(add_unified_x_to_plot(new_chart))
 
         if all_filters or GlossaryCore.SectorGDPDemandDf:
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
@@ -361,5 +363,14 @@ class ConsumptionDiscipline(SoSWrapp):
                 )
                 new_chart.series.append(new_series)
 
-            instanciated_charts.append(new_chart)
+            instanciated_charts.append(add_unified_x_to_plot(new_chart))
         return instanciated_charts
+
+
+def add_unified_x_to_plot(chart: TwoAxesInstanciatedChart):
+    """Adds hovermode x unified to a TwoAxesInstanciatedChart"""
+    fig = chart.to_plotly()
+    fig.update_layout(hovermode="x unified")
+    return InstantiatedPlotlyNativeChart(
+        fig, chart_name=chart.chart_name
+    )
