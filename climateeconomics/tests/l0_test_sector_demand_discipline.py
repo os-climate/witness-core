@@ -30,6 +30,9 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         self.year_start =GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
+        self.time_step = 1
+        self.nb_per = round(
+            (self.year_end - self.year_start) / self.time_step + 1)
 
         self.sector_list = GlossaryCore.SectorsPossibleValues
 
@@ -57,6 +60,67 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         self.demand_per_capita_services = pd.DataFrame({GlossaryCore.Years: self.years,
                                                         GlossaryCore.SectorDemandPerCapitaDfValue: demand_services_per_person_population_2021})
 
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
+                                          GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(len(self.years))})
+
+        self.energy_investment_wo_tax = pd.DataFrame(
+            {GlossaryCore.Years: self.years,
+             GlossaryCore.EnergyInvestmentsWoTaxValue: [3.5] * self.nb_per})
+
+        self.energy_supply_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
+        })
+
+        self.all_sectors_energy_supply = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+        })
+        for sector in self.sector_list:
+            self.all_sectors_energy_supply[sector] = self.energy_supply_df[GlossaryCore.TotalProductionValue].values
+
+        self.damage_df = pd.DataFrame(
+            {GlossaryCore.Years: self.years,
+             GlossaryCore.Damages: np.zeros(self.nb_per),
+             GlossaryCore.EstimatedDamages: np.zeros(self.nb_per)}
+        )
+
+        self.invest_indus = pd.DataFrame(
+            {GlossaryCore.Years: self.years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years)) * 1 / 3})
+
+        self.invest_services = pd.DataFrame(
+            {GlossaryCore.Years: self.years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years)) * 1 / 6})
+
+        self.invest_agriculture = pd.DataFrame(
+            {GlossaryCore.Years: self.years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years)) * 1 / 2})
+
+        # Test With a GDP and capital that grows at 2%
+        gdp_year_start = 130.187
+        capital_year_start = 376.6387
+        gdp_serie = np.zeros(self.nb_per)
+        capital_serie = np.zeros(self.nb_per)
+        gdp_serie[0] =gdp_year_start
+        capital_serie[0] = capital_year_start
+        for year in np.arange(1, self.nb_per):
+            gdp_serie[year] = gdp_serie[year - 1] * 1.02
+            capital_serie[year] = capital_serie[year - 1] * 1.02
+        #for each sector share of total gdp 2020
+        gdp_agri = gdp_serie * 6.775773 / 100
+        gdp_indus = gdp_serie * 28.4336 / 100
+        gdp_service = gdp_serie * 64.79 / 100
+        self.prod_agri = pd.DataFrame({GlossaryCore.Years: self.years,
+                                    GlossaryCore.GrossOutput: gdp_agri,
+                                    GlossaryCore.OutputNetOfDamage: gdp_agri * 0.995})
+        self.prod_indus = pd.DataFrame({GlossaryCore.Years: self.years,
+                                     GlossaryCore.GrossOutput: gdp_indus,
+                                     GlossaryCore.OutputNetOfDamage: gdp_indus * 0.995})
+        self.prod_service = pd.DataFrame({GlossaryCore.Years: self.years,
+                                       GlossaryCore.GrossOutput: gdp_service,
+                                       GlossaryCore.OutputNetOfDamage: gdp_service * 0.995})
+
+
     def test(self):
         """Check discipline setup and run"""
         name = 'Test'
@@ -81,9 +145,26 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
         inputs_dict = {f'{name}.{model_name}.{GlossaryCore.SectorListValue}': self.sector_list,
                        f'{name}.{GlossaryCore.PopulationDfValue}': self.population_df,
+                       f'{name}.{GlossaryCore.AllSectorsShareEnergyDfValue}': self.all_sectors_energy_supply,
+                       f'{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
+
+                       f'{name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': self.damage_df,
+
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_agriculture,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_industry,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_services,
+
+                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invest_agriculture,
+                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invest_indus,
+                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}': self.invest_services,
+
+                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
+                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
+                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
+
         }
         ee.load_study_from_input_dict(inputs_dict)
 
@@ -93,6 +174,6 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            graph.to_plotly().show()
             pass
 
