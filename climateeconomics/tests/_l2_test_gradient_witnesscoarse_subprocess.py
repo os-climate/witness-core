@@ -15,38 +15,38 @@ limitations under the License.
 '''
 
 import ast
-from os.path import dirname, join
-import numpy as np
 import pickle
 from copy import deepcopy
+from os.path import dirname, join
 
+import numpy as np
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from numpy import array
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
-)
-from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
-    FunctionManagerDisc,
 )
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
 )
+from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
+    FunctionManagerDisc,
+)
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
-    Study as witness_sub_proc_usecase,
-)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_fossil_only_no_damage_low_tax import (
-Study as witness_optim_proc_uc1,
+    Study as witness_optim_proc_uc1,
 )
-import pickle
-from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     OPTIM_NAME,
 )
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
+    Study as witness_sub_proc_usecase,
+)
+
 
 class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
@@ -436,7 +436,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             #'Test.WITNESS_Eval.WITNESS.EnergyMix.renewable_RenewableSimpleTechno_utilization_ratio_array', #OK lagr
             'Test.WITNESS_Eval.WITNESS.share_non_energy_invest_ctrl'
             ]
-        ref1 = f'_level_lagr_var_'
+        ref1 = '_level_lagr_var_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
         #ref = f'_level_0_invest_mix_'
         #outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
@@ -617,18 +617,18 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             ]
         #ref1 = f'_lagr_var_'
         #outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
-        ref1 = f'_level_0_invest_mix_'
+        ref1 = '_level_0_invest_mix_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
-        ref1 = f'_level_1_'
+        ref1 = '_level_1_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_wasted_objective')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('Quantity_objective')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('decreasing_gdp_increments_obj')[0]
                    ]
-        ref1 = f'_level_2_ew_'
+        ref1 = '_level_2_ew_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_production')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('detailed_capital_df')[0],
                    ]
-        ref1 = f'_level_2_q_'
+        ref1 = '_level_2_q_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('population_df')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('economics_detail_df')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('economics_df')[0],

@@ -21,9 +21,6 @@ from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
 )
 
-from climateeconomics.glossarycore import (
-    GlossaryCore,
-)
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     OPTIM_NAME,
 )
