@@ -466,12 +466,9 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                         local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
                                         inputs=[input],
                                         outputs=[output])
-                    print(f'### SUCCESS FOR INPUT={input}, OUTPUT={output} ###')
                     dict_success[output].append(input)
                 except:
-                    print(f'### FAIL FOR INPUT={input}, OUTPUT={output} ###')
                     dict_fail[output].append(input)
-        print('####')
         for k, v in dict_fail.items():
             print(f'## FAIL FOR OUTPUT {k}, INPUTS: {v}')
         for k, v in dict_success.items():
@@ -655,12 +652,9 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                         local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
                                         inputs=[input],
                                         outputs=[output])
-                    print(f'### SUCCESS FOR INPUT={input}, OUTPUT={output} ###')
                     dict_success[output].append(input)
                 except:
-                    print(f'### FAIL FOR INPUT={input}, OUTPUT={output} ###')
                     dict_fail[output].append(input)
-        print('####')
         for k, v in dict_fail.items():
             print(f'## FAIL FOR OUTPUT {k}, INPUTS: {v}')
         for k, v in dict_success.items():
