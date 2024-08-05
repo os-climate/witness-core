@@ -358,7 +358,8 @@ def post_processings(execution_engine, namespace, filters):
             x_witness.values.tolist(),
             y_witness.values.tolist(),
             "WITNESS", display_type="scatter",
-            text=y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years].values.tolist()
+            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
+            #text=y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years].values.tolist()
         )
         new_chart.add_series(new_series)
 
@@ -375,7 +376,8 @@ def post_processings(execution_engine, namespace, filters):
             x_iea.values.tolist(),
             y_iea.values.tolist(),
             "IEA", display_type="scatter",
-            text=common_years
+            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
+            #text=common_years
         )
         new_chart.add_series(new_series)
 
@@ -387,7 +389,8 @@ def post_processings(execution_engine, namespace, filters):
             x_historical.values.tolist(),
             y_historical.values.tolist(),
             "Historical", display_type="scatter",
-            text=years_historical
+            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
+            #text=years_historical
         )
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
