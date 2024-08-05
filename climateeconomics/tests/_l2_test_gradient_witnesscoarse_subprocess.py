@@ -592,12 +592,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
 
-        # Compare dm with usecase 1
-        dm = deepcopy(self.ee.dm.get_data_dict_values())
-        with open(r'C:\Users\bherry\Documents\dm_comp.pkl', 'rb') as f:
-            dm0 = pickle.load(f)
-        f.close()
-        compare_test_passed, error_msg_compare = test_compare_dm(dm, dm0, 'RAS', 'pkl vs case dm')
         # loop over all disciplines
 
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
