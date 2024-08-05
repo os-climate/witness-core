@@ -50,6 +50,14 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 
 class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
+    '''
+    WARNING !!!!!!:
+    there is a bug in gemseo that outputs a check_jacobian = True eventhough the output variables chosen are
+    coupled variables (hence gemseo outputs an approximated jacobian = {}). To cope with this:
+    - either only chose output variables = uncoupled variables (=> strongly limit the tests)
+    - or comment the if condition at line 597 of gemseo/mda/mda.py so that the approximated gradient is outputed
+    '''
+
     def analytic_grad_entry(self):
         return [self.test_01_gradient_subprocess_objective_over_design_var(),
                 ]
@@ -135,6 +143,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         pkl_name = 'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
 
         # self.override_dump_jacobian = True
+        #TODO: correct if condition of 597 of gemseo/mda/mda.py
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                             discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                             step=1.0e-4, derr_approx='finite_differences', threshold=1e-15,
@@ -260,6 +269,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
             try:
                 self.override_dump_jacobian = True
+                # TODO: correct if condition of 597 of gemseo/mda/mda.py
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                                     discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                                     step=1.0e-18, derr_approx='complex_step', threshold=1e-16,
@@ -449,6 +459,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
                 self.override_dump_jacobian = True
                 try:
+                    # TODO: correct if condition of 597 of gemseo/mda/mda.py
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                                         discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                                         step=1.0e-4, derr_approx='finite_differences', threshold=1e-8,
@@ -637,6 +648,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
                 self.override_dump_jacobian = True
                 try:
+                    # TODO: correct if condition of 597 of gemseo/mda/mda.py
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                                         discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                                         step=1.0e-4, derr_approx='finite_differences', threshold=1e-8,
