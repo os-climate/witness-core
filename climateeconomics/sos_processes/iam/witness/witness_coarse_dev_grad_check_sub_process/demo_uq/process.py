@@ -25,7 +25,6 @@ from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
 )
 
-from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_grad_check_sub_process.demo_uq.usecase import (
     Study,
 )
@@ -49,8 +48,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             use_resources_bool=False,
         )
 
-        # adding new discipline. namespace for output variable invest_mix is already considered below with correct value
-        # it is therefore not added as argument in the create_builder_list
+        # Add Profile Builder discipline
         mods_dict = {
             "InvestmentsProfileBuilderDisc": "energy_models.core.investments.disciplines.investments_profile_builder_disc.InvestmentsProfileBuilderDisc",
         }
@@ -61,15 +59,28 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         chain_builders.extend(builder_invest_profile)
 
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            extra_name, after_name=f"{self.ee.study_name}.DOE.{coupling_name}", clean_existing=True)
+            extra_name, after_name=self.ee.study_name, clean_existing=True
+        )
         self.ee.factory.update_builder_list_with_extra_name(
-            extra_name, builder_list=chain_builders)
+            extra_name, builder_list=chain_builders
+        )
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            coupling_name, after_name=self.ee.study_name, clean_existing=True
+        )
+
+        # Add Indicators discipline
+        chain_builders.append(
+            self.ee.factory.get_builder_from_module(
+                "Indicators",
+                "climateeconomics.sos_wrapping.sos_wrapping_witness_coarse_for_sensitivity.witness_indicators.WitnessIndicators",
+            )
+        )
 
         ns_dict = {
-            GlossaryCore.NS_FUNCTIONS: f"{self.ee.study_name}.{coupling_name}.{extra_name}",
+            # GlossaryCore.NS_FUNCTIONS: f"{self.ee.study_name}.{coupling_name}.{extra_name}",
             #'ns_public': f'{self.ee.study_name}',
-            "ns_optim": f"{self.ee.study_name}",
-            GlossaryCore.NS_REFERENCE: f"{self.ee.study_name}.NormalizationReferences",
+            # "ns_optim": f"{self.ee.study_name}",
+            # GlossaryCore.NS_REFERENCE: f"{self.ee.study_name}.NormalizationReferences",
             "ns_invest": f"{self.ee.study_name}.{coupling_name}.{extra_name}.{INVEST_DISC_NAME}",
             # "ns_witness": f"{self.ee.study_name}.{coupling_name}.{extra_name}",
         }
