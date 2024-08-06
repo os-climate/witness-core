@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -80,8 +80,8 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
         self.damage_df = pd.DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.Damages: np.zeros(self.nb_per),
-             GlossaryCore.EstimatedDamages: np.zeros(self.nb_per)}
+             GlossaryCore.Damages: [1.5] * self.nb_per,
+             GlossaryCore.EstimatedDamages: [1.5] * self.nb_per}
         )
 
         self.invest_indus = pd.DataFrame(
