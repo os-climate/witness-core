@@ -287,8 +287,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         'elec_demand': 0,
         'elec_demand_unit': 'kWh/kWh',
         'WACC': 0.07,  # ?
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryCore.Years,
         # capex from
         # gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
         # 237.95 euro/ha (717 $/acre)
@@ -452,6 +450,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                       'namespace': GlossaryCore.NS_REFERENCE, 'default': 2000.},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.FoodWastePercentageValue: GlossaryCore.FoodWastePercentage,
+        GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "default": lifetime,"description": "lifetime of a plant of the techno"},
     }
 
     DESC_OUT = {
