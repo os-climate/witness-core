@@ -1,5 +1,5 @@
 """
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -235,7 +235,7 @@ class ConsumptionDiscipline(SoSWrapp):
                 investments_energy = (
                     share_sectors_df[sector].values
                     * investments_energy_df[GlossaryCore.EnergyInvestmentsWoTaxValue]
-                )
+                ).values.tolist()
 
                 new_chart = TwoAxesInstanciatedChart(
                     GlossaryCore.Years,
@@ -257,7 +257,7 @@ class ConsumptionDiscipline(SoSWrapp):
                             years,
                             data,
                             name,
-                            display_type="bar",
+                            "bar",
                         )
                     )
 
@@ -273,7 +273,7 @@ class ConsumptionDiscipline(SoSWrapp):
 
             investments_energy = inputs[
                 GlossaryCore.EnergyInvestmentsWoTaxValue
-            ].values.tolist()
+            ][GlossaryCore.EnergyInvestmentsWoTaxValue].values.tolist()
 
             consumption_dfs = []
             damage_dfs = []
@@ -319,7 +319,7 @@ class ConsumptionDiscipline(SoSWrapp):
                         years,
                         data,
                         name,
-                        display_type="bar",
+                        "bar",
                     )
                 )
 
