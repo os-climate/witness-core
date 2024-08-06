@@ -16,7 +16,6 @@ limitations under the License.
 
 import ast
 import pickle
-from copy import deepcopy
 from os.path import dirname, join
 
 import numpy as np
@@ -25,7 +24,6 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from numpy import array
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
