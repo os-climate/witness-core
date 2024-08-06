@@ -60,12 +60,18 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         )
         chain_builders.extend(builder_invest_profile)
 
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            extra_name, after_name=f"{self.ee.study_name}.DOE.{coupling_name}", clean_existing=True)
+        self.ee.factory.update_builder_list_with_extra_name(
+            extra_name, builder_list=chain_builders)
+
         ns_dict = {
             GlossaryCore.NS_FUNCTIONS: f"{self.ee.study_name}.{coupling_name}.{extra_name}",
             #'ns_public': f'{self.ee.study_name}',
             "ns_optim": f"{self.ee.study_name}",
             GlossaryCore.NS_REFERENCE: f"{self.ee.study_name}.NormalizationReferences",
             "ns_invest": f"{self.ee.study_name}.{coupling_name}.{extra_name}.{INVEST_DISC_NAME}",
+            # "ns_witness": f"{self.ee.study_name}.{coupling_name}.{extra_name}",
         }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -75,7 +81,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # DOE builder
         doe_builder = self.ee.factory.create_mono_instance_driver(
-            "Eval", coupling_builder
+            "DOE", coupling_builder
         )
 
         # UQ builder
@@ -83,9 +89,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         ns_dict = {
             "ns_sample_generator": f"{self.ee.study_name}.{Study.SAMPLE_GENERATOR_NAME}",
-            "ns_evaluator": f"{self.ee.study_name}.Eval",
+            "ns_evaluator": f"{self.ee.study_name}.DOE",
             "ns_uncertainty_quantification": f"{self.ee.study_name}.{Study.UQ_NAME}",
         }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        return [coupling_builder, doe_builder, uq_builder]
+        return [doe_builder, uq_builder]

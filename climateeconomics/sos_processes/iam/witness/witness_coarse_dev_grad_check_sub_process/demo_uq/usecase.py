@@ -25,8 +25,9 @@ class Study(StudyManager):
         Returns:
             The usecase options.
         """
-        witness_options = self.witness_study.setup_usecase()
-        design_space = witness_options[f"{self.study_name}.design_space"],
+        params = self.witness_study.setup_usecase()
+        return params
+        design_space = params[f"{self.study_name}.design_space"],
 
         input_selection = {
             "selected_input": [False, False, False, False, False, False, False, True, False],
@@ -62,7 +63,7 @@ class Study(StudyManager):
         sampling_params = {
             "sampling_method": "doe_algo",
             "sampling_algo": "fullfact",
-            "design_space": witness_options[f"{self.study_name}.design_space"],
+            "design_space": params[f"{self.study_name}.design_space"],
             "algo_options": {"n_samples": 5},
             "eval_inputs": input_selection,
             "sampling_generation_mode": "at_run_time",
@@ -82,3 +83,9 @@ class Study(StudyManager):
         })
 
         return params
+    
+if '__main__' == __name__:
+    usecase = Study()
+    usecase.load_data()
+    usecase.execution_engine.display_treeview_nodes(display_variables=False)
+    usecase.run()
