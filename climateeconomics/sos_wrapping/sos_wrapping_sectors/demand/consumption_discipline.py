@@ -220,7 +220,7 @@ class ConsumptionDiscipline(SoSWrapp):
             ].values.tolist()
 
             investments_energy_df = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue]
-            share_sectors_df = inputs[GlossaryCore.AllSectorsShareEnergyDfValue]
+            share_sectors_df = inputs[GlossaryCore.AllSectorsShareEnergyDfValue] / 100.0
 
             for sector in sector_list:
                 consumption = outputs[GlossaryCore.ConsumptionDfValue][
