@@ -33,7 +33,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model impo
 
 
 class ConsumptionDiscipline(SoSWrapp):
-    """Discipline demand"""
+    """'''Discipline demand"""
 
     # ontology information
     _ontology_data = {
@@ -153,7 +153,7 @@ class ConsumptionDiscipline(SoSWrapp):
                 ),
                 np.diag(population) * 1e-6,
             )
-            
+
         # Total consumption gradient
         sector_demand_per_capita = 0.0
         for sector in sectors_list:
@@ -181,7 +181,6 @@ class ConsumptionDiscipline(SoSWrapp):
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             np.diag(sector_demand_per_capita * 1e-6),
         )
-        
 
     def get_chart_filter_list(self):
         chart_filters = []
@@ -190,6 +189,8 @@ class ConsumptionDiscipline(SoSWrapp):
             GlossaryCore.SectorGDPDemandDf,
             GlossaryCore.SectorDemandPerCapitaDfValue,
             "Sectorized GDP Breakdown",
+            "Total GDP Breakdown",
+            "Return of Investments",
         ]
 
         chart_filters.append(
@@ -271,9 +272,9 @@ class ConsumptionDiscipline(SoSWrapp):
                 GlossaryCore.Years
             ].values.tolist()
 
-            investments_energy = inputs[
+            investments_energy = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue][
                 GlossaryCore.EnergyInvestmentsWoTaxValue
-            ][GlossaryCore.EnergyInvestmentsWoTaxValue].values.tolist()
+            ].values.tolist()
 
             consumption_dfs = []
             damage_dfs = []
@@ -320,6 +321,51 @@ class ConsumptionDiscipline(SoSWrapp):
                         data,
                         name,
                         "bar",
+                    )
+                )
+
+            instanciated_charts.append(add_unified_x_to_plot(new_chart))
+
+        if all_filters or "Return of Investments" in charts:
+            gdp_unit = "G$"
+            sector_list = inputs[GlossaryCore.SectorListValue]
+
+            # Years are the same for all sectors
+            years = inputs[GlossaryCore.DamageDfValue][
+                GlossaryCore.Years
+            ].values.tolist()
+
+            investments_energy_df = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue]
+            share_sectors_df = inputs[GlossaryCore.AllSectorsShareEnergyDfValue] / 100.0
+
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                "Return (-)",
+                chart_name="Return of Investments by sector",
+            )
+
+            for sector in sector_list:
+                consumption = outputs[GlossaryCore.ConsumptionDfValue][
+                    GlossaryCore.Consumption
+                ].values
+                investments_sector = inputs[
+                    f"{sector}.{GlossaryCore.InvestmentDfValue}"
+                ][GlossaryCore.InvestmentsValue].values
+                investments_energy = (
+                    share_sectors_df[sector].values
+                    * investments_energy_df[GlossaryCore.EnergyInvestmentsWoTaxValue]
+                ).values
+
+                return_of_investments = consumption / (
+                    investments_sector + (share_sectors_df[sector] * investments_energy)
+                )
+
+                new_chart.add_series(
+                    InstanciatedSeries(
+                        years,
+                        return_of_investments.values.tolist(),
+                        sector,
+                        "lines",
                     )
                 )
 
