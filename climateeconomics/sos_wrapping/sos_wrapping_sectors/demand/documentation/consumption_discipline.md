@@ -1,13 +1,13 @@
-# Demand Discipline
+# Consumption Discipline
 
 ## Role
 
-Generation of a demand in $ for each sector based on :
+Generation of the consumption in $ for each sector based on :
 - population
 - a value of reference for yearly need in each sector, in $/person. For example, GDP Agriculture 2020 / GDP 2020. 
 
-For each sector, demand, expressed in $, is calculated as : 
-$$ demand\ sector\ S = population\ x Value\ of \reference \sector S $$
+For each sector, consumption, expressed in $, is calculated as : 
+$$ consumption\ sector\ S = population \times Value\ of \reference \sector S $$
 
 ## Redistribution of resources
 
@@ -20,8 +20,11 @@ Inputs :
 Output:
 - for each sector :
 
-$$ allocated\ energy\ for\ sector\ S = Share\ energy\ sector\ S x Total\ energy\ production S$$
+$$ allocated\ energy\ for\ sector\ S = Share\ energy\ sector\ S \times Total\ energy\ production\ S$$
 
+- Total :
+
+$$ Total\ allocated\ energy\ = Sum\ of\ allocated\ energy\ on\ sectors$$
 
 #### Investments
 

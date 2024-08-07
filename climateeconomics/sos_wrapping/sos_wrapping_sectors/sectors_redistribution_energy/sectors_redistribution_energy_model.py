@@ -75,11 +75,25 @@ class SectorRedistributionEnergyModel:
 
         return sectors_energy, all_sectors_energy_df, residential_energy_df
 
-    def compute(self, inputs: dict):
+    def compute_all_sectors_share(self):
+        """Computes a dataframe with all the shares of the sectors"""
+        all_sectors_share_df = pd.DataFrame(data={
+            GlossaryCore.Years: self.inputs[GlossaryCore.EnergyProductionValue][GlossaryCore.Years]})
+
+        computed_sectors = list(filter(lambda x: x != self.deduced_sector, self.sectors))
+        for sector in computed_sectors:
+            sector_share_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'][
+                                       GlossaryCore.ShareSectorEnergy].values
+            all_sectors_share_df[sector] = sector_share_values
+
+        return all_sectors_share_df
+
+    def compute(self, inputs: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         self.inputs = inputs
         self.sectors = inputs[GlossaryCore.SectorListValue]
         self.deduced_sector = inputs[GlossaryCore.MissingSectorNameValue]
 
         sectors_energy, all_sectors_energy_df, residential_energy_df = self.compute_energy_redistribution()
+        all_sectors_share_df = self.compute_all_sectors_share()
 
-        return sectors_energy, all_sectors_energy_df, residential_energy_df
+        return sectors_energy, all_sectors_energy_df, residential_energy_df, all_sectors_share_df
