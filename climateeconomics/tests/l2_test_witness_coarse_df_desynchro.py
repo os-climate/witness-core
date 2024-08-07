@@ -35,12 +35,12 @@ class WitnessCoarseDesynchro(unittest.TestCase):
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process', techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
-            invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[2])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+            bspline=True, execution_engine=self.ee, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -81,10 +81,10 @@ class WitnessCoarseDesynchro(unittest.TestCase):
             df_coupled = self.ee.dm.get_value(
                 f'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryCore.TemperatureDfValue}')
             df_ncoupled = self.ee.dm.get_value(
-                'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.Temperature_change.temperature_detail_df')
+                'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.Temperature_change.temperature_detailed_df')
 
             # test synchronisation of coupled variable temperature_df and
-            # non-coupled output temperature_detail_df
+            # non-coupled output temperature_detailed_df
             self.assertListEqual(list(df_ncoupled[GlossaryCore.TempAtmo].values), list(
                 df_coupled[GlossaryCore.TempAtmo].values), msg="desynchro of dataframes detected")
 

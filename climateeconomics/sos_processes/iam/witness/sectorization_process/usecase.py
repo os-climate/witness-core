@@ -84,7 +84,13 @@ class Study(StudyManager):
         damage_fraction_df = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
-})
+        })
+
+        damage_df = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.Damages: np.zeros(self.nb_per),
+             GlossaryCore.EstimatedDamages: np.zeros(self.nb_per)}
+        )
 
 
         # economisc df to init mda
@@ -257,6 +263,9 @@ class Study(StudyManager):
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": CO2_emitted_land,
                 f"{self.study_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
                 f"{self.study_name}.GHG_total_energy_emissions": GHG_total_energy_emissions,
+                f'{self.study_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': damage_df,
+                f'{self.study_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': damage_df,
+                f'{self.study_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': damage_df,
             })
 
 
