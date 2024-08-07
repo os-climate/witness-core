@@ -78,6 +78,12 @@ class YearStartTest(unittest.TestCase):
             if not is_available:
                 missing_variables.append(f"{techno_name}.initial_production")
 
+        # Initial plants age distribution
+        for techno_name in techno_list:
+            is_available = DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=techno_name, year=year, is_available_at_year=True)
+            if not is_available:
+                missing_variables.append(f"{techno_name}.{GlossaryCore.InitialPlantsAgeDistribFactor}")
+
         return missing_variables
 
     def _test_year(self, year: int, techno_dict: dict) -> list[str]:
