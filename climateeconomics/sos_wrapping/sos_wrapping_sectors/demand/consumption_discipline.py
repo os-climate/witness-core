@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import numpy as np
 import pandas as pd
@@ -33,7 +33,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_model impo
 
 
 class ConsumptionDiscipline(SoSWrapp):
-    """'''Discipline demand"""
+    """Discipline demand"""
 
     # ontology information
     _ontology_data = {
@@ -55,7 +55,6 @@ class ConsumptionDiscipline(SoSWrapp):
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
         GlossaryCore.AllSectorsShareEnergyDfValue: GlossaryCore.AllSectorsShareEnergyDf,
-        GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
     }
 
     DESC_OUT = {
@@ -87,9 +86,9 @@ class ConsumptionDiscipline(SoSWrapp):
                     GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
                 )
                 # Damage from each sector
-                dynamic_inputs[f"{sector}.{GlossaryCore.DamageDfValue}"] = (
-                    GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDf)
-                )
+                damage_df = GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDf)
+                damage_df.update({self.NAMESPACE: GlossaryCore.NS_SECTORS})
+                dynamic_inputs[f"{sector}.{GlossaryCore.DamageDfValue}"] = damage_df
 
                 dynamic_outputs[f"{sector}.{GlossaryCore.SectorGDPDemandDfValue}"] = (
                     GlossaryCore.get_dynamic_variable(GlossaryCore.SectorGDPDemandDf)
@@ -211,14 +210,13 @@ class ConsumptionDiscipline(SoSWrapp):
         inputs = self.get_sosdisc_inputs()
         outputs = self.get_sosdisc_outputs()
 
+        years = outputs[GlossaryCore.AllSectorsDemandDfValue][
+            GlossaryCore.Years
+        ].values.tolist()
+
         if all_filters or "Sectorized GDP Breakdown" in charts:
             gdp_unit = "G$"
             sector_list = inputs[GlossaryCore.SectorListValue]
-
-            # Years are the same for all sectors
-            years = inputs[GlossaryCore.DamageDfValue][
-                GlossaryCore.Years
-            ].values.tolist()
 
             investments_energy_df = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue]
             share_sectors_df = inputs[GlossaryCore.AllSectorsShareEnergyDfValue] / 100.0
@@ -267,10 +265,6 @@ class ConsumptionDiscipline(SoSWrapp):
         if all_filters or "Total GDP Breakdown" in charts:
             gdp_unit = "G$"
             sector_list = inputs[GlossaryCore.SectorListValue]
-
-            years = inputs[GlossaryCore.DamageDfValue][
-                GlossaryCore.Years
-            ].values.tolist()
 
             investments_energy = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue][
                 GlossaryCore.EnergyInvestmentsWoTaxValue
@@ -327,13 +321,7 @@ class ConsumptionDiscipline(SoSWrapp):
             instanciated_charts.append(add_unified_x_to_plot(new_chart))
 
         if all_filters or "Return of Investments" in charts:
-            gdp_unit = "G$"
             sector_list = inputs[GlossaryCore.SectorListValue]
-
-            # Years are the same for all sectors
-            years = inputs[GlossaryCore.DamageDfValue][
-                GlossaryCore.Years
-            ].values.tolist()
 
             investments_energy_df = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue]
             share_sectors_df = inputs[GlossaryCore.AllSectorsShareEnergyDfValue] / 100.0
