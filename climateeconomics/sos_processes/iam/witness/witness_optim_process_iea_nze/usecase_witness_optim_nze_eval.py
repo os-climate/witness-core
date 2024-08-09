@@ -222,6 +222,7 @@ class Study(ClimateEconomicsStudyManager):
         # input for IEA data
         CO2_emissions_df = create_df_from_csv("IEA_NZE_co2_emissions_Gt.csv")
         GDP_df = create_df_from_csv("IEA_NZE_output_net_of_d.csv")
+        # for data integrity, requires values for pc_consumption and gross_output => set to 0
         GDP_df[GlossaryCore.GrossOutput] = 0.
         GDP_df[GlossaryCore.PerCapitaConsumption] = 0.
         CO2_tax_df = create_df_from_csv("IEA_NZE_CO2_taxes.csv")
@@ -272,7 +273,10 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.test()
+
     '''
+    from sostrades_core.tools.post_processing.post_processing_factory import (
+        PostProcessingFactory)
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
@@ -284,4 +288,5 @@ if '__main__' == __name__:
     for graph in graph_list:
         graph.to_plotly().show()
     '''
+
 
