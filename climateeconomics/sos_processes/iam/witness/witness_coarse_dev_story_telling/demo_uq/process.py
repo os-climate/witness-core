@@ -34,9 +34,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             "witness_coarse_dev_story_telling",
         )
 
-        # self.ee.ns_manager.update_namespace_list_with_extra_ns(
-        #     "DOE", after_name=self.ee.study_name, clean_existing=True
-        # )
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            "WITNESS", after_name=self.ee.study_name, clean_existing=True
+        )
         # self.ee.factory.update_builder_list_with_extra_name(
         #     "DOE", builder_list=chain_builders
         # )
