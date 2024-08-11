@@ -65,4 +65,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_dashboard',
                                                                                 'climateeconomics.sos_wrapping.post_procs.dashboard')
 
+        # Uncomment to validate the adjoint vs finite differences gradient
+        #self.ee.post_processing_manager.add_post_processing_module_to_namespace(GlossaryCore.NS_WITNESS,
+        #                                                                        'climateeconomics.sos_wrapping.post_procs.compare_gradients')
+
+
         return opt_builder

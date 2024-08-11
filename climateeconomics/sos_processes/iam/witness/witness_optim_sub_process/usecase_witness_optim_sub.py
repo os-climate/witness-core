@@ -88,7 +88,6 @@ class Study(ClimateEconomicsStudyManager):
 
         # -- retrieve energy input data
 
-        self.witness_mda_usecase = self.witness_uc
         self.witness_uc.study_name = f'{self.study_name}.{self.coupling_name}.{self.extra_name}'
         self.witness_uc.study_name_wo_extra_name = f'{self.study_name}.{self.coupling_name}'
         witness_data_list = self.witness_uc.setup_usecase()

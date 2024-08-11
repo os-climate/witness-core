@@ -55,7 +55,8 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
     DESC_OUT = {
         GlossaryCore.RedistributionEnergyProductionDfValue: GlossaryCore.RedistributionEnergyProductionDf,
-        GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf
+        GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf,
+        GlossaryCore.AllSectorsShareEnergyDfValue: GlossaryCore.AllSectorsShareEnergyDf
     }
 
     def setup_sos_disciplines(self):
@@ -84,13 +85,15 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
         model = SectorRedistributionEnergyModel()
 
-        sectors_energy, all_sectors_energy_df, residential_energy_df = model.compute(inputs)
+        sectors_energy, all_sectors_energy_df, residential_energy_df, all_sectors_share_df = model.compute(inputs)
 
         sector_list = inputs[GlossaryCore.SectorListValue]
 
         outputs = {
             GlossaryCore.RedistributionEnergyProductionDfValue: all_sectors_energy_df,
-            GlossaryCore.ResidentialEnergyConsumptionDfValue: residential_energy_df
+            GlossaryCore.ResidentialEnergyConsumptionDfValue: residential_energy_df,
+            GlossaryCore.AllSectorsShareEnergyDfValue: all_sectors_share_df
+
         }
 
         for sector in sector_list:
