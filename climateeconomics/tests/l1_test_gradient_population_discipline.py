@@ -72,15 +72,20 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         self.temperature_df.index = years
 
+        self.calories_pc = pd.DataFrame({GlossaryCore.Years: years,
+                                                   'kcal_pc': 2400.})
+
         self.inputs_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                             f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                             f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                            f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': self.calories_pc,
                             }
 
         self.checked_inputs = [
             f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-            f'{self.name}.{GlossaryCore.TemperatureDfValue}'
+            f'{self.name}.{GlossaryCore.TemperatureDfValue}',
+            f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}'
         ]
 
         self.checked_outputs = [
@@ -542,6 +547,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             step=1e-15, derr_approx='complex_step')
     
     def test_problematic_optim_point(self):
+        self.override_dump_jacobian= 1
         import pickle
 
 
