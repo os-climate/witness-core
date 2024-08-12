@@ -1679,10 +1679,13 @@ class GlossaryCore:
     TempOutputDf = {
         "var_name": TempOutput,
         "type": "dataframe",
+        "namespace": NS_WITNESS,
+        "visibility": "Shared",
         "description": "used to debug some gradients",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            NonEnergyCapital: ("int", [1900, YearEndDefault], False),
+            #UsableCapitalUnbounded: ("float", None, False),
+            UsableCapital: ("float", None, False),
         },
     }
 

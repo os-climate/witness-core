@@ -1551,6 +1551,11 @@ class MacroEconomics:
     def d_consumption_objective_d_consumption(self, d_consumption):
         return d_consumption.mean(axis=0) / self.consommation_objective_ref
 
+    def d_unbouned_ku_d_energy(self):
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
+        d_UKu_d_E = np.diag(self.capital_utilisation_ratio * energy_efficiency)
+        return d_UKu_d_E
+
 
 
     """-------------------END of Gradient functions-------------------"""

@@ -593,6 +593,10 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # loop over all disciplines
 
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
+        import pickle
+        aa = self.ee.dm.get_data_dict_values()
+        with open("data/uc1optim.pkl", "wb", encoding="utf8") as f:
+            pickle.dump(self.ee.dm.get_data_dict_values(), f)
 
         inputs = [
             #self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
