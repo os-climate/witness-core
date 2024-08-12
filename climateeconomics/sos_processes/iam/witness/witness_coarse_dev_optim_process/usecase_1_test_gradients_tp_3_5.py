@@ -89,7 +89,7 @@ class Study(StudyOptimInvestDistrib):
         dspace_Ine.at[0, 'value'] = [25.5, 30.0, 30.0, 30.0, 26.667183562922308, 24.795869808115732, 24.51802044939126]
         '''
 
-        dspace = pd.concat([dspace_invests, dspace_UR, dspace_Ine])
+        dspace = pd.concat([dspace_invests, dspace_UR, dspace_Ine], ignore_index=True)
         # update design var descriptor with Ine variable
         dvar_descriptor = data_witness[f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor']
         design_var_descriptor_ine_variable = self.get_ine_dvar_descr()
