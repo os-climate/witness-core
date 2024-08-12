@@ -1214,6 +1214,37 @@ class GlossaryCore:
         },
     }
 
+    ConsumptionDfValue = "consumption_df"
+    ConsumptionDf = {
+        "var_name": ConsumptionDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
+        "unit": "",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Consumption: ("float", [0, 1e30], False),
+        },
+    }
+
+    AllSectorsShareEnergyDfValue = "all_sectors_share_df"
+    AllSectorsShareEnergyDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Amount of the total energy production attributed to each sector",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
+        # "dataframe_descriptor": {
+        #     Years: ("int", [1900, YearEndDefault], False),
+        #     SectorServices: ("float", [0, 100.0], False),
+        #     SectorIndustry: ("float", [0, 100.0], False),
+        #     SectorAgriculture: ("float", [0, 100.0], False),
+        # },
+        "dataframe_descriptor": {},
+        "dynamic_dataframe_columns": True,
+
+    }
+
     SectorizedEconomicsDetailDf = {  # todo: miss per capita consumption !
         "var_name": EconomicsDfValue,
         "type": "dataframe",
@@ -1249,7 +1280,7 @@ class GlossaryCore:
         },
     }
 
-    AllSectorsDemandDfValue = "all_sector_demand_df"
+    AllSectorsDemandDfValue = "sectorized_consumption_df"
     AllSectorsDemandDf = {
         "var_name": AllSectorsDemandDfValue,
         "type": "dataframe",
@@ -1257,6 +1288,8 @@ class GlossaryCore:
         "description": "all sectors demands aggregated",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
     }
 
     RedistributionInvestmentsDfValue = "redistribution_investments_df"

@@ -146,7 +146,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'namespace': 'ns_forest'},
         Forest.DEFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 8000,
                                            'namespace': 'ns_forest'},
-        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': -7.6,
+        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': DatabaseWitnessCore.ForestEmissions.get_value_at_year(GlossaryCore.YearStartDefault),
                                        'namespace': 'ns_forest', },
         Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000,
                             'namespace': 'ns_forest'},
