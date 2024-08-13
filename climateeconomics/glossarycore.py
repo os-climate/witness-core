@@ -164,6 +164,7 @@ class GlossaryCore:
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
     ConstructionDelay = "construction_delay"
     LifetimeName = "lifetime"
+    InitialPlantsAgeDistribFactor = "initial_plants_age_distrib_factor"
 
     # namespaces
     NS_MACRO = "ns_macro"
