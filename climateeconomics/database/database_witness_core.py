@@ -465,7 +465,7 @@ class DatabaseWitnessCore:
         description="Sector Service capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -476,7 +476,7 @@ class DatabaseWitnessCore:
         description="Sector Service capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -487,7 +487,7 @@ class DatabaseWitnessCore:
         description="Sector Service capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -498,7 +498,7 @@ class DatabaseWitnessCore:
         description="Sector Industry capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -509,7 +509,7 @@ class DatabaseWitnessCore:
         description="Sector Industry capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -520,7 +520,7 @@ class DatabaseWitnessCore:
         description="Sector Industry capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -531,7 +531,7 @@ class DatabaseWitnessCore:
         description="Sector Agriculture capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -542,7 +542,7 @@ class DatabaseWitnessCore:
         description="Sector Agriculture capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -553,31 +553,31 @@ class DatabaseWitnessCore:
         description="Sector Agriculture capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
 
-    ForestEmissions = ColectedData(
-        value=-7.6,
+    ForestEmissions = HeavyCollectedData(
+        value=join(data_folder, "forest_emissions.csv"),
         unit="GtCO2",
         description="Forest emissions",
-        year_value=2020,
-        link="",
+        link="https://www.nasa.gov/science-research/earth-science/nasa-satellites-help-quantify-forests-impacts-on-global-carbon-budget/",
         critical_at_year_start=True,
-        source="",
+        source="NASA; Credits: Harris et al. 2021 / Global Forest Watch / World Resources Institute",
         last_update_date=date(2024, 7, 26),
+        column_to_pick="emissions"
     )
 
-    OceanWarmingAnomalySincePreindustrial = ColectedData(
-        value=0.02794825,
+    OceanWarmingAnomalySincePreindustrial = HeavyCollectedData(
+        value=join(data_folder, "ocean_temp_anomaly_pre_industrial.csv"),
         unit="°C",
         description="Warming anomaly of ocean since pre-industrial era",
-        year_value=2020,
-        link="",
+        link="https://www.ncei.noaa.gov/access/monitoring/monthly-report/global/202406",
         critical_at_year_start=True,
-        source="",
-        last_update_date=date(2024, 7, 26),
+        column_to_pick="global ocean SST anomaly",
+        source="NOAA National Centers for Environmental Information, Monthly Global Climate Report for June 2024, published online July 2024, retrieved on August 11, 2024 from https://www.ncei.noaa.gov/access/monitoring/monthly-report/global/202406.",
+        last_update_date=date(2024, 8, 11),
     )
 
     @classmethod
