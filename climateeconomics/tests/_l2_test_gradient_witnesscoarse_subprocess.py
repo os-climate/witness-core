@@ -15,8 +15,8 @@ limitations under the License.
 '''
 
 import ast
-import re
 import pickle
+import re
 from copy import deepcopy
 from os.path import dirname, join
 
@@ -26,6 +26,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from numpy import array
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
@@ -40,13 +41,15 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_test_gradients_tp_3_5 import (
     Study as witness_optim_proc_uc1_tp_3_5,
 )
-from energy_models.core.energy_mix.energy_mix_disc import Energy_Mix_Discipline
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_sub_proc_usecase,
 )
-from climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline import PopulationDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline import MacroeconomicsDiscipline
-from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
+from climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline import (
+    MacroeconomicsDiscipline,
+)
+from climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline import (
+    PopulationDiscipline,
+)
 
 PKL_DM_REF_X = 'dm_uc1_tp_3_5_converged.pkl'
 PKL_DM_REF_X_H = 'dm_uc1_X_h_tp_3_5_converged.pkl'
