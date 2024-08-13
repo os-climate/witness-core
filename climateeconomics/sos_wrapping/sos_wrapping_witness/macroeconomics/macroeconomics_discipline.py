@@ -353,7 +353,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.UsableCapitalObjectiveName: self.macro_model.usable_capital_objective,
                        GlossaryCore.TotalGDPGroupDFName: self.macro_model.total_gdp_per_group_df,
                        GlossaryCore.PercentageGDPGroupDFName: self.macro_model.percentage_gdp_per_group_df,
-                       GlossaryCore.GDPCountryDFName: self.macro_model.percentage_gdp_per_group_df,
+                       GlossaryCore.GDPCountryDFName: self.macro_model.df_gdp_per_country,
                        GlossaryCore.ResidentialEnergyConsumptionDfValue: self.macro_model.energy_consumption_households_df,
                        GlossaryCore.AllSectionsGdpDfValue: self.macro_model.section_gdp_df
                    }

@@ -284,7 +284,7 @@ class DataStudy():
 
         data = {
             'variable': [
-                GlossaryCore.QuantityObjectiveValue,
+                GlossaryCore.ConstraintUpperBoundUsableCapital,
                 GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
                 GlossaryCore.NetGdpGrowthRateObjectiveValue,
@@ -292,15 +292,15 @@ class DataStudy():
                 GlossaryCore.DecreasingGdpIncrementsObjectiveValue,
             ],
             'parent': [
-                'invest_objective',
+                'constraint_usable_capital',
                 'utility_objective',
                 'invest_objective',
                 'invest_objective',
                 'invest_objective',
                 'utility_objective',
             ],
-            'ftype': [OBJECTIVE] * 6,
-            'weight': [0.0, -1., 0., 0., 0., 1.],
+            'ftype': [INEQ_CONSTRAINT] + [OBJECTIVE] * 5,
+            'weight': [0., -1., 0., 0., 0., 1.],
             AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
             'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
         }
