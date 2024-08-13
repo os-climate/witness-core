@@ -97,6 +97,7 @@ class GlossaryCore:
     ChartPercentagePerGroup = "Percentage per group [%]"
     ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
+    ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
     ConsumptionObjective = "consumption_objective"

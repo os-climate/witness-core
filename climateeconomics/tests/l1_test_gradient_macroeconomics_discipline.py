@@ -30,6 +30,7 @@ from climateeconomics.glossarycore import GlossaryCore
 class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
+        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = GlossaryCore.YearStartDefault
@@ -167,26 +168,22 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_residential_energy_consumption,
         }
 
-        self.checked_inputs = [#f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
-                               f'{self.name}.{GlossaryCore.EnergyProductionValue}',
-                               # f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                               # f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
-                               # f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                               # f'{self.name}.{GlossaryCore.CO2TaxesValue}',
-                               # f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                               # f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                               # f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',
+        self.checked_inputs = [f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',# OK #OK
+                               f'{self.name}.{GlossaryCore.EnergyProductionValue}',# OK # OK
+                               f'{self.name}.{GlossaryCore.DamageFractionDfValue}',# OK #OK
+                               f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',# OK # OK
+                               f'{self.name}.{GlossaryCore.CO2TaxesValue}',# OK # OK
+                               f'{self.name}.{GlossaryCore.PopulationDfValue}',# OK
+                               f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',# OK
+                               f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',# OK
                                ]
 
         self.checked_outputs = [
-            f'{self.name}.{GlossaryCore.TempOutput}',
-            # f'{self.name}.{GlossaryCore.DamageDfValue}',
-            # f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-            # f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
-            # f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
-            # f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-            # f'{self.name}.{GlossaryCore.ConsumptionObjective}',
-            # f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+            f'{self.name}.{GlossaryCore.DamageDfValue}',
+            f'{self.name}.{GlossaryCore.EconomicsDfValue}',
+            f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
+            f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}',
+            f'{self.name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}'
         ]
 
     def analytic_grad_entry(self):
@@ -550,57 +547,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_without_compute_gdp.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            local_data=disc_techno.local_data,
-                            inputs=self.checked_inputs,
-                            outputs=self.checked_outputs)
-
-    def test_macro_economics_without_compute_gdp_w_damage_to_productivity_analytic_grad(self):
-        """
-        Test of analytic gradients when compute_gdp is deactivated
-        """
-
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = self.inputs_dict
-        inputs_dict.update({f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': True,
-                       f'{self.name}.assumptions_dict':
-                           {'compute_gdp': False,
-                            'compute_climate_impact_on_gdp': True,
-                            'activate_climate_effect_population': True,
-                            'activate_pandemic_effects': True,
-                            'invest_co2_tax_in_renewables': True,
-                            },
-                       f'{self.name}.gross_output_in': pd.DataFrame(
-                           {GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}),
-                       })
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
-        self.check_jacobian(location=dirname(__file__),
-                            filename='jacobian_macroeconomics_discipline_without_compute_gdp_w_damage_to_productivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
