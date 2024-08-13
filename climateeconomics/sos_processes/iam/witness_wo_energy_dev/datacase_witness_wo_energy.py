@@ -284,7 +284,7 @@ class DataStudy():
 
         data = {
             'variable': [
-                GlossaryCore.EnergyWastedObjective,
+                GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
                 GlossaryCore.NetGdpGrowthRateObjectiveValue,
@@ -300,7 +300,7 @@ class DataStudy():
                 'utility_objective',
             ],
             'ftype': [OBJECTIVE] * 6,
-            'weight': [0.1, -1., 0., 0., 0., 1.],
+            'weight': [0.0, -1., 0., 0., 0., 1.],
             AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
             'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
         }

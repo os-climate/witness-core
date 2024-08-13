@@ -596,7 +596,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyInvestmentsWoTaxValue,
                       GlossaryCore.OutputGrowth,
                       GlossaryCore.UsableCapital,
-                      GlossaryCore.EnergyUsage,
                       GlossaryCore.Capital,
                       GlossaryCore.EmploymentRate,
                       GlossaryCore.Workforce,
@@ -813,29 +812,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_series = InstanciatedSeries(
                 years, percentage_productive_capital_stock,
                 f'{capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
-            new_chart.add_series(new_series)
-
-            instanciated_charts.append(new_chart)
-
-        if GlossaryCore.EnergyUsage in chart_list:
-            economics_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue)
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'TWh',
-                                                 chart_name=GlossaryCore.EnergyUsage,
-                                                 stacked_bar=True)
-
-            to_plot = [GlossaryCore.UsedEnergy, GlossaryCore.UnusedEnergy]
-            for p in to_plot:
-                new_series = InstanciatedSeries(
-                    list(economics_df[GlossaryCore.Years]),
-                    list(economics_df[p]),
-                    p, 'bar', True)
-                new_chart.add_series(new_series)
-
-            new_series = InstanciatedSeries(
-                list(economics_df[GlossaryCore.Years]),
-                list(economics_df[GlossaryCore.OptimalEnergyProduction]),
-                GlossaryCore.OptimalEnergyProduction, 'lines', True)
             new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)

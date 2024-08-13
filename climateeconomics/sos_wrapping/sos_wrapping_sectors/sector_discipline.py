@@ -79,13 +79,11 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                   'visibility': 'Shared',
                                   'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
+        'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3},
     }
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
-        GlossaryCore.EnergyWastedObjective: {'type': 'array',
-                                             'unit': '-',
-                                             'namespace': GlossaryCore.NS_FUNCTIONS}
     }
 
     def set_default_values(self):
@@ -187,6 +185,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
         )
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}"] = section_gdf_df_variable
 
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}"] = {'type': 'array', 'unit': '-',
+                                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                                         'namespace': GlossaryCore.NS_FUNCTIONS}
+
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
 
@@ -214,11 +216,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
             f"{self.sector_name}.{GlossaryCore.DamageDfValue}": self.model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": self.model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": self.model.production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
-            f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": self.model.capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
+            f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": self.model.capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
             f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.model.section_energy_consumption_df,
             f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}": self.model.section_gdp_df,
-            GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
-
+            f"{self.sector_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}": self.model.usable_capital_upper_bound_constraint,
         }
 
         if prod_function_fitting:
@@ -242,65 +243,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 - output
         """
 
-        # gradients wrt workforce
-        d_gross_output_d_workforce = self.model.compute_doutput_dworkforce()
-        d_net_output_d_workforce = self.model.dnetoutput(d_gross_output_d_workforce)
-        d_damage_from_climate_d_workforce = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_workforce, d_net_output_d_workforce)
-        d_estimated_damage_from_climate_d_workforce = self.model.d_estimated_damages_from_climate_d_user_input(d_gross_output_d_workforce, d_net_output_d_workforce)
-        d_damage_from_productivity_loss_d_workforce, d_estimated_damage_from_productivity_loss_d_workforce = self.model.d_damages_from_productivity_loss_d_user_input(
-            d_gross_output_d_workforce)
-        d_damages_d_workforce = self.model.d_damages_d_user_input(d_damage_from_productivity_loss_d_workforce, d_damage_from_climate_d_workforce)
-        d_estimated_damages_d_workforce = self.model.d_estimated_damages_d_user_input(d_estimated_damage_from_productivity_loss_d_workforce, d_estimated_damage_from_climate_d_workforce)
-
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
-            (GlossaryCore.WorkforceDfValue, self.sector_name),
-            d_gross_output_d_workforce)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
-            (GlossaryCore.WorkforceDfValue, self.sector_name),
-            d_net_output_d_workforce)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
-            (GlossaryCore.WorkforceDfValue, self.sector_name),
-            d_damages_d_workforce)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
-            (GlossaryCore.WorkforceDfValue, self.sector_name),
-            d_estimated_damages_d_workforce)
-
-        # gradients wrt damage:
-        dproductivity_ddamage = self.model.d_productivity_d_damage_frac_output()
-        d_gross_output_d_damage_frac_output = self.model.doutput_ddamage(
-            dproductivity_ddamage)
-        d_net_output_d_damage_frac_output = self.model.dnetoutput_ddamage(
-            d_gross_output_d_damage_frac_output)
-
-        d_damages_from_climate_d_damage_frac_output = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_damage_frac_output, d_net_output_d_damage_frac_output)
-        d_estimated_damages_from_climate_d_damage_frac_output = self.model.d_estimated_damages_from_climate_d_damage_frac_output(d_gross_output_d_damage_frac_output, d_net_output_d_damage_frac_output)
-        d_damages_from_productivity_loss_d_damage_frac_output, d_estimated_damages_from_productivity_loss_d_damage_frac_output = self.model.d_damages_from_productivity_loss_d_damage_fraction_output(
-            d_gross_output_d_damage_frac_output)
-        d_damages_d_damage_frac_output = self.model.d_damages_d_user_input(d_damages_from_climate_d_damage_frac_output, d_damages_from_productivity_loss_d_damage_frac_output)
-        d_estimated_damages_d_damage_frac_output = self.model.d_damages_d_user_input(d_estimated_damages_from_climate_d_damage_frac_output, d_estimated_damages_from_productivity_loss_d_damage_frac_output)
-
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
-            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
-            d_gross_output_d_damage_frac_output)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
-            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
-            d_net_output_d_damage_frac_output)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
-            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
-            d_damages_d_damage_frac_output)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
-            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
-            d_estimated_damages_d_damage_frac_output)
-
-
         # gradients wrt invest
         # If production fitting = true we use the investment from another input
         prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
@@ -308,90 +250,102 @@ class SectorDiscipline(ClimateEcoDiscipline):
             invest_df = 'hist_sector_investment'
         else:
             invest_df = f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"
-        dcapital_dinvest, d_Ku_d_invests = self.model.dcapital_dinvest()
-        d_gross_output_d_invests = self.model.doutput_dinvest(d_Ku_d_invests)
-        d_net_output_d_invests = self.model.dnetoutput(d_gross_output_d_invests)
-        d_enegy_wasted_obj_d_invest, d_EWO_d_invests = self.model.d_enegy_wasted_obj_d_invest(dcapital_dinvest)
-        d_damage_from_climate_d_invests = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_invests, d_net_output_d_invests)
-        d_estimated_damage_from_climate_d_invests = self.model.d_estimated_damages_from_climate_d_user_input(d_gross_output_d_invests, d_net_output_d_invests)
-        d_damage_from_productivity_loss_d_invests, d_estimated_damage_from_productivity_loss_d_invests = self.model.d_damages_from_productivity_loss_d_user_input(
-            d_gross_output_d_invests)
-        d_damages_d_invests = self.model.d_damages_d_user_input(d_damage_from_productivity_loss_d_invests, d_damage_from_climate_d_invests)
-        d_estimated_damages_d_invests = self.model.d_estimated_damages_d_user_input(d_estimated_damage_from_productivity_loss_d_invests, d_estimated_damage_from_climate_d_invests)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyWastedObjective,),
-            (invest_df, GlossaryCore.InvestmentsValue),
-            d_EWO_d_invests)
+        d_capital_d_invests, d_ku_constraint_d_invests = self.model.d_invests()
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.Capital),
             (invest_df, GlossaryCore.InvestmentsValue),
-            dcapital_dinvest)
+            d_capital_d_invests)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
+            (f"{self.sector_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}",),
             (invest_df, GlossaryCore.InvestmentsValue),
-            d_Ku_d_invests)
-
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
-            (invest_df, GlossaryCore.InvestmentsValue),
-            d_gross_output_d_invests)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
-            (invest_df, GlossaryCore.InvestmentsValue),
-            d_net_output_d_invests)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
-            (invest_df, GlossaryCore.InvestmentsValue),
-            d_damages_d_invests)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
-            (invest_df, GlossaryCore.InvestmentsValue),
-            d_estimated_damages_d_invests)
+            d_ku_constraint_d_invests)
 
         # gradients wrt energy production
-        d_gross_output_d_energy_production, d_UKu_d_E, d_Ku_d_E, d_Ew_dE = self.model.d_Y_Ku_Ew_Constraint_d_energy()
-        d_net_output_d_energy_production = self.model.dnetoutput(d_gross_output_d_energy_production)
-        d_damage_from_climate_d_energy_production = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_energy_production, d_net_output_d_energy_production)
-        d_estimated_damage_from_climate_d_energy_production = self.model.d_estimated_damages_from_climate_d_user_input(d_gross_output_d_energy_production, d_net_output_d_energy_production)
-        d_damage_from_productivity_loss_d_energy_production, d_estimated_damage_from_productivity_loss_d_energy_production = self.model.d_damages_from_productivity_loss_d_user_input(
-            d_gross_output_d_energy_production)
-        d_damages_d_energy_production = self.model.d_damages_d_user_input(d_damage_from_productivity_loss_d_energy_production, d_damage_from_climate_d_energy_production)
-        d_estimated_damages_d_energy_production = self.model.d_estimated_damages_d_user_input(d_estimated_damage_from_productivity_loss_d_energy_production, d_estimated_damage_from_climate_d_energy_production)
-
+        d_gross_output_d_energy, d_net_output_d_energy, d_estimated_damages_d_energy,\
+        d_damages_d_energy, d_ku_ub_contraint, d_usable_capital_d_energy = self.model.d_energy_production()
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_Ku_d_E)
-
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapitalUnbounded),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_UKu_d_E)
+            d_usable_capital_d_energy)
 
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_gross_output_d_energy_production)
+            d_gross_output_d_energy)
 
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_net_output_d_energy_production)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyWastedObjective,),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_Ew_dE)
-
+            d_net_output_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_damages_d_energy_production)
+            d_damages_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            d_estimated_damages_d_energy_production)
+            d_estimated_damages_d_energy)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}",),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_ku_ub_contraint)
+
+        d_gross_output_d_wap, d_net_output_d_wap, d_damages_d_wap, d_estimated_damages_d_wap, d_ku_constraint_d_wap = self.model.d_working_pop()
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            d_gross_output_d_wap)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            d_net_output_d_wap)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            d_damages_d_wap)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            d_estimated_damages_d_wap)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}",),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            d_ku_constraint_d_wap)
+
+        d_gross_output_d_dfo, d_net_output_d_dfo, d_estimated_damages_d_dfo, d_damages_d_dfo, dku_ub_constraint_d_dfo = self.model.d_damage_frac_output()
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            d_gross_output_d_dfo)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            d_net_output_d_dfo)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            d_damages_d_dfo)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            d_estimated_damages_d_dfo)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}",),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            dku_ub_constraint_d_dfo)
+        """
+        grad_dict = self.model.d_damage_frac_output()
+        for key in GlossaryCore.TempOutputDf["dataframe_descriptor"].keys():
+            if key != GlossaryCore.Years:
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.TempOutput, key),
+                    (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+                    grad_dict[key])
+        """
 
 
     def get_chart_filter_list(self):
@@ -408,7 +362,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.Workforce,
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
-                      GlossaryCore.EnergyUsage,
                       GlossaryCore.SectionGdpPart,
                       GlossaryCore.SectionEnergyConsumptionPart,
                       ]
@@ -481,10 +434,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 years, ordonate_data_bis, 'Usable capital', 'lines', visible_line)
             new_chart.add_series(new_series)
 
-            new_series = InstanciatedSeries(
-                years, list(capital_df[GlossaryCore.UsableCapitalUnbounded]), 'Unbounded Usable capital', 'lines',
-                visible_line)
-
             new_chart.add_series(new_series)
             new_series = InstanciatedSeries(
                 years, percentage_productive_capital_stock,
@@ -527,29 +476,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
             new_series = InstanciatedSeries(
                 years, list(applied_damages), 'Total applied', 'lines', True)
 
-            new_chart.add_series(new_series)
-
-            instanciated_charts.append(new_chart)
-
-        if GlossaryCore.EnergyUsage in chart_list:
-            economics_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'TWh',
-                                                 chart_name=GlossaryCore.EnergyUsage,
-                                                 stacked_bar=True)
-
-            to_plot = [GlossaryCore.UsedEnergy, GlossaryCore.UnusedEnergy]
-            for p in to_plot:
-                new_series = InstanciatedSeries(
-                    list(economics_df[GlossaryCore.Years]),
-                    list(economics_df[p]),
-                    p, 'bar', True)
-                new_chart.add_series(new_series)
-
-            new_series = InstanciatedSeries(
-                list(economics_df[GlossaryCore.Years]),
-                list(economics_df[GlossaryCore.OptimalEnergyProduction]),
-                GlossaryCore.OptimalEnergyProduction, 'lines', True)
             new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)

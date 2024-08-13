@@ -30,7 +30,6 @@ from climateeconomics.glossarycore import GlossaryCore
 class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
-        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = GlossaryCore.YearStartDefault
@@ -760,7 +759,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_problematic_optim_point(self):
-        self.override_dump_jacobian = 1
         self.model_name = 'Macroeconomics'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',

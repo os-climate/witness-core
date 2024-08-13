@@ -98,8 +98,6 @@ class GlossaryCore:
     ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
-    EnergyWasted = "energy wasted [TWh]"
-    EnergyWastedObjective = "energy_wasted_objective"
     ConsumptionObjective = "consumption_objective"
 
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
@@ -756,10 +754,6 @@ class GlossaryCore:
     ProductivityWithoutDamage = "Productivity without damages"
     ProductivityGrowthRate = "productivity_gr"
     OutputGrowth = "output_growth"
-    OptimalEnergyProduction = "Optimal Energy Production [TWh]"
-    UsedEnergy = "Used Energy [TWh]"
-    UnusedEnergy = "Unused Energy [TWh]"
-    EnergyUsage = "Energy Usage"
     EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -780,10 +774,6 @@ class GlossaryCore:
             NonEnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
             EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
-            UsedEnergy: ("float", [0, 1e30], False),
-            UnusedEnergy: ("float", [0, 1e30], False),
-            OptimalEnergyProduction: ("float", [0, 1e30], False),
-            EnergyWasted: ("float", [0, 1e30], False),
         },
     }
     PopulationValue = "population"
@@ -825,7 +815,6 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_resource",
     }
-
 
     ResourcesCO2Emissions = {
         "type": "dataframe",
@@ -1152,7 +1141,6 @@ class GlossaryCore:
     CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
-    UsableCapitalUnbounded = "Unbounded usable capital [G$]"
     NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
@@ -1273,10 +1261,6 @@ class GlossaryCore:
             ProductivityGrowthRate: ("float", None, False),
             ProductivityWithoutDamage: ("float", [0, 1e30], False),
             ProductivityWithDamage: ("float", [0, 1e30], False),
-            OptimalEnergyProduction: ("float", [0, 1e30], False),
-            UsedEnergy: ("float", [0, 1e30], False),
-            UnusedEnergy: ("float", [0, 1e30], False),
-            EnergyWasted: ("float", [0, 1e30], False),
         },
     }
 
@@ -1685,8 +1669,13 @@ class GlossaryCore:
         "description": "used to debug some gradients",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            #UsableCapitalUnbounded: ("float", None, False),
             UsableCapital: ("float", None, False),
+            Capital: ("float", None, False),
+            Damages: ("float", None, False),
+            EstimatedDamages: ("float", None, False),
+            #DamagesFromClimate: ("float", None, False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
         },
     }
 

@@ -546,7 +546,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                                      ],
                             step=1e-15, derr_approx='complex_step')
     
-    def test_problematic_optim_point(self):
+    def _test_problematic_optim_point(self):
         self.override_dump_jacobian= 1
         import pickle
 

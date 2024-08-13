@@ -16,10 +16,13 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import (
+    d_pseudo_abs_obj,
+    pseudo_abs_obj,
+)
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_optimization_plugins.tools.cst_manager.func_manager_common import pseudo_abs_obj, d_pseudo_abs_obj
 
 
 class MacroEconomics:
@@ -1190,7 +1193,7 @@ class MacroEconomics:
         return d_consumption_pc_d_population
 
     def d_damage_frac_output(self):
-        """derivative of net output wrt damage frac output #todo: refactor!!!"""
+        """derivative of net output wrt damage frac output"""
         damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         gross_output = self.economics_df[GlossaryCore.GrossOutput].values
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
