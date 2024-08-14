@@ -707,8 +707,8 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # loop over all disciplines
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
         with open("data/uc1optim.pkl", "wb", encoding="utf8") as f:
-            #gitimport pickle
-            #pickle.dump(self.ee.dm.get_data_dict_values(), f)
+            import pickle
+            pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
         discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
 

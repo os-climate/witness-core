@@ -32,7 +32,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.population_model import Population
-from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -70,10 +69,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'population_start': {'type': 'dataframe', 'default': DatabaseWitnessCore.PopulationYearStart.value, 'unit': 'millions of people',
-                             'dataframe_descriptor': {'age': ('string', None, False),
-                                                      GlossaryCore.PopulationValue: ('float', None, False),}
-                             },
+        GlossaryCore.PopulationStart: GlossaryCore.PopulationStartDf,
         GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',

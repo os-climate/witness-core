@@ -18,6 +18,7 @@ from copy import deepcopy
 from itertools import chain
 
 import numpy as np
+import pandas as pd
 from pandas import DataFrame
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -42,12 +43,21 @@ class Population:
         self.billion = 1e9
         self.million = 1e6
 
+    def format_popu_init_df(self, input_df):
+        age_col = list(GlossaryCore.PopulationStartDf["dataframe_descriptor"].keys())
+        vals = input_df[age_col].values[0]
+        out = pd.DataFrame({
+            "age": age_col,
+            "population": vals
+        })
+        return out
+
     def set_data(self, inputs):
 
         self.year_start = inputs[GlossaryCore.YearStart]
         self.year_end = inputs[GlossaryCore.YearEnd]
         self.time_step = inputs[GlossaryCore.TimeStep]
-        self.pop_init_df = inputs['population_start']
+        self.pop_init_df = self.format_popu_init_df(inputs[GlossaryCore.PopulationStart])
         self.br_upper = inputs['birth_rate_upper']
         self.br_lower = inputs['birth_rate_lower']
         self.br_phi = inputs['birth_rate_phi']

@@ -404,13 +404,13 @@ class DatabaseWitnessCore:
         column_to_pick="invests"
     )
 
-    PopulationYearStart = ColectedData(
-        value=pd.read_csv(join(data_folder, "population_by_age_2020.csv")),
+    PopulationYearStart = HeavyCollectedData(
+        value=join(data_folder, "population_by_age.csv"),
         unit="millions of people",
         description="repartition of the population by age in 2020",
-        year_value=2020,
         link="",
         critical_at_year_start=True,
+        column_to_pick=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44","45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85-89","90-94","95-99","100_over"],
         source="",
         last_update_date=date(2024, 7, 25),
     )

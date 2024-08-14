@@ -790,6 +790,34 @@ class GlossaryCore:
         },
     }
 
+    PopulationStart = "population_start"
+    PopulationStartDf = {
+        "var_name": PopulationStart,
+        'type': 'dataframe', 'default': DatabaseWitnessCore.PopulationYearStart.get_df_at_year(YearStartDefault),
+                    'unit': 'millions of people',
+                    'dataframe_descriptor': {"0-4": ("float", [0, 1e30], True),
+                                             "5-9": ("float", [0, 1e30], True),
+                                             "10-14": ("float", [0, 1e30], True),
+                                             "15-19": ("float", [0, 1e30], True),
+                                             "20-24": ("float", [0, 1e30], True),
+                                             "25-29": ("float", [0, 1e30], True),
+                                             "30-34": ("float", [0, 1e30], True),
+                                             "35-39": ("float", [0, 1e30], True),
+                                             "40-44": ("float", [0, 1e30], True),
+                                             "45-49": ("float", [0, 1e30], True),
+                                             "50-54": ("float", [0, 1e30], True),
+                                             "55-59": ("float", [0, 1e30], True),
+                                             "60-64": ("float", [0, 1e30], True),
+                                             "65-69": ("float", [0, 1e30], True),
+                                             "70-74": ("float", [0, 1e30], True),
+                                             "75-79": ("float", [0, 1e30], True),
+                                             "80-84": ("float", [0, 1e30], True),
+                                             "85-89": ("float", [0, 1e30], True),
+                                             "90-94": ("float", [0, 1e30], True),
+                                             "95-99": ("float", [0, 1e30], True),
+                                             "100_over": ("float", [0, 1e30], True), }
+                    }
+
     EnergyMeanPriceValue = "energy_mean_price"
 
     EnergyMeanPriceObjectiveValue = f"{EnergyMeanPriceValue}_objective"
