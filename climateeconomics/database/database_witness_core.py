@@ -426,14 +426,14 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 7, 25),
     )
 
-    MacroInitGrossOutput = ColectedData(
-        value=130.187,
+    MacroInitGrossOutput = HeavyCollectedData(
+        value= join(data_folder, "world-gpp-ppp.csv"),
+        column_to_pick="GDP, PPP (Trillion USD$2020)",
         unit="G$",
         description="Global GDP",
-        year_value=2020,
-        link="",
+        link=["https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD", "https://www.usinflationcalculator.com/"],
         critical_at_year_start=True,
-        source="",
+        source="World Bank",
         last_update_date=date(2024, 7, 25),
     )
 
