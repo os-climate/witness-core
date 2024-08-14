@@ -406,13 +406,13 @@ class DatabaseWitnessCore:
 
     PopulationYearStart = HeavyCollectedData(
         value=join(data_folder, "population_by_age.csv"),
-        unit="millions of people",
-        description="repartition of the population by age in 2020",
-        link="",
+        unit="people",
+        description="repartition of the population by age",
+        link="https://population.un.org/dataportal/home?df=8b604e23-cef9-4a48-b4cb-b1b5f3aefea9",
         critical_at_year_start=True,
         column_to_pick=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44","45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85-89","90-94","95-99","100_over"],
-        source="",
-        last_update_date=date(2024, 7, 25),
+        source="United Nations Population division",
+        last_update_date=date(2024, 8, 14),
     )
 
     MacroProductivityStart = ColectedData(
