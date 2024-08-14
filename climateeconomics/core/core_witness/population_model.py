@@ -501,7 +501,8 @@ class Population:
                     year, d_base_deathrate_d_output)
 
                 d_death_d_output[year] = self.d_death_d_generic(year, d_base_deathrate_d_output,
-                                                                d_death_rate_climate_d_output, d_pop_d_output)
+                                                                d_death_rate_climate_d_output, d_pop_d_output,
+                                                                activate_effect_on_population=self.activate_climate_effect_on_population)
                 d_pop_d_output, d_pop_1549_d_output, d_pop_tot_d_output, d_working_pop_d_output = self.d_poptotal_generic(year, d_pop_d_output,
                                                                                                                           d_death_d_output,
                                                                                                                           d_birth_d_output,
@@ -642,9 +643,12 @@ class Population:
         return d_climate_deathrate_d_output
 
     def d_death_d_generic(self, year, dict_d_base_death_rate_d_temp, dict_d_climate_death_rate_d_temp,
-                          dict_d_population_d_output):
+                          dict_d_population_d_output, activate_effect_on_population=True):
         """
         Compute derivative of each column of death df wrt output and returns a dictionary
+        has been initially developed for d_death_d_output which can take into account effect of climate on population
+        was then used for d_death_d_temp and d_death_d_k_cal. In order to activate the effect of diet on death rate,
+        this activate_effect_on_population must be set to true
 
         """
         iyear = year - self.year_start
@@ -694,7 +698,7 @@ class Population:
         for i in range(0, len(ages)):
             if ages[i] not in list_d_pop_d_out.keys():
                 list_d_pop_d_out[ages[i]] = np.zeros(number_of_values)
-            climate_list_d_dr_d_out_i = climate_list_d_dr_d_out[i] if self.activate_climate_effect_on_population else 0
+            climate_list_d_dr_d_out_i = climate_list_d_dr_d_out[i] if activate_effect_on_population else 0
             d_death[ages[i]] = list_d_pop_d_out[ages[i]] * full_dr_death[i] + \
                 (climate_list_d_dr_d_out_i +
                  base_list_d_dr_d_out[i]) * pop_year[i]
@@ -793,7 +797,8 @@ class Population:
                     year, d_base_death_rate)
 
                 d_death_d_temp[year] = self.d_death_d_generic(
-                    year, d_base_death_rate, d_climate_death_rate, d_pop_d_temp)
+                    year, d_base_death_rate, d_climate_death_rate, d_pop_d_temp,
+                    activate_effect_on_population=self.activate_climate_effect_on_population)
                 d_pop_d_temp, d_pop_1549_d_temp, d_pop_tot_d_temp, d_working_pop_d_temp = self.d_poptotal_generic(year, d_pop_d_temp,
                                                                                                                   d_death_d_temp,
                                                                                                                   d_birth_d_temp,
@@ -954,7 +959,8 @@ class Population:
                     year, d_pop_tot_d_kcal_pc)
                 d_diet_death_rate[year] = self.d_diet_death_rate_d_kcal_pc(year, d_base_death_rate)
                 d_death_d_kcal_pc[year] = self.d_death_d_generic(
-                    year, d_base_death_rate, d_diet_death_rate, d_pop_d_kcal_pc)
+                    year, d_base_death_rate, d_diet_death_rate, d_pop_d_kcal_pc,
+                    activate_effect_on_population=True) # must activate d_pop_d_kcal_pc effect on pop of
                 d_pop_d_kcal_pc, d_pop_1549_d_kcal_pc, d_pop_tot_d_kcal_pc, d_working_pop_d_kcal_pc = self.d_poptotal_generic(year, d_pop_d_kcal_pc,
                                                                                                                   d_death_d_kcal_pc,
                                                                                                                   d_birth_d_kcal_pc,
