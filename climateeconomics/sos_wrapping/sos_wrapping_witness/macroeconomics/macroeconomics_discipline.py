@@ -118,8 +118,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
-        'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 100., 'user_level': 3,
+        'usable_capital_ref': {'type': 'float', 'unit': 'G$', 'default': 5., 'user_level': 3,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                               "description": "After an excess of 5 G$ of usable capital, the upper bound constraint will explode.",
                                'namespace': GlossaryCore.NS_REFERENCE},
         GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared',
                                             'namespace': GlossaryCore.NS_WITNESS,
@@ -153,7 +154,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.ConstraintLowerBoundUsableCapital: {'type': 'array', 'unit': '-',
                                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                          'namespace': GlossaryCore.NS_FUNCTIONS},
-        GlossaryCore.ConstraintUpperBoundUsableCapital: {'type': 'array', 'unit': '-',
+        GlossaryCore.ConstraintUpperBoundUsableCapital: {'type': 'dataframe', 'unit': '-',
                                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                          'namespace': GlossaryCore.NS_FUNCTIONS},
 
@@ -443,7 +444,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_ku_obj_d_energy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ConstraintUpperBoundUsableCapital,),
+            (GlossaryCore.ConstraintUpperBoundUsableCapital, GlossaryCore.ConstraintUpperBoundUsableCapital),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_ku_ub_contraint)
 
@@ -479,7 +480,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             dku_obj_d_dfo)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ConstraintUpperBoundUsableCapital,),
+            (GlossaryCore.ConstraintUpperBoundUsableCapital, GlossaryCore.ConstraintUpperBoundUsableCapital),
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             dku_ub_constraint_d_dfo)
 
@@ -494,7 +495,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_ku_obj_d_snei)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ConstraintUpperBoundUsableCapital,),
+            (GlossaryCore.ConstraintUpperBoundUsableCapital, GlossaryCore.ConstraintUpperBoundUsableCapital),
             (GlossaryCore.ShareNonEnergyInvestmentsValue, GlossaryCore.ShareNonEnergyInvestmentsValue),
             d_ku_ub_constraint_d_snei)
 
@@ -534,7 +535,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             d_ku_obj_d_wap)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ConstraintUpperBoundUsableCapital,),
+            (GlossaryCore.ConstraintUpperBoundUsableCapital, GlossaryCore.ConstraintUpperBoundUsableCapital),
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             d_ku_constraint_d_wap)
 

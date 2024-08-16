@@ -300,8 +300,8 @@ class DataStudy():
                 'utility_objective',
             ],
             'ftype': [INEQ_CONSTRAINT] + [OBJECTIVE] * 5,
-            'weight': [0., -1., 0., 0., 0., 1.],
-            AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
+            'weight': [1., -1., 0., 0., 0., 1.],
+            AGGR_TYPE: [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT] + [AGGR_TYPE_SUM] * 5,
             'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
         }
 

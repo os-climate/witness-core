@@ -636,12 +636,18 @@ class MacroEconomics:
 
     def compute_usable_capital_upper_bound_constraint(self):
         """
-        Upper bound usable capital constraint = max capital utilisation ratio * non energy capital - usable capital
+        Constraint : max capital utilisation ratio * non energy capital >= usable capital
+
+        implemented as :  max capital utilisation ratio * non energy capital - usable capital, that should be
+        positive when satisfied
         """
         ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
         usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
-        diff = usable_capital - self.max_capital_utilisation_ratio * ne_capital
-        self.usable_capital_upper_bound_constraint = - diff / self.usable_capital_ref
+        diff = self.max_capital_utilisation_ratio * ne_capital - usable_capital
+        self.usable_capital_upper_bound_constraint = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.ConstraintUpperBoundUsableCapital: diff / self.usable_capital_ref
+        })
 
     def compute_usable_capital_objective(self):
         """
