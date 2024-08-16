@@ -640,7 +640,8 @@ class MacroEconomics:
         """
         ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
         usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
-        self.usable_capital_upper_bound_constraint = - (usable_capital - self.max_capital_utilisation_ratio * ne_capital) / self.usable_capital_ref
+        diff = usable_capital - self.max_capital_utilisation_ratio * ne_capital
+        self.usable_capital_upper_bound_constraint = - diff / self.usable_capital_ref
 
     def compute_usable_capital_objective(self):
         """
@@ -1357,8 +1358,16 @@ class MacroEconomics:
     def d_ku_upper_bound_constraint_d_user_input(self, d_ku_d_user_input, d_kne_d_user_input):
         return - (d_ku_d_user_input - self.max_capital_utilisation_ratio * d_kne_d_user_input) / self.usable_capital_ref
 
-    """-------------------END of Gradient functions-------------------"""
+    def d_gdp_section_d_gdp(self, d_gross_output, section_name: str):
+        return d_gross_output @ np.diag(self.gdp_percentage_per_section_df[section_name] / 100)
 
+    def d_gdp_section_energy_consumption_d_energy_prod(self, sector_name: str, section_name: str):
+        return np.diag(self.sector_energy_consumption_percentage_df[sector_name].values / 100 * self.dict_dataframe_energy_consumption_sections[sector_name][section_name].values / 100.)
+
+    def d_residential_energy_consumption_d_energy_prod(self):
+        return np.diag(self.share_residential_df[GlossaryCore.ShareSectorEnergy].values / 100)
+
+    """-------------------END of Gradient functions-------------------"""
 
 
 

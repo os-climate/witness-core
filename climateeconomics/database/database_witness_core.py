@@ -316,15 +316,13 @@ class DatabaseWitnessCore:
         last_update_date=date(2024,3,26)
     )
 
-    energy_consumption_per_sector = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_per_sector.csv'))
-
-    EnergyConsumptionPercentageSectorDict = ColectedData(
-        value=energy_consumption_per_sector,
+    EnergyConsumptionPercentageSectorDict = HeavyCollectedData(
+        value=join(data_folder, 'energy_consumption_percentage_per_sector.csv'),
         unit="%",
         description="energy consumption of each sector",
         link="",
         source="", # multiples sources TODO
-        last_update_date=date(2024,3,26)
+        last_update_date=date(2024,3,26),
     )
 
     atmosphere_total_mass_kg = 5.1480 * 10 ** 18

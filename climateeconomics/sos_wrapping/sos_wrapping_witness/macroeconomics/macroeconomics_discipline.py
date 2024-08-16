@@ -118,7 +118,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
-        'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
+        'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 100., 'user_level': 3,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                'namespace': GlossaryCore.NS_REFERENCE},
         GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared',
@@ -174,6 +174,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         sectorlist = None
         sectionlist = None
         if self.get_data_in() is not None:
+            year_end = None
+            if GlossaryCore.YearEnd in self.get_data_in() and GlossaryCore.YearStart in self.get_data_in():
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd])
+                if year_start is not None and year_end is not None:
+                    default_val = DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.get_all_cols_between_years(year_start, year_end)
+                    self.update_default_value(GlossaryCore.SectorEnergyConsumptionPercentageDfName, 'in', default_val)
             if 'assumptions_dict' in self.get_data_in():
                 assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
                 compute_gdp: bool = assumptions_dict['compute_gdp']
@@ -196,7 +202,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             if GlossaryCore.SectionListValue in self.get_data_in():
                 sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
 
-            if sectorlist is not None:
+            if sectorlist is not None and year_end is not None:
                 sector_gdg_desc = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorGdpDf)
                 default_value_energy_consumption_dict = DatabaseWitnessCore.EnergyConsumptionPercentageSectionsDict.value
                 default_non_energy_emissions_dict = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value
@@ -204,7 +210,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
                     # change default value for each sector for energy consumption and non energy emissions
                     sector_energy_consumption_percentage_dict = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorEnergyConsumptionPercentageDf)
-                    sector_energy_consumption_percentage_dict.update({"default": default_value_energy_consumption_dict[sector]})
+                    df_default_val = default_value_energy_consumption_dict[sector]
+                    df_default_val = df_default_val.loc[df_default_val[GlossaryCore.Years] <= year_end]
+                    sector_energy_consumption_percentage_dict.update({"default": df_default_val})
                     non_energy_emissions_sections_dict = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionGdpDf)
                     non_energy_emissions_sections_dict.update({"default": default_non_energy_emissions_dict[sector]})
                     # add to dynamic inputs
@@ -579,6 +587,36 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax),
             d_consumption_pc_d_co2_tax)
 
+        d_gross_output_dict = {
+            GlossaryCore.EnergyProductionValue: (GlossaryCore.TotalProductionValue, d_net_output_d_energy),
+            GlossaryCore.WorkingAgePopulationDfValue: (GlossaryCore.Population1570, d_net_output_d_wap),
+            GlossaryCore.DamageFractionDfValue: (GlossaryCore.DamageFractionOutput, d_net_output_d_dfo),
+        }
+        for inputvar, (column_name, d_gross_output) in d_gross_output_dict.items():
+            for sector in GlossaryCore.DefaultSectorListGHGEmissions:
+                for section in GlossaryCore.SectionDictSectors[sector]:
+                    d_section_d_gdp = self.macro_model.d_gdp_section_d_gdp(d_gross_output, section_name=section)
+                    self.set_partial_derivative_for_other_types(
+                        (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                        (inputvar, column_name),
+                        d_section_d_gdp)
+
+        for sector in GlossaryCore.SectorsPossibleValues:
+            for section in GlossaryCore.SectionDictSectors[sector]:
+                d_section_energy_consumption_d_energy = self.macro_model.d_gdp_section_energy_consumption_d_energy_prod(sector_name=sector, section_name=section)
+                self.set_partial_derivative_for_other_types(
+                    (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
+                    (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                    d_section_energy_consumption_d_energy)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            self.macro_model.d_residential_energy_consumption_d_energy_prod())
+
+
+
+
 
 
     def get_chart_filter_list(self):
@@ -621,8 +659,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         economics_detail_df = deepcopy(
             self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue))
-        co2_invest_limit, capital_utilisation_ratio = deepcopy(
-            self.get_sosdisc_inputs(['co2_invest_limit', 'capital_utilisation_ratio']))
+        co2_invest_limit, capital_utilisation_ratio, max_capital_utilisation_ratio = deepcopy(
+            self.get_sosdisc_inputs(['co2_invest_limit', 'capital_utilisation_ratio', 'max_capital_utilisation_ratio']))
         workforce_df = deepcopy(
             self.get_sosdisc_outputs(GlossaryCore.WorkforceDfValue))
         sector_gdp_df = deepcopy(
@@ -800,6 +838,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(first_serie)
             percentage_productive_capital_stock = list(
                 first_serie * capital_utilisation_ratio)
+            percentage_max_productive_capital_stock = list(
+                first_serie * max_capital_utilisation_ratio)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Productive Capital Stock', 'lines', visible_line)
             new_chart.add_series(new_series)
@@ -812,6 +852,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_series = InstanciatedSeries(
                 years, percentage_productive_capital_stock,
                 f'{capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
+            new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(
+                years, percentage_max_productive_capital_stock,
+                f'{max_capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
             new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)

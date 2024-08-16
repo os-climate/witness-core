@@ -547,7 +547,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             step=1e-15, derr_approx='complex_step')
     
     def _test_problematic_optim_point(self):
-        self.override_dump_jacobian= 1
+        #self.override_dump_jacobian= 1
         import pickle
 
 
@@ -561,7 +561,6 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                 return var_value
             except IndexError :
                 print(varname)
-
 
         for checked_input in list(self.inputs_dict.keys()) + self.checked_inputs:
             checked_inputvarname = checked_input.split('.')[-1]

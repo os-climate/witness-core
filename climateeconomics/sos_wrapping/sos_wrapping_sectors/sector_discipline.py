@@ -79,7 +79,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                   'visibility': 'Shared',
                                   'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
-        'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3},
+        'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 100., 'user_level': 3},
     }
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,

@@ -154,16 +154,28 @@ class HeavyCollectedData(ColectedData):
 
         return years_int.min() <= year <= years_int.max()
 
-    def get_between_years(self, year_start: int, year_end: int) -> pd.DataFrame:
+    def get_between_years(self, year_start: int, year_end: int, column: str = None) -> pd.DataFrame:
         """Returns the dataframe between selected years. Interpolate data if needed when possible"""
+        if column is None:
+            column = self.column_to_pick
         df = self.value
         sub_df = df.loc[(df["years"] >= year_start) & (df["years"] <= year_end)]
         years = sub_df["years"].values
-        values = sub_df[self.column_to_pick]
+        values = sub_df[column]
         f_interp = interp1d(x=years, y=values)
         all_years = np.arange(year_start, year_end + 1)
         out = pd.DataFrame({
             "years": all_years,
-            self.column_to_pick: f_interp(all_years) if len(all_years) > 1 else float(sub_df[self.column_to_pick].values[0])
+            column: f_interp(all_years) if len(all_years) > 1 else float(sub_df[column].values[0])
+        })
+        return out
+
+    def get_all_cols_between_years(self, year_start: int, year_end: int) -> pd.DataFrame:
+        df = self.value
+        columns = list(df.columns)
+        columns.remove("years")
+        dfs = [self.get_between_years(year_start, year_end, column=col) for col in columns]
+        out = pd.DataFrame({"years": dfs[0]["years"],
+                            **{col: df[col] for col, df in zip(columns, dfs)}
         })
         return out

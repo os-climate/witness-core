@@ -152,29 +152,20 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
             f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.gdp_section_df,
             f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
-            f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Services':
-                self.default_value_dict_consumption['Services'],
-            f'{self.name}.{self.model_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_Services':
-                self.default_value_dict_emissions['Services'],
-            f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Agriculture':
-                self.default_value_dict_consumption['Agriculture'],
-            f'{self.name}.{self.model_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_Agriculture':
-                self.default_value_dict_emissions['Agriculture'],
-            f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Industry':
-                self.default_value_dict_consumption['Industry'],
-            f'{self.name}.{self.model_name}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}_Industry':
-                self.default_value_dict_emissions['Industry'],
+            f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Services': self.default_value_dict_consumption['Services'],
+            f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Agriculture': self.default_value_dict_consumption['Agriculture'],
+            f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Industry': self.default_value_dict_consumption['Industry'],
             f'{self.name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_residential_energy_consumption,
         }
 
-        self.checked_inputs = [f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',# OK #OK
-                               f'{self.name}.{GlossaryCore.EnergyProductionValue}',# OK # OK
-                               f'{self.name}.{GlossaryCore.DamageFractionDfValue}',# OK #OK
-                               f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',# OK # OK
-                               f'{self.name}.{GlossaryCore.CO2TaxesValue}',# OK # OK
-                               f'{self.name}.{GlossaryCore.PopulationDfValue}',# OK
-                               f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',# OK
-                               f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',# OK
+        self.checked_inputs = [f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
+                               f'{self.name}.{GlossaryCore.EnergyProductionValue}',
+                               f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
+                               f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
+                               f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                               f'{self.name}.{GlossaryCore.PopulationDfValue}',
+                               f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
+                               f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',
                                ]
 
         self.checked_outputs = [
@@ -182,7 +173,12 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.EconomicsDfValue}',
             f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
             f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}',
-            f'{self.name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}'
+            f'{self.name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}',
+            f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectionEnergyConsumptionDfValue}',
+            f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectionEnergyConsumptionDfValue}',
+            f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectionGdpDfValue}',
+            f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectionGdpDfValue}',
+            f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}',
         ]
 
     def analytic_grad_entry(self):
