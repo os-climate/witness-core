@@ -41,6 +41,9 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_test_gradients_tp_3_5 import (
     Study as witness_optim_proc_uc1_tp_3_5,
 )
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import (
+    Study as witness_optim_proc_uc4_tp_3_5,
+)
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_sub_proc_usecase,
 )
@@ -138,8 +141,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             'compute_climate_impact_on_gdp': False,
             'activate_climate_effect_population': False,
             'activate_pandemic_effects': False,
-            'invest_co2_tax_in_renewables': False
-        }
+            }
         full_values_dict[
             f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_price_percentage"] = 0.0
         full_values_dict[
@@ -232,8 +234,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                 'compute_climate_impact_on_gdp': False,
                 'activate_climate_effect_population': False,
                 'activate_pandemic_effects': False,
-                'invest_co2_tax_in_renewables': False
-            }
+                    }
             full_values_dict[
                 f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_price_percentage"] = 0.0
             full_values_dict[
@@ -411,8 +412,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             'compute_climate_impact_on_gdp': False,
             'activate_climate_effect_population': False,
             'activate_pandemic_effects': False,
-            'invest_co2_tax_in_renewables': False
-        }
+            }
         full_values_dict[
             f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_price_percentage"] = 0.0
         full_values_dict[
@@ -675,7 +675,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             pickle.dump(list_var_different, f)
         f.close()
 
-
     def test_06_gradient_process_objective2_over_design_var(self):
         """
         """
@@ -706,45 +705,45 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # loop over all disciplines
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
-        with open("data/uc1optim.pkl", "wb", encoding="utf8") as f:
+        with open("data/uc1optim.pkl", "wb") as f:
             import pickle
             pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
         discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
 
         inputs = [
-            #self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
+            self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
             self.ee.dm.get_all_namespaces_from_var_name('FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix')[0],
             ##self.ee.dm.get_all_namespaces_from_var_name('DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix')[0],
             ##self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
             ##self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
             self.ee.dm.get_all_namespaces_from_var_name('fossil_FossilSimpleTechno_utilization_ratio_array')[0],
-            #self.ee.dm.get_all_namespaces_from_var_name('renewable_RenewableSimpleTechno_utilization_ratio_array')[0], #OK lagr
+            self.ee.dm.get_all_namespaces_from_var_name('renewable_RenewableSimpleTechno_utilization_ratio_array')[0], #OK lagr
             self.ee.dm.get_all_namespaces_from_var_name('share_non_energy_invest_ctrl')[0],
             ]
         #ref1 = f'_lagr_var_'
-        #outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
         ref1 = '_level_0_invest_mix_'
-        outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
-        ref1 = '_level_1_'
-        outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_wasted_objective')[0],
-                   self.ee.dm.get_all_namespaces_from_var_name('Quantity_objective')[0],
-                   self.ee.dm.get_all_namespaces_from_var_name('decreasing_gdp_increments_obj')[0]
-                   ]
-        ref1 = '_level_2_ew_'
+        #outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_production')[0],
-                   self.ee.dm.get_all_namespaces_from_var_name('detailed_capital_df')[0],
-                   ]
-        ref1 = '_level_2_q_'
-        outputs = [self.ee.dm.get_all_namespaces_from_var_name('population_df')[0],
-                   self.ee.dm.get_all_namespaces_from_var_name('economics_detail_df')[0],
-                   self.ee.dm.get_all_namespaces_from_var_name('economics_df')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0]
                    ]
-
+        ref1 = '_level_2_ew_'
+        """
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('Quantity_objective')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('decreasing_gdp_increments_obj')[0]
+                   ]
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
+        ref1 = '_level_2_q_'
+        ref1 = '_level_1_'
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('population_df')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('economics_detail_df')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('detailed_capital_df')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('economics_df')[0],
+                   ]
+        """
         location = dirname(__file__)
         filename = f'jacobian_lagrangian_{self.name}_vs_design_var.pkl'
-        step = 1.e-4
+        step = 1e-9
         derr_approx = 'finite_differences'
         threshold = 1.e-8
         override_dump_jacobian = True
@@ -1161,3 +1160,83 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         var_missing_in_l1_test = [var for var in var_grad if var not in l1_test_var_full_name]
 
         return var_grad, var_missing_in_l1_test
+
+    def test_111_gradient_process_objective2_over_design_var(self):
+        """
+        """
+        self.name = 'uc4_tp3_5'
+        self.ee = ExecutionEngine(self.name)
+
+        # if one invest discipline then we need to setup all subprocesses
+        # before get them
+        techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+
+        builder = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_dev_optim_process',
+            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='dev', use_resources_bool=False)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+
+        usecase = witness_optim_proc_uc4_tp_3_5(execution_engine=self.ee)
+
+        usecase.study_name = self.name
+        usecase.init_from_subusecase = True
+        directory = join(dirname(__file__), AbstractJacobianUnittest.PICKLE_DIRECTORY)
+
+        values_dict = usecase.setup_usecase()
+        values_before = deepcopy(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
+        self.ee.execute()
+
+        # loop over all disciplines
+        coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
+        with open("data/uc4optim.pkl", "wb") as f:
+            import pickle
+            pickle.dump(self.ee.dm.get_data_dict_values(), f)
+            pass
+        discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
+
+        inputs = [
+            self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
+            self.ee.dm.get_all_namespaces_from_var_name('FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix')[0],
+            self.ee.dm.get_all_namespaces_from_var_name('DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix')[0],
+            self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
+            self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
+            self.ee.dm.get_all_namespaces_from_var_name('fossil_FossilSimpleTechno_utilization_ratio_array')[0],
+            self.ee.dm.get_all_namespaces_from_var_name('renewable_RenewableSimpleTechno_utilization_ratio_array')[0], #OK lagr
+            self.ee.dm.get_all_namespaces_from_var_name('share_non_energy_invest_ctrl')[0],
+            ]
+        #ref1 = f'_lagr_var_'
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
+        """
+        ref1 = '_level_0_invest_mix_'
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
+        ref1 = '_level_1_'
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_wasted_objective')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('Quantity_objective')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('decreasing_gdp_increments_obj')[0]
+                   ]
+        ref1 = '_level_2_ew_'
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_production')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('detailed_capital_df')[0],
+                   ]
+        ref1 = '_level_2_q_'
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('population_df')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('economics_detail_df')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('economics_df')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0]
+                   ]
+        """
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
+
+        location = dirname(__file__)
+        filename = f'jacobian_lagrangian_{self.name}_vs_design_var.pkl'
+        step = 1.e-15
+        derr_approx = 'complex_step'
+        threshold = 1.e-8
+        override_dump_jacobian = True
+        test_passed, dict_fail, dict_success = self.check_jac(discipline, inputs, outputs, location, filename, step,
+                                                              derr_approx, threshold, override_dump_jacobian)
+
+        assert test_passed

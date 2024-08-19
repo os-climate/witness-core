@@ -179,7 +179,7 @@ class Population:
                                 for effect in self.death_rate_dict}
         # LIFE EXPECTANCY
         self.life_expectancy_df = DataFrame({GlossaryCore.Years: years_range,
-                                             'life_expectancy': 0}, index=years_range)
+                                             'life_expectancy': 0.}, index=years_range)
 
     def compute_knowledge(self):
         """ Compute knowledge function for all year. Knowledge is a regression on % of 

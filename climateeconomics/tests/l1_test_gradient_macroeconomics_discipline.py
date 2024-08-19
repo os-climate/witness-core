@@ -162,16 +162,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                                f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
-                               f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
                                f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',
                                ]
 
         self.checked_outputs = [
+            f'{self.name}.{self.model_name}.{GlossaryCore.WorkforceDfValue}',
+            #f'{self.name}.{GlossaryCore.TempOutput}',
             f'{self.name}.{GlossaryCore.DamageDfValue}',
             f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-            f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
             f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}',
             f'{self.name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}',
             f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectionEnergyConsumptionDfValue}',
@@ -529,7 +529,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
                             'activate_pandemic_effects': True,
-                            'invest_co2_tax_in_renewables': True
                             },
                        f'{self.name}.gross_output_in': pd.DataFrame(
                            {GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}),
@@ -542,54 +541,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_without_compute_gdp.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            local_data=disc_techno.local_data,
-                            inputs=self.checked_inputs,
-                            outputs=self.checked_outputs)
-
-    def test_macro_economics_analytic_grad_deactive_co2_tax_investment(self):
-        """
-        Test of analytic gradient when invest_co2_tax_in_renawables is set to False
-        """
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = self.inputs_dict
-        inputs_dict.update({
-                       f'{self.name}.assumptions_dict':
-                           {'compute_gdp': True,
-                            'compute_climate_impact_on_gdp': True,
-                            'activate_climate_effect_population': True,
-                            'activate_pandemic_effects': True,
-                            'invest_co2_tax_in_renewables': False,
-                            },
-                       })
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
-        self.check_jacobian(location=dirname(__file__),
-                            filename='jacobian_macroeconomics_discipline_without_invest_co2_tax_in_renewables.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
@@ -730,7 +681,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
                             'activate_pandemic_effects': True,
-                            'invest_co2_tax_in_renewables': True
                             },
                        })
 
@@ -776,7 +726,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         import pickle
-
 
         with open("data/uc1optim.pkl", "rb") as f:
             dict_input_optimized_point = pickle.load(f)

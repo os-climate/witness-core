@@ -36,7 +36,7 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
         self.sector_list = GlossaryCore.SectorsPossibleValues
 
-        self.population_df = DatabaseWitnessCore.WorldPopulationForecast.value
+        self.population_df = DatabaseWitnessCore.WorldPopulationForecast.get_all_cols_between_years(self.year_start, self.year_end)
 
         gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values
         population_2021 = DatabaseWitnessCore.WorldPopulationForecast.value[GlossaryCore.PopulationValue].values[1]

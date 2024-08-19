@@ -120,9 +120,7 @@ class GlossaryCore:
     UtilityDfValue = "utility_df"
     EnergyInvestmentsValue = "energy_investment"
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
-    EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
     NonEnergyInvestmentsValue = "non_energy_investment"
-    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
     WelfareObjective = "welfare_objective"
     NegativeWelfareObjective = "negative_welfare_objective"
     energy_list = "energy_list"
@@ -771,9 +769,7 @@ class GlossaryCore:
             PerCapitaConsumption: ("float", [0, 1e30], False),
             InvestmentsValue: ("float", [0, 1e30], False),  # G$
             EnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
-            EnergyInvestmentsWoTaxValue: ("float", [0, 1e30], False),  # G$
             NonEnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
-            EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
         },
     }
@@ -1030,16 +1026,6 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             InvestmentsValue: ("float", [0.0, 1e30], True),
-        },
-        "unit": "100G$",
-    }
-
-    EnergyInvestmentsWoRenewable = {
-        "var_name": EnergyInvestmentsWoRenewableValue,
-        "type": "dataframe",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            EnergyInvestmentsWoRenewableValue: ("float", [0.0, 1e30], True),
         },
         "unit": "100G$",
     }
@@ -1698,13 +1684,14 @@ class GlossaryCore:
         "description": "used to debug some gradients",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            UsableCapital: ("float", None, False),
-            Capital: ("float", None, False),
-            Damages: ("float", None, False),
-            EstimatedDamages: ("float", None, False),
+            #UsableCapital: ("float", None, False),
+            #Capital: ("float", None, False),
+            #Damages: ("float", None, False),
+            #EstimatedDamages: ("float", None, False),
             #DamagesFromClimate: ("float", None, False),
-            GrossOutput: ("float", None, False),
-            OutputNetOfDamage: ("float", None, False),
+            #GrossOutput: ("float", None, False),
+            #OutputNetOfDamage: ("float", None, False),
+            PerCapitaConsumption: ("float", None, False),
         },
     }
 

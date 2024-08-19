@@ -40,7 +40,6 @@ class Study(StudySubOptim):
                 'compute_gdp': True,
                 'compute_climate_impact_on_gdp': True,
                 'activate_climate_effect_population': True,
-                'invest_co2_tax_in_renewables': False,
                 'activate_pandemic_effects': False
             },
         }
