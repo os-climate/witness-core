@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
 )
@@ -52,11 +53,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'climateeconomics.sos_processes.iam', 'witness_wo_energy')
         chain_builders.extend(chain_builders_witness)
 
+        techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
+
         # if one invest discipline then we need to setup all subprocesses
         # before get them
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=self.use_resources_bool)
+            techno_dict=techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=self.use_resources_bool)
         chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling
@@ -67,6 +70,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_dashboard',
+                                                                                'climateeconomics.sos_wrapping.post_procs.dashboard')
 
         # FIXME: post_processing is broken after merge of witness-full !
         # self.ee.post_processing_manager.add_post_processing_module_to_namespace(
