@@ -711,7 +711,7 @@ class Population:
             climate_list_d_dr_d_out_i = climate_list_d_dr_d_out[i] if activate_effect_on_population else 0
             d_death[ages[i]] = list_d_pop_d_out[ages[i]] * full_dr_death[i] + \
                 (climate_list_d_dr_d_out_i +
-                 base_list_d_dr_d_out[i]) * pop_year[i]
+                 base_list_d_dr_d_out[i]) * pop_year.values[i]
 
         return d_death
 

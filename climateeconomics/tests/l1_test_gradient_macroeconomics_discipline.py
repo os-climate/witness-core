@@ -726,8 +726,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         import pickle
-
-        with open("data/uc1optim.pkl", "rb") as f:
+        import os
+        with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
             dict_input_optimized_point = pickle.load(f)
         
         def find_var_in_dict(varname: str):
@@ -737,7 +737,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                 return var_value
             except IndexError :
                 print(varname)
-
 
         for checked_input in list(self.inputs_dict.keys()) + self.checked_inputs:
             checked_inputvarname = checked_input.split('.')[-1]

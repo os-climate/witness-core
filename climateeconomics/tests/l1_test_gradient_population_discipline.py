@@ -565,8 +565,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         #self.override_dump_jacobian= 1
         import pickle
 
-
-        with open("data/uc1optim.pkl", "rb") as f:
+        import os
+        with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
             dict_input_optimized_point = pickle.load(f)
         
         def find_var_in_dict(varname: str):

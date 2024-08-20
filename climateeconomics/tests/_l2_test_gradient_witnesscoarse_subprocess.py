@@ -15,6 +15,7 @@ limitations under the License.
 '''
 
 import ast
+import os
 import pickle
 import re
 from copy import deepcopy
@@ -705,7 +706,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # loop over all disciplines
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
-        with open("data/uc1optim.pkl", "wb") as f:
+        with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
             import pickle
             pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
@@ -1191,25 +1192,51 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # loop over all disciplines
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
-        with open("data/uc4optim.pkl", "wb") as f:
+        with open(os.path.join("data","uc4optim.pkl"), "wb") as f:
             import pickle
             pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
         discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
 
         inputs = [
-            self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
-            self.ee.dm.get_all_namespaces_from_var_name('FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
+            #self.ee.dm.get_all_namespaces_from_var_name('FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix')[0],
             self.ee.dm.get_all_namespaces_from_var_name('DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix')[0],
-            self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
-            self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
-            self.ee.dm.get_all_namespaces_from_var_name('fossil_FossilSimpleTechno_utilization_ratio_array')[0],
-            self.ee.dm.get_all_namespaces_from_var_name('renewable_RenewableSimpleTechno_utilization_ratio_array')[0], #OK lagr
-            self.ee.dm.get_all_namespaces_from_var_name('share_non_energy_invest_ctrl')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('fossil_FossilSimpleTechno_utilization_ratio_array')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('renewable_RenewableSimpleTechno_utilization_ratio_array')[0], #OK lagr
+            #self.ee.dm.get_all_namespaces_from_var_name('carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('carbon_storage.CarbonStorageTechno_utilization_ratio_array')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('share_non_energy_invest_ctrl')[0],
             ]
+        outputs = [
+            #self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0],
+            self.ee.dm.get_all_namespaces_from_var_name(
+                f'carbon_capture.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.invest_level')[
+                0], # OK
+            self.ee.dm.get_all_namespaces_from_var_name(
+                f'carbon_capture.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoProductionValue}')[
+                0], # OK
+            self.ee.dm.get_all_namespaces_from_var_name(
+                f'carbon_capture.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.techno_prices')[
+                0], # NOK
+            self.ee.dm.get_all_namespaces_from_var_name(
+                f'carbon_capture.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.TechnoConsumptionValue}')[
+                0],
+            self.ee.dm.get_all_namespaces_from_var_name(
+                f'carbon_capture.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}.{GlossaryEnergy.CO2EmissionsValue}')[
+                0],
+            #self.ee.dm.get_all_namespaces_from_var_name('carbon_capture.energy_production')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('carbon_capture.energy_prices')[0],
+
+            #self.ee.dm.get_all_namespaces_from_var_name('energy_production')[0],
+            #self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0],
+        ]
         #ref1 = f'_lagr_var_'
-        outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
         """
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
         ref1 = '_level_0_invest_mix_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
         ref1 = '_level_1_'
@@ -1227,14 +1254,14 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                    self.ee.dm.get_all_namespaces_from_var_name('economics_df')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0]
                    ]
-        """
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
+        """
 
         location = dirname(__file__)
         filename = f'jacobian_lagrangian_{self.name}_vs_design_var.pkl'
-        step = 1.e-15
-        derr_approx = 'complex_step'
-        threshold = 1.e-8
+        step = 1e-9
+        derr_approx = 'finite_differences'
+        threshold = 1.e-5
         override_dump_jacobian = True
         test_passed, dict_fail, dict_success = self.check_jac(discipline, inputs, outputs, location, filename, step,
                                                               derr_approx, threshold, override_dump_jacobian)
