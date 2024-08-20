@@ -116,8 +116,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'compute_climate_impact_on_gdp': True,
                                                                 'activate_climate_effect_population': True,
                                                                 'activate_pandemic_effects': True,
-                                                                'invest_co2_tax_in_renewables': False
-                                                               }}
+                                                                                                                       }}
         data_witness.append(updated_data)
 
         data_witness.append({

@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
         self.sector_list = GlossaryCore.SectorsPossibleValues
 
-        self.population_df = DatabaseWitnessCore.WorldPopulationForecast.value
+        self.population_df = DatabaseWitnessCore.WorldPopulationForecast.get_all_cols_between_years(self.year_start, self.year_end)
 
         gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values
         population_2021 = DatabaseWitnessCore.WorldPopulationForecast.value[GlossaryCore.PopulationValue].values[1]
@@ -80,8 +80,8 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
         self.damage_df = pd.DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.Damages: np.zeros(self.nb_per),
-             GlossaryCore.EstimatedDamages: np.zeros(self.nb_per)}
+             GlossaryCore.Damages: [1.5] * self.nb_per,
+             GlossaryCore.EstimatedDamages: [1.5] * self.nb_per}
         )
 
         self.invest_indus = pd.DataFrame(
@@ -148,7 +148,6 @@ class SectorDemandDisciplineTest(unittest.TestCase):
                        f'{name}.{GlossaryCore.AllSectorsShareEnergyDfValue}': self.all_sectors_energy_supply,
                        f'{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
 
-                       f'{name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': self.damage_df,
@@ -174,6 +173,6 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 

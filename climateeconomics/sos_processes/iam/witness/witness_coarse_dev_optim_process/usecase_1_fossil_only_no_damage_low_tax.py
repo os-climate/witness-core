@@ -77,7 +77,6 @@ class Study(StudyOptimInvestDistrib):
                 'compute_gdp': True,
                 'compute_climate_impact_on_gdp': False,
                 'activate_climate_effect_population': False,
-                'invest_co2_tax_in_renewables': False,
                 'activate_pandemic_effects': False
             },
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
@@ -96,5 +95,6 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
 

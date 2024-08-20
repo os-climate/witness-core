@@ -316,15 +316,13 @@ class DatabaseWitnessCore:
         last_update_date=date(2024,3,26)
     )
 
-    energy_consumption_per_sector = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_per_sector.csv'))
-
-    EnergyConsumptionPercentageSectorDict = ColectedData(
-        value=energy_consumption_per_sector,
+    EnergyConsumptionPercentageSectorDict = HeavyCollectedData(
+        value=join(data_folder, 'energy_consumption_percentage_per_sector.csv'),
         unit="%",
         description="energy consumption of each sector",
         link="",
         source="", # multiples sources TODO
-        last_update_date=date(2024,3,26)
+        last_update_date=date(2024,3,26),
     )
 
     atmosphere_total_mass_kg = 5.1480 * 10 ** 18
@@ -404,15 +402,15 @@ class DatabaseWitnessCore:
         column_to_pick="invests"
     )
 
-    PopulationYearStart = ColectedData(
-        value=pd.read_csv(join(data_folder, "population_by_age_2020.csv")),
-        unit="millions of people",
-        description="repartition of the population by age in 2020",
-        year_value=2020,
-        link="",
+    PopulationYearStart = HeavyCollectedData(
+        value=join(data_folder, "population_by_age.csv"),
+        unit="people",
+        description="repartition of the population by age",
+        link="https://population.un.org/dataportal/home?df=8b604e23-cef9-4a48-b4cb-b1b5f3aefea9",
         critical_at_year_start=True,
-        source="",
-        last_update_date=date(2024, 7, 25),
+        column_to_pick=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44","45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85-89","90-94","95-99","100_over"],
+        source="United Nations Population division",
+        last_update_date=date(2024, 8, 14),
     )
 
     MacroProductivityStart = ColectedData(
@@ -426,14 +424,14 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 7, 25),
     )
 
-    MacroInitGrossOutput = ColectedData(
-        value=130.187,
+    MacroInitGrossOutput = HeavyCollectedData(
+        value= join(data_folder, "world-gpp-ppp.csv"),
+        column_to_pick="GDP, PPP (Trillion USD$2020)",
         unit="G$",
         description="Global GDP",
-        year_value=2020,
-        link="",
+        link=["https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD", "https://www.usinflationcalculator.com/"],
         critical_at_year_start=True,
-        source="",
+        source="World Bank",
         last_update_date=date(2024, 7, 25),
     )
 
@@ -465,7 +463,7 @@ class DatabaseWitnessCore:
         description="Sector Service capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -476,7 +474,7 @@ class DatabaseWitnessCore:
         description="Sector Service capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -487,7 +485,7 @@ class DatabaseWitnessCore:
         description="Sector Service capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -498,7 +496,7 @@ class DatabaseWitnessCore:
         description="Sector Industry capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -509,7 +507,7 @@ class DatabaseWitnessCore:
         description="Sector Industry capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -520,7 +518,7 @@ class DatabaseWitnessCore:
         description="Sector Industry capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -531,7 +529,7 @@ class DatabaseWitnessCore:
         description="Sector Agriculture capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -542,7 +540,7 @@ class DatabaseWitnessCore:
         description="Sector Agriculture capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
@@ -553,31 +551,31 @@ class DatabaseWitnessCore:
         description="Sector Agriculture capital",
         year_value=2020,
         link="",
-        critical_at_year_start=True,
+        critical_at_year_start=False,
         source="",
         last_update_date=date(2024, 7, 26),
     )
 
-    ForestEmissions = ColectedData(
-        value=-7.6,
+    ForestEmissions = HeavyCollectedData(
+        value=join(data_folder, "forest_emissions.csv"),
         unit="GtCO2",
         description="Forest emissions",
-        year_value=2020,
-        link="",
+        link="https://www.nasa.gov/science-research/earth-science/nasa-satellites-help-quantify-forests-impacts-on-global-carbon-budget/",
         critical_at_year_start=True,
-        source="",
+        source="NASA; Credits: Harris et al. 2021 / Global Forest Watch / World Resources Institute",
         last_update_date=date(2024, 7, 26),
+        column_to_pick="emissions"
     )
 
-    OceanWarmingAnomalySincePreindustrial = ColectedData(
-        value=0.02794825,
+    OceanWarmingAnomalySincePreindustrial = HeavyCollectedData(
+        value=join(data_folder, "ocean_temp_anomaly_pre_industrial.csv"),
         unit="°C",
         description="Warming anomaly of ocean since pre-industrial era",
-        year_value=2020,
-        link="",
+        link="https://www.ncei.noaa.gov/access/monitoring/monthly-report/global/202406",
         critical_at_year_start=True,
-        source="",
-        last_update_date=date(2024, 7, 26),
+        column_to_pick="global ocean SST anomaly",
+        source="NOAA National Centers for Environmental Information, Monthly Global Climate Report for June 2024, published online July 2024, retrieved on August 11, 2024 from https://www.ncei.noaa.gov/access/monitoring/monthly-report/global/202406.",
+        last_update_date=date(2024, 8, 11),
     )
 
     @classmethod

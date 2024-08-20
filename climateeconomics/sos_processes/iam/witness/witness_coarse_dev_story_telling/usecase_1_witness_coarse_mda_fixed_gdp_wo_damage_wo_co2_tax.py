@@ -58,8 +58,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'compute_climate_impact_on_gdp': False,
                                                                 'activate_climate_effect_population': False,
                                                                 'activate_pandemic_effects': False,
-                                                                'invest_co2_tax_in_renewables': False
-                                                               },
+                                                                                                                       },
                         f"{self.study_name}.ccs_price_percentage": 0.0,
                         f"{self.study_name}.co2_damage_price_percentage": 0.0,
                         f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}": False

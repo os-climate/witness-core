@@ -76,7 +76,13 @@ class YearStartTest(unittest.TestCase):
         for techno_name in techno_list:
             is_available = DatabaseWitnessEnergy.get_techno_invest_before_year_start(techno_name=techno_name, construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[techno_name], year_start=year, is_available_at_year=True)
             if not is_available:
-                missing_variables.append(f"{techno_name}.initial_production")
+                missing_variables.append(f"{techno_name}.invest_before_year_start")
+
+        # Initial plants age distribution
+        for techno_name in techno_list:
+            is_available = DatabaseWitnessEnergy.get_techno_age_distrib_factor(techno_name=techno_name, year=year, is_available_at_year=True)
+            if not is_available:
+                missing_variables.append(f"{techno_name}.{GlossaryCore.InitialPlantsAgeDistribFactor}")
 
         return missing_variables
 

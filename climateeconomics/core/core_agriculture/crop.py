@@ -148,6 +148,7 @@ class Crop():
         self.mass_unit = 'Mt'
         self.set_data()
         self.create_dataframe()
+        self.lifetime: int = 20
 
     def set_data(self):
         self.year_start = self.param[Crop.YEAR_START]
@@ -174,6 +175,7 @@ class Crop():
         self.scaling_factor_techno_production = self.param['scaling_factor_techno_production']
         self.initial_age_distrib = self.param['initial_age_distrib']
         self.initial_production = self.param['initial_production']
+        self.lifetime = self.param[GlossaryCore.LifetimeName]
 
         self.nb_years_amort_capex = 10
         self.construction_delay = 3  # default value
@@ -251,6 +253,7 @@ class Crop():
         self.ch4_emissions_per_kg = inputs_dict['ch4_emissions_per_kg']
         self.n2o_emissions_per_kg = inputs_dict['n2o_emissions_per_kg']
         self.food_waste_percentage_df = inputs_dict[GlossaryCore.FoodWastePercentageValue]
+        self.lifetime = inputs_dict[GlossaryEnergy.LifetimeName]
 
     def compute(self):
         ''' 
@@ -583,8 +586,8 @@ class Crop():
         Compute annuity factor with the Weighted averaged cost of capital
         and the lifetime of the selected solution
         """
-        crf = (data_config['WACC'] * (1.0 + data_config['WACC']) ** data_config['lifetime']) / \
-              ((1.0 + data_config['WACC']) ** data_config['lifetime'] - 1.0)
+        crf = (data_config['WACC'] * (1.0 + data_config['WACC']) ** self.lifetime) / \
+              ((1.0 + data_config['WACC']) ** self.lifetime - 1.0)
 
         return crf
 
@@ -664,7 +667,7 @@ class Crop():
         self.age_distrib_prod_df = self.age_distrib_prod_df.loc[
             # Suppress all lines where age is higher than lifetime
             (self.age_distrib_prod_df['age'] <
-             self.techno_infos_dict['lifetime'])
+             self.lifetime)
             # delete years after year end
             & (self.age_distrib_prod_df[GlossaryCore.Years] < self.year_end + 1)
             # Fill Nan with zeros and suppress all zeros
@@ -892,7 +895,7 @@ class Crop():
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
-        temp_zero = temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
+        temp_zero = temperature_df[GlossaryCore.TempAtmo].values[0]
         temp = temperature_df[GlossaryCore.TempAtmo].values
         a = self.param_a
         b = self.param_b
@@ -1126,7 +1129,7 @@ class Crop():
         # We fill this jacobian column by column because it is the same element
         # in the entire column
         for i in range(nb_years):
-            len_non_zeros = min(max(0, nb_years - self.construction_delay - i), self.techno_infos_dict['lifetime'])
+            len_non_zeros = min(max(0, nb_years - self.construction_delay - i), self.lifetime)
             first_len_zeros = min(i + self.construction_delay, nb_years)
             last_len_zeros = max(0, nb_years - len_non_zeros - first_len_zeros)
             # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
