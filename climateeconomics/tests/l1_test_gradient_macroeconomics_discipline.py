@@ -725,8 +725,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        import pickle
         import os
+        import pickle
         with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
             dict_input_optimized_point = pickle.load(f)
         
