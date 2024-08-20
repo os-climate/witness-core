@@ -1099,7 +1099,9 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                         inputs=[inpt], outputs=[output], step=step, derr_approx=derr_approx,
                                         threshold=threshold)
                     dict_success[output].append(inpt)
-                except:
+                    os.remove("jacobian_pkls", pkl_name)
+                except Exception as e:
+                    print(e)
                     dict_fail[output].append(inpt)
                     test_pass = False
 
