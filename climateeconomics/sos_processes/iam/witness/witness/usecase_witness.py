@@ -168,3 +168,25 @@ if '__main__' == __name__:
     # TODO : careful, this usecase is quite long to test ! 800 sec
     uc_cls = Study(run_usecase=True)
     uc_cls.test()
+
+    # from sostrades_core.tools.post_processing.post_processing_factory import (
+    #
+    #     PostProcessingFactory)
+    #
+    # uc_cls = Study(run_usecase=True)
+    #
+    # uc_cls.load_data()
+    #
+    # uc_cls.run()
+    #
+    # ppf = PostProcessingFactory()
+    #
+    # ns = 'usecase_witness'
+    #
+    # filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
+    #
+    # graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
+    #
+    # for graph in graph_list:
+    #
+    #     graph.to_plotly().show()
