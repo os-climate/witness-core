@@ -62,9 +62,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'productivity_start': {'type': 'float', 'default': DatabaseWitnessCore.MacroProductivityStart.value, 'user_level': 2, 'unit': '-'},
+        'productivity_start': {'type': 'float', 'default': DatabaseWitnessCore.MacroProductivityStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2, 'unit': '-'},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
-        'capital_start_non_energy': {'type': 'float', 'unit': 'G$', 'default': DatabaseWitnessCore.MacroNonEnergyCapitalStart.value, 'user_level': 2},
+        'capital_start_non_energy': {'type': 'float', 'unit': 'G$', 'default': DatabaseWitnessCore.MacroNonEnergyCapitalStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2},
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
 
@@ -76,7 +76,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                                                 'float', None, False),
                                                                             }
                                                    },
-        'productivity_gr_start': {'type': 'float', 'default': DatabaseWitnessCore.MacroProductivityGrowthStart.value, 'user_level': 2, 'unit': '-'},
+        'productivity_gr_start': {'type': 'float', 'default': DatabaseWitnessCore.MacroProductivityGrowthStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '-'},
         # Usable capital
         'capital_utilisation_ratio': {'type': 'float', 'default': 0.8, 'user_level': 3, 'unit': '-'},
