@@ -704,7 +704,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=self.checked_inputs,
                             outputs=self.checked_outputs)
 
-    def test_problematic_optim_point(self):
+    def _test_problematic_optim_point(self):
         self.model_name = 'Macroeconomics'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',

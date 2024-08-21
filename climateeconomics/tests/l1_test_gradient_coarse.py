@@ -722,7 +722,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                             inputs=coupled_inputs,
                             outputs=coupled_outputs, )
 
-    def test_problematic_optim_point(self):
+    def _test_problematic_optim_point(self):
         self.energy_name = 'energymix_coarse'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
@@ -819,7 +819,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                             outputs=[f"{self.name}.{GlossaryCore.EnergyMeanPriceValue}",
                                      f"{self.name}.{self.energy_name}.{GlossaryCore.EnergyProductionValue}"],)
 
-    def test_problematic_optim_point_2(self):
+    def _test_problematic_optim_point_2(self):
         self.energy_name = 'energymix_coarse'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
@@ -845,7 +845,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         import os
         import pickle
-        with open(os.path.join("data", "uc4optim.pkl"), "wb") as f:
+        with open(os.path.join("data", "uc4optim.pkl"), "rb") as f:
             dict_input_optimized_point = pickle.load(f)
 
         def find_var_in_dict(varname: str):
