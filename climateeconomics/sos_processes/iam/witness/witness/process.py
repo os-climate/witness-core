@@ -53,13 +53,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'climateeconomics.sos_processes.iam', 'witness_wo_energy')
         chain_builders.extend(chain_builders_witness)
 
-        techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT
-
         # if one invest discipline then we need to setup all subprocesses
         # before get them
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=self.use_resources_bool)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=self.use_resources_bool)
         chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling
