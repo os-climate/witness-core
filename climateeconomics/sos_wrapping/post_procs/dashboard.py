@@ -395,12 +395,18 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=['2020-2030', '2030-2040', '2040-2050'],
             y=[13, 13, 13],
-            name='default value (2020-2050)',
+            name='default value (2020-2050) - Y. Caseau, CCEM 2024',
+        ))
+
+        new_chart.add_trace(go.Scatter(
+            x=['2020-2030', '2030-2040', '2040-2050'],
+            y=[25, 25, 25],
+            name='default value (2020-2050) - IRENA 1.5°C scenario',
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
-        new_chart.post_processing_section_name = "KPIs"
+        new_chart.post_processing_section_name = "Key performance indicators"
 
         instanciated_charts.append(new_chart)
 
@@ -439,12 +445,18 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[1.2] * len(range(2020, 2051)),
-            name="default value (2020-2050)",
+            name="default value (2020-2050) - Y. Caseau, CCEM 2024",
+        ))
+
+        new_chart.add_trace(go.Scatter(
+            x=list(range(2020, 2051)),
+            y=[2.7] * len(range(2020, 2051)),
+            name="default value (2020-2050) - IRENA 1.5°C scenario",
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
-        new_chart.post_processing_section_name = "KPIs"
+        new_chart.post_processing_section_name = "Key performance indicators"
 
         instanciated_charts.append(new_chart)
 
@@ -476,12 +488,18 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             new_chart.add_trace(go.Scatter(
                 x=[2020, 2050],
                 y=[16, 48],
-                name="default values (2020 & 2050)",
+                name="default values (2020 & 2050) - Y. Caseau, CCEM 2024",
+            ))
+
+            new_chart.add_trace(go.Scatter(
+                x=list(range(2020, 2051)),
+                y=[80] * len(range(2020, 2051)),
+                name="default values (2020 & 2050) - IRENA 1.5°C scenario",
             ))
 
             new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
-            new_chart.post_processing_section_name = "KPIs"
+            new_chart.post_processing_section_name = "Key performance indicators"
 
             instanciated_charts.append(new_chart)
 
@@ -497,7 +515,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         for i in range(1, len(years)):
             previous_year_gdp = economics_detailed_df.loc[i - 1, GlossaryCore.OutputNetOfDamage]
             current_year_gdp = economics_detailed_df.loc[i, GlossaryCore.OutputNetOfDamage]
-            roi.loc[i, 'yearly_gdp_variation'] = (current_year_gdp - previous_year_gdp) / previous_year_gdp
+            roi.loc[i, 'yearly_gdp_variation'] = current_year_gdp - previous_year_gdp
         roi['value'] = roi['yearly_gdp_variation'] / economics_detailed_df[GlossaryCore.InvestmentsValue] * 100
 
         chart_name = "Return on Investment"
@@ -518,12 +536,12 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[9.3] * len(range(2020, 2051)),
-            name="default value (2020-2050)",
+            name="default value (2020-2050) - Y. Caseau, CCEM 2024",
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
-        new_chart.post_processing_section_name = "KPIs"
+        new_chart.post_processing_section_name = "Key performance indicators"
 
         instanciated_charts.append(new_chart)
 
@@ -566,12 +584,19 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             x=[2.6],
             y=[6.7],
             opacity=1,
-            name="default value",
+            name="default value - Y. Caseau, CCEM 2024",
+        ))
+
+        new_chart.add_trace(go.Bar(
+            x=[3],
+            y=[8],
+            opacity=1,
+            name="default value - Schroders",
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
-        new_chart.post_processing_section_name = "KPIs"
+        new_chart.post_processing_section_name = "Key performance indicators"
 
         instanciated_charts.append(new_chart)
 
