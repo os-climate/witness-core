@@ -98,6 +98,7 @@ class GlossaryCore:
     ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
+    ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
     ConsumptionObjective = "consumption_objective"
 
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
@@ -867,6 +868,7 @@ class GlossaryCore:
     EnergyConsumptionValue = "energy_consumption"
     EnergyConsumptionWithoutRatioValue = "energy_consumption_woratio"
     LandUseRequiredValue = "land_use_required"
+    NonUseCapital = "non_use_capital"
 
     TotalProductionValue = "Total production"
     EnergyProductionDf = {
@@ -1179,6 +1181,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
+            NonUseCapital: ("float", [0, 1e30], False),
         },
         "visibility": "Shared",
         "namespace": NS_WITNESS,

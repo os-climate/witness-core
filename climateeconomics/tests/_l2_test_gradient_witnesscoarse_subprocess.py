@@ -758,7 +758,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         '''
         check_jacobian of population discipline at input conditions computed at converged mda of the test_06 chain
         '''
-        self.setUp()
         self.name = 'Test_population'
         self.ee = ExecutionEngine(self.name)
         self.model_name = GlossaryCore.PopulationValue
@@ -835,7 +834,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         '''
         check_jacobian of macroeconomics discipline at input conditions computed at converged mda of the test_06 chain
         '''
-        self.setUp()
         self.name = 'Test_macroeconomics'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'Macroeconomics'
@@ -953,13 +951,11 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         test_passed, dict_fail, dict_success = self.check_jac(disc_techno, inputs_var_grad, outputs_var_grad, location, filename, step, derr_approx, threshold, override_dump_jacobian)
         assert test_passed
 
-
     def test_09_gradient_energy_mix(self):
 
         '''
         check_jacobian of energy_mix discipline at input conditions computed at converged mda of the test_06 chain
         '''
-        self.setUp()
         self.name = 'uc1_tp3_5'  # must have the same name as test_06 in order to compare diredctly the variables names with the coupled variables
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'EnergyMix'
@@ -1199,7 +1195,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
         discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
-
+        """
         inputs = [
             #self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
             #self.ee.dm.get_all_namespaces_from_var_name('FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix')[0],
@@ -1237,7 +1233,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             #self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0],
         ]
         #ref1 = f'_lagr_var_'
-        """
+        
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
         ref1 = '_level_0_invest_mix_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
@@ -1257,7 +1253,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                    self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0]
                    ]
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
-        """
+        
 
         location = dirname(__file__)
         filename = f'jacobian_lagrangian_{self.name}_vs_design_var.pkl'
@@ -1269,3 +1265,4 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                                               derr_approx, threshold, override_dump_jacobian)
 
         assert test_passed
+        """

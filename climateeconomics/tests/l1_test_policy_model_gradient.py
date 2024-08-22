@@ -150,3 +150,66 @@ class PolicyDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
+
+    def _test_problematic_optim_point(self):
+        self.model_name = 'policy'
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'
+
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        import os
+        import pickle
+        with open(os.path.join("data", "uc4optim.pkl"), "rb") as f:
+            dict_input_optimized_point = pickle.load(f)
+
+        def find_var_in_dict(varname: str):
+            try:
+                varname_in_dict_optimized = list(filter(lambda x: varname in x, dict_input_optimized_point.keys()))[0]
+                var_value = dict_input_optimized_point[varname_in_dict_optimized]
+                return var_value
+            except IndexError:
+                print(varname)
+
+        for checked_input in list(self.inputs_dict.keys()) + self.checked_inputs:
+            checked_inputvarname = checked_input.split('.')[-1]
+            var_value = find_var_in_dict(checked_inputvarname)
+
+            varname_in_input_dicts = list(filter(lambda x: checked_inputvarname in x, self.inputs_dict.keys()))[0]
+
+            self.inputs_dict.update({varname_in_input_dicts: var_value})
+
+        self.inputs_dict.update({
+            f'{self.name}.assumptions_dict': find_var_in_dict('assumptions_dict'),
+            f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),
+        })
+
+        self.ee.load_study_from_input_dict(self.inputs_dict)
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+        for graph in graph_list:
+            # graph.to_plotly().show()
+            pass
+
+        self.check_jacobian(location=dirname(__file__),
+                            filename='jacobian_at_opt_point_uc1.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
+                            inputs=self.checked_inputs,
+                            outputs=self.checked_outputs)

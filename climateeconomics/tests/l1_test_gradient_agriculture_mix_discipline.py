@@ -194,7 +194,8 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
 
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years),
+            GlossaryCore.NonUseCapital: 0.,
         })
                                                         
         inputs_dict = {f'{self.test_name}.{GlossaryCore.YearStart}': self.year_start,

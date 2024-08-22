@@ -534,14 +534,14 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years),
+            GlossaryCore.NonUseCapital: 0.,
         })
         for techno in technos:
             inputs_dict[
                 f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -613,14 +613,14 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years),
+            GlossaryCore.NonUseCapital: 0.,
         })
         for techno in technos:
             inputs_dict[
                 f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -692,23 +692,9 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[key]['is_coupling'] and key not in excluded_elem:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        energy_types = inputs_dict[f"{self.name}.{self.energy_name}.energy_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
-        })
-        for energy in energy_types:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
-
-        for energy in inputs_dict[f"{self.name}.{self.energy_name}.ccs_list"]:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
-
         coupled_outputs.append(f"{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}")
-        coupled_outputs.remove(f"{self.name}.energymix_coarse.{GlossaryEnergy.EnergyCapitalDfValue}")
+        coupled_outputs.remove(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyCapitalDfValue}")
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ConstraintEnergyNonUseCapital}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

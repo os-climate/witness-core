@@ -213,7 +213,8 @@ class Study(StudyManager):
 
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years),
+            GlossaryCore.NonUseCapital: 0.,
         })
 
         values_dict = {
