@@ -99,6 +99,8 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
+    CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
+    clean_energy = "clean_energy"
     ConsumptionObjective = "consumption_objective"
 
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
@@ -1020,9 +1022,9 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
     }
 
-    RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
-    RenewablesEnergyInvestments = {
-        "var_name": RenewablesEnergyInvestmentsValue,
+    CleanEnergyInvestmentsValue = "Clean energy investments [100G$]"
+    CleanEnergyInvestments = {
+        "var_name": CleanEnergyInvestmentsValue,
         "namespace": NS_WITNESS,
         "type": "dataframe",
         "dataframe_descriptor": {

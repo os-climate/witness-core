@@ -20,6 +20,7 @@ from tempfile import gettempdir
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import (
     Study,
 )
@@ -53,7 +54,7 @@ class StartPointOptimTest(unittest.TestCase):
         self.ee.load_study_from_input_dict(values_dict)
         # get design space directly from data manager
         design_space_df = self.ee.dm.get_value('Test.WITNESS_MDO.design_space')
-        design_variables_to_check = ['renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix',
+        design_variables_to_check = [f"{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix",
                                      'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix',
                                      'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
                                      'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
@@ -62,7 +63,7 @@ class StartPointOptimTest(unittest.TestCase):
         invest_value_ccus_2020 = DatabaseWitnessEnergy.InvestCCUS2020.value / 3
         # values we expect for first point are the investments
         expected_values_dict = {
-            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': DatabaseWitnessEnergy.InvestCleanEnergy2020.value,
+            f"{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix": DatabaseWitnessEnergy.InvestCleanEnergy2020.value,
             'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': DatabaseWitnessEnergy.InvestFossil2020.value,
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': invest_value_ccus_2020,
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': invest_value_ccus_2020,

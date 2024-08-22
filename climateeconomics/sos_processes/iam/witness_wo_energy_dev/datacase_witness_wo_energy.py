@@ -302,8 +302,8 @@ class DataStudy():
                 'constraint_energy_non_use_capital'
             ],
             'ftype': [INEQ_CONSTRAINT] + [OBJECTIVE] * 5 + [INEQ_CONSTRAINT],
-            'weight': [1., -1., 0., 0., 0., 1., 1],
-            AGGR_TYPE: [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT] + [AGGR_TYPE_SUM] * 5 + [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT],
+            'weight': [1., -1., 0., 0., 0., 5., 1],
+            AGGR_TYPE: [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT] + [AGGR_TYPE_SUM] * 5 + [FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT],
             'namespace': [GlossaryCore.NS_FUNCTIONS] * 7
         }
 

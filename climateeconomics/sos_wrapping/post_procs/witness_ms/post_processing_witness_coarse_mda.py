@@ -63,7 +63,7 @@ graphs_list = ['Temperature',
                'Utility',
                'Total energy production',
                'Fossil production',
-               'Renewable production',
+               'Clean energy production',
                'Mean energy price',
                'Consumption'
                ]
@@ -544,11 +544,11 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'Renewable production' in graphs_list:
+    if 'Clean energy production' in graphs_list:
 
-        chart_name = 'Total Net Renewable Energy production'
+        chart_name = 'Total Net Clean energy production'
         x_axis_name = 'Years'
-        y_axis_name = 'Renewable net energy production [TWh]'
+        y_axis_name = '[TWh]'
 
         df_paths = [f'{EnergyMix.name}.{GlossaryCore.EnergyProductionDetailedValue}']
         (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
@@ -556,7 +556,7 @@ def post_processings(execution_engine, namespace, filters):
         energy_production_brut_detailed_dict = {}
         for scenario in scenario_list:
             energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
-                scenario]['production renewable (TWh)'].values.tolist()
+                scenario][f'production {GlossaryCore.clean_energy} (TWh)'].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
                                                   chart_name=chart_name,

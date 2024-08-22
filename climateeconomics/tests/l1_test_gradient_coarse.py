@@ -38,12 +38,10 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.test_01_coarse_renewable_techno_discipline_jacobian,
             self.test_02_coarse_fossil_techno_discipline_jacobian,
             self.test_03_coarse_dac_techno_discipline_jacobian,
             self.test_04_coarse_flue_gas_capture_techno_discipline_jacobian,
             self.test_05_coarse_carbon_storage_techno_discipline_jacobian,
-            self.test_06_coarse_renewable_stream_discipline_jacobian,
             self.test_07_coarse_fossil_stream_discipline_jacobian,
         ]
 
@@ -64,20 +62,20 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
     def tearDown(self):
         pass
 
-    def test_01_coarse_renewable_techno_discipline_jacobian(self):
+    def test_01_coarse_clean_energy_simple_techno_discipline_jacobian(self):
         '''
-        Test the gradients of coarse renewable techno
+        Test the gradients of coarse clean energy simple techno
         '''
-        self.techno_name = 'RenewableSimpleTechno'
+        self.techno_name = GlossaryCore.CleanEnergySimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
-                   'ns_renewable': f'{self.name}',
+                   'ns_clean_energy': f'{self.name}',
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.techno_name, mod_path)
 
@@ -150,7 +148,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of coarse fossil techno
         '''
-        self.techno_name = 'FossilSimpleTechno'
+        self.techno_name = GlossaryEnergy.FossilSimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -232,7 +230,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of coarse dac techno
         '''
-        self.techno_name = 'direct_air_capture.DirectAirCaptureTechno'
+        self.techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -314,7 +312,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of coarse flue_gas_capture techno
         '''
-        self.techno_name = 'flue_gas_capture.FlueGasTechno'
+        self.techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -476,21 +474,21 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                             inputs=coupled_inputs,
                             outputs=coupled_outputs, )
 
-    def test_06_coarse_renewable_stream_discipline_jacobian(self):
+    def test_06_coarse_clean_energy_stream_discipline_jacobian(self):
         '''
         Test the gradients of the coarse renewable stream
         '''
-        self.energy_name = 'renewable'
+        self.energy_name = GlossaryCore.clean_energy
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_energy': f'{self.name}',
-                   'ns_renewable': f'{self.name}',
+                   'ns_clean_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.core.stream_type.energy_disciplines.renewable_disc.RenewableDiscipline'
+        mod_path = 'energy_models.core.stream_type.energy_disciplines.clean_energy_disc.CleanEnergyDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.energy_name, mod_path)
 
@@ -560,7 +558,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the coarse fossil stream
         '''
-        self.energy_name = 'fossil'
+        self.energy_name = GlossaryEnergy.fossil
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_fossil': f'{self.name}',

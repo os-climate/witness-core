@@ -53,8 +53,8 @@ class Study(StudyOptimInvestDistrib):
 
         # Deactivate renewables
         var_to_deactive_and_set_to_lower_bound_value = [
-            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix',
-            'renewable_RenewableSimpleTechno_utilization_ratio_array',
+            f"{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix",
+            f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array",
         ]
 
         serie_index = dspace['variable'].isin(var_to_deactive_and_set_to_lower_bound_value)
