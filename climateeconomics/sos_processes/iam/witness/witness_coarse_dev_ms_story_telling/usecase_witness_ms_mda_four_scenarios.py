@@ -188,19 +188,4 @@ class Study(StudyMSmdaTippingPoint35):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-
-
-    from sostrades_core.tools.post_processing.post_processing_factory import (
-        PostProcessingFactory,
-    )
-    ppf = PostProcessingFactory()
-    ns = f'usecase_witness_ms_mda_four_scenarios.mda_scenarios.{Study.USECASE2}.GHGEmissions'
-    filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
-
-    graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
-    for graph in graph_list:
-        graph.to_plotly().show()
-
-    uc_cls.specific_check_outputs()
+    uc_cls.test()

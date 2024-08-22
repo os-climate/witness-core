@@ -268,20 +268,17 @@ class MacroEconomics:
         if damage_to_productivity= True add damage to the the productivity
         if  not: productivity evolves independently from other variables (except productivity growthrate)
         """
-        p_w_d = self.productivity_start
         prod_wo_d = self.productivity_start
-        productivity_w_damage_list = [self.productivity_start]
         productivity_wo_damage_list = [self.productivity_start]
 
         damage_fraction_output = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         productivity_growth = self.economics_df[GlossaryCore.ProductivityGrowthRate].values
 
         for prod_growth, damage_frac_year in zip(productivity_growth[:-1], damage_fraction_output[1:]):
-            p_w_d *= (1 - damage_frac_year * self.frac_damage_prod) / (1 - prod_growth / (5 / self.time_step))
             prod_wo_d = prod_wo_d / (1 - prod_growth / (5 / self.time_step))
-
-            productivity_w_damage_list.append(p_w_d)
             productivity_wo_damage_list.append(prod_wo_d)
+
+        productivity_w_damage_list = np.array(productivity_wo_damage_list) * (1 - damage_fraction_output)
 
         self.economics_df[GlossaryCore.ProductivityWithDamage] = productivity_w_damage_list
         self.economics_df[GlossaryCore.ProductivityWithoutDamage] = productivity_wo_damage_list
@@ -721,27 +718,9 @@ class MacroEconomics:
         """derivative of productivity with damage wrt damage frac output"""
         nb_years = len(self.years_range)
 
-        d_productivity_w_damage_d_damage_frac_output = self._null_derivative()
-        p_productivity_gr = self.economics_detail_df[GlossaryCore.ProductivityGrowthRate].values
-        p_productivity = self.economics_detail_df[GlossaryCore.ProductivityWithDamage].values
+        productivity_wo_damage = self.economics_detail_df[GlossaryCore.ProductivityWithoutDamage].values
 
-        # first line stays at zero since derivatives of initial values are zero
-        for i in range(1, nb_years):
-            d_productivity_w_damage_d_damage_frac_output[i, i] = (1 - self.frac_damage_prod * self.damage_fraction_output_df.loc[
-                self.years_range[i], GlossaryCore.DamageFractionOutput]) * \
-                                                        d_productivity_w_damage_d_damage_frac_output[i - 1, i] / (
-                                                                    1 - (p_productivity_gr[i - 1] /
-                                                                         (5 / self.time_step))) - \
-                                                        self.frac_damage_prod * \
-                                                        p_productivity[i - 1] / \
-                                                        (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
-            for j in range(1, i):
-                d_productivity_w_damage_d_damage_frac_output[i, j] = (1 - self.frac_damage_prod *
-                                                             self.damage_fraction_output_df.loc[self.years_range[
-                                                                                                    i], GlossaryCore.DamageFractionOutput]) * \
-                                                            d_productivity_w_damage_d_damage_frac_output[i - 1, j] / \
-                                                            (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
-        return d_productivity_w_damage_d_damage_frac_output
+        return np.diag(-productivity_wo_damage)
 
     def d_productivity_d_damage_frac_output(self):
         """gradient for productivity for damage_df"""
@@ -939,6 +918,7 @@ class MacroEconomics:
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
 
         d_gross_output_d_dfo =  np.diag(gross_output / productivity) @ self.d_productivity_d_damage_frac_output()
+        d_gross_output_d_dfo[0,:] = 0.
 
         if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             factor = (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)

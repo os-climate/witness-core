@@ -461,7 +461,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         coupling_disc = self.ee.root_process.proxy_disciplines[0]
 
         inputs = [
-            #'Test.WITNESS_Eval.WITNESS.EnergyMix.renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix', #OK lagr
+            #'Test.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryCore.clean_energy}.CleanEnergySimpleTechno.renewable_RenewableSimpleTechno_array_mix', #OK lagr
             'Test.WITNESS_Eval.WITNESS.EnergyMix.fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix',
             ##'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
             ##'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
@@ -713,13 +713,14 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
 
         inputs = [
-            self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr
+            self.ee.dm.get_all_namespaces_from_var_name(
+                f'{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix')[0], #OK lagr
             self.ee.dm.get_all_namespaces_from_var_name('FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix')[0],
             ##self.ee.dm.get_all_namespaces_from_var_name('DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix')[0],
             ##self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
             ##self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
             self.ee.dm.get_all_namespaces_from_var_name('fossil_FossilSimpleTechno_utilization_ratio_array')[0],
-            self.ee.dm.get_all_namespaces_from_var_name('renewable_RenewableSimpleTechno_utilization_ratio_array')[0], #OK lagr
+            self.ee.dm.get_all_namespaces_from_var_name(f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array")[0], #OK lagr
             self.ee.dm.get_all_namespaces_from_var_name('share_non_energy_invest_ctrl')[0],
             ]
         #ref1 = f'_lagr_var_'
@@ -995,7 +996,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # list inputs and outputs for the gradient computation
         #the default inputs and outputs checked in the l1 tests are:
         l1_inputs_checked = []
-        energy_list = [GlossaryEnergy.renewable, GlossaryEnergy.fossil]
+        energy_list = [GlossaryCore.clean_energy, GlossaryEnergy.fossil]
 
         l1_inputs_checked.extend([
             f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in energy_list
@@ -1203,7 +1204,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             #self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
             #self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
             #self.ee.dm.get_all_namespaces_from_var_name('fossil_FossilSimpleTechno_utilization_ratio_array')[0],
-            #self.ee.dm.get_all_namespaces_from_var_name('renewable_RenewableSimpleTechno_utilization_ratio_array')[0], #OK lagr
+            #self.ee.dm.get_all_namespaces_from_var_name(f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array")[0], #OK lagr
             #self.ee.dm.get_all_namespaces_from_var_name('carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array')[0],
             #self.ee.dm.get_all_namespaces_from_var_name('carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array')[0],
             #self.ee.dm.get_all_namespaces_from_var_name('carbon_storage.CarbonStorageTechno_utilization_ratio_array')[0],

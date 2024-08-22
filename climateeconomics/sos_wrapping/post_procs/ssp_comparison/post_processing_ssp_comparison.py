@@ -252,7 +252,7 @@ def post_processing_filters(execution_engine, namespace):
     # if renewable not in energy list, we are not in coarse 
     chart_l = CHART_LIST
 
-    if 'renewable' not in energy_list:
+    if GlossaryCore.clean_energy not in energy_list:
         # if not in coarse, add primary energy chart
         chart_l = chart_l + [PRIMARY_ENERGY]
 
@@ -383,7 +383,7 @@ def post_processings(execution_engine, namespace, filters):
     # if renewable not in energy list, we are not in coarse 
     chart_l = CHART_LIST
 
-    if 'renewable' not in energy_list:
+    if GlossaryCore.clean_energy not in energy_list:
         # if not in coarse, add primary energy chart
         chart_l = chart_l + [PRIMARY_ENERGY]
 

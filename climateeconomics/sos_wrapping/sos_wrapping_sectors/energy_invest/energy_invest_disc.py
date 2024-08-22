@@ -52,7 +52,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
-        GlossaryCore.RenewablesEnergyInvestmentsValue: GlossaryCore.RenewablesEnergyInvestments,
+        GlossaryCore.CleanEnergyInvestmentsValue: GlossaryCore.CleanEnergyInvestments,
         GlossaryCore.EnergyInvestmentsValue: GlossaryCore.EnergyInvestments,
     }
 
@@ -65,7 +65,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
         self.model.compute(inputs)
 
         dict_values = {
-            GlossaryCore.RenewablesEnergyInvestmentsValue: self.model.added_renewables_investments,
+            GlossaryCore.CleanEnergyInvestmentsValue: self.model.added_renewables_investments,
             GlossaryCore.EnergyInvestmentsValue: self.model.energy_investments,
         }
         
@@ -102,7 +102,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         raw_invests = self.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsWoTaxValue)[GlossaryCore.EnergyInvestmentsWoTaxValue].values * 1000
-        added_invests_renawables = self.get_sosdisc_outputs(GlossaryCore.RenewablesEnergyInvestmentsValue)[GlossaryCore.InvestmentsValue].values * 100
+        added_invests_renawables = self.get_sosdisc_outputs(GlossaryCore.CleanEnergyInvestmentsValue)[GlossaryCore.InvestmentsValue].values * 100
         total_energy_invests = self.get_sosdisc_outputs(GlossaryCore.EnergyInvestmentsValue)[GlossaryCore.EnergyInvestmentsValue].values * 100
         years = list(self.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsWoTaxValue)[GlossaryCore.Years].values)
 
