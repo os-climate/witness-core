@@ -55,9 +55,6 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
     }
     
     default_earlier_energy_eff = pd.DataFrame()
-    default_years = np.arange(2000, GlossaryCore.YearStartDefault + 1)
-    default_weight = np.array([1]*len(default_years))
-    default_weight_df = pd.DataFrame({GlossaryCore.Years: default_years, 'weight': default_weight})
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
@@ -91,7 +88,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                          GlossaryCore.UsableCapital: ('float', None, False),
                                                          GlossaryCore.Output: ('float', None, False),
                                                          GlossaryCore.OutputNetOfDamage: ('float', None, False),}},
-               'weights_df': {'type': 'dataframe', 'unit': '-', 'default' : default_weight_df,
+               'weights_df': {'type': 'dataframe', 'unit': '-',
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                               'weight': ('float', None, True)},
                                                               'dataframe_edition_locked': False, },
@@ -112,10 +109,18 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.objectives_model = ObjectivesModel(inputs_dict)
 
+    def update_default_values(self):
+        if GlossaryCore.YearStart in self.get_data_in() and GlossaryCore.YearEnd in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd])
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                default_weight_df = pd.DataFrame({GlossaryCore.Years: years, 'weight': 1.})
+                self.update_default_value('weights_df', 'in', default_weight_df)
+
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
         dynamic_outputs = {}
-
+        self.update_default_values()
         if GlossaryCore.SectorListValue in self.get_data_in():
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             for sector in sector_list:

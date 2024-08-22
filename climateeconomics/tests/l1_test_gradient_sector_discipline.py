@@ -18,7 +18,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from pandas import read_csv
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -38,17 +37,11 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.nb_per = round((self.year_end - self.year_start) / self.time_step + 1)
         # -------------------------
-        # input
-        data_dir = join(dirname(__file__), 'data')
-
-        total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
-        total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
         # multiply ageworking pop by employment rate and by % in services
-        workforce = total_workforce_df[GlossaryCore.Population1570] * 0.659 * 0.509
         self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                          GlossaryCore.SectorIndustry: workforce,
-                                          GlossaryCore.SectorServices: workforce,
-                                          GlossaryCore.SectorAgriculture: workforce})
+                                          GlossaryCore.SectorIndustry: np.linspace(1800., 2200., len(self.years)),
+                                          GlossaryCore.SectorServices: np.linspace(1800., 2200., len(self.years)),
+                                          GlossaryCore.SectorAgriculture: np.linspace(1800., 2200., len(self.years))})
 
         self.energy_supply_df = pd.DataFrame({
             GlossaryCore.Years: self.years,

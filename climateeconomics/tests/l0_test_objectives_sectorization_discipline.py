@@ -31,7 +31,7 @@ class ObjectivesTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.year_start = 2000
-        self.year_end = GlossaryCore.YearStartDefault
+        self.year_end = 2020
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
         self.years = np.arange(self.year_start, self.year_end+1)
@@ -39,13 +39,10 @@ class ObjectivesTestCase(unittest.TestCase):
         # Test With a GDP and capital that grows at 2%
         gdp_year_start = 130.187
         capital_year_start = 376.6387
-        gdp_serie = np.zeros(self.nb_per)
-        capital_serie = np.zeros(self.nb_per)
-        gdp_serie[0] =gdp_year_start
-        capital_serie[0] = capital_year_start
-        for year in np.arange(1, self.nb_per):
-            gdp_serie[year] = gdp_serie[year - 1] * 1.02
-            capital_serie[year] = capital_serie[year - 1] * 1.02
+
+        gdp_serie = gdp_year_start * (1.02 ** np.arange(self.nb_per))
+        capital_serie = capital_year_start * (1.02 ** np.arange(self.nb_per))
+
         #for each sector share of total gdp 2020
         gdp_agri = gdp_serie * 6.775773/100
         gdp_indus = gdp_serie * 28.4336/100

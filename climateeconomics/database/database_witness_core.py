@@ -413,14 +413,14 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 8, 14),
     )
 
-    MacroProductivityStart = ColectedData(
-        value=0.27357,
+    MacroProductivityStart = HeavyCollectedData(
+        value= join(data_folder, "productivity.csv"),
         unit="-",
         description="Productivity factor at year start",
-        year_value=2020,
+        column_to_pick="productivity",
+        source="Witness MDA scenario starting in 2020, scenario business as usual fossil 40% with damage. Took prod with damage",
         link="",
         critical_at_year_start=True,
-        source="",
         last_update_date=date(2024, 7, 25),
     )
 
@@ -432,28 +432,28 @@ class DatabaseWitnessCore:
         link=["https://data.worldbank.org/indicator/NY.GDP.MKTP.PP.CD", "https://www.usinflationcalculator.com/"],
         critical_at_year_start=True,
         source="World Bank",
-        last_update_date=date(2024, 7, 25),
+        last_update_date=date(2024, 8, 21),
     )
 
-    MacroNonEnergyCapitalStart = ColectedData(
-        value=360.5487346,
-        unit="G$",
-        description="Capital at year start",
-        year_value=2020,
+    MacroNonEnergyCapitalStart = HeavyCollectedData(
+        value= join(data_folder, "capitals.csv"),
+        unit="G$ constant $ 2020",
+        description="Global energy capital ",
         link="",
         critical_at_year_start=True,
         source="",
-        last_update_date=date(2024, 7, 25),
+        column_to_pick="Capital non energy",
+        last_update_date=date(2024, 8, 21),
     )
 
-    MacroProductivityGrowthStart = ColectedData(
-        value=0.004781,
+    MacroProductivityGrowthStart = HeavyCollectedData(
+        value= join(data_folder, "productivity.csv"),
         unit="-",
         description="Productivity growth at year start",
-        year_value=2020,
         link="",
         critical_at_year_start=True,
-        source="",
+        column_to_pick="productivity_gr",
+        source="Witness MDA scenario starting in 2020, scenario business as usual fossil 40% with damage.",
         last_update_date=date(2024, 7, 25),
     )
 
