@@ -310,20 +310,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])
             years = np.arange(year_start, year_end + 1)
-            intermediate_point = 30
-            CO2_tax_efficiency = np.concatenate(
-                (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
-
-            co2_tax_efficiency_default = pd.DataFrame({GlossaryCore.Years: years,
-                                                       GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
             share_non_energy_investment = pd.DataFrame(
                 {GlossaryCore.Years: years,
                  GlossaryCore.ShareNonEnergyInvestmentsValue: [27.0 - 2.6] * len(years)})
 
             self.set_dynamic_default_values(
-                {GlossaryCore.CO2TaxEfficiencyValue: co2_tax_efficiency_default,
-                 GlossaryCore.ShareNonEnergyInvestmentsValue: share_non_energy_investment, })
+                {GlossaryCore.ShareNonEnergyInvestmentsValue: share_non_energy_investment, })
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
