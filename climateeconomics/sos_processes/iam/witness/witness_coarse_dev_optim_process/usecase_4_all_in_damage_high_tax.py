@@ -38,7 +38,7 @@ class Study(StudyOptimInvestDistrib):
 
         # update fossil invest & utilization ratio lower bound to not be too low
         min_invest = 1.
-        max_invest = 3000.
+        max_invest = 8000.
         dspace_invests = {
             'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [10., 10., 5000., True],
             'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [300., 300., max_invest, True],
