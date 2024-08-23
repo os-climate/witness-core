@@ -146,7 +146,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'namespace': 'ns_forest'},
         Forest.DEFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 8000,
                                            'namespace': 'ns_forest'},
-        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': DatabaseWitnessCore.ForestEmissions.get_value_at_year(GlossaryCore.YearStartDefault),
+        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2',
                                        'namespace': 'ns_forest', },
         Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000,
                             'namespace': 'ns_forest'},
@@ -240,6 +240,16 @@ class ForestDiscipline(ClimateEcoDiscipline):
     }
 
     FOREST_CHARTS = 'Forest chart'
+
+    def setup_sos_disciplines(self):
+        self.update_default_values()
+
+    def update_default_values(self):
+        disc_in = self.get_data_in()
+        if disc_in is not None and GlossaryCore.YearStart in disc_in:
+            year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+            if year_start is not None:
+                self.update_default_value(Forest.INITIAL_CO2_EMISSIONS, 'in', DatabaseWitnessCore.ForestEmissions.get_value_at_year(year_start))
 
     def init_execution(self):
 

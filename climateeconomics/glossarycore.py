@@ -612,7 +612,6 @@ class GlossaryCore:
         "type": "float",
         "unit": "G$",
         "visibility": "Shared",
-        "default": DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(YearStartDefault),
         "namespace": NS_WITNESS,
         "user_level": 2,
     }

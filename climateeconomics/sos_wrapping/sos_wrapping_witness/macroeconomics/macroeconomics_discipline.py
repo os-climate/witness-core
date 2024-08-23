@@ -62,9 +62,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'productivity_start': {'type': 'float', 'default': DatabaseWitnessCore.MacroProductivityStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2, 'unit': '-'},
+        'productivity_start': {'type': 'float', 'user_level': 2, 'unit': '-'},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
-        'capital_start_non_energy': {'type': 'float', 'unit': 'G$', 'default': DatabaseWitnessCore.MacroNonEnergyCapitalStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2},
+        'capital_start_non_energy': {'type': 'float', 'unit': 'G$', 'user_level': 2},
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
 
@@ -76,7 +76,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                                                 'float', None, False),
                                                                             }
                                                    },
-        'productivity_gr_start': {'type': 'float', 'default': DatabaseWitnessCore.MacroProductivityGrowthStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2, 'unit': '-'},
+        'productivity_gr_start': {'type': 'float', 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '-'},
         # Usable capital
         'capital_utilisation_ratio': {'type': 'float', 'default': 0.8, 'user_level': 3, 'unit': '-'},
@@ -173,9 +173,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_end = None
             if GlossaryCore.YearEnd in self.get_data_in() and GlossaryCore.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd])
-                if year_start is not None and year_end is not None:
-                    default_val = DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.get_all_cols_between_years(year_start, year_end)
-                    self.update_default_value(GlossaryCore.SectorEnergyConsumptionPercentageDfName, 'in', default_val)
+
             if 'assumptions_dict' in self.get_data_in():
                 assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
                 compute_gdp: bool = assumptions_dict['compute_gdp']
@@ -226,8 +224,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
                 # make sure the namespaces references are good in case shared namespaces were reassociated
                 sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
-                dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,
-                                        })
+                dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,})
 
                 # all sections gdp df
 
@@ -306,17 +303,25 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         """
         Update all default dataframes with years
         """
-        if GlossaryCore.YearStart in self.get_data_in():
-            year_start, year_end = self.get_sosdisc_inputs(
-                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
-            years = np.arange(year_start, year_end + 1)
+        if self.get_data_in() is not None:
+            if GlossaryCore.YearEnd in self.get_data_in() and GlossaryCore.YearStart in self.get_data_in():
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd])
+                if year_start is not None:
+                    self.update_default_value(GlossaryCore.InitialGrossOutput['var_name'], 'in', DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(year_start))
+                    self.update_default_value('productivity_start', 'in', DatabaseWitnessCore.MacroProductivityStart.get_value_at_year(year_start))
+                    self.update_default_value('productivity_gr_start', 'in', DatabaseWitnessCore.MacroProductivityGrowthStart.get_value_at_year(year_start))
+                    self.update_default_value('capital_start_non_energy', 'in', DatabaseWitnessCore.MacroNonEnergyCapitalStart.get_value_at_year(year_start))
+                if year_start is not None and year_end is not None:
+                    default_val = DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.get_all_cols_between_years(year_start, year_end)
+                    self.update_default_value(GlossaryCore.SectorEnergyConsumptionPercentageDfName, 'in', default_val)
 
-            share_non_energy_investment = pd.DataFrame(
-                {GlossaryCore.Years: years,
-                 GlossaryCore.ShareNonEnergyInvestmentsValue: [27.0 - 2.6] * len(years)})
+                    years = np.arange(year_start, year_end + 1)
+                    share_non_energy_investment = pd.DataFrame(
+                        {GlossaryCore.Years: years,
+                         GlossaryCore.ShareNonEnergyInvestmentsValue: [27.0 - 2.6] * len(years)})
 
-            self.set_dynamic_default_values(
-                {GlossaryCore.ShareNonEnergyInvestmentsValue: share_non_energy_investment, })
+                    self.set_dynamic_default_values(
+                        {GlossaryCore.ShareNonEnergyInvestmentsValue: share_non_energy_investment, })
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
