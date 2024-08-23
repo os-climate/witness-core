@@ -544,8 +544,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         # -- compute
         self.crop_model.compute()
 
-
-
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
             'total_food_land_surface': self.crop_model.total_food_land_surface,

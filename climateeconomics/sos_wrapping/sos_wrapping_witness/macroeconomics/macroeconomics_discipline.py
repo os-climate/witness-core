@@ -130,7 +130,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.PandemicParamDfValue: GlossaryCore.PandemicParamDf,
         GlossaryCore.SectorEnergyConsumptionPercentageDfName: GlossaryCore.SectorEnergyConsumptionPercentageDf,
-        GlossaryCore.ShareResidentialEnergyDfValue: GlossaryCore.ShareResidentialEnergyDf,
     }
 
     DESC_OUT = {
@@ -559,11 +558,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             self.macro_model.d_residential_energy_consumption_d_energy_prod())
-
-
-
-
-
 
     def get_chart_filter_list(self):
 

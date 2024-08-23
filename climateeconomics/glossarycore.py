@@ -291,7 +291,6 @@ class GlossaryCore:
         "unit": "%",
         "description": "Percentage of the energy consumption for each sector",
         "dynamic_dataframe_columns": True,
-        "default": DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.value,
     }
 
     SectionNonEnergyEmissionGdpDf = {
@@ -791,7 +790,7 @@ class GlossaryCore:
     PopulationStart = "population_start"
     PopulationStartDf = {
         "var_name": PopulationStart,
-        'type': 'dataframe', 'default': DatabaseWitnessCore.PopulationYearStart.get_df_at_year(YearStartDefault),
+        'type': 'dataframe',
                     'unit': 'millions of people',
                     'dataframe_descriptor': {"0-4": ("float", [0, 1e30], True),
                                              "5-9": ("float", [0, 1e30], True),
