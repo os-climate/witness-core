@@ -358,7 +358,7 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
     else:
         raise Exception("forcing model not in available models")
 
-    years = list(temperature_df.index)
+    years = list(temperature_df[GlossaryCore.Years].values)
 
     year_start = years[0]
     year_end = years[len(years) - 1]

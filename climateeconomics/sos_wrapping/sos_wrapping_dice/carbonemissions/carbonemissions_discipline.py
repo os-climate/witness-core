@@ -107,6 +107,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
         emissions_df = self.get_sosdisc_outputs('emissions_df')
         emissions_df = resize_df(emissions_df)
+        years = list(emissions_df[GlossaryCore.Years].values)
 
         if 'carbon emission' in chart_list:
 
@@ -114,8 +115,6 @@ class CarbonemissionsDiscipline(SoSWrapp):
             #emissions_df = discipline.get_sosdisc_outputs('emissions_df')
 
             total_emission = emissions_df['total_emissions']
-
-            years = list(emissions_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -151,8 +150,6 @@ class CarbonemissionsDiscipline(SoSWrapp):
             emissions_df = self.get_sosdisc_outputs('emissions_df')
 
             total_emission = emissions_df['total_emissions']
-
-            years = list(total_emission.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

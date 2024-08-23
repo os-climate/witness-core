@@ -264,12 +264,12 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
         ghg_cycle_df = deepcopy(self.get_sosdisc_outputs('ghg_cycle_df_detailed'))
+        years = list(ghg_cycle_df[GlossaryCore.Years].values)
         global_warming_potential_df = self.get_sosdisc_outputs(GlossaryCore.GlobalWarmingPotentialdDfValue)
 
         if 'Atmospheric concentrations' in chart_list:
 
             ppm = ghg_cycle_df[GlossaryCore.CO2Concentration]
-            years = list(ppm.index)
             chart_name = 'CO2 atmospheric concentrations [ppm]'
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -309,7 +309,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             ppm = ghg_cycle_df[GlossaryCore.CH4Concentration]
-            years = list(ppm.index)
             chart_name = 'CH4 atmospheric concentrations [ppb]'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'parts per billion',
                                                  chart_name=chart_name)
@@ -329,7 +328,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             ppm = ghg_cycle_df[GlossaryCore.N2OConcentration]
-            years = list(ppm.index)
             chart_name = 'N2O atmospheric concentrations [ppb]'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'parts per billion',
                                                  chart_name=chart_name)
@@ -349,7 +347,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.ExtraCO2EqSincePreIndustrialValue in chart_list:
-            years = list(ghg_cycle_df[GlossaryCore.Years].values)
             chart_name = GlossaryCore.ExtraCO2EqSincePreIndustrialValue
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ExtraCO2EqSincePreIndustrialDf['unit'],
@@ -371,7 +368,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.GlobalWarmingPotentialdDfValue in chart_list:
-            years = list(global_warming_potential_df[GlossaryCore.Years].values)
             gwp_pre_indus = self.get_sosdisc_outputs('pre_indus_gwp_20')
             chart_name = f"{GlossaryCore.GlobalWarmingPotentialdDfValue} {GlossaryCore.YearBasis20}"
 
@@ -397,7 +393,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.GlobalWarmingPotentialdDfValue in chart_list:
-            years = list(global_warming_potential_df[GlossaryCore.Years].values)
             gwp_pre_indus = self.get_sosdisc_outputs('pre_indus_gwp_100')
             chart_name = f"{GlossaryCore.GlobalWarmingPotentialdDfValue} {GlossaryCore.YearBasis100}"
 

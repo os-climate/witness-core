@@ -57,7 +57,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     _maturity = 'Research'
-    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
@@ -597,6 +596,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         economics_detail_df = deepcopy(
             self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue))
+        capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
         capital_utilisation_ratio, max_capital_utilisation_ratio = deepcopy(
             self.get_sosdisc_inputs(['capital_utilisation_ratio', 'max_capital_utilisation_ratio']))
         workforce_df = deepcopy(
@@ -629,7 +629,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             legend = {GlossaryCore.InvestmentsValue: 'Investments',
                       GlossaryCore.Consumption: 'Consumption', }
 
-            years = list(economics_detail_df.index)
             chart_name = 'Breakdown of net output'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
@@ -669,7 +668,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             all_damages = damage_detailed_df[GlossaryCore.EstimatedDamages].values
-            years = list(damage_detailed_df[GlossaryCore.Years].values)
             chart_name = 'Breakdown of damages' + ' (not applied)' * (not compute_climate_impact_on_gdp)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
@@ -704,7 +702,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyInvestmentsValue: 'Energy',
                       GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy sectors', }
 
-            years = list(economics_detail_df.index)
 
             chart_name = 'Breakdown of Investments'
 
@@ -732,7 +729,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
             first_serie = capital_df[GlossaryCore.NonEnergyCapital]
             second_serie = capital_df[GlossaryCore.UsableCapital]
-            years = list(capital_df.index)
 
             chart_name = 'Productive capital stock and usable capital for production'
 
@@ -770,11 +766,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.Capital in chart_list:
             energy_capital_df = self.get_sosdisc_inputs(GlossaryCore.EnergyCapitalDfValue)
-            capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
+
             first_serie = capital_df[GlossaryCore.NonEnergyCapital]
             second_serie = energy_capital_df[GlossaryCore.Capital]
             third_serie = capital_df[GlossaryCore.Capital]
-            years = list(capital_df.index)
 
             chart_name = 'Capital stock per year'
 
@@ -798,8 +793,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.EmploymentRate in chart_list:
-            years = list(workforce_df.index)
-
             chart_name = 'Employment rate'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'employment rate',
@@ -817,7 +810,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.Workforce in chart_list:
             working_age_pop_df = self.get_sosdisc_inputs(
                 GlossaryCore.WorkingAgePopulationDfValue)
-            years = list(workforce_df.index)
 
             chart_name = 'Workforce'
 
@@ -840,8 +832,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             to_plot = {
                 GlossaryCore.ProductivityWithoutDamage: 'Without damages',
                 GlossaryCore.ProductivityWithDamage: 'With damages'}
-            compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
-            years = list(economics_detail_df.index)
             extra_name = 'damages applied' if damages_to_productivity else 'damages not applied'
             chart_name = f'Total Factor Productivity ({extra_name})'
 
@@ -864,7 +854,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             to_plot = [GlossaryCore.EnergyEfficiency]
 
-            years = list(capital_df.index)
 
             chart_name = 'Capital energy efficiency'
 
@@ -886,7 +875,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.OutputGrowth in chart_list:
             to_plot = [GlossaryCore.OutputGrowth]
             legend = {GlossaryCore.OutputGrowth: 'output growth rate from WITNESS'}
-            years = list(economics_detail_df.index)
             chart_name = 'Output growth rate'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Output  growth rate',
@@ -906,8 +894,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             legend = {sector: sector for sector in sectors_list}
             # Graph with distribution per sector in absolute value
             legend[GlossaryCore.OutputNetOfDamage] = 'Total GDP net of damage'
-
-            years = list(sector_gdp_df[GlossaryCore.Years])
 
             chart_name = 'Breakdown of GDP per sector [T$]'
 
@@ -962,7 +948,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
               GlossaryCore.Consumption: 'Consumption',
               }
 
-    years = list(economics_detail_df.index)
+    years = list(economics_detail_df[GlossaryCore.Years].values)
 
     chart_name = 'Breakdown of GDP per year'
 
