@@ -32,6 +32,7 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.population_model import Population
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -132,7 +133,18 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         self.model = Population(in_dict)
 
+    def update_default_values(self):
+        """
+        Update all default dataframes with years
+        """
+        if self.get_data_in() is not None:
+            if GlossaryCore.YearStart in self.get_data_in():
+                year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+                if year_start is not None:
+                    self.update_default_value(GlossaryCore.PopulationStart, 'in', DatabaseWitnessCore.PopulationYearStart.get_df_at_year(year_start))
+
     def setup_sos_disciplines(self):  # type: (...) -> None
+        self.update_default_values()
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])

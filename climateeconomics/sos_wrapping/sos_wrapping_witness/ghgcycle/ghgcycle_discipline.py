@@ -68,10 +68,10 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'co2_pre_indus_conc': {'type': 'float', 'unit': 'ppm', 'default': DatabaseWitnessCore.CO2PreIndustrialConcentration.value, 'user_level': 2},
         'ch4_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default': 1/12, 'user_level': 2},
         'ch4_pre_indus_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.CH4PreIndustrialConcentration.value, 'user_level': 2},
-        'ch4_init_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.HistoricCH4Concentration.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2},
+        'ch4_init_conc': {'type': 'float', 'unit': 'ppb', 'user_level': 2},
         'n2o_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default':  1/114, 'user_level': 2},
         'n2o_pre_indus_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.N2OPreIndustrialConcentration.value, 'user_level': 2},
-        'n2o_init_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.HistoricN2OConcentration.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2},
+        'n2o_init_conc': {'type': 'float', 'unit': 'ppb', 'user_level': 2},
         'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         'minimum_ppm_limit': {'type': 'float', 'unit': 'ppm', 'default': 250, 'user_level': 2},
         'minimum_ppm_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
@@ -102,6 +102,17 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'pre_indus_gwp_20': {'type': 'float', 'unit': 'GtCO2Eq'},
         'pre_indus_gwp_100': {'type': 'float', 'unit': 'GtCO2Eq'},
     }
+
+    def setup_sos_disciplines(self):
+        self.update_default_values()
+
+    def update_default_values(self):
+        disc_in = self.get_data_in()
+        if disc_in is not None and GlossaryCore.YearStart in disc_in:
+            year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+            if year_start is not None:
+                self.update_default_value("n2o_init_conc", 'in', DatabaseWitnessCore.HistoricN2OConcentration.get_value_at_year(year_start))
+                self.update_default_value("ch4_init_conc", 'in', DatabaseWitnessCore.HistoricCH4Concentration.get_value_at_year(year_start))
 
     def init_execution(self):
         param_in = self.get_sosdisc_inputs()

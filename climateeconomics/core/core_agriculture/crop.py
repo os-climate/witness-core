@@ -501,18 +501,18 @@ class Crop():
         # pylint: enable=no-member
 
         # Compute and add transport
-        self.cost_details['Transport ($/MWh)'] = self.transport_cost['transport'] * \
-                                                 self.transport_margin['margin'] / 100.0 / self.data_fuel_dict[
+        self.cost_details['Transport ($/MWh)'] = self.transport_cost['transport'].values * \
+                                                 self.transport_margin['margin'].values / 100.0 / self.data_fuel_dict[
                                                      'calorific_value']
 
         # Crop amort
-        self.cost_details['Crop amort ($/MWh)'] = self.cost_details['Crop_factory_amort'] + self.cost_details[
-            'Transport ($/MWh)'] + \
-                                                  self.cost_details['Energy costs ($/MWh)']
+        self.cost_details['Crop amort ($/MWh)'] = self.cost_details['Crop_factory_amort'].values + self.cost_details[
+            'Transport ($/MWh)'].values + self.cost_details['Energy costs ($/MWh)'].values
 
         # Total cost (MWh)
-        self.cost_details['Total ($/MWh)'] = self.cost_details['Energy costs ($/MWh)'] + self.cost_details[
-            'Factory ($/MWh)'] + self.cost_details['Transport ($/MWh)']
+        self.cost_details['Total ($/MWh)'] = self.cost_details['Energy costs ($/MWh)'].values + \
+                                             self.cost_details['Factory ($/MWh)'].values\
+                                             + self.cost_details['Transport ($/MWh)'].values
 
         # Add margin in %
         self.cost_details['Total ($/MWh)'] *= self.margin.loc[self.margin[GlossaryCore.Years]
@@ -522,16 +522,16 @@ class Crop():
                                                                    <= self.cost_details[GlossaryCore.Years].max()][
                                                        'margin'].values / 100.0
         # Total cost (t)
-        self.cost_details['Total ($/t)'] = self.cost_details['Total ($/MWh)'] * self.data_fuel_dict['calorific_value']
-        self.techno_prices['Crop'] = self.cost_details['Total ($/MWh)']
+        self.cost_details['Total ($/t)'] = self.cost_details['Total ($/MWh)'].values * self.data_fuel_dict['calorific_value']
+        self.techno_prices['Crop'] = self.cost_details['Total ($/MWh)'].values
 
         if 'CO2_taxes_factory' in self.cost_details:
-            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)'] - \
-                                                 self.cost_details['CO2_taxes_factory']
+            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)'].values - \
+                                                 self.cost_details['CO2_taxes_factory'].values
         else:
-            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)']
+            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)'].values
 
-        price_crop = self.cost_details['Total ($/t)'] / \
+        price_crop = self.cost_details['Total ($/t)'].values / \
                      (1 + self.techno_infos_dict['residue_density_percentage'] *
                       (self.techno_infos_dict['crop_residue_price_percent_dif'] - 1))
 
