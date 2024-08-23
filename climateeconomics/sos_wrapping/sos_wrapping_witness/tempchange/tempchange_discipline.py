@@ -223,16 +223,16 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
+        temperature_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.TemperatureDetailedDfValue))
+        years = list(temperature_df[GlossaryCore.Years].values)
+
         if 'Temperature evolution' in chart_list:
 
             to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
-            temperature_df = deepcopy(
-                self.get_sosdisc_outputs(GlossaryCore.TemperatureDetailedDfValue))
+
 
             legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
                       GlossaryCore.TempOcean: 'ocean temperature'}
-
-            years = list(temperature_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
