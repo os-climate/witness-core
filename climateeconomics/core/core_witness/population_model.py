@@ -117,7 +117,7 @@ class Population:
         pop_by_age.append(self.pop_init_df.iloc[-1, 1])
 
         self.total_pop = self.pop_init_df[GlossaryCore.PopulationValue].sum()
-        self.population_dict = {GlossaryCore.YearStartDefault: np.array(
+        self.population_dict = {self.year_start: np.array(
             pop_by_age + [self.total_pop])}
 
         column_list = self.age_list.copy()

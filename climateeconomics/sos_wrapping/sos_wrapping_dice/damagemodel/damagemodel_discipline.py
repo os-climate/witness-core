@@ -131,14 +131,13 @@ class DamageDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
+        damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
+        years = list(damage_df[GlossaryCore.Years].values)
         if GlossaryCore.Damages in chart_list:
             to_plot = [GlossaryCore.Damages]
-            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
             damage_df = resize_df(damage_df)
 
             damage = damage_df[GlossaryCore.Damages]
-
-            years = list(damage_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -168,8 +167,6 @@ class DamageDiscipline(SoSWrapp):
             abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
 
             abatecost = damage_df['abatecost']
-
-            years = list(abate_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

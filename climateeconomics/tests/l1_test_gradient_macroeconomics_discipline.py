@@ -31,7 +31,30 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
         self.name = 'Test'
+
         self.ee = ExecutionEngine(self.name)
+
+        self.model_name = 'Macroeconomics'
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+                   GlossaryCore.NS_MACRO: f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
         self.time_step = 1
@@ -42,11 +65,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.energy_supply_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
-        })
-
-        self.share_residential_energy_consumption = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.ShareSectorEnergy: 10.
         })
 
         self.default_co2_efficiency = pd.DataFrame({
@@ -155,7 +173,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Services': self.default_value_dict_consumption['Services'],
             f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Agriculture': self.default_value_dict_consumption['Agriculture'],
             f'{self.name}.{self.model_name}.{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_Industry': self.default_value_dict_consumption['Industry'],
-            f'{self.name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_residential_energy_consumption,
         }
 
         self.checked_inputs = [f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
@@ -193,28 +210,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ]
 
     def test_macro_economics_analytic_grad(self):
-
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         inputs_dict = self.inputs_dict
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -237,26 +232,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         inputs_dict = self.inputs_dict
         inputs_dict.update({f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': True,
                        })
@@ -273,27 +248,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_macro_economics_analytic_grad_max_damage(self):
-
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         self.damage_fraction_df[GlossaryCore.DamageFractionOutput] = 0.9
 
         inputs_dict = self.inputs_dict
@@ -321,26 +275,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         energy_investment_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years,
              GlossaryCore.EnergyInvestmentsWoTaxValue: [50.] * self.nb_per, })
@@ -374,27 +308,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_macro_economics_very_high_emissions(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         co2_emissions_gt = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.TotalCO2Emissions: np.linspace(1035, 0, len(self.years)),
@@ -416,27 +329,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_macro_economics_negativeco2_emissions(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         co2_emissions_gt = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.TotalCO2Emissions: np.linspace(45, -0.66, len(self.years)),
@@ -458,26 +350,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_macro_economics_negativeco2_tax(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
 
         self.default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: np.linspace(50, -50, len(self.years))})
@@ -500,27 +372,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         """
         Test of analytic gradients when compute_gdp is deactivated
         """
-
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
 
         inputs_dict = self.inputs_dict
         inputs_dict.update({f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': self.carbon_intensity_energy,
@@ -547,27 +398,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_gigantic_energy_production_no_damage_productivity(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         energy_supply = pd.DataFrame.copy(self.energy_supply_df)
         energy_prod = energy_supply[GlossaryCore.TotalProductionValue] * 1.035 ** np.arange(self.nb_per)
         energy_prod[20:] = energy_prod[20:] / 10.
@@ -598,27 +428,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_gigantic_energy_production_damage_productivity(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
         energy_supply = pd.DataFrame.copy(self.energy_supply_df)
         energy_prod = energy_supply[GlossaryCore.TotalProductionValue] * 1.035 ** np.arange(self.nb_per)
         energy_prod[20:] = energy_prod[20:] / 10.
@@ -649,26 +458,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_gigantic_energy_production_wo_compute_gdp(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
 
         energy_supply = pd.DataFrame.copy(self.energy_supply_df)
         energy_prod = energy_supply[GlossaryCore.TotalProductionValue] * 1.035 ** np.arange(self.nb_per)
@@ -705,25 +495,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def _test_problematic_optim_point(self):
-        self.model_name = 'Macroeconomics'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
 
         import os
         import pickle

@@ -36,7 +36,6 @@ class MacroEconomics:
         self.usable_capital_obj_content = None
         self.usable_capital_upper_bound_constraint = None
         self.energy_consumption_households_df = None
-        self.share_residential_df = None
         self.consommation_objective_ref = None
         self.year_start: int = 0
         self.year_end = None
@@ -183,13 +182,11 @@ class MacroEconomics:
         self.percentage_gdp_per_group_df = pd.DataFrame()
         self.df_gdp_per_country = pd.DataFrame(columns=[GlossaryCore.CountryName, GlossaryCore.Years, GlossaryCore.GDPName, GlossaryCore.GroupName])
         self.dict_energy_consumption_detailed = {}
-        self.dict_sector_emissions_detailed = {}
 
     def set_coupling_inputs(self, inputs: dict):
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.share_residential_df = inputs[GlossaryCore.ShareResidentialEnergyDfValue]
         self.damage_fraction_output_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_output_df.index = self.damage_fraction_output_df[GlossaryCore.Years].values
         # Scale energy production
@@ -214,6 +211,7 @@ class MacroEconomics:
         # create dictionary where key is sector and value is the energy consumption percebtage for each section per sector
         self.dict_dataframe_energy_consumption_sections = dict(zip(self.sector_list, [inputs[f'{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_{sector}']
                                                                                        for sector in self.sector_list]))
+        self.dict_dataframe_energy_consumption_sections = {key: val.loc[val[GlossaryCore.Years] >= self.year_start] for key, val in self.dict_dataframe_energy_consumption_sections.items()}
 
     def compute_employment_rate(self):
         """ 
@@ -268,20 +266,17 @@ class MacroEconomics:
         if damage_to_productivity= True add damage to the the productivity
         if  not: productivity evolves independently from other variables (except productivity growthrate)
         """
-        p_w_d = self.productivity_start
         prod_wo_d = self.productivity_start
-        productivity_w_damage_list = [self.productivity_start]
         productivity_wo_damage_list = [self.productivity_start]
 
         damage_fraction_output = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         productivity_growth = self.economics_df[GlossaryCore.ProductivityGrowthRate].values
 
         for prod_growth, damage_frac_year in zip(productivity_growth[:-1], damage_fraction_output[1:]):
-            p_w_d *= (1 - damage_frac_year * self.frac_damage_prod) / (1 - prod_growth / (5 / self.time_step))
             prod_wo_d = prod_wo_d / (1 - prod_growth / (5 / self.time_step))
-
-            productivity_w_damage_list.append(p_w_d)
             productivity_wo_damage_list.append(prod_wo_d)
+
+        productivity_w_damage_list = np.array(productivity_wo_damage_list) * (1 - damage_fraction_output)
 
         self.economics_df[GlossaryCore.ProductivityWithDamage] = productivity_w_damage_list
         self.economics_df[GlossaryCore.ProductivityWithoutDamage] = productivity_wo_damage_list
@@ -366,7 +361,7 @@ class MacroEconomics:
         Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
         '''
         # the year range for the study can differ from that stated in the csv file
-        start_year_csv = self.gdp_percentage_per_section_df.loc[0, GlossaryCore.Years]
+        start_year_csv = self.gdp_percentage_per_section_df[GlossaryCore.Years].values[0]
         if start_year_csv > self.year_start:
             # duplicate first row (start_year_csv - year_start) time
             list_df_to_concat = [self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start)
@@ -404,8 +399,11 @@ class MacroEconomics:
         """
         # get gdp percentage per section, and compute gdp per section using Net output of damage
         self.get_gdp_percentage_per_section()
-        self.section_gdp_df = self.gdp_percentage_per_section_df.copy()
-        self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(self.economics_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
+
+        self.section_gdp_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
+        for section in self.section_list:
+            self.section_gdp_df[section] = self.gdp_percentage_per_section_df[section].values *\
+                                           self.economics_df[GlossaryCore.OutputNetOfDamage].values / 100.
 
     def compute_sector_gdp(self):
         """
@@ -662,44 +660,35 @@ class MacroEconomics:
             # intialize dictionary of dictionary
             self.dict_energy_consumption_detailed[sector_name] = {}
 
-            # Create a temporary DataFrame to compute energy consumption per section
-            merged_df_energy_prod = pd.merge(self.energy_production, self.sector_energy_consumption_percentage_df[[GlossaryCore.Years, sector_name]],
-                                             on=GlossaryCore.Years, how='inner')
-            # division by 100 for percentages
-            merged_df_energy_prod['energy_consumption_sector'] = merged_df_energy_prod[GlossaryCore.TotalProductionValue] * merged_df_energy_prod[sector_name] / 100.
-            merged_df_energy_prod = pd.merge(merged_df_energy_prod, percentage_sections_of_sector, on=GlossaryCore.Years, how='inner')
+            sector_sections_energy_conso_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
 
-            # Extracting list of sections from DataFrame
-            list_sections = percentage_sections_of_sector.drop(columns=[GlossaryCore.Years]).columns
+            for section in GlossaryCore.SectionDictSectors[sector_name]:
+                sector_sections_energy_conso_df[section] = percentage_sections_of_sector[section].values *\
+                                                           self.sector_energy_consumption_percentage_df[sector_name].values / 100. *\
+                                                           self.energy_production[GlossaryCore.TotalProductionValue].values / 100.
 
-            # Multiply each section's percentage by energy consumption sector and store in the dictionary
-            # division by 100 for percentages
-            # no further conversion needed, we convert TWh * kg/kWh = 1e12 Wh * kg/1e3 Wh = 1e9 kg = Mt
-            merged_df_energy_prod[list_sections] = percentage_sections_of_sector[list_sections].apply(lambda col: col * merged_df_energy_prod['energy_consumption_sector'] / 100.)
+            sector_energy_conso_df = self.energy_production[GlossaryCore.TotalProductionValue].values *\
+                                  self.sector_energy_consumption_percentage_df[sector_name].values / 100.
 
-            # list of columns to store in final dictionary
-            list_columns_to_store = [GlossaryCore.Years] + list_sections.to_list()
+            self.dict_energy_consumption_detailed[sector_name] = {
+                "total": sector_energy_conso_df,
+                "detailed": sector_sections_energy_conso_df,
+            }
 
-            # Store detailed energy consumption data
-            self.dict_energy_consumption_detailed[sector_name]["detailed"] = merged_df_energy_prod[list_columns_to_store]
+            economics_energy_consumption = self.energy_production[GlossaryCore.TotalProductionValue].values * \
+                                           (100 - self.sector_energy_consumption_percentage_df[GlossaryCore.Households].values) / 100.
 
-            # Compute total energy consumption for sector
-            total_energy_consumption_sector = pd.DataFrame(columns=[GlossaryCore.Years, GlossaryCore.TotalEnergyConsumptionSectorName])
-            total_energy_consumption_sector[GlossaryCore.TotalEnergyConsumptionSectorName] = merged_df_energy_prod[list_sections].sum(axis=1)
-            total_energy_consumption_sector[GlossaryCore.Years] = merged_df_energy_prod[GlossaryCore.Years]
-            self.dict_energy_consumption_detailed[sector_name]["total"] = total_energy_consumption_sector
-
-        # Compute total energy consumption and emissions across all sectors
-        self.dict_energy_consumption_detailed["total"] = pd.concat([detailed_data["total"].set_index(GlossaryCore.Years) for detailed_data in
-                   self.dict_energy_consumption_detailed.values()], axis=1).sum(axis=1).to_frame(
-            name=GlossaryCore.TotalEnergyConsumptionAllSectorsName).reset_index()
+            self.dict_energy_consumption_detailed["total"] = pd.DataFrame({
+                GlossaryCore.Years: self.years_range,
+                GlossaryCore.TotalEnergyConsumptionAllSectorsName: economics_energy_consumption
+            })
 
     def compute_consumption_objective(self):
         self.consommation_objective = np.array(
             [self.economics_df[GlossaryCore.Consumption].mean()]) / self.consommation_objective_ref
 
     def compute_energy_consumption_households(self):
-        energy_consumption_households = (self.share_residential_df[GlossaryCore.ShareSectorEnergy].values *
+        energy_consumption_households = (self.sector_energy_consumption_percentage_df[GlossaryCore.Households].values *
                                          self.energy_production[GlossaryCore.TotalProductionValue].values) / 100.
 
         self.energy_consumption_households_df = pd.DataFrame({
@@ -721,27 +710,9 @@ class MacroEconomics:
         """derivative of productivity with damage wrt damage frac output"""
         nb_years = len(self.years_range)
 
-        d_productivity_w_damage_d_damage_frac_output = self._null_derivative()
-        p_productivity_gr = self.economics_detail_df[GlossaryCore.ProductivityGrowthRate].values
-        p_productivity = self.economics_detail_df[GlossaryCore.ProductivityWithDamage].values
+        productivity_wo_damage = self.economics_detail_df[GlossaryCore.ProductivityWithoutDamage].values
 
-        # first line stays at zero since derivatives of initial values are zero
-        for i in range(1, nb_years):
-            d_productivity_w_damage_d_damage_frac_output[i, i] = (1 - self.frac_damage_prod * self.damage_fraction_output_df.loc[
-                self.years_range[i], GlossaryCore.DamageFractionOutput]) * \
-                                                        d_productivity_w_damage_d_damage_frac_output[i - 1, i] / (
-                                                                    1 - (p_productivity_gr[i - 1] /
-                                                                         (5 / self.time_step))) - \
-                                                        self.frac_damage_prod * \
-                                                        p_productivity[i - 1] / \
-                                                        (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
-            for j in range(1, i):
-                d_productivity_w_damage_d_damage_frac_output[i, j] = (1 - self.frac_damage_prod *
-                                                             self.damage_fraction_output_df.loc[self.years_range[
-                                                                                                    i], GlossaryCore.DamageFractionOutput]) * \
-                                                            d_productivity_w_damage_d_damage_frac_output[i - 1, j] / \
-                                                            (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
-        return d_productivity_w_damage_d_damage_frac_output
+        return np.diag(-productivity_wo_damage)
 
     def d_productivity_d_damage_frac_output(self):
         """gradient for productivity for damage_df"""
@@ -939,6 +910,7 @@ class MacroEconomics:
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
 
         d_gross_output_d_dfo =  np.diag(gross_output / productivity) @ self.d_productivity_d_damage_frac_output()
+        d_gross_output_d_dfo[0,:] = 0.
 
         if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             factor = (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
@@ -1073,7 +1045,7 @@ class MacroEconomics:
         return np.diag(self.sector_energy_consumption_percentage_df[sector_name].values / 100 * self.dict_dataframe_energy_consumption_sections[sector_name][section_name].values / 100.)
 
     def d_residential_energy_consumption_d_energy_prod(self):
-        return np.diag(self.share_residential_df[GlossaryCore.ShareSectorEnergy].values / 100)
+        return np.diag(self.sector_energy_consumption_percentage_df[GlossaryCore.Households].values / 100)
 
     """-------------------END of Gradient functions-------------------"""
 

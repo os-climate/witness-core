@@ -35,10 +35,10 @@ INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
-DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': 'energy', 'value': ['RenewableSimpleTechno']},
-                              'fossil': {'type': 'energy', 'value': ['FossilSimpleTechno']},
-                              GlossaryEnergy.carbon_capture: {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
-                                                                           'flue_gas_capture.FlueGasTechno']},
+DEFAULT_COARSE_TECHNO_DICT = {GlossaryCore.clean_energy: {'type': 'energy', 'value': [GlossaryCore.CleanEnergySimpleTechno]},
+                              GlossaryEnergy.fossil: {'type': 'energy', 'value': [GlossaryEnergy.FossilSimpleTechno]},
+                              GlossaryEnergy.carbon_capture: {'type': 'CCUS', 'value': [f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
+                                                                           f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}']},
                               GlossaryEnergy.carbon_storage: {'type': 'CCUS', 'value': [GlossaryEnergy.CarbonStorageTechno]}}
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 ) if value['type'] == 'energy']

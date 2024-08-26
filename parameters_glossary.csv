@@ -273,7 +273,7 @@ forest_lost_capital_cons,Reforestation lost capital constraint,,Constraint on re
 forest_lost_capital_cons_limit,Reforestation lost capital constraint limit,G$,Constraint limit on reforestation capital. Used for optimisation.,,
 forest_lost_capital_cons_ref,Reforestation lost capital constraint reference,G$,Constraint reference on reforestation capital. Used for optimisation.,,
 red_meat_calories_per_day,Red meat calory per day,kcal,number of calories coming from red meat consumed per day per person.,,
-renewable_RenewableSimpleTechno_array_mix,Renewable RenewableSimpleTechno array mix,%,Mix data concerning RenewableSimpleTechno.,,
+renewable_CleanEnergySimpleTechno_array_mix,Renewable CleanEnergySimpleTechno array mix,%,Mix data concerning CleanEnergySimpleTechno.,,
 residential_energy, Residential energy per capita,MWh,Residential energy consumption per capita reference (2019),,
 residential_energy_conso_ref, Residential energy per capita reference (2019),MWh,Residential energy consumption per capita reference (2019),,
 resource_list,Resource List,,"Coal, gas, oil, uranium.",,

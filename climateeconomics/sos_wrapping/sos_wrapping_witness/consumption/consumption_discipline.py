@@ -306,14 +306,14 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
+        utility_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue))
+        years = list(utility_df[GlossaryCore.Years].values)
+
         if 'Utility' in chart_list:
 
             to_plot = [GlossaryCore.DiscountedUtility]
-            utility_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue))
 
             discounted_utility = utility_df[GlossaryCore.DiscountedUtility]
-
-            years = list(utility_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -346,7 +346,6 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
             utility = utility_df[GlossaryCore.PeriodUtilityPerCapita]
 
-            years = list(utility_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -390,11 +389,6 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             residential_energy_ratio = residential_energy / residential_energy_conso_ref
 
             energy_price_ratio = energy_price_ref / energy_mean_price
-
-            years = list(utility_df.index)
-
-            year_start = years[0]
-            year_end = years[len(years) - 1]
 
             chart_name = 'Energy ratios'
 
@@ -441,11 +435,6 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
             discounted_utility_price_ratio = discounted_utility_final / residential_energy_ratio
 
-            years = list(utility_df.index)
-
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-
             chart_name = 'Energy price ratio effect on discounted utility'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Discounted Utility (trill $)',
@@ -473,7 +462,6 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
             to_plot = [GlossaryCore.Consumption]
             utility_df = deepcopy(self.get_sosdisc_outputs('utility_detail_df'))
-            years = list(utility_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -504,7 +492,6 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
             to_plot = [GlossaryCore.PerCapitaConsumption]
             utility_df = deepcopy(self.get_sosdisc_outputs('utility_detail_df'))
-            years = list(utility_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
