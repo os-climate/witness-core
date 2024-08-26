@@ -382,7 +382,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         chart_name = 'Clean energy growth'
 
-        new_chart = TwoAxesInstanciatedChart('years intervals', 'Clean energy growth (PWh)',
+        new_chart = TwoAxesInstanciatedChart('years intervals', 'PWh added in 10 years',
                                              chart_name=chart_name, stacked_bar=True,
                                              y_min_zero=False)
 
@@ -394,7 +394,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=years_intervals,
             y=computed_data,
-            name='Clean energy growth'
+            name='clean energy growth'
         ))
 
         new_chart.add_trace(go.Scatter(
@@ -442,10 +442,10 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             current_year_efficiency = energy_efficiency.loc[i, 'energy efficiency']
             energy_efficiency.loc[i, 'variation'] = (current_year_efficiency - previous_year_efficiency) / previous_year_efficiency * 100
 
-        chart_name = "Energy efficiency"
+        chart_name = "Variation of energy efficiency"
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy. Years,
-                                             'Variation of energy efficiency (%)',
+                                             'variation of GDP / energy production (%)',
                                              chart_name=chart_name)
 
         new_chart = new_chart.to_plotly()
@@ -453,7 +453,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=years,
             y=energy_efficiency['variation'].to_list(),
-            name="Variation of energy efficiency",
+            name="variation of energy efficiency",
         ))
 
         # default value is 1.2%
@@ -498,7 +498,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             chart_name = "Electrification of energy"
 
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years,
-                                                 'Electrification of energy (%)',
+                                                 'electricity production / energy production (%)',
                                                  chart_name=chart_name)
 
             new_chart = new_chart.to_plotly()
@@ -506,7 +506,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             new_chart.add_trace(go.Scatter(
                 x=years,
                 y=energy_electrification['value'].to_list(),
-                name="Electrification of energy",
+                name="electrification of energy",
             ))
 
             # default values
@@ -556,7 +556,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         chart_name = "Return on Investment"
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years,
-                                             'Return on Investment (%)',
+                                             'GDP variation / investments (%)',
                                              chart_name=chart_name)
 
         new_chart = new_chart.to_plotly()
@@ -564,7 +564,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=years,
             y=roi['value'].to_list(),
-            name="Return on Investment",
+            name="return on Investment",
         ))
 
         # default value is 9.3%
