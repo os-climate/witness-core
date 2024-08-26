@@ -352,23 +352,26 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         # creation of clean energy growth dataframe for 10 years intervals
         clean_energy_growth_df = pd.DataFrame()
-        clean_energy_growth_df['years intervals'] = None
+        clean_energy_growth_df[GlossaryEnergy.Years] = None
         clean_energy_growth_df['clean energy growth (PWh)'] = None
         year_start = clean_energy_df[GlossaryEnergy.Years].iloc[0]
         year_end = clean_energy_df[GlossaryEnergy.Years].iloc[-1]
         year = year_start
-        while (year + 10) <= year_end:
-            # interval creation
-            interval = pd.DataFrame({'years intervals': [f'{year}-{year+10}']})
-            clean_energy_growth_df = pd.concat([clean_energy_growth_df, interval], ignore_index=True)
+        # computing growth in an interval
+        while (year + 9) <= year_end:
             growth = 0
-            # growth between two consecutive years in the interval
+            # growth between two consecutive years
             for i in range(0, 10):
                 value1 = clean_energy_df.loc[clean_energy_df[GlossaryEnergy.Years] == year + i, 'Total'].values[0]
                 value2 = clean_energy_df.loc[clean_energy_df[GlossaryEnergy.Years] == year + i + 1, 'Total'].values[0]
                 growth = growth + value2 - value1
             # growth is in TWh so it needs to be converted into PWh
-            clean_energy_growth_df.loc[clean_energy_growth_df['years intervals'] == f'{year}-{year+10}', 'clean energy growth (PWh)'] = growth/1000
+            growth /= 1000
+            # applying an equal share of the growth to each year in the interval
+            year_growth = growth / 10
+            for i in range(0, 10):
+                year_interval = pd.DataFrame({GlossaryEnergy.Years: [year + i], 'clean energy growth (PWh)': year_growth})
+                clean_energy_growth_df = pd.concat([clean_energy_growth_df, year_interval], ignore_index=True)
             # switching to next 10 year interval
             year += 10
 
@@ -383,7 +386,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         new_chart = new_chart.to_plotly()
 
-        years_intervals = clean_energy_growth_df['years intervals'].to_list()
+        years_intervals = clean_energy_growth_df[GlossaryEnergy.Years].to_list()
         computed_data = clean_energy_growth_df['clean energy growth (PWh)'].to_list()
 
         new_chart.add_trace(go.Scatter(
@@ -393,14 +396,24 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         ))
 
         new_chart.add_trace(go.Scatter(
-            x=['2020-2030', '2030-2040', '2040-2050'],
-            y=[13, 13, 13],
+            x=list(range(2020, 2051)),
+            y=[13] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name='default value (2020-2050) - Y. Caseau, CCEM 2024',
         ))
 
         new_chart.add_trace(go.Scatter(
-            x=['2020-2030', '2030-2040', '2040-2050'],
-            y=[25, 25, 25],
+            x=list(range(2020, 2051)),
+            y=[25] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name='default value (2020-2050) - IRENA 1.5°C scenario',
         ))
 
@@ -445,12 +458,22 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[1.2] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name="default value (2020-2050) - Y. Caseau, CCEM 2024",
         ))
 
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[2.7] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name="default value (2020-2050) - IRENA 1.5°C scenario",
         ))
 
@@ -488,12 +511,22 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             new_chart.add_trace(go.Scatter(
                 x=[2020, 2050],
                 y=[16, 48],
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
                 name="default values (2020 & 2050) - Y. Caseau, CCEM 2024",
             ))
 
             new_chart.add_trace(go.Scatter(
                 x=list(range(2020, 2051)),
                 y=[80] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
                 name="default values (2020 & 2050) - IRENA 1.5°C scenario",
             ))
 
@@ -536,6 +569,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[9.3] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name="default value (2020-2050) - Y. Caseau, CCEM 2024",
         ))
 
@@ -583,14 +621,14 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Bar(
             x=[2.6],
             y=[6.7],
-            opacity=1,
+            opacity=0.5,
             name="default value - Y. Caseau, CCEM 2024",
         ))
 
         new_chart.add_trace(go.Bar(
             x=[3],
             y=[8],
-            opacity=1,
+            opacity=0.5,
             name="default value - Schroders",
         ))
 
