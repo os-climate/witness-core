@@ -321,7 +321,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                                                                   GlossaryEnergy.SolarPv, GlossaryEnergy.SolarThermal,
                                                                   GlossaryEnergy.WindOffshore,
                                                                   GlossaryEnergy.WindOnshore],
-                                     GlossaryEnergy.renewable: [GlossaryEnergy.RenewableSimpleTechno]}
+                                     GlossaryEnergy.clean_energy: [GlossaryEnergy.CleanEnergySimpleTechno]}
 
         # dataframe of energy production by energy in TWh
         energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
@@ -439,7 +439,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         for i in range(1, len(years)):
             previous_year_efficiency = energy_efficiency.loc[i - 1, 'energy efficiency']
             current_year_efficiency = energy_efficiency.loc[i, 'energy efficiency']
-            energy_efficiency.loc[i, 'variation'] = (current_year_efficiency - previous_year_efficiency) / previous_year_efficiency
+            energy_efficiency.loc[i, 'variation'] = (current_year_efficiency - previous_year_efficiency) / previous_year_efficiency * 100
 
         chart_name = "Energy efficiency"
 
