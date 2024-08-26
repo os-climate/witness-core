@@ -15,6 +15,7 @@ limitations under the License.
 '''
 
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -40,7 +41,8 @@ def post_processing_filters(execution_engine, namespace):
     '''
     chart_filters = []
 
-    chart_list = ['temperature and ghg evolution', 'population and death', 'gdp breakdown', 'energy mix', 'investment distribution', 'land use']
+    chart_list = ['temperature and ghg evolution', 'population and death', 'gdp breakdown', 'energy mix', 'investment distribution', 'land use',
+                  'KPI1', 'KPI2', 'KPI4', 'KPI5', 'KPI6']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
         'Charts', chart_list, chart_list, 'Charts'))
@@ -55,6 +57,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     CROP_DISC = 'Crop'
     LANDUSE_DISC = 'Land_Use'
     ENERGYMIX_DISC = 'EnergyMix'
+    DAMAGE_DISC = 'Damage'
 
     # execution_engine.dm.get_all_namespaces_from_var_name('temperature_df')[0]
 
@@ -67,7 +70,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 chart_list = chart_filter.selected_values
 
     if 'temperature and ghg evolution' in chart_list:
-        temperature_df = get_scenario_value(execution_engine, GlossaryCore.TemperatureDetailedDfValue, scenario_name)
+        temperature_df = get_scenario_value(execution_engine, GlossaryCore.TemperatureDfValue, scenario_name)
         total_ghg_df = get_scenario_value(execution_engine, GlossaryCore.GHGEmissionsDfValue, scenario_name)
         carbon_captured = get_scenario_value(execution_engine, GlossaryEnergy.CarbonCapturedValue, scenario_name)
         co2_emissions = get_scenario_value(execution_engine, 'co2_emissions_ccus_Gt', scenario_name)
@@ -301,6 +304,299 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         ))
 
         new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+        instanciated_charts.append(new_chart)
+
+    if 'KPI1' in chart_list:
+        # KPI1 is the clean energy growth rate, ie the PWh added in 10 years
+        # clean technologies dictionary
+        green_energies_and_technos = {f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}':
+                                         [GlossaryEnergy.GeothermalHighHeat, GlossaryEnergy.HeatPumpHighHeat],
+                                     f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}':
+                                         [GlossaryEnergy.GeothermalMediumHeat, GlossaryEnergy.HeatPumpMediumHeat],
+                                     f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}':
+                                         [GlossaryEnergy.GeothermalLowHeat, GlossaryEnergy.HeatPumpLowHeat],
+                                     GlossaryEnergy.electricity: [GlossaryEnergy.Geothermal,
+                                                                  GlossaryEnergy.RenewableElectricitySimpleTechno,
+                                                                  GlossaryEnergy.SolarPv, GlossaryEnergy.SolarThermal,
+                                                                  GlossaryEnergy.WindOffshore,
+                                                                  GlossaryEnergy.WindOnshore]}
+
+        # dataframe of energy production by energy in TWh
+        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
+        years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
+
+        energy_list = get_scenario_value(execution_engine, GlossaryCore.energy_list, scenario_name)
+
+        # creation of clean technologies dataframe
+        clean_energy_df = pd.DataFrame()
+        clean_energy_df[GlossaryEnergy.Years] = energy_production_detailed[GlossaryEnergy.Years]
+        for energy in green_energies_and_technos:
+            for techno in green_energies_and_technos[energy]:
+                clean_energy_df[techno] = 0
+
+        # getting energy production values for clean technologies
+        for energy in energy_list:
+            if energy in green_energies_and_technos:
+                techno_list = get_scenario_value(execution_engine, f'{energy}.{GlossaryEnergy.TechnoListName}',
+                                                 scenario_name)
+                energy_production_df = get_scenario_value(execution_engine,
+                                                          f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}',
+                                                          scenario_name)
+                for techno in techno_list:
+                    if techno in green_energies_and_technos[energy]:
+                        clean_energy_df[techno] += energy_production_df[f'{energy} {techno} (TWh)']
+
+        # total clean energy production
+        clean_energy_df['Total'] = clean_energy_df.drop(columns=GlossaryEnergy.Years).sum(axis=1)
+
+        # creation of clean energy growth dataframe for 10 years intervals
+        clean_energy_growth_df = pd.DataFrame()
+        clean_energy_growth_df['years intervals'] = None
+        clean_energy_growth_df['clean energy growth (PWh)'] = None
+        year_start = clean_energy_df[GlossaryEnergy.Years].iloc[0]
+        year_end = clean_energy_df[GlossaryEnergy.Years].iloc[-1]
+        year = year_start
+        while (year + 10) <= year_end:
+            # interval creation
+            interval = pd.DataFrame({'years intervals': [f'{year}-{year+10}']})
+            clean_energy_growth_df = pd.concat([clean_energy_growth_df, interval], ignore_index=True)
+            growth = 0
+            # growth between two consecutive years in the interval
+            for i in range(0, 10):
+                value1 = clean_energy_df.loc[clean_energy_df[GlossaryEnergy.Years] == year + i, 'Total'].values[0]
+                value2 = clean_energy_df.loc[clean_energy_df[GlossaryEnergy.Years] == year + i + 1, 'Total'].values[0]
+                growth = growth + value2 - value1
+            # growth is in TWh so it needs to be converted into PWh
+            clean_energy_growth_df.loc[clean_energy_growth_df['years intervals'] == f'{year}-{year+10}', 'clean energy growth (PWh)'] = growth/1000
+            # switching to next 10 year interval
+            year += 10
+
+        # default value is 13 PWh
+        clean_energy_growth_df['default (PWh)'] = 13
+
+        chart_name = 'Clean energy growth'
+
+        new_chart = TwoAxesInstanciatedChart('years intervals', 'Clean energy growth (PWh)',
+                                             chart_name=chart_name, stacked_bar=True,
+                                             y_min_zero=False)
+
+        new_chart = new_chart.to_plotly()
+
+        years_intervals = clean_energy_growth_df['years intervals'].to_list()
+        computed_data = clean_energy_growth_df['clean energy growth (PWh)'].to_list()
+
+        new_chart.add_trace(go.Scatter(
+            x=years_intervals,
+            y=computed_data,
+            name='Clean energy growth'
+        ))
+
+        new_chart.add_trace(go.Scatter(
+            x=['2020-2030', '2030-2040', '2040-2050'],
+            y=[13, 13, 13],
+            name='default value (2020-2050) - Y. Caseau, CCEM 2024',
+        ))
+
+        new_chart.add_trace(go.Scatter(
+            x=['2020-2030', '2030-2040', '2040-2050'],
+            y=[25, 25, 25],
+            name='default value (2020-2050) - IRENA 1.5°C scenario',
+        ))
+
+        new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+        new_chart.post_processing_section_name = "Key performance indicators"
+
+        instanciated_charts.append(new_chart)
+
+    if 'KPI2' in chart_list:
+        # KPI2 is the energy efficiency, ie the variation of GDP/TotalEnergyProduction
+        #  dataframe of energy production in PWh
+        energy_production = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionValue}', scenario_name)
+        years = energy_production[GlossaryEnergy.Years].values.tolist()
+        gdp = get_scenario_value(execution_engine, GlossaryCore.EconomicsDfValue, scenario_name)
+        gdp = gdp.reset_index(drop=True)
+        energy_efficiency = pd.DataFrame()
+        energy_efficiency[GlossaryEnergy.Years] = years
+        energy_efficiency['energy efficiency'] = gdp[GlossaryCore.OutputNetOfDamage] / energy_production[GlossaryEnergy.TotalProductionValue]
+        energy_efficiency['variation'] = 0
+        # computing variation of energy efficiency
+        for i in range(1, len(years)):
+            previous_year_efficiency = energy_efficiency.loc[i - 1, 'energy efficiency']
+            current_year_efficiency = energy_efficiency.loc[i, 'energy efficiency']
+            energy_efficiency.loc[i, 'variation'] = (current_year_efficiency - previous_year_efficiency) / previous_year_efficiency
+
+        chart_name = "Energy efficiency"
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy. Years,
+                                             'Variation of energy efficiency (%)',
+                                             chart_name=chart_name)
+
+        new_chart = new_chart.to_plotly()
+
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=energy_efficiency['variation'].to_list(),
+            name="Variation of energy efficiency",
+        ))
+
+        # default value is 1.2%
+        new_chart.add_trace(go.Scatter(
+            x=list(range(2020, 2051)),
+            y=[1.2] * len(range(2020, 2051)),
+            name="default value (2020-2050) - Y. Caseau, CCEM 2024",
+        ))
+
+        new_chart.add_trace(go.Scatter(
+            x=list(range(2020, 2051)),
+            y=[2.7] * len(range(2020, 2051)),
+            name="default value (2020-2050) - IRENA 1.5°C scenario",
+        ))
+
+        new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+        new_chart.post_processing_section_name = "Key performance indicators"
+
+        instanciated_charts.append(new_chart)
+
+    if 'KPI4' in chart_list:
+        # KPI4 is the electrification of energy, ie ElectricityProduction/TotalEnergyProduction
+        # dataframe of energy production by energy in TWh
+        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
+        years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
+        if f'production {GlossaryEnergy.electricity} (TWh)' in energy_production_detailed.columns:
+            energy_electrification = pd.DataFrame()
+            energy_electrification[GlossaryEnergy.Years] = years
+            energy_electrification['value'] = energy_production_detailed[f'production {GlossaryEnergy.electricity} (TWh)'] / energy_production_detailed[f'{GlossaryEnergy.TotalProductionValue} (uncut)'] * 100
+
+            chart_name = "Electrification of energy"
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years,
+                                                 'Electrification of energy (%)',
+                                                 chart_name=chart_name)
+
+            new_chart = new_chart.to_plotly()
+
+            new_chart.add_trace(go.Scatter(
+                x=years,
+                y=energy_electrification['value'].to_list(),
+                name="Electrification of energy",
+            ))
+
+            # default values
+            new_chart.add_trace(go.Scatter(
+                x=[2020, 2050],
+                y=[16, 48],
+                name="default values (2020 & 2050) - Y. Caseau, CCEM 2024",
+            ))
+
+            new_chart.add_trace(go.Scatter(
+                x=list(range(2020, 2051)),
+                y=[80] * len(range(2020, 2051)),
+                name="default values (2020 & 2050) - IRENA 1.5°C scenario",
+            ))
+
+            new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+            new_chart.post_processing_section_name = "Key performance indicators"
+
+            instanciated_charts.append(new_chart)
+
+    if 'KPI5' in chart_list:
+        # KPI5 is the return on investment, ie GDPVariation/Investment
+        economics_detailed_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
+        economics_detailed_df = economics_detailed_df.reset_index(drop=True)
+        years = economics_detailed_df[GlossaryCore.Years].values.tolist()
+        roi = pd.DataFrame()
+        roi[GlossaryCore.Years] = years
+        roi['yearly_gdp_variation'] = 0
+        # computing GDP variation
+        for i in range(1, len(years)):
+            previous_year_gdp = economics_detailed_df.loc[i - 1, GlossaryCore.OutputNetOfDamage]
+            current_year_gdp = economics_detailed_df.loc[i, GlossaryCore.OutputNetOfDamage]
+            roi.loc[i, 'yearly_gdp_variation'] = current_year_gdp - previous_year_gdp
+        roi['value'] = roi['yearly_gdp_variation'] / economics_detailed_df[GlossaryCore.InvestmentsValue] * 100
+
+        chart_name = "Return on Investment"
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years,
+                                             'Return on Investment (%)',
+                                             chart_name=chart_name)
+
+        new_chart = new_chart.to_plotly()
+
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=roi['value'].to_list(),
+            name="Return on Investment",
+        ))
+
+        # default value is 9.3%
+        new_chart.add_trace(go.Scatter(
+            x=list(range(2020, 2051)),
+            y=[9.3] * len(range(2020, 2051)),
+            name="default value (2020-2050) - Y. Caseau, CCEM 2024",
+        ))
+
+        new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+        new_chart.post_processing_section_name = "Key performance indicators"
+
+        instanciated_charts.append(new_chart)
+
+
+    if 'KPI6' in chart_list:
+        # KPI6 is the global warming impact, ie the damages as % of GDP at tipping point 3°C
+        tipping_point_model = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tipping_point', scenario_name)
+        tp_a1 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a1', scenario_name)
+        tp_a2 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a2', scenario_name)
+        tp_a3 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a3', scenario_name)
+        tp_a4 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a4', scenario_name)
+
+        def damage_fraction(damage):
+            return damage / (1 + damage) * 100
+
+        def damage_function_tipping_point_weitzmann(temp_increase):
+            return (temp_increase / tp_a1) ** tp_a2 + (temp_increase / tp_a3) ** tp_a4
+
+        temperature_increase = 3
+
+        value = damage_fraction(damage_function_tipping_point_weitzmann(temperature_increase))
+
+        chart_name = "Global warming impact"
+
+        new_chart = TwoAxesInstanciatedChart('Temperature increase (°C)',
+                                             'Impact on GDP (%)',
+                                             chart_name=chart_name)
+
+        new_chart = new_chart.to_plotly()
+
+        new_chart.add_trace(go.Bar(
+            x=[3],
+            y=[value],
+            opacity=1,
+            name="tipping point damage model (Weitzman, 2009)" + ' (selected model)' * tipping_point_model,
+        ))
+
+        # default value
+        new_chart.add_trace(go.Bar(
+            x=[2.6],
+            y=[6.7],
+            opacity=1,
+            name="default value - Y. Caseau, CCEM 2024",
+        ))
+
+        new_chart.add_trace(go.Bar(
+            x=[3],
+            y=[8],
+            opacity=1,
+            name="default value - Schroders",
+        ))
+
+        new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+        new_chart.post_processing_section_name = "Key performance indicators"
 
         instanciated_charts.append(new_chart)
 

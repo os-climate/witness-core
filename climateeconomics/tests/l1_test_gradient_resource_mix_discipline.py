@@ -107,7 +107,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.all_demand = read_csv(
             join(data_dir, 'all_demand_with_high_demand.csv'))
 
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = 2020
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
         self.year_range = self.year_end - self.year_start + 1

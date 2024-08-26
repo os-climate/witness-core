@@ -172,7 +172,8 @@ class AgricultureMixModelTestCase(unittest.TestCase):
 
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+            GlossaryCore.Capital: 20000,
+            GlossaryCore.NonUseCapital: 0.,
         })
         ee.configure()
         ee.display_treeview_nodes()

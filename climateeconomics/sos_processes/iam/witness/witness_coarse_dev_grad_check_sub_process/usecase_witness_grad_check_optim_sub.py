@@ -136,10 +136,10 @@ class Study(ClimateEconomicsStudyManager):
 
         # define the missing inputs:
         # InvestmentsProfileBuilderDisc inputs
-        columns_names = [f'{GlossaryEnergy.renewable}.RenewableSimpleTechno',
-                         f'{GlossaryEnergy.fossil}.FossilSimpleTechno',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno',
+        columns_names = [f'{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}',
+                         f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}',
+                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
+                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}',
                          f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno']
 
         n_profiles = 2 #* len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile
@@ -187,7 +187,7 @@ class Study(ClimateEconomicsStudyManager):
         })
         # impose values to the utilization ratios that are not design variables anymore
         list_utilization_ratio_var = ['fossil_FossilSimpleTechno_utilization_ratio_array',
-                                      'renewable_RenewableSimpleTechno_utilization_ratio_array',
+                                      f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array",
                                       'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array',
                                       'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array',
                                       'carbon_storage.CarbonStorageTechno_utilization_ratio_array']

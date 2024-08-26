@@ -70,10 +70,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'population_start': {'type': 'dataframe', 'default': DatabaseWitnessCore.PopulationYearStart.value, 'unit': 'millions of people',
-                             'dataframe_descriptor': {'age': ('string', None, False),
-                                                      GlossaryCore.PopulationValue: ('float', None, False),}
-                             },
+        GlossaryCore.PopulationStart: GlossaryCore.PopulationStartDf,
         GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',
@@ -136,7 +133,18 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         self.model = Population(in_dict)
 
+    def update_default_values(self):
+        """
+        Update all default dataframes with years
+        """
+        if self.get_data_in() is not None:
+            if GlossaryCore.YearStart in self.get_data_in():
+                year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+                if year_start is not None:
+                    self.update_default_value(GlossaryCore.PopulationStart, 'in', DatabaseWitnessCore.PopulationYearStart.get_df_at_year(year_start))
+
     def setup_sos_disciplines(self):  # type: (...) -> None
+        self.update_default_values()
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])
@@ -266,9 +274,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         life_expectancy_df = deepcopy(
             self.get_sosdisc_outputs('life_expectancy_df'))
 
+        years = list(pop_df[GlossaryCore.Years].values)
         if 'World population' in chart_list:
-
-            years = list(pop_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -295,7 +302,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'working-age population over years' in chart_list:
-            years = list(pop_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -323,7 +329,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if '15-49 age range birth rate' in chart_list:
 
-            years = list(pop_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -349,7 +354,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'knowledge' in chart_list:
 
-            years = list(pop_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -375,7 +379,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'death rate per age range' in chart_list:
 
-            years = list(pop_df.index)
             headers = list(death_rate_dict['total'].columns.values)
             to_plot = headers[:]
 
@@ -410,7 +413,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Malnutrition death rate per age range' in chart_list:
 
-            years = list(pop_df.index)
             headers = list(death_rate_dict['diet'].columns.values)
             to_plot = headers[:]
 
@@ -445,7 +447,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Number of birth and death per year' in chart_list:
 
-            years = list(birth_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -485,7 +486,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Number of climate death per year' in chart_list:
 
-            years = list(death_dict['total'].index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -519,7 +519,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             
         if 'Number of malnutrition death per year' in chart_list:
 
-            years = list(death_dict['total'].index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -548,7 +547,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Cumulative malnutrition deaths' in chart_list:
 
-            years = list(death_dict['diet']['cum_total'].index)
             headers = list(death_dict['diet'].columns.values)
             to_plot = headers[:]
 
@@ -583,7 +581,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Life expectancy evolution' in chart_list:
 
-            years = list(life_expectancy_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -609,7 +606,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Population detailed' in chart_list:
 
-            years = list(pop_df.index)
             pop_column = list(np.arange(0, 101))
 
             year_start = years[0]
@@ -633,7 +629,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Population detailed year start' in chart_list:
 
-            years = list(pop_df.index)
             pop_column = list(np.arange(0, 101))
 
             year_start = years[0]
@@ -655,7 +650,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Population detailed mid year' in chart_list:
 
-            years = list(pop_df.index)
             pop_column = list(np.arange(0, 101))
 
             year_start = years[0]
@@ -679,6 +673,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
+
 
 # externalize graph methods out of the class so that they can be reused in an external dashboard for instance
 def graph_model_cumulative_climate_deaths(death_dict, instanciated_charts):
@@ -717,9 +712,10 @@ def graph_model_cumulative_climate_deaths(death_dict, instanciated_charts):
 
     return instanciated_charts
 
+
 def graph_model_world_population(pop_df, instanciated_charts):
 
-    years = list(pop_df.index)
+    years = list(pop_df[GlossaryCore.Years].values)
 
     year_start = years[0]
     year_end = years[len(years) - 1]
@@ -747,11 +743,12 @@ def graph_model_world_population(pop_df, instanciated_charts):
 
     return instanciated_charts
 
+
 def graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts):
-    years = list(death_dict['climate']['cum_total'].index)
     headers = list(death_dict['climate'].columns.values)
     to_plot = headers[:]
 
+    years = list(pop_df[GlossaryCore.Years].values)
     year_start = years[0]
     year_end = years[len(years) - 1]
 

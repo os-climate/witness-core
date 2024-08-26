@@ -326,9 +326,9 @@ class GHGEmissions:
     def compute_total_economics_emission(self):
         """Compute economics emissions : sum of emissions for sectors Services and Industry"""
         total_economics_emisssions = {GlossaryCore.Years: self.years_range}
-        total_economics_emisssions[GlossaryCore.EnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.EnergyEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
-        total_economics_emisssions[GlossaryCore.NonEnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.NonEnergyEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
-        total_economics_emisssions[GlossaryCore.TotalEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.TotalEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.EnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.EnergyEmissions].values for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.NonEnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.NonEnergyEmissions].values for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.TotalEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.TotalEmissions].values for sector in self.economic_sectors_except_agriculture], axis=0)
         self.total_economics_emisssions = pd.DataFrame(total_economics_emisssions)
 
     def compute(self, inputs_dict):

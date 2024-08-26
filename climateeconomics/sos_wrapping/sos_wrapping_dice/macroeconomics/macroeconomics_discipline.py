@@ -122,6 +122,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
         economics_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDfValue)
         economics_df = resize_df(economics_df)
+        years = list(economics_df[GlossaryCore.Years].values)
 
         if 'economic output' in chart_list:
 
@@ -130,7 +131,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
             legend = {GlossaryCore.GrossOutput: 'world gross output',
                       GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -165,7 +165,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             to_plot = [GlossaryCore.PopulationValue]
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -200,7 +199,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             to_plot = [GlossaryCore.Productivity]
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -235,7 +233,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             to_plot = [GlossaryCore.Consumption]
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

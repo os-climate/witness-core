@@ -48,7 +48,7 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_carbon_capture',
                                          'ns_carbon_storage',
                                          'ns_land_use',
-                                         'ns_renewable',
+                                         'ns_clean_energy',
                                          'ns_fossil',
                                          GlossaryCore.NS_CCS,
                                          'ns_resource',

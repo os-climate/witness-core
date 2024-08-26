@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import os
 from os.path import dirname, join
 
 import numpy as np
@@ -72,6 +72,27 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         self.temperature_df.index = years
 
+        self.calories_pc = pd.DataFrame({GlossaryCore.Years: years,
+                                                   'kcal_pc': 2400.})
+
+        self.inputs_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
+                            f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                            f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                            f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': self.calories_pc,
+                            }
+
+        self.checked_inputs = [
+            f'{self.name}.{GlossaryCore.EconomicsDfValue}',
+            f'{self.name}.{GlossaryCore.TemperatureDfValue}',
+            f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}'
+        ]
+
+        self.checked_outputs = [
+            f'{self.name}.{GlossaryCore.PopulationDfValue}',
+            f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'
+        ]
+
     def analytic_grad_entry(self):
         return [
             self.test_population_discipline_analytic_grad_output,
@@ -102,10 +123,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_output.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.PopulationDfValue}'], step=1e-15, derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_working_population_discipline_analytic_grad_output(self):
         '''
@@ -124,10 +147,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_working_population_discipline_output.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_working_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_working_population_discipline_analytic_grad_temp(self):
         '''
@@ -145,10 +170,13 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_working_population_discipline_temp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_working_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
+
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_analytic_grad_temperature(self):
         '''
@@ -166,12 +194,13 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_temp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
                 f'{self.name}.{GlossaryCore.PopulationDfValue}'], step=1e-15, derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_analytic_grad_temp_negative(self):
         '''
@@ -215,12 +244,14 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_temp_neg.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_temp_neg.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_analytic_grad_big_gdp(self):
         '''
@@ -263,14 +294,15 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_big_gdp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_big_gdp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_analytic_grad_big_temp(self):
         '''
@@ -313,14 +345,15 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_augmente_temp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_augmente_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_analytic_small_pop(self):
         '''
@@ -367,15 +400,15 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
-
         self.override_dump_jacobian = True
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_small_pop.pkl',
+        pickle_filename = 'jacobian_population_discipline_small_pop.pkl'
+        self.check_jacobian(location=dirname(__file__), filename=pickle_filename,
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_analytic_big_pop(self):
         '''
@@ -423,14 +456,15 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_big_pop.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_big_pop.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
                                 f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_analytic_3000_calories_pc(self):
         '''
@@ -457,10 +491,10 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-
         self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_3000_kcal.pkl'
         self.check_jacobian(location=dirname(__file__),
-                            filename='jacobian_population_discipline_3000_kcal.pkl',
+                            filename=pickle_filename,
                             discipline=disc_techno,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}'],
@@ -468,6 +502,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'],
                             step=1e-15,
                             derr_approx='complex_step')
+
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
 
     def test_population_discipline_deactivate_climate_effect(self):
         '''
@@ -524,3 +560,53 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'
                                      ],
                             step=1e-15, derr_approx='complex_step')
+    
+    def _test_problematic_optim_point(self):
+        #self.override_dump_jacobian= 1
+        import os
+        import pickle
+        with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
+            dict_input_optimized_point = pickle.load(f)
+        
+        def find_var_in_dict(varname: str):
+            try:
+                varname_in_dict_optimized = list(filter(lambda x: varname in x, dict_input_optimized_point.keys()))[0]
+                var_value = dict_input_optimized_point[varname_in_dict_optimized]
+                return var_value
+            except IndexError :
+                print(varname)
+
+        for checked_input in list(self.inputs_dict.keys()) + self.checked_inputs:
+            checked_inputvarname = checked_input.split('.')[-1]
+            var_value = find_var_in_dict(checked_inputvarname)
+
+            varname_in_input_dicts = list(filter(lambda x: checked_inputvarname in x, self.inputs_dict.keys()))[0]
+
+            self.inputs_dict.update({varname_in_input_dicts: var_value})
+
+        self.inputs_dict.update({
+            f'{self.name}.assumptions_dict': find_var_in_dict('assumptions_dict'),
+            f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),
+        })
+
+        self.ee.load_study_from_input_dict(self.inputs_dict)
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
+
+        self.check_jacobian(location=dirname(__file__),
+                            filename='population_jacobian_at_opt_point_uc1.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
+                            inputs=self.checked_inputs,
+                            outputs=self.checked_outputs)
+
+

@@ -15,20 +15,19 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import (
-    RenewableSimpleTechnoDiscipline,
+from energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc import (
+    CleanEnergySimpleTechnoDiscipline,
 )
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
-RENEWABLE_DEFAULT_TECHNO_DICT = RenewableSimpleTechnoDiscipline.techno_infos_dict_default
 
-class RenewableTechnoInfos(SoSWrapp):
+class CleanEnergyTechnoInfos(SoSWrapp):
     """
     Utility discipline to analyze Sensitivity Analysis demonstrator outputs in Witness Coarse Storytelling MDA.
     """
     # ontology information
     _ontology_data = {
-        'label': 'Renewable Techno Infos',
+        'label': 'Clean energy Techno Infos',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -46,13 +45,13 @@ class RenewableTechnoInfos(SoSWrapp):
 
     DESC_OUT = {'techno_infos_dict': {SoSWrapp.TYPE: 'dict',
                                       SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
-                                      SoSWrapp.NAMESPACE: 'ns_renewable_techno',
-                                      SoSWrapp.DEFAULT: deepcopy(RENEWABLE_DEFAULT_TECHNO_DICT),
+                                      SoSWrapp.NAMESPACE: 'ns_clean_energy_techno',
+                                      SoSWrapp.DEFAULT: deepcopy(CleanEnergySimpleTechnoDiscipline.techno_infos_dict_default),
                                       SoSWrapp.UNIT: 'defined in dict'}
                 }
 
     def run(self):
-        techno_infos_dict = deepcopy(RENEWABLE_DEFAULT_TECHNO_DICT)
+        techno_infos_dict = deepcopy(CleanEnergySimpleTechnoDiscipline.techno_infos_dict_default)
         techno_infos_dict['Opex_percentage'] = self.get_sosdisc_inputs('Opex_percentage')
         techno_infos_dict['Capex_init'] = self.get_sosdisc_inputs('Initial_capex')
         techno_infos_dict['resource_price'] = self.get_sosdisc_inputs('Energy_costs')

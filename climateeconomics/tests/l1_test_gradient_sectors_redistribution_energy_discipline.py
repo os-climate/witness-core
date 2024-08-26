@@ -87,8 +87,6 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
         ee.execute()
         inputs_checked = [f"{name}.{GlossaryCore.EnergyProductionValue}"]
         inputs_checked += [f'{name}.{sector}.{GlossaryCore.ShareSectorEnergyDfValue}' for sector in self.sector_list[:-1]]
-        inputs_checked += [f'{name}.{GlossaryCore.ShareResidentialEnergyDfValue}']
-
         output_checked = [f'{name}.{sector}.{GlossaryCore.EnergyProductionValue}' for sector in self.sector_list]
         output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}']
         

@@ -38,10 +38,10 @@ class Study(StudyOptimInvestDistrib):
         data_witness = super().setup_usecase()
         # update fossil invest & utilization ratio lower bound to not be too low
         min_invest = 1.
-        max_invest = 3000.
+        max_invest = 8000.
         dspace_invests = {
             'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [10., 10., 5000., True],
-            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [300., 300., max_invest, True],
+            f"{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix": [300., 300., max_invest, True],
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, False],
@@ -50,7 +50,7 @@ class Study(StudyOptimInvestDistrib):
         min_UR = 50.
         dspace_UR = {
             'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
-            'renewable_RenewableSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
+            f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array": [min_UR, min_UR, 100., True],
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
             'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
             'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
@@ -74,7 +74,6 @@ class Study(StudyOptimInvestDistrib):
                 'compute_gdp': True,
                 'compute_climate_impact_on_gdp': True,
                 'activate_climate_effect_population': True,
-                'invest_co2_tax_in_renewables': False,
                 'activate_pandemic_effects': False
             },
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
