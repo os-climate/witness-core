@@ -320,7 +320,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                                                                   GlossaryEnergy.RenewableElectricitySimpleTechno,
                                                                   GlossaryEnergy.SolarPv, GlossaryEnergy.SolarThermal,
                                                                   GlossaryEnergy.WindOffshore,
-                                                                  GlossaryEnergy.WindOnshore]}
+                                                                  GlossaryEnergy.WindOnshore],
+                                     GlossaryEnergy.renewable: [GlossaryEnergy.RenewableSimpleTechno]}
 
         # dataframe of energy production by energy in TWh
         energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
