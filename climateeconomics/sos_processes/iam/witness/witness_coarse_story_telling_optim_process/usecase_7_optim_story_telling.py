@@ -13,7 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
 
+from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
@@ -58,6 +60,22 @@ class Study(ClimateEconomicsStudyManager):
         witness_uc_data = self.witness_uc.setup_usecase()
         for dict_data in witness_uc_data:
             values_dict.update(dict_data)
+
+        function_df_key = list(filter(lambda x: 'function_df' in x, values_dict.keys()))[0]
+        function_df = values_dict[function_df_key]
+        func_df = pd.DataFrame({
+            'variable': [GlossaryCore.ConstraintCarbonNegative2050,],
+            'parent': [
+                'constraint_carbon_negative_2050'
+            ],
+            'ftype': FunctionManager.INEQ_CONSTRAINT,
+            'weight': 1.,
+            FunctionManager.AGGR: FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,
+            'namespace': [GlossaryCore.NS_FUNCTIONS]
+        })
+        function_df = pd.concat([function_df, func_df])
+
+        values_dict[function_df_key] = function_df
 
         # design space WITNESS
 

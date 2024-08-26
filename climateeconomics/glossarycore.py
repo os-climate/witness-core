@@ -99,6 +99,7 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
+    ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
     clean_energy = "clean_energy"
     ConsumptionObjective = "consumption_objective"
@@ -165,6 +166,7 @@ class GlossaryCore:
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
     ConstructionDelay = "construction_delay"
     LifetimeName = "lifetime"
+    IsTechnoMainstream = "is_mainstream"
     InitialPlantsAgeDistribFactor = "initial_plants_age_distrib_factor"
 
     # namespaces
