@@ -317,6 +317,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                                      f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}':
                                          [GlossaryEnergy.GeothermalLowHeat, GlossaryEnergy.HeatPumpLowHeat],
                                      GlossaryEnergy.electricity: [GlossaryEnergy.Geothermal,
+                                                                  GlossaryEnergy.Nuclear,
                                                                   GlossaryEnergy.RenewableElectricitySimpleTechno,
                                                                   GlossaryEnergy.SolarPv, GlossaryEnergy.SolarThermal,
                                                                   GlossaryEnergy.WindOffshore,
