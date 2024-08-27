@@ -38,12 +38,10 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.test_01_coarse_renewable_techno_discipline_jacobian,
             self.test_02_coarse_fossil_techno_discipline_jacobian,
             self.test_03_coarse_dac_techno_discipline_jacobian,
             self.test_04_coarse_flue_gas_capture_techno_discipline_jacobian,
             self.test_05_coarse_carbon_storage_techno_discipline_jacobian,
-            self.test_06_coarse_renewable_stream_discipline_jacobian,
             self.test_07_coarse_fossil_stream_discipline_jacobian,
         ]
 
@@ -64,20 +62,20 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
     def tearDown(self):
         pass
 
-    def test_01_coarse_renewable_techno_discipline_jacobian(self):
+    def test_01_coarse_clean_energy_simple_techno_discipline_jacobian(self):
         '''
-        Test the gradients of coarse renewable techno
+        Test the gradients of coarse clean energy simple techno
         '''
-        self.techno_name = 'RenewableSimpleTechno'
+        self.techno_name = GlossaryCore.CleanEnergySimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
-                   'ns_renewable': f'{self.name}',
+                   'ns_clean_energy': f'{self.name}',
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        mod_path = 'energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc.CleanEnergySimpleTechnoDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.techno_name, mod_path)
 
@@ -150,7 +148,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of coarse fossil techno
         '''
-        self.techno_name = 'FossilSimpleTechno'
+        self.techno_name = GlossaryEnergy.FossilSimpleTechno
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -232,7 +230,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of coarse dac techno
         '''
-        self.techno_name = 'direct_air_capture.DirectAirCaptureTechno'
+        self.techno_name = f'{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -314,7 +312,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of coarse flue_gas_capture techno
         '''
-        self.techno_name = 'flue_gas_capture.FlueGasTechno'
+        self.techno_name = f'{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -476,21 +474,21 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                             inputs=coupled_inputs,
                             outputs=coupled_outputs, )
 
-    def test_06_coarse_renewable_stream_discipline_jacobian(self):
+    def test_06_coarse_clean_energy_stream_discipline_jacobian(self):
         '''
         Test the gradients of the coarse renewable stream
         '''
-        self.energy_name = 'renewable'
+        self.energy_name = GlossaryCore.clean_energy
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_energy': f'{self.name}',
-                   'ns_renewable': f'{self.name}',
+                   'ns_clean_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.core.stream_type.energy_disciplines.renewable_disc.RenewableDiscipline'
+        mod_path = 'energy_models.core.stream_type.energy_disciplines.clean_energy_disc.CleanEnergyDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.energy_name, mod_path)
 
@@ -534,14 +532,14 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years),
+            GlossaryCore.NonUseCapital: 0.,
         })
         for techno in technos:
             inputs_dict[
                 f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -560,7 +558,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Test the gradients of the coarse fossil stream
         '''
-        self.energy_name = 'fossil'
+        self.energy_name = GlossaryEnergy.fossil
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_fossil': f'{self.name}',
@@ -613,14 +611,14 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years),
+            GlossaryCore.NonUseCapital: 0.,
         })
         for techno in technos:
             inputs_dict[
                 f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -692,23 +690,9 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[key]['is_coupling'] and key not in excluded_elem:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        energy_types = inputs_dict[f"{self.name}.{self.energy_name}.energy_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
-        })
-        for energy in energy_types:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
-
-        for energy in inputs_dict[f"{self.name}.{self.energy_name}.ccs_list"]:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
-
         coupled_outputs.append(f"{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}")
-        coupled_outputs.remove(f"{self.name}.energymix_coarse.{GlossaryEnergy.EnergyCapitalDfValue}")
+        coupled_outputs.remove(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyCapitalDfValue}")
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ConstraintEnergyNonUseCapital}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -721,6 +705,200 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs, )
+
+    def _test_problematic_optim_point(self):
+        self.energy_name = 'energymix_coarse'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': f'{self.name}',
+                   'ns_hydrogen': f'{self.name}',
+                   'ns_syngas': f'{self.name}',
+                   'ns_methane': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   'ns_resource': f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}.{self.energy_name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   'ns_energy': f'{self.name}'}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
+        builder = self.ee.factory.get_builder_from_module(self.energy_name, mod_path)
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        import os
+        import pickle
+        with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
+            dict_input_optimized_point = pickle.load(f)
+
+        def find_var_in_dict(varname: str):
+            try:
+                varname_in_dict_optimized = list(filter(lambda x: varname in x, dict_input_optimized_point.keys()))[0]
+                var_value = dict_input_optimized_point[varname_in_dict_optimized]
+                return var_value
+            except IndexError:
+                print(varname)
+
+        input_list = [GlossaryEnergy.energy_list, GlossaryEnergy.ccs_list, GlossaryEnergy.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd]
+        inputs_dict = {}
+
+        checked_input_jacobian = []
+
+        for stream in GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.keys():
+            to_have = [GlossaryEnergy.EnergyConsumptionValue,
+                       GlossaryCore.EnergyConsumptionWithoutRatioValue,
+                       GlossaryCore.EnergyProductionValue,
+                       GlossaryCore.StreamPricesValue,
+                       GlossaryCore.LandUseRequiredValue,
+                       GlossaryEnergy.EnergyTypeCapitalDfValue,
+                       GlossaryEnergy.CO2EmissionsValue,
+                       GlossaryEnergy.CO2PerUse,
+                       ]
+
+            to_check_jacobian = [
+                GlossaryCore.EnergyProductionValue,
+                GlossaryCore.EnergyConsumptionValue,
+            ]
+
+            input_list.extend([f"{stream}.{_}" for _ in to_have])
+            checked_input_jacobian.extend([f"{self.name}.{self.energy_name}.{stream}.{_}" for _ in to_check_jacobian])
+
+        for checked_input in input_list:
+            var_value = find_var_in_dict(checked_input)
+
+            varname_in_input_dicts = f'{self.name}.{checked_input}'
+            inputs_dict.update({varname_in_input_dicts: var_value})
+            varname_in_input_dicts = f'{self.name}.{self.energy_name}.{checked_input}'
+            inputs_dict.update({varname_in_input_dicts: var_value})
+
+
+            a = 1
+
+        inputs_dict.update({
+            f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),
+        })
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.energy_name}')[0]
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+        for graph in graph_list:
+            # graph.to_plotly().show()
+            pass
+
+        self.check_jacobian(location=dirname(__file__),
+                            filename='jacobian_at_opt_point_uc1_energy_mix_disc.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
+                            inputs=checked_input_jacobian,
+                            outputs=[f"{self.name}.{GlossaryCore.EnergyMeanPriceValue}",
+                                     f"{self.name}.{self.energy_name}.{GlossaryCore.EnergyProductionValue}"],)
+
+    def _test_problematic_optim_point_2(self):
+        self.energy_name = 'energymix_coarse'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': f'{self.name}',
+                   'ns_hydrogen': f'{self.name}',
+                   'ns_syngas': f'{self.name}',
+                   'ns_methane': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   'ns_resource': f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}.{self.energy_name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   'ns_energy': f'{self.name}'}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
+        builder = self.ee.factory.get_builder_from_module(self.energy_name, mod_path)
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        import os
+        import pickle
+        with open(os.path.join("data", "uc4optim.pkl"), "rb") as f:
+            dict_input_optimized_point = pickle.load(f)
+
+        def find_var_in_dict(varname: str):
+            try:
+                varname_in_dict_optimized = list(filter(lambda x: varname in x, dict_input_optimized_point.keys()))[0]
+                var_value = dict_input_optimized_point[varname_in_dict_optimized]
+                return var_value
+            except IndexError:
+                print(varname)
+
+        input_list = [GlossaryEnergy.energy_list, GlossaryEnergy.ccs_list, GlossaryEnergy.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd]
+        inputs_dict = {}
+
+        checked_input_jacobian = []
+
+        for stream in GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.keys():
+            to_have = [GlossaryEnergy.EnergyConsumptionValue,
+                       GlossaryCore.EnergyConsumptionWithoutRatioValue,
+                       GlossaryCore.EnergyProductionValue,
+                       GlossaryCore.StreamPricesValue,
+                       GlossaryCore.LandUseRequiredValue,
+                       GlossaryEnergy.EnergyTypeCapitalDfValue,
+                       GlossaryEnergy.CO2EmissionsValue,
+                       GlossaryEnergy.CO2PerUse,
+                       ]
+
+            to_check_jacobian = [
+                GlossaryCore.EnergyProductionValue,
+                GlossaryCore.EnergyConsumptionValue,
+            ]
+
+            input_list.extend([f"{stream}.{_}" for _ in to_have])
+            checked_input_jacobian.extend([f"{self.name}.{self.energy_name}.{stream}.{_}" for _ in to_check_jacobian])
+
+        for checked_input in input_list:
+            var_value = find_var_in_dict(checked_input)
+
+            varname_in_input_dicts = f'{self.name}.{checked_input}'
+            inputs_dict.update({varname_in_input_dicts: var_value})
+            varname_in_input_dicts = f'{self.name}.{self.energy_name}.{checked_input}'
+            inputs_dict.update({varname_in_input_dicts: var_value})
+
+
+            a = 1
+
+        inputs_dict.update({
+            f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),
+        })
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.energy_name}')[0]
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+        for graph in graph_list:
+            # graph.to_plotly().show()
+            pass
+
+        self.check_jacobian(location=dirname(__file__),
+                            filename='jacobian_at_opt_point_uc4_energy_mix_disc.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
+                            inputs=checked_input_jacobian,
+                            outputs=[f"{self.name}.{GlossaryCore.EnergyMeanPriceValue}",
+                                     f"{self.name}.{self.energy_name}.{GlossaryCore.EnergyProductionValue}"],)
 
 
 if '__main__' == __name__:

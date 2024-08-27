@@ -71,7 +71,7 @@ class Study(ClimateEconomicsStudyManager):
             values_dict.update(scenarioData)
 
         # override infos
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 600 for scenario_name in scenario_dict.keys()})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 1500 for scenario_name in scenario_dict.keys()})
 
         return values_dict
 

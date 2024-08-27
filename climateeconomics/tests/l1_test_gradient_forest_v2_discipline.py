@@ -174,9 +174,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.forest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([5000.00, 5000.00, 5000.00, 2000.00,
-                                                                                 1.00, 1.00, 1.00, 0000.00,
-                                                                                 0000.00, 0000.00, 0000.00])})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.linspace(5000., 1., len(years))})
         self.reforestation_cost_per_ha = 13800
 
         construction_delay = 3
@@ -276,9 +274,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.forest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([5000.00, 5000.00, 5000.00, 2000.00,
-                                                                                 2000.00, 2000.00, 0000.00, 0000.00,
-                                                                                 3000.00, 3000.00, 0000.00])})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.linspace(5000., 1., len(years))})
         self.reforestation_cost_per_ha = 13800
         construction_delay = 3
         self.invest_before_year_start = pd.DataFrame(
@@ -376,9 +372,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.forest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([0.00, 0.00, 0.00, 0.00,
-                                                                                 0.00, 0.00, 30000.00, 10.00,
-                                                                                 0.00, 0.00, 0000.00])})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.linspace(1000., 1., len(years))})
         self.reforestation_cost_per_ha = 13800
         construction_delay = 3
         self.invest_before_year_start = pd.DataFrame(

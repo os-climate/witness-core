@@ -107,13 +107,11 @@ class CarbonCycleDiscipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
         carboncycle_df = self.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
         carboncycle_df = resize_df(carboncycle_df)
-
+        years = list(carboncycle_df[GlossaryCore.Years].values)
         if 'atmosphere concentration' in chart_list:
 
             #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             atmo_conc = carboncycle_df['atmo_conc']
-
-            years = list(atmo_conc.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -142,8 +140,6 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             ppm = carboncycle_df['ppm']
-
-            years = list(ppm.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

@@ -57,8 +57,8 @@ $$A_t = \frac{A_{t-1}}{1-A_{gt-1}}$$ with $A_g$ the productivity growth rate.
 The initial level $A_0$ can ben changed in the inputs ($productivity\_start$),
 $$A_{gt}=A_{g0} \cdot exp(-\Delta_a \cdot (t-1) \cdot time\_step)$$
 and $\Delta_a$ is the percentage growth rate of $A_g$.
-* The “Damage to productivity growth” one ($damage\,to\,productivity$ = $True$) comes from Moyer et al. (2014) [^4]. It applies a fraction of damage $f$ ($frac\_damage\_prod$) to the productivity instead of all damage being applied to output:
-$$A^*_t=(1-f\Omega_t) \cdot \frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$,  
+* The productivity with damage (when $damage\,to\,productivity$ = True$) is 
+$$A^*_t=(1-\Omega_t) \cdot \A_t$,  
 and then damage to output $\Omega_{yt}$ becomes: 
 $$\Omega_{yt} = 1- \frac{1- \Omega_t}{1-f\Omega_t}$$
 such that the output net of climate damage is 

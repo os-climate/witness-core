@@ -54,7 +54,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'init_temp_ocean': {'type': 'float', 'default': DatabaseWitnessCore.OceanWarmingAnomalySincePreindustrial.value, 'user_level': 2, 'unit': '°C'},
+        'init_temp_ocean': {'type': 'float', 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
         'forcing_model': {'type': 'string', 'default': 'Meinshausen', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen'], 'structuring': True},
@@ -99,9 +99,17 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
 
+    def update_default_values(self):
+        """update default values of inputs based on other inputs values (years tipically)"""
+        if self.get_data_in() is not None:
+            if GlossaryCore.YearStart in self.get_data_in():
+                year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+                if year_start is not None:
+                    self.update_default_value('init_temp_ocean', 'in', DatabaseWitnessCore.OceanWarmingAnomalySincePreindustrial.get_value_at_year(year_start))
+
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-
+        self.update_default_values()
         if 'forcing_model' in self.get_data_in():
             forcing_model = self.get_sosdisc_inputs('forcing_model')
             if forcing_model == 'DICE':
@@ -215,16 +223,16 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
+        temperature_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.TemperatureDetailedDfValue))
+        years = list(temperature_df[GlossaryCore.Years].values)
+
         if 'Temperature evolution' in chart_list:
 
             to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
-            temperature_df = deepcopy(
-                self.get_sosdisc_outputs(GlossaryCore.TemperatureDetailedDfValue))
+
 
             legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
                       GlossaryCore.TempOcean: 'ocean temperature'}
-
-            years = list(temperature_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

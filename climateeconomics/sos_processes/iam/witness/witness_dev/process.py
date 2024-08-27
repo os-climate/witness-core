@@ -70,6 +70,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             GlossaryCore.NS_WITNESS,
             'climateeconomics.sos_wrapping.post_procs.witness_optim.post_processing_witness_full')
 
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_dashboard',
+                                                                                'climateeconomics.sos_wrapping.post_procs.dashboard')
+
         for resource_namespace in ['ns_coal_resource', 'ns_oil_resource', 'ns_natural_gas_resource', 'ns_uranium_resource']:
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 resource_namespace, 'climateeconomics.sos_wrapping.sos_wrapping_resources.post_proc_resource.post_processing_resource')

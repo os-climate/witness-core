@@ -33,8 +33,7 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 'compute_climate_impact_on_gdp': True,
                                 'activate_climate_effect_population': True,
                                 'activate_pandemic_effects': False,
-                                'invest_co2_tax_in_renewables': True,
-                                }
+                                                }
 
     YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YearStartDefault,
                           'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950,2040]}

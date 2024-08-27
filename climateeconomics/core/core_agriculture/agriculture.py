@@ -368,7 +368,7 @@ class Agriculture():
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
-        temp_zero = temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
+        temp_zero = temperature_df[GlossaryCore.TempAtmo].values[0]
         temp = temperature_df[GlossaryCore.TempAtmo].values
         a = self.param_a
         b = self.param_b

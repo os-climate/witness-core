@@ -265,7 +265,6 @@ class CropDiscipline(ClimateEcoDiscipline):
     # residue is 0.25 more than that
     density_per_ha = 2903 * 1.25
     # reference of the value in database
-    initial_production = DatabaseWitnessCore.ProductionCropForEnergy.get_value_at_year(GlossaryCore.YearStartDefault)
     # defined lifetime here is the supposed lifetime of crop farm
     lifetime = 50
     construction_delay = 1  # years
@@ -287,8 +286,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         'elec_demand': 0,
         'elec_demand_unit': 'kWh/kWh',
         'WACC': 0.07,  # ?
-        'lifetime': lifetime,
-        'lifetime_unit': GlossaryCore.Years,
         # capex from
         # gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
         # 237.95 euro/ha (717 $/acre)
@@ -436,7 +433,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                            'unit': 'defined in dict'},
         'techno_infos_dict': {'type': 'dict', 'unit': 'defined in dict',
                               'default': techno_infos_dict_default},
-        'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
+        'initial_production': {'type': 'float', 'unit': 'TWh'},
         'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                 'dataframe_descriptor': {'age': ('float', None, True),
                                                          'distrib': ('float', None, True)}},
@@ -452,6 +449,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                       'namespace': GlossaryCore.NS_REFERENCE, 'default': 2000.},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.FoodWastePercentageValue: GlossaryCore.FoodWastePercentage,
+        GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "default": lifetime,"description": "lifetime of a plant of the techno"},
     }
 
     DESC_OUT = {
@@ -512,8 +510,18 @@ class CropDiscipline(ClimateEcoDiscipline):
         super().__init__(sos_name, logger)
         self.crop_model = None
 
-    def setup_sos_disciplines(self):  # type: (...) -> None
+    def update_default_values(self):
+        """
+        Update all default dataframes with years
+        """
+        if self.get_data_in() is not None:
+            if GlossaryCore.YearEnd in self.get_data_in() and GlossaryCore.YearStart in self.get_data_in():
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd])
+                if year_start is not None:
+                    self.update_default_value('initial_production', 'in', DatabaseWitnessCore.ProductionCropForEnergy.get_value_at_year(year_start))
 
+    def setup_sos_disciplines(self):
+        self.update_default_values()
         if "red_meat_calories_per_day" in self.get_data_in():
             red_meat_calories_per_day = self.get_sosdisc_inputs("red_meat_calories_per_day")
             default_food_waste_percentage_df = pd.DataFrame({
@@ -521,7 +529,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.FoodWastePercentageValue: DatabaseWitnessCore.FoodWastePercentage.value
             })
             self.set_dynamic_default_values({GlossaryCore.FoodWastePercentageValue: default_food_waste_percentage_df})
-
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
@@ -536,8 +543,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.crop_model.configure_parameters_update(input_dict)
         # -- compute
         self.crop_model.compute()
-
-
 
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,

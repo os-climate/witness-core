@@ -56,8 +56,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'init_temp_ocean': {'type': 'float', 'default': DatabaseWitnessCore.OceanWarmingAnomalySincePreindustrial.value, 'user_level': 2, 'unit': '°C'},
-        'init_temp_atmo': {'type': 'float', 'default': DatabaseWitnessCore.TemperatureAnomalyPreIndustrialYearStart.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2, 'unit': '°C'},
+        'init_temp_ocean': {'type': 'float', 'user_level': 2, 'unit': '°C'},
+        'init_temp_atmo': {'type': 'float', 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
         'temperature_model': {'type': 'string', 'default': 'FUND', 'possible_values': ['DICE', 'FUND', 'FAIR'],
                               'structuring': True},
@@ -98,9 +98,18 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
 
+    def update_default_values(self):
+        """update default values of inputs based on other inputs values (years tipically)"""
+        if self.get_data_in() is not None:
+            if GlossaryCore.YearStart in self.get_data_in():
+                year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+                if year_start is not None:
+                    self.update_default_value('init_temp_ocean', 'in', DatabaseWitnessCore.OceanWarmingAnomalySincePreindustrial.get_value_at_year(year_start))
+                    self.update_default_value('init_temp_atmo', 'in', DatabaseWitnessCore.TemperatureAnomalyPreIndustrialYearStart.get_value_at_year(year_start))
+
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-
+        self.update_default_values()
         if 'temperature_model' in self.get_data_in():
             temperature_model = self.get_sosdisc_inputs('temperature_model')
             if temperature_model == 'DICE':
@@ -349,7 +358,7 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
     else:
         raise Exception("forcing model not in available models")
 
-    years = list(temperature_df.index)
+    years = list(temperature_df[GlossaryCore.Years].values)
 
     year_start = years[0]
     year_end = years[len(years) - 1]
