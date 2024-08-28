@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import pandas as pd
-
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
