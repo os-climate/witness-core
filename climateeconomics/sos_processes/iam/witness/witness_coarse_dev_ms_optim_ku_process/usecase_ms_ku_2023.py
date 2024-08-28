@@ -14,6 +14,7 @@ limitations under the License.
 
 '''
 import pandas as pd
+
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_ku_process.usecase_ms_ku import (
     Study as Study2020,
