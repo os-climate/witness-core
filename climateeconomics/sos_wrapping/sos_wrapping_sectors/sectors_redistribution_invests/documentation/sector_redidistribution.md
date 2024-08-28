@@ -29,5 +29,5 @@ Inputs :
 Output:
 - Total investments 
 
-$$ Total\ investments\ = Sum\ of\ investments\ on\ sectors\ $$
+$$ Total\ investments\ = Sum\ of\ investments\ on\ sectors\$$
 
