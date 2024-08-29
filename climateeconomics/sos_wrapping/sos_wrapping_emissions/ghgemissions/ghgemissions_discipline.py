@@ -109,7 +109,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyCarbonIntensityDfValue: GlossaryCore.EnergyCarbonIntensityDf,
         GlossaryCore.EconomicsEmissionDfValue: GlossaryCore.EmissionDf,
         GlossaryCore.ResidentialEmissionsDfValue: GlossaryCore.ResidentialEmissionsDf,
-        GlossaryCore.AllSectionsEmissionsDfValue: GlossaryCore.AllSectionsEmissionsDf
+        GlossaryCore.AllSectionsEmissionsDfValue: GlossaryCore.AllSectionsEmissionsDf,
+        GlossaryCore.ConstraintCarbonNegative2050: {'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_FUNCTIONS}
     }
 
     def setup_sos_disciplines(self):
@@ -189,7 +190,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.TotalEnergyEmissions: self.emissions_model.total_energy_co2eq_emissions,
             GlossaryCore.EnergyCarbonIntensityDfValue: self.emissions_model.carbon_intensity_of_energy_mix,
             GlossaryCore.EconomicsEmissionDfValue: self.emissions_model.total_economics_emisssions[GlossaryCore.EmissionDf['dataframe_descriptor'].keys()],
-            GlossaryCore.ResidentialEmissionsDfValue: self.emissions_model.energy_emission_households_df
+            GlossaryCore.ResidentialEmissionsDfValue: self.emissions_model.energy_emission_households_df,
+            GlossaryCore.ConstraintCarbonNegative2050: self.emissions_model.emissions_after_2050_df
         }
 
         for sector in self.emissions_model.new_sector_list:
@@ -225,11 +227,24 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                         (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                         (GlossaryCore.insertGHGAgriLandEmissions.format(ghg), column),
                         np.identity(len(years)))
+                    if ghg == GlossaryCore.CO2:
+                        d_constraint_2050 = self.emissions_model.d_2050_carbon_negative_constraint(np.identity(len(years)))
+                        self.set_partial_derivative_for_other_types(
+                            (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
+                            (GlossaryCore.insertGHGAgriLandEmissions.format(ghg), column),
+                            d_constraint_2050)
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                 ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                 np.identity(len(years)))
+
+            if ghg == GlossaryCore.CO2:
+                d_constraint_2050 = self.emissions_model.d_2050_carbon_negative_constraint(np.identity(len(years)))
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
+                    ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                    d_constraint_2050)
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.TotalEnergyEmissions, GlossaryCore.TotalEnergyEmissions),
@@ -289,6 +304,10 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
                     (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
                     d_sector_section_non_energy_emissions_d_section_gdp)
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
+                    (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
+                    self.emissions_model.d_2050_carbon_negative_constraint(d_sector_section_non_energy_emissions_d_section_gdp))
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
                     (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
