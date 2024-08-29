@@ -36,7 +36,7 @@ class ClimateEcoDiscipline(SoSWrapp):
                                                 }
 
     YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YearStartDefault,
-                          'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950,2040]}
+                          'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950, 2080]}
     TIMESTEP_DESC_IN = {'type': 'int', 'default': 1, 'unit': 'year per period',
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,

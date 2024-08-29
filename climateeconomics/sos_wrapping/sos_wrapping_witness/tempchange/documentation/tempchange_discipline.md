@@ -40,8 +40,8 @@ $$RF_{CH4,N2O,t} = 0.036 (\sqrt{C_{CH4}^t}-\sqrt{C_{CH4}^{1750}}) - MN(C_{CH4}^t
 
 with $MN$ a function defined as: 
 
-$$ MN(c1,c2) =0.47 \log(1 + 2.01.10^{-5}  (c_1  c_2)^{0.75} +
-                                 5.31.10^{-15}  c_1  (c_1 c_2)^{1.52}) $$
+$$MN(c1,c2) =0.47 \log(1 + 2.01.10^{-5}  (c_1  c_2)^{0.75} +
+                                 5.31.10^{-15}  c_1  (c_1 c_2)^{1.52})$$
 
 
 The Myhre equation is mainly used in climate change models such as in MAGICC [^4], FUND [^5] or FAIR [^6] models.

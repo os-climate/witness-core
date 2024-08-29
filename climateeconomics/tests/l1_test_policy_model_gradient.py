@@ -32,6 +32,8 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+        self.checked_inputs = [f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}']
+        self.checked_outputs = [f'{self.name}.CO2_taxes']
 
     def analytic_grad_entry(self):
         return [
@@ -74,7 +76,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline.pkl',
-                            local_data = disc.local_data,discipline=disc, inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
+                            local_data = disc.local_data,discipline=disc, inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_2(self):
@@ -111,7 +113,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_3(self):
@@ -148,10 +150,11 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def _test_problematic_optim_point(self):
+        #self.override_dump_jacobian = 1
         self.model_name = 'policy'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -175,26 +178,17 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         def find_var_in_dict(varname: str):
             try:
-                varname_in_dict_optimized = list(filter(lambda x: varname in x, dict_input_optimized_point.keys()))[0]
+                varname_in_dict_optimized = list(filter(lambda x: f".{varname}" in x, dict_input_optimized_point.keys()))[0]
                 var_value = dict_input_optimized_point[varname_in_dict_optimized]
                 return var_value
             except IndexError:
                 print(varname)
 
-        for checked_input in list(self.inputs_dict.keys()) + self.checked_inputs:
-            checked_inputvarname = checked_input.split('.')[-1]
-            var_value = find_var_in_dict(checked_inputvarname)
-
-            varname_in_input_dicts = list(filter(lambda x: checked_inputvarname in x, self.inputs_dict.keys()))[0]
-
-            self.inputs_dict.update({varname_in_input_dicts: var_value})
-
-        self.inputs_dict.update({
-            f'{self.name}.assumptions_dict': find_var_in_dict('assumptions_dict'),
-            f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),
-        })
-
-        self.ee.load_study_from_input_dict(self.inputs_dict)
+        var_to_have = ['CCS_price', 'CO2_damage_price']
+        inputs_dict = {
+            f"{self.name}.{varname}": find_var_in_dict(varname) for varname in var_to_have
+        }
+        self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
@@ -208,7 +202,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
             pass
 
         self.check_jacobian(location=dirname(__file__),
-                            filename='jacobian_at_opt_point_uc1.pkl',
+                            filename='jacobian_at_opt_point_uc4.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
