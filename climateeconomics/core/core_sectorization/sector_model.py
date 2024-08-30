@@ -154,34 +154,32 @@ class SectorModel():
             - self.decline_rate_tfp * (self.years_range - self.year_start))
         self.productivity_df[GlossaryCore.ProductivityGrowthRate] = prod_growth_rate
 
-    def compute_productivity(self, year):
-        '''
+    def compute_productivity(self):
+        """
         productivity
         if damage_to_productivity= True add damage to the the productivity
         if  not: productivity evolves independently from other variables (except productivity growthrate)
-        '''
-        if year == self.year_start:
-            self.productivity_df.loc[year, GlossaryCore.Productivity] = self.productivity_start
-            self.productivity_df.loc[year, GlossaryCore.ProductivityWithDamage] = self.productivity_start
-            self.productivity_df.loc[year, GlossaryCore.ProductivityWithoutDamage] = self.productivity_start
+        """
+        prod_wo_d = self.productivity_start
+        productivity_wo_damage_list = [self.productivity_start]
+
+        damage_fraction_output = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
+        productivity_growth = self.productivity_df[GlossaryCore.ProductivityGrowthRate].values
+
+        for prod_growth, damage_frac_year in zip(productivity_growth[:-1], damage_fraction_output[1:]):
+            prod_wo_d = prod_wo_d / (1 - prod_growth / (5 / self.time_step))
+            productivity_wo_damage_list.append(prod_wo_d)
+
+        productivity_w_damage_list = np.array(productivity_wo_damage_list) * (1 - damage_fraction_output)
+
+        self.productivity_df[GlossaryCore.ProductivityWithDamage] = productivity_w_damage_list
+        self.productivity_df[GlossaryCore.ProductivityWithoutDamage] = productivity_wo_damage_list
+        if self.damage_to_productivity:
+            self.productivity_df[GlossaryCore.Productivity] = productivity_w_damage_list
         else:
-            p_productivity_gr = self.productivity_df.at[year - self.time_step, GlossaryCore.ProductivityGrowthRate]
+            self.productivity_df[GlossaryCore.Productivity] = productivity_wo_damage_list
 
-            p_productivity_w_damage = self.productivity_df.at[year - self.time_step, GlossaryCore.ProductivityWithDamage]
-            damefrac = self.damage_fraction_output_df.at[year, GlossaryCore.DamageFractionOutput]
-            productivity_w_damage = (1 - self.frac_damage_prod * damefrac) * (p_productivity_w_damage / (1 - p_productivity_gr))
-
-            p_productivity_wo_damage = self.productivity_df.at[year - self.time_step, GlossaryCore.ProductivityWithoutDamage]
-            productivity_wo_damage = p_productivity_wo_damage / (1 - p_productivity_gr)
-
-            self.productivity_df.loc[year, GlossaryCore.ProductivityWithDamage] = productivity_w_damage
-            self.productivity_df.loc[year, GlossaryCore.ProductivityWithoutDamage] = productivity_wo_damage
-            if self.damage_to_productivity:
-                self.productivity_df.loc[year, GlossaryCore.Productivity] = productivity_w_damage
-            else:
-                self.productivity_df.loc[year, GlossaryCore.Productivity] = productivity_wo_damage
-
-    def compute_capital(self, year):
+    def compute_capital(self):
         """
         K(t), Capital for time period, trillions $USD
         Args:
@@ -190,16 +188,17 @@ class SectorModel():
             :param investment: investment
             K(t) = K(t-1)*(1-depre_rate) + investment(t-1)
         """
-        if year > self.year_end:
-            pass
-        else: 
-            # Capital
-            investment = self.investment_df.loc[year - self.time_step, GlossaryCore.InvestmentsValue]
-            capital = self.capital_df.at[year - self.time_step, GlossaryCore.Capital]
-            capital_a = capital * (1 - self.depreciation_capital) + investment
-            self.capital_df.loc[year, GlossaryCore.Capital] = capital_a
-                                  
-            return capital_a
+        capital = self.capital_start
+        capital_list = [capital]
+
+        investments = self.investment_df[GlossaryCore.InvestmentsValue].values
+        for invest in investments[:-1]:
+            capital = (1 - self.depreciation_capital) * capital + invest
+            capital_list.append(capital)
+
+        capital = np.array(capital_list)
+
+        self.capital_df[GlossaryCore.Capital] = capital
 
     def compute_usable_capital(self):
         """
@@ -210,7 +209,7 @@ class SectorModel():
         usable_capital = self.capital_utilisation_ratio * energy_efficiency * energy_production
         self.capital_df[GlossaryCore.UsableCapital] = usable_capital
 
-    def compute_gross_output(self, year):
+    def compute_gross_output(self):
         """ Compute the gdp 
         inputs: usable capital by year in trill $ , working population by year in million of people,
              productivity by year (no unit), alpha (between 0 and 1) 
@@ -218,27 +217,19 @@ class SectorModel():
         """
         alpha = self.output_alpha
         gamma = self.output_gamma
-        productivity = self.productivity_df.loc[year, GlossaryCore.Productivity]
-        working_pop = self.workforce_df.loc[year, self.sector_name]
-        capital_u = self.capital_df.loc[year, GlossaryCore.UsableCapital]
-        # If gamma == 1/2 use sqrt but same formula
-        if gamma == 1 / 2:
-            output = productivity * \
-                (alpha * np.sqrt(capital_u) + (1 - alpha) * np.sqrt(working_pop))**2
-        else:
-            output = productivity * \
-                (alpha * capital_u**gamma + (1 - alpha)* (working_pop)**gamma)**(1 / gamma)
-        self.production_df.loc[year, GlossaryCore.GrossOutput] = output
+        productivity = self.productivity_df[GlossaryCore.Productivity].values
+        working_pop = self.workforce_df[self.sector_name].values
+        capital_u = self.capital_df[GlossaryCore.UsableCapital].values
+        output = productivity * (alpha * capital_u**gamma + (1 - alpha)* (working_pop)**gamma) **(1 / gamma)
+        self.production_df[GlossaryCore.GrossOutput] = output
 
-        return output
-    
-    def compute_output_net_of_damage(self, year):
+    def compute_output_net_of_damage(self):
         """
         Output net of damages, trillions USD
         """
         damage_to_productivity = self.damage_to_productivity
-        damefrac = self.damage_fraction_output_df.at[year, GlossaryCore.DamageFractionOutput]
-        gross_output = self.production_df.at[year,GlossaryCore.GrossOutput]
+        damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
+        gross_output = self.production_df[GlossaryCore.GrossOutput].values
 
         if not self.compute_climate_impact_on_gdp:
             output_net_of_d = gross_output
@@ -248,8 +239,7 @@ class SectorModel():
                 output_net_of_d = (1 - damage) * gross_output
             else:
                 output_net_of_d = gross_output * (1 - damefrac)
-        self.production_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
-        return output_net_of_d
+        self.production_df[GlossaryCore.OutputNetOfDamage] = output_net_of_d
 
     def compute_output_net_of_damage_per_section(self):
         """
@@ -261,22 +251,13 @@ class SectorModel():
 
         self.section_gdp_df = pd.DataFrame(section_gdp_df)
 
-    def compute_output_growth_rate(self, year):
+    def compute_output_growth_rate(self):
         """ Compute output growth rate for every year for the year before: 
         output_growth_rate(t-1) = (output(t) - output(t-1))/output(t-1)
         for the last year we put the value of the previous year to avoid a 0 
         """
-        if year == self.year_start: 
-            pass
-        else: 
-            output = self.production_df.at[year - self.time_step,GlossaryCore.OutputNetOfDamage]
-            output_a = self.production_df.at[year, GlossaryCore.OutputNetOfDamage]
-            output = max(1e-6, output)
-            output_growth = ((output_a - output) / output) / self.time_step
-            self.growth_rate_df.loc[year - self.time_step, 'net_output_growth_rate'] = output_growth
-        #For the last year put the vale of the year before 
-        if year == self.year_end: 
-            self.growth_rate_df.loc[year, 'net_output_growth_rate'] = output_growth
+        gross_output = self.production_df[GlossaryCore.GrossOutput]
+        self.production_df[GlossaryCore.OutputGrowth] = (gross_output.diff() / gross_output.shift(1)).fillna(0.) * 100
 
     # For production fitting optim  only
     def compute_long_term_energy_efficiency(self):
@@ -391,24 +372,20 @@ class SectorModel():
         self.init_dataframes()
         self.set_coupling_inputs(inputs)
         self.compute_productivity_growthrate()
+        self.compute_productivity()
         self.compute_energy_efficiency()
         self.compute_usable_capital()
 
-        # iterate over years
-        for year in self.years_range:
-            self.compute_productivity(year)
-            self.compute_gross_output(year)
-            self.compute_output_net_of_damage(year)
-            self.compute_output_growth_rate(year)
-            # capital t+1 :
-            self.compute_capital(year+1)
+        self.compute_gross_output()
+        self.compute_output_net_of_damage()
+        self.compute_output_growth_rate()
+        self.compute_capital()
 
         if self.prod_function_fitting:
             self.compute_long_term_energy_efficiency()
             self.compute_energy_eff_constraints()
 
         self.compute_output_net_of_damage_per_section()
-
         self.compute_energy_consumption_per_section()
 
         self.compute_usable_capital_upper_bound_constraint()
@@ -602,28 +579,8 @@ class SectorModel():
     
     def d_productivity_w_damage_d_damage_frac_output(self):
         """derivative of productivity with damage wrt damage frac output"""
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
-        nb_years = len(years)
-        p_productivity_gr = self.productivity_df[GlossaryCore.ProductivityGrowthRate].values
-        p_productivity = self.productivity_df[GlossaryCore.ProductivityWithDamage].values
-
-        # derivative matrix initialization
-        d_productivity_w_damage_d_damage_frac_output = np.zeros((nb_years, nb_years))
-
-        # first line stays at zero since derivatives of initial values are
-        # zero
-        for i in range(1, nb_years):
-            d_productivity_w_damage_d_damage_frac_output[i, i] = (1 - self.frac_damage_prod * self.damage_fraction_output_df.at[
-                years[i], GlossaryCore.DamageFractionOutput]) * \
-                                   d_productivity_w_damage_d_damage_frac_output[i - 1, i] / (
-                                               1 - p_productivity_gr[i - 1]) - self.frac_damage_prod * \
-                                   p_productivity[i - 1] / (1 - p_productivity_gr[i - 1])
-            for j in range(1, i):
-                d_productivity_w_damage_d_damage_frac_output[i, j] = (1 - self.frac_damage_prod * self.damage_fraction_output_df.at[
-                    years[i], GlossaryCore.DamageFractionOutput]) * \
-                                       d_productivity_w_damage_d_damage_frac_output[i - 1, j] / (1 - p_productivity_gr[i - 1])
-
-        return d_productivity_w_damage_d_damage_frac_output
+        productivity_wo_damage = self.productivity_df[GlossaryCore.ProductivityWithoutDamage].values
+        return np.diag(-productivity_wo_damage)
 
     def d_productivity_d_damage_frac_output(self):
         """gradient for productivity for damage_df"""
