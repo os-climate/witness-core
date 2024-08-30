@@ -45,6 +45,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_MACRO: self.ee.study_name,
                    f'ns_{GlossaryCore.Households.lower()}_emissions':f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}",
                    'ns_agriculture': self.ee.study_name,
+                   'ns_dashboard': self.ee.study_name,
                    'ns_forest': self.ee.study_name}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
