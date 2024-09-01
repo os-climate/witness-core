@@ -79,12 +79,10 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                                           'Crop': ('float', None, False)}},
         GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4): {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                          'Crop': ('float', None, False),
-                                                          'Forest': ('float', None, False),}},
+                                                          'Crop': ('float', None, False),}},
         GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O): {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                          'Crop': ('float', None, False),
-                                                          'Forest': ('float', None, False),}},
+                                                          'Crop': ('float', None, False),}},
         'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  GlossaryCore.TotalCO2Emissions: ('float', None, False),
@@ -122,7 +120,11 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 for sector in sectorlist:
                     # section energy consumption
                     section_energy_consumption_df_variable = deepcopy(GlossaryCore.SectionEnergyConsumptionDf)
-                    section_energy_consumption_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    df_descriptor = {
+                        GlossaryCore.Years: ("int", None, True),
+                        **{section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]}
+                    }
+                    section_energy_consumption_df_variable["dataframe_descriptor"] = df_descriptor
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}"] = section_energy_consumption_df_variable
 
                     section_non_energy_emissions_gdp_var = deepcopy(GlossaryCore.SectionNonEnergyEmissionGdpDf)
@@ -131,17 +133,17 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}"] = section_non_energy_emissions_gdp_var
 
                     section_gdp_var = deepcopy(GlossaryCore.SectionGdpDf)
-                    section_gdp_var["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    section_gdp_var["dataframe_descriptor"] =  df_descriptor
                     dynamic_inputs[f"{sector}.{GlossaryCore.SectionGdpDfValue}"] = section_gdp_var
 
                     section_energy_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyEmissionDf)
-                    section_energy_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    section_energy_emissions_df_variable["dataframe_descriptor"] = df_descriptor
                     section_energy_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
                     section_energy_emissions_df_variable['visibility'] = "Shared"
                     dynamic_outputs[f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}"] = section_energy_emissions_df_variable
 
                     section_non_energy_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionNonEnergyEmissionDf)
-                    section_non_energy_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    section_non_energy_emissions_df_variable["dataframe_descriptor"] = df_descriptor
                     section_non_energy_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
                     section_non_energy_emissions_df_variable['visibility'] = "Shared"
                     dynamic_outputs[f"{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}"] = section_non_energy_emissions_df_variable
@@ -149,7 +151,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     section_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEmissionDf)
                     section_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
                     section_emissions_df_variable['visibility'] = "Shared"
-                    section_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    section_emissions_df_variable["dataframe_descriptor"] = df_descriptor
                     dynamic_outputs[f"{sector}.{GlossaryCore.SectionEmissionDfValue}"] = section_emissions_df_variable
 
                     emission_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.EmissionDf)
@@ -161,9 +163,12 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 section_emissions_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEmissionDf)
                 section_emissions_df_variable['namespace'] = GlossaryCore.NS_GHGEMISSIONS
                 section_emissions_df_variable['visibility'] = "Shared"
-                section_emissions_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[GlossaryCore.SectorAgriculture]})
+                df_descriptor = {
+                    GlossaryCore.Years: ("int", None, True),
+                    **{section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[GlossaryCore.SectorAgriculture]}
+                }
+                section_emissions_df_variable["dataframe_descriptor"] = df_descriptor
                 dynamic_outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectionEmissionDfValue}"] = section_emissions_df_variable
-
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
