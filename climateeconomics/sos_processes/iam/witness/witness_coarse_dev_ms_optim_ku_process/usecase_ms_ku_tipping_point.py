@@ -20,6 +20,7 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
     Study as uc_ms_mda,
 )
@@ -36,11 +37,12 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_opt
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
-        super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
+        super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
         self.test_post_procs = False
+        self.year_start = year_start
 
     def setup_usecase(self, study_folder_path=None):
 
@@ -73,7 +75,7 @@ class Study(ClimateEconomicsStudyManager):
         }
 
         for scenario_name, studyClass in scenario_dict.items():
-            scenarioUseCase = studyClass(execution_engine=self.execution_engine)
+            scenarioUseCase = studyClass(execution_engine=self.execution_engine, year_start=self.year_start)
             scenarioUseCase.study_name = f'{self.study_name}.{scatter_scenario}.{scenario_name}'
             scenarioData = scenarioUseCase.setup_usecase()
             scenarioDatadict = {}
