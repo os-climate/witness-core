@@ -493,7 +493,7 @@ class Forest():
 
         self.crf = self.compute_crf()
 
-        self.biomass_dry_df['managed_wood_transport ($/t)'] = self.transport['transport']
+        self.biomass_dry_df['managed_wood_transport ($/t)'] = self.transport['transport'].values
 
         # Factory cost including CAPEX OPEX
         # $/ha * ha/m3 * m3/kg * 1000 = $/t
@@ -502,11 +502,9 @@ class Forest():
                                                                    self.crf + 0.045) / self.managed_yield / self.mean_density * 1000
 
         self.biomass_dry_df['managed_wood_price_per_ton'] = (
-                                                                     self.biomass_dry_df[
-                                                                         'managed_wood_capex ($/t)'] +
-                                                                     self.biomass_dry_df[
-                                                                         'managed_wood_transport ($/t)']) * \
-                                                             self.margin['margin'] / 100.0
+                                                                     self.biomass_dry_df['managed_wood_capex ($/t)'].values +
+                                                                     self.biomass_dry_df['managed_wood_transport ($/t)']).values * \
+                                                             self.margin['margin'].values / 100.0
 
     def compute_crf(self):
         """

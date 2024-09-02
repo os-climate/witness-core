@@ -50,9 +50,9 @@ class DatabaseWitnessCore:
     TemperatureAnomalyPreIndustrialYearStart = HeavyCollectedData(
         value=join(data_folder, "temp_anomaly_pre_industrial.csv"),
         unit="°C",
-        description="Global average temperature anomaly historic (2010-2023) relative to 1850-1900 average",
-        link="https://berkeleyearth.org/global-temperature-report-for-2023/#:~:text=Annual%20Temperature%20Anomaly&text=As%20a%20result%2C%202023%20is,C%20(2.7%20%C2%B0F).",
-        source="BerkleyEarth",
+        description="Global average temperature anomaly historic wrt 1850-1900 average",
+        link="https://climate.copernicus.eu/climate-indicators/temperature",
+        source="Copernicus",
         last_update_date=date(2024, 2, 27),
         critical_at_year_start=True,
         column_to_pick="Warming"

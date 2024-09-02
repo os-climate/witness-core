@@ -35,8 +35,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
-        self.year_start = GlossaryCore.YearStartDefault
-        self.year_end = self.year_start + 1
+        self.year_start = 2048
+        self.year_end = 2053
         years = np.arange(self.year_start, self.year_end + 1)
         self.GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
@@ -97,7 +97,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
             f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}",
             f"{self.name}.{self.model_name}.{GlossaryCore.EconomicsEmissionDfValue}",
-            f"{self.name}.{self.model_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"
+            f"{self.name}.{self.model_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}",
+            f"{self.name}.{GlossaryCore.ConstraintCarbonNegative2050}"
         ]
 
         #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]

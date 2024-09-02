@@ -99,6 +99,9 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
+    ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
+    CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
+    clean_energy = "clean_energy"
     ConsumptionObjective = "consumption_objective"
 
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
@@ -163,6 +166,7 @@ class GlossaryCore:
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
     ConstructionDelay = "construction_delay"
     LifetimeName = "lifetime"
+    IsTechnoMainstream = "is_mainstream"
     InitialPlantsAgeDistribFactor = "initial_plants_age_distrib_factor"
 
     # namespaces
@@ -289,7 +293,6 @@ class GlossaryCore:
         "unit": "%",
         "description": "Percentage of the energy consumption for each sector",
         "dynamic_dataframe_columns": True,
-        "default": DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.value,
     }
 
     SectionNonEnergyEmissionGdpDf = {
@@ -610,7 +613,6 @@ class GlossaryCore:
         "type": "float",
         "unit": "G$",
         "visibility": "Shared",
-        "default": DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(YearStartDefault),
         "namespace": NS_WITNESS,
         "user_level": 2,
     }
@@ -790,7 +792,7 @@ class GlossaryCore:
     PopulationStart = "population_start"
     PopulationStartDf = {
         "var_name": PopulationStart,
-        'type': 'dataframe', 'default': DatabaseWitnessCore.PopulationYearStart.get_df_at_year(YearStartDefault),
+        'type': 'dataframe',
                     'unit': 'millions of people',
                     'dataframe_descriptor': {"0-4": ("float", [0, 1e30], True),
                                              "5-9": ("float", [0, 1e30], True),
@@ -1020,9 +1022,9 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
     }
 
-    RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
-    RenewablesEnergyInvestments = {
-        "var_name": RenewablesEnergyInvestmentsValue,
+    CleanEnergyInvestmentsValue = "Clean energy investments [100G$]"
+    CleanEnergyInvestments = {
+        "var_name": CleanEnergyInvestmentsValue,
         "namespace": NS_WITNESS,
         "type": "dataframe",
         "dataframe_descriptor": {

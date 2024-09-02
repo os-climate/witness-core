@@ -15,6 +15,8 @@ limitations under the License.
 '''
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class ProcessBuilder(BaseProcessBuilder):
 
@@ -36,14 +38,14 @@ class ProcessBuilder(BaseProcessBuilder):
         # Add input/output analysis disciplines
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness_coarse_for_sensitivity.fossil_techno_infos.FossilTechnoInfos'
         builder_cdf_list.append(self.ee.factory.get_builder_from_module('FossilTechnoInfo', mod_path))
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness_coarse_for_sensitivity.renewable_techno_infos.RenewableTechnoInfos'
-        builder_cdf_list.append(self.ee.factory.get_builder_from_module('RenewableTechnoInfo', mod_path))
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness_coarse_for_sensitivity.clean_energy_techno_infos.CleanEnergyTechnoInfos'
+        builder_cdf_list.append(self.ee.factory.get_builder_from_module('CleanEnergyTechnoInfo', mod_path))
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness_coarse_for_sensitivity.witness_indicators.WitnessIndicators'
         builder_cdf_list.append(self.ee.factory.get_builder_from_module('Indicators', mod_path))
 
         # Add new namespaces needed for these disciplines
         ns_dict = {'ns_fossil_techno': f'{self.ee.study_name}.EnergyMix.fossil.FossilSimpleTechno',
-                   'ns_renewable_techno': f'{self.ee.study_name}.EnergyMix.renewable.RenewableSimpleTechno',
+                   'ns_clean_energy_techno': f'{self.ee.study_name}.EnergyMix.{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}',
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
         return builder_cdf_list

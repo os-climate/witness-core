@@ -152,7 +152,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         workforce_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.WorkforceDfValue))
         employment_df = deepcopy(self.get_sosdisc_outputs('employment_df'))
         sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
-
+        years = list(workforce_df[GlossaryCore.Years].values)
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
@@ -161,7 +161,6 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         if 'employment rate' in chart_list:
 
-            years = list(employment_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -188,7 +187,6 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
             working_age_pop_df = self.get_sosdisc_inputs(
                 GlossaryCore.WorkingAgePopulationDfValue)
-            years = list(workforce_df[GlossaryCore.Years].values)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

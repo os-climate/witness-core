@@ -317,10 +317,12 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                                      f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}':
                                          [GlossaryEnergy.GeothermalLowHeat, GlossaryEnergy.HeatPumpLowHeat],
                                      GlossaryEnergy.electricity: [GlossaryEnergy.Geothermal,
+                                                                  GlossaryEnergy.Nuclear,
                                                                   GlossaryEnergy.RenewableElectricitySimpleTechno,
                                                                   GlossaryEnergy.SolarPv, GlossaryEnergy.SolarThermal,
                                                                   GlossaryEnergy.WindOffshore,
-                                                                  GlossaryEnergy.WindOnshore]}
+                                                                  GlossaryEnergy.WindOnshore],
+                                     GlossaryEnergy.clean_energy: [GlossaryEnergy.CleanEnergySimpleTechno]}
 
         # dataframe of energy production by energy in TWh
         energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
@@ -352,23 +354,26 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         # creation of clean energy growth dataframe for 10 years intervals
         clean_energy_growth_df = pd.DataFrame()
-        clean_energy_growth_df['years intervals'] = None
+        clean_energy_growth_df[GlossaryEnergy.Years] = None
         clean_energy_growth_df['clean energy growth (PWh)'] = None
         year_start = clean_energy_df[GlossaryEnergy.Years].iloc[0]
         year_end = clean_energy_df[GlossaryEnergy.Years].iloc[-1]
         year = year_start
-        while (year + 10) <= year_end:
-            # interval creation
-            interval = pd.DataFrame({'years intervals': [f'{year}-{year+10}']})
-            clean_energy_growth_df = pd.concat([clean_energy_growth_df, interval], ignore_index=True)
+        # computing growth in an interval
+        while (year + 9) <= year_end:
             growth = 0
-            # growth between two consecutive years in the interval
+            # growth between two consecutive years
             for i in range(0, 10):
                 value1 = clean_energy_df.loc[clean_energy_df[GlossaryEnergy.Years] == year + i, 'Total'].values[0]
                 value2 = clean_energy_df.loc[clean_energy_df[GlossaryEnergy.Years] == year + i + 1, 'Total'].values[0]
                 growth = growth + value2 - value1
             # growth is in TWh so it needs to be converted into PWh
-            clean_energy_growth_df.loc[clean_energy_growth_df['years intervals'] == f'{year}-{year+10}', 'clean energy growth (PWh)'] = growth/1000
+            growth /= 1000
+            # applying an equal share of the growth to each year in the interval
+            year_growth = growth / 10
+            for i in range(0, 10):
+                year_interval = pd.DataFrame({GlossaryEnergy.Years: [year + i], 'clean energy growth (PWh)': year_growth})
+                clean_energy_growth_df = pd.concat([clean_energy_growth_df, year_interval], ignore_index=True)
             # switching to next 10 year interval
             year += 10
 
@@ -377,30 +382,40 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         chart_name = 'Clean energy growth'
 
-        new_chart = TwoAxesInstanciatedChart('years intervals', 'Clean energy growth (PWh)',
+        new_chart = TwoAxesInstanciatedChart('years intervals', 'PWh added in 10 years',
                                              chart_name=chart_name, stacked_bar=True,
                                              y_min_zero=False)
 
         new_chart = new_chart.to_plotly()
 
-        years_intervals = clean_energy_growth_df['years intervals'].to_list()
+        years_intervals = clean_energy_growth_df[GlossaryEnergy.Years].to_list()
         computed_data = clean_energy_growth_df['clean energy growth (PWh)'].to_list()
 
         new_chart.add_trace(go.Scatter(
             x=years_intervals,
             y=computed_data,
-            name='Clean energy growth'
+            name='clean energy growth'
         ))
 
         new_chart.add_trace(go.Scatter(
-            x=['2020-2030', '2030-2040', '2040-2050'],
-            y=[13, 13, 13],
+            x=list(range(2020, 2051)),
+            y=[13] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name='default value (2020-2050) - Y. Caseau, CCEM 2024',
         ))
 
         new_chart.add_trace(go.Scatter(
-            x=['2020-2030', '2030-2040', '2040-2050'],
-            y=[25, 25, 25],
+            x=list(range(2020, 2051)),
+            y=[25] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name='default value (2020-2050) - IRENA 1.5°C scenario',
         ))
 
@@ -425,12 +440,12 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         for i in range(1, len(years)):
             previous_year_efficiency = energy_efficiency.loc[i - 1, 'energy efficiency']
             current_year_efficiency = energy_efficiency.loc[i, 'energy efficiency']
-            energy_efficiency.loc[i, 'variation'] = (current_year_efficiency - previous_year_efficiency) / previous_year_efficiency
+            energy_efficiency.loc[i, 'variation'] = (current_year_efficiency - previous_year_efficiency) / previous_year_efficiency * 100
 
-        chart_name = "Energy efficiency"
+        chart_name = "Variation of energy efficiency"
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy. Years,
-                                             'Variation of energy efficiency (%)',
+                                             'variation of GDP / energy production (%)',
                                              chart_name=chart_name)
 
         new_chart = new_chart.to_plotly()
@@ -438,19 +453,29 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=years,
             y=energy_efficiency['variation'].to_list(),
-            name="Variation of energy efficiency",
+            name="variation of energy efficiency",
         ))
 
         # default value is 1.2%
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[1.2] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name="default value (2020-2050) - Y. Caseau, CCEM 2024",
         ))
 
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[2.7] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name="default value (2020-2050) - IRENA 1.5°C scenario",
         ))
 
@@ -473,7 +498,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             chart_name = "Electrification of energy"
 
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years,
-                                                 'Electrification of energy (%)',
+                                                 'electricity production / energy production (%)',
                                                  chart_name=chart_name)
 
             new_chart = new_chart.to_plotly()
@@ -481,19 +506,29 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             new_chart.add_trace(go.Scatter(
                 x=years,
                 y=energy_electrification['value'].to_list(),
-                name="Electrification of energy",
+                name="electrification of energy",
             ))
 
             # default values
             new_chart.add_trace(go.Scatter(
                 x=[2020, 2050],
                 y=[16, 48],
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
                 name="default values (2020 & 2050) - Y. Caseau, CCEM 2024",
             ))
 
             new_chart.add_trace(go.Scatter(
                 x=list(range(2020, 2051)),
                 y=[80] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
                 name="default values (2020 & 2050) - IRENA 1.5°C scenario",
             ))
 
@@ -521,7 +556,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         chart_name = "Return on Investment"
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years,
-                                             'Return on Investment (%)',
+                                             'GDP variation / investments (%)',
                                              chart_name=chart_name)
 
         new_chart = new_chart.to_plotly()
@@ -529,13 +564,18 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Scatter(
             x=years,
             y=roi['value'].to_list(),
-            name="Return on Investment",
+            name="return on Investment",
         ))
 
         # default value is 9.3%
         new_chart.add_trace(go.Scatter(
             x=list(range(2020, 2051)),
             y=[9.3] * len(range(2020, 2051)),
+            mode='lines',
+            line=dict(
+                dash='dash',
+                width=2
+            ),
             name="default value (2020-2050) - Y. Caseau, CCEM 2024",
         ))
 
@@ -583,14 +623,14 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart.add_trace(go.Bar(
             x=[2.6],
             y=[6.7],
-            opacity=1,
+            opacity=0.5,
             name="default value - Y. Caseau, CCEM 2024",
         ))
 
         new_chart.add_trace(go.Bar(
             x=[3],
             y=[8],
-            opacity=1,
+            opacity=0.5,
             name="default value - Schroders",
         ))
 

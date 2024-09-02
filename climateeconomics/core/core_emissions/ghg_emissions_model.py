@@ -31,6 +31,7 @@ class GHGEmissions:
         """
         Constructor
         """
+        self.emissions_after_2050_df = None
         self.energy_emission_households_df = None
         self.residential_energy_consumption = None
         self.dict_sector_sections_energy_emissions = {}
@@ -326,9 +327,9 @@ class GHGEmissions:
     def compute_total_economics_emission(self):
         """Compute economics emissions : sum of emissions for sectors Services and Industry"""
         total_economics_emisssions = {GlossaryCore.Years: self.years_range}
-        total_economics_emisssions[GlossaryCore.EnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.EnergyEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
-        total_economics_emisssions[GlossaryCore.NonEnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.NonEnergyEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
-        total_economics_emisssions[GlossaryCore.TotalEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.TotalEmissions] for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.EnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.EnergyEmissions].values for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.NonEnergyEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.NonEnergyEmissions].values for sector in self.economic_sectors_except_agriculture], axis=0)
+        total_economics_emisssions[GlossaryCore.TotalEmissions] = np.sum([self.dict_sector_emissions[sector][GlossaryCore.TotalEmissions].values for sector in self.economic_sectors_except_agriculture], axis=0)
         self.total_economics_emisssions = pd.DataFrame(total_economics_emisssions)
 
     def compute(self, inputs_dict):
@@ -361,6 +362,8 @@ class GHGEmissions:
         self.compute_total_gwp()
         self.compute_gwp_per_sector()
         self.compute_CO2_emissions_objective()
+        self.compute_net_zero_2050_constraint_df()
+
 
         # compute emission households
         self.compute_energy_emission_households()
@@ -439,3 +442,10 @@ class GHGEmissions:
             GlossaryCore.TotalEmissions: energy_emission_households
         })
 
+    def compute_net_zero_2050_constraint_df(self):
+
+        self.emissions_after_2050_df = self.ghg_emissions_df.loc[self.years_range >= 2050][
+            [GlossaryCore.Years, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)]]
+
+    def d_2050_carbon_negative_constraint(self, d_total_co2_emissions):
+        return d_total_co2_emissions[self.years_range >= 2050]

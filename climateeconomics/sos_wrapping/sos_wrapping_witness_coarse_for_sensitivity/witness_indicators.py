@@ -14,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc import (
+    CleanEnergySimpleTechnoDiscipline,
+)
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
     FossilSimpleTechnoDiscipline,
-)
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import (
-    RenewableSimpleTechnoDiscipline,
 )
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 from climateeconomics.glossarycore import GlossaryCore
 
-RENEWABLE_DEFAULT_TECHNO_DICT = RenewableSimpleTechnoDiscipline.techno_infos_dict_default
+RENEWABLE_DEFAULT_TECHNO_DICT = CleanEnergySimpleTechnoDiscipline.techno_infos_dict_default
 FOSSIL_DEFAULT_TECHNO_DICT = FossilSimpleTechnoDiscipline.techno_infos_dict_default
 
 class WitnessIndicators(SoSWrapp):
@@ -73,11 +73,11 @@ class WitnessIndicators(SoSWrapp):
         mean_energy_price = self.get_sosdisc_inputs(GlossaryEnergy.EnergyMeanPriceValue)['energy_price'].tolist()[-1]
         prices = self.get_sosdisc_inputs('energy_prices_after_tax')
         prods = self.get_sosdisc_inputs(GlossaryEnergy.EnergyProductionDetailedValue)
-        fossil_price = prices['fossil'].tolist()[-1]
-        renewable_price = prices['renewable'].tolist()[-1]
+        fossil_price = prices[GlossaryEnergy.fossil].tolist()[-1]
+        renewable_price = prices[GlossaryCore.clean_energy].tolist()[-1]
         total_prod = prods['Total production (uncut)'].tolist()[-1] * 1e-3
         fossil_prod = prods['production fossil (TWh)'].tolist()[-1] * 1e-3
-        renewable_prod = prods['production renewable (TWh)'].tolist()[-1] * 1e-3
+        renewable_prod = prods[f'production {GlossaryCore.clean_energy} (TWh)'].tolist()[-1] * 1e-3
         world_net_product = self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)['output_net_of_d'].tolist()[-1]
         temperature_rise = self.get_sosdisc_inputs(GlossaryCore.TemperatureDfValue)['temp_atmo'].tolist()[-1]
 

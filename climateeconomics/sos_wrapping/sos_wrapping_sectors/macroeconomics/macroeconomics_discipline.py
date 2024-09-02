@@ -213,7 +213,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         economics_detail_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue))
         inputs_dict = self.get_sosdisc_inputs()
         sector_list = inputs_dict[GlossaryCore.SectorListValue]
-        years = list(economics_detail_df.index)
+        years = list(economics_detail_df[GlossaryCore.Years].values)
         compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
         damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
@@ -298,7 +298,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             to_plot = [GlossaryCore.Capital, GlossaryCore.UsableCapital]
             legend = {GlossaryCore.Capital: 'capital stock',
                       GlossaryCore.UsableCapital: 'usable capital stock'}
-            years = list(economics_detail_df.index)
+            years = list(economics_detail_df[GlossaryCore.Years].values)
 
             chart_name = 'Total capital stock and usable capital'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'capital stock [T$]',
@@ -349,7 +349,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if 'output growth' in chart_list:
 
             to_plot = [GlossaryCore.OutputGrowth]
-            years = list(economics_detail_df.index)
+            years = list(economics_detail_df[GlossaryCore.Years].values)
             chart_name = 'Net output growth rate over years'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' growth rate [-]',
                                                  chart_name=chart_name)

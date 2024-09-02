@@ -398,6 +398,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
         damage_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}")
+        years = list(production_df[GlossaryCore.Years].values)
 
 
         if 'sector output' in chart_list:
@@ -413,7 +414,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
             capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.CapitalDfValue}")
             first_serie = capital_df[GlossaryCore.Capital]
             second_serie = capital_df[GlossaryCore.UsableCapital]
-            years = list(capital_df.index)
 
             chart_name = 'Productive capital stock and usable capital for production'
 
@@ -454,7 +454,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             all_damages = damage_detailed_df[GlossaryCore.EstimatedDamages].values
 
-            years = list(damage_detailed_df.index)
             chart_name = 'Breakdown of damages' + ' (not applied)' * (not compute_climate_impact_on_gdp)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Trillion$2020',
@@ -482,7 +481,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.Capital in chart_list:
             serie = detailed_capital_df[GlossaryCore.Capital]
-            years = list(detailed_capital_df.index)
 
             chart_name = f'{self.sector_name} capital stock per year'
 
@@ -495,7 +493,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.Workforce in chart_list:
-            years = list(workforce_df[GlossaryCore.Years])
 
             chart_name = 'Workforce'
 
@@ -517,7 +514,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.ProductivityWithoutDamage: 'Without damages',
                 GlossaryCore.ProductivityWithDamage: 'With damages'}
             productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
-            years = list(productivity_df.index)
             extra_name = 'damages applied' if damages_to_productivity else 'damages not applied'
             chart_name = f'Total Factor Productivity ({extra_name})'
 
@@ -539,7 +535,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.EnergyEfficiency in chart_list:
 
             to_plot = [GlossaryCore.EnergyEfficiency]
-            years = list(detailed_capital_df.index)
             chart_name = 'Capital energy efficiency over the years'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
@@ -557,7 +552,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if 'output growth' in chart_list:
 
             to_plot = ['net_output_growth_rate']
-            years = list(growth_rate_df.index)
             chart_name = 'Net output growth rate over years'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' growth rate [-]',
                                                  chart_name=chart_name)
@@ -574,7 +568,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
                 to_plot = [GlossaryCore.EnergyEfficiency]
 
-                years = list(lt_energy_eff[GlossaryCore.Years])
 
                 chart_name = 'Capital energy efficiency over the years'
 
@@ -596,7 +589,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.SectionGdpPart in chart_list:
             sections_gdp = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}")
             sections_gdp = sections_gdp.drop('years', axis=1)
-            years = list(production_df.index)
 
             chart_name = f'Breakdown of GDP per section for {self.sector_name} sector [T$]'
 
@@ -624,7 +616,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.SectionEnergyConsumptionPart in chart_list:
             sections_energy_consumption = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionDfValue}")
             sections_energy_consumption = sections_energy_consumption.drop('years', axis=1)
-            years = list(production_df.index)
 
             chart_name = f'Breakdown of energy consumption per section for {self.sector_name} sector'
 

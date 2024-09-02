@@ -56,6 +56,7 @@ class Study(StudyManager):
         self.time_step = time_step
         self.witness_sect_uc = witness_sect_usecase(self.year_start, self.year_end, self.time_step,
                                                     execution_engine=execution_engine, main_study=False)
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
@@ -268,6 +269,8 @@ class Study(StudyManager):
             GlossaryCore.SectorServices: long_term_energy_eff[GlossaryCore.Years],
             GlossaryCore.SectorAgriculture: long_term_energy_eff[GlossaryCore.Years],
         })
+        workforce_df = workforce_df.loc[workforce_df[GlossaryCore.Years] <= self.year_end]
+        workforce_df = workforce_df.loc[workforce_df[GlossaryCore.Years] >= self.year_start]
         ns_industry_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}"
         ns_agriculture_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}"
         ns_services_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorServices}"
