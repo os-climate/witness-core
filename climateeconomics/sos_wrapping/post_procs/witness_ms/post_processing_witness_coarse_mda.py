@@ -13,6 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
+import logging
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -48,7 +49,6 @@ END_YEAR_NAME = 'Ending year'
 SCENARIO_NAME = 'Scenarios'
 SCATTER_SCENARIO = 'mda_scenarios'
 TIPPING_POINT = usecase_ms_mda_tipping_point.TIPPING_POINT
-TIPPING_POINT_LIST = usecase_ms_mda_tipping_point.TIPPING_POINT_LIST
 SEP = usecase_ms_mda_tipping_point.SEP
 UNIT = usecase_ms_mda_tipping_point.UNIT
 # list of graphs to be plotted and filtered
@@ -79,6 +79,9 @@ def get_all_scenarios_values(execution_engine, short_name_var: str):
     values = {var_full_name: execution_engine.dm.get_value(var_full_name) for var_full_name in var_full_names}
     return values
 
+def recover_tipping_point_values(execution_engine):
+    return list(set(execution_engine.dm.get_value('Damage.tp_a3')))
+
 def post_processing_filters(execution_engine, namespace):
 
     filters = []
@@ -100,8 +103,10 @@ def post_processing_filters(execution_engine, namespace):
                                ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False)) # by default shows all studies, ie does not apply any filter
     #specific case of tipping point study => filter will apply if at least one scenario has TIPPING_POINT in its name
     if True in [TIPPING_POINT in scenario for scenario in scenario_list]:
-        filters.append(ChartFilter(TIPPING_POINT, TIPPING_POINT_LIST,
-                                   TIPPING_POINT_LIST, TIPPING_POINT))
+        # recover the values of tipping points:
+        tipping_point_list = recover_tipping_point_values(execution_engine)
+        filters.append(ChartFilter(TIPPING_POINT, tipping_point_list,
+                                   tipping_point_list, TIPPING_POINT))
 
     return filters
 
@@ -143,7 +148,8 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == usecase_ms_mda_tipping_point.TIPPING_POINT:
                 # Keep scenarios with selected tipping points + scenarios without tipping point defined (ex: reference scenario without damage)
                 # => remove from selected scenarios the "tipping point scenarios" that do not respect the filtering condition
-                tipping_points_to_drop = [tp for tp in TIPPING_POINT_LIST if tp not in chart_filter.selected_values]
+                tipping_point_list = recover_tipping_point_values(execution_engine)
+                tipping_points_to_drop = [tp for tp in tipping_point_list if tp not in chart_filter.selected_values]
                 scenarios_to_drop = []
                 for scenario in selected_scenarios:
                     for tipping_point in tipping_points_to_drop:
@@ -646,6 +652,31 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
 
     return status_dict
 
+def get_shade_of_color(color, weight):
+    '''
+    gives the rgb and hex codes for 
+    Args:
+        color: [str] color to chose from
+        weight: [float] between 0 and 1. 0 => the light color. 1 => the dark color
+    returns the rgb code (tuple) and the hex code (string)
+    '''
+    if color == 'green':
+        light = (144, 238, 144)
+        dark = (0, 100, 0)
+    elif color == 'orange':
+        light = (255, 243, 205)
+        dark = (255, 140, 0)
+    else:
+        color = 'green'
+        light = (144, 238, 144)
+        dark = (0, 100, 0)
+        logging.info(f'color={color} is not in available list. Imposing color=green')
+    if weight > 1. or weight < 0.:
+        logging.info(f'weight must be between 0 and 1. weight={weight}. Imposing dark shade of {color}')
+    rgb = tuple(weight * np.array(light) + (1. - weight) * np.array(dark))
+    hex_code = '#{:02x}{:02x}{:02x}'.format(rgb[0], rgb[1], rgb[2])
+
+    return [rgb, hex_code]
 
 def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios, status_dict=None):
     min_x = min(x_list)
@@ -677,12 +708,14 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
 
         # Tipping point scenarios:
         usecase_ms_mda_tipping_point.USECASE2: dict(color='red'),  # Red
-        usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
-        usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
-        usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
-        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
-        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
-        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
+        usecase_ms_mda_tipping_point.USECASE4_TP3: dict(color=get_shade_of_color('orange', 4./4.)[1]),  # Dark orange
+        usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color=get_shade_of_color('orange', 3./4.)[1]),  # Dark orange
+        usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color=get_shade_of_color('orange', 2./4.)[1]),  # Orange
+        usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color=get_shade_of_color('orange', 1./4.)[1]),  # Light Orange
+        usecase_ms_mda_tipping_point.USECASE7_TP3: dict(color=get_shade_of_color('green', 4./4.)[1]),  # Dark green
+        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color=get_shade_of_color('orange', 3./4.)[1]),  # Dark green
+        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color=get_shade_of_color('orange', 2./4.)[1]),  # Green
+        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color=get_shade_of_color('orange', 1./4.)[1]),  # Light Green
     }
     line_color = None
 
