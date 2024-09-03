@@ -72,6 +72,10 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         'residential_energy_conso_ref' : {'type': 'float', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE, 'unit': 'MWh', 'default': 24.3816},
         GlossaryCore.ResidentialEnergyConsumptionDfValue : GlossaryCore.ResidentialEnergyConsumptionDf,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
+
+        # Sectorization
+        GlossaryCore.AllSectorsDemandDfValue: GlossaryCore.AllSectorsDemandDf,
+
     }
     DESC_OUT = {
         'utility_detail_df': {'type': 'dataframe', 'unit': '-'},
