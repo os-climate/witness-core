@@ -47,7 +47,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.consumption.consumption_discipline.ConsumptionDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.sectorized_utility.sectorized_utility_discipline.SectorizedUtilityDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

@@ -30,12 +30,12 @@ from climateeconomics.core.core_witness.consumption_model import ConsumptionMode
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class ConsumptionDiscipline(ClimateEcoDiscipline):
-    "ConsumptionModel discipline for DICE"
+class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
+    "SectorizedUtilityDiscipline discipline"
 
     # ontology information
     _ontology_data = {
-        'label': 'Consumption WITNESS Model',
+        'label': 'Sectorized Utility WITNESS Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

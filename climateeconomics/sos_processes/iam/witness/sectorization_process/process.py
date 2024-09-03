@@ -53,7 +53,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         mods_dict = {'Population':'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline',
                      'LaborMarket': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.labor_market.labor_market_discipline.LaborMarketDiscipline',
-                     'Consumption':'climateeconomics.sos_wrapping.sos_wrapping_witness.consumption.consumption_discipline.ConsumptionDiscipline',
+                     'Consumption':'climateeconomics.sos_wrapping.sos_wrapping_witness.sectorized_utility.sectorized_utility_discipline.SectorizedUtilityDiscipline',
                      'SectorsDemand':'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.consumption_discipline.ConsumptionDiscipline',
                      'SectorsInvestDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invest_discipline.SectorsRedistributionInvestsDiscipline',
                      'SectorsEnergyDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_energy.sectors_redistribution_energy_discipline.SectorsRedistributionEnergyDiscipline',
