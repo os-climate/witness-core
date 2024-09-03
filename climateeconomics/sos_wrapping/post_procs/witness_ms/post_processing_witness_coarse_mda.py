@@ -13,6 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import logging
+from math import floor
 
 import numpy as np
 from energy_models.core.ccus.ccus import CCUS
@@ -675,7 +676,7 @@ def get_shade_of_color(color, weight):
     if weight > 1. or weight < 0.:
         logging.info(f'weight must be between 0 and 1. weight={weight}. Imposing dark shade of {color}')
     rgb = tuple(weight * np.array(light) + (1. - weight) * np.array(dark))
-    hex_code = '#{:02x}{:02x}{:02x}'.format(rgb[0], rgb[1], rgb[2])
+    hex_code = '#{:02x}{:02x}{:02x}'.format(floor(rgb[0]), floor(rgb[1]), floor(rgb[2]))
 
     return [rgb, hex_code]
 
