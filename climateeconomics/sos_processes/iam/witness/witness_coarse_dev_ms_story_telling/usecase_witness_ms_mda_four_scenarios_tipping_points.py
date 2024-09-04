@@ -45,7 +45,7 @@ class Study(ClimateEconomicsStudyManager):
     TIPPING_POINT = 'Tipping point'
     TIPPING_POINT_LIST = [6, 4, 3.5, 3]
     SEP = ' '
-    UNIT = '°C'
+    UNIT = 'deg C'
     # scenarios name
     # NB: this name pattern TIPPING_POINT + SEP + TIPPING_POINT_LIST[0] + UNIT is reused in post-processing_witness_coarse_mda.py
     # cannot keep the decimal in the scenario name, otherwise it adds a node in the usecase
