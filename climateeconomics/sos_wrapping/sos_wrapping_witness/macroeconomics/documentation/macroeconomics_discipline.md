@@ -53,16 +53,17 @@ with $\Omega$ is the damage fraction of output explained in the documentation of
 ### Productivity
 The Total Factor Productivity (TFP) measures the efficiency of the inputs in the production process. The initial values of the productivity and productivity growth rate are obtained during the fitting of the production function. For the TFP we have 2 options: 
 * The standard DICE ($damage\,to\,productivity$ = $False$) where $A_t$ evolves according to:
-$$A_t = \frac{A_{t-1}}{1-A_{gt-1}}$$ with $A_g$ the productivity growth rate.
+$A_t = \frac{A_{t-1}}{1-A_{gt-1}}$ with $A_g$ the productivity growth rate.
 The initial level $A_0$ can ben changed in the inputs ($productivity\_start$),
-$$A_{gt}=A_{g0} \cdot exp(-\Delta_a \cdot (t-1) \cdot time\_step)$$
+$A_{gt}=A_{g0} \cdot exp(-\Delta_a \cdot (t-1) \cdot time\_step)$
 and $\Delta_a$ is the percentage growth rate of $A_g$.
-* The productivity with damage (when $damage\,to\,productivity$ = True$) is 
-$$A^*_t=(1-\Omega_t) \cdot \A_t$,  
-and then damage to output $\Omega_{yt}$ becomes: 
-$$\Omega_{yt} = 1- \frac{1- \Omega_t}{1-f\Omega_t}$$
-such that the output net of climate damage is 
-$$Q^*_t = (1-\Omega_{yt}) \cdot Y_t (Ku_t, L_t)$$
+* The productivity with damage (when $damage\,to\,productivity = True$) is 
+$$
+A^*_t = (1 - \Omega_t) A_t
+$$, 
+where $\Omega$ is the damage percentage. Then, the output net of climate damage is 
+$$Q^*_t = (1-\Omega_{yt}) Y_t$$
+
 
 ## Damages
 Damages are computed as the sum of immediate climate damages + damage from loss of productivity
