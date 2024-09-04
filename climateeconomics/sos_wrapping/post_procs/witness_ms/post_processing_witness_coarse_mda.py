@@ -148,7 +148,8 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == usecase_ms_mda_tipping_point.TIPPING_POINT:
                 # Keep scenarios with selected tipping points + scenarios without tipping point defined (ex: reference scenario without damage)
                 # => remove from selected scenarios the "tipping point scenarios" that do not respect the filtering condition
-                tipping_point_list = recover_tipping_point_values(execution_engine)
+                tp_dict = get_all_scenarios_values(execution_engine, 'Damage.tp_a3')
+                tipping_point_list = list(set(tp_dict.values()))
                 tipping_points_to_drop = [tp for tp in tipping_point_list if tp not in chart_filter.selected_values]
                 scenarios_to_drop = []
                 for scenario in selected_scenarios:
