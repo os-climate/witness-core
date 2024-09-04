@@ -1007,11 +1007,11 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             energy_list if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend(
-            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
              energy_list if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend(
-            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         l1_inputs_checked.extend(

@@ -865,10 +865,10 @@ class GlossaryCore:
     }
 
     EnergyProductionValue = "energy_production"
-    EnergyProductionDetailedValue = "energy_production_detailed"
-    EnergyProcductionWithoutRatioValue = "energy_production_woratio"
-    EnergyConsumptionValue = "energy_consumption"
-    EnergyConsumptionWithoutRatioValue = "energy_consumption_woratio"
+    StreamProductionDetailedValue = "energy_production_detailed"
+    StreamProductionWithoutRatioValue = "energy_production_woratio"
+    StreamConsumptionValue = "energy_consumption"
+    StreamConsumptionWithoutRatioValue = "energy_consumption_woratio"
     LandUseRequiredValue = "land_use_required"
     NonUseCapital = "non_use_capital"
 
