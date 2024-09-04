@@ -81,9 +81,6 @@ def get_all_scenarios_values(execution_engine, short_name_var: str):
     values = {var_full_name: execution_engine.dm.get_value(var_full_name) for var_full_name in var_full_names}
     return values
 
-def recover_tipping_point_values(execution_engine):
-    return list(set(execution_engine.dm.get_value('Damage.tp_a3')))
-
 def post_processing_filters(execution_engine, namespace):
 
     filters = []
@@ -106,7 +103,8 @@ def post_processing_filters(execution_engine, namespace):
     #specific case of tipping point study => filter will apply if at least one scenario has TIPPING_POINT in its name
     if True in [TIPPING_POINT in scenario for scenario in scenario_list]:
         # recover the values of tipping points:
-        tipping_point_list = recover_tipping_point_values(execution_engine)
+        tp_dict = get_all_scenarios_values(execution_engine, 'Damage.tp_a3')
+        tipping_point_list = list(set(tp_dict.values()))
         filters.append(ChartFilter(TIPPING_POINT, tipping_point_list,
                                    tipping_point_list, TIPPING_POINT))
 
