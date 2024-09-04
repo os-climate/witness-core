@@ -749,8 +749,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         checked_input_jacobian = []
 
         for stream in GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.keys():
-            to_have = [GlossaryEnergy.EnergyConsumptionValue,
-                       GlossaryCore.EnergyConsumptionWithoutRatioValue,
+            to_have = [GlossaryEnergy.StreamConsumptionValue,
+                       GlossaryCore.StreamConsumptionWithoutRatioValue,
                        GlossaryCore.EnergyProductionValue,
                        GlossaryCore.StreamPricesValue,
                        GlossaryCore.LandUseRequiredValue,
@@ -761,7 +761,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
             to_check_jacobian = [
                 GlossaryCore.EnergyProductionValue,
-                GlossaryCore.EnergyConsumptionValue,
+                GlossaryCore.StreamConsumptionValue,
             ]
 
             input_list.extend([f"{stream}.{_}" for _ in to_have])
@@ -848,8 +848,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         for stream in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
             to_have = [
-                GlossaryEnergy.EnergyConsumptionValue,
-                       GlossaryCore.EnergyConsumptionWithoutRatioValue,
+                GlossaryEnergy.StreamConsumptionValue,
+                       GlossaryCore.StreamConsumptionWithoutRatioValue,
                        GlossaryCore.EnergyProductionValue,
                        GlossaryCore.StreamPricesValue,
                        GlossaryCore.LandUseRequiredValue,
@@ -860,7 +860,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
             to_check_jacobian = [
                 GlossaryCore.EnergyProductionValue,
-                GlossaryCore.EnergyConsumptionValue,
+                GlossaryCore.StreamConsumptionValue,
             ]
 
             input_list.extend([f"{stream}.{_}" for _ in to_have])
@@ -945,8 +945,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         checked_input_jacobian = []
 
         for stream in GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT.keys():
-            to_have = [GlossaryEnergy.EnergyConsumptionValue,
-                       GlossaryCore.EnergyConsumptionWithoutRatioValue,
+            to_have = [GlossaryEnergy.StreamConsumptionValue,
+                       GlossaryCore.StreamConsumptionWithoutRatioValue,
                        GlossaryCore.EnergyProductionValue,
                        GlossaryCore.StreamPricesValue,
                        GlossaryCore.LandUseRequiredValue,
@@ -957,7 +957,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
             to_check_jacobian = [
                 GlossaryCore.EnergyProductionValue,
-                GlossaryCore.EnergyConsumptionValue,
+                GlossaryCore.StreamConsumptionValue,
             ]
 
             input_list.extend([f"{stream}.{_}" for _ in to_have])

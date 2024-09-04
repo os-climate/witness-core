@@ -189,6 +189,11 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
             d_decreasing_obj_d_economic)
 
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.NetGdpGrowthRateObjectiveValue,),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            self.utility_m.d_net_gdp_growth_rate_obj())
+
 
     def get_chart_filter_list(self):
 
