@@ -358,8 +358,7 @@ def post_processings(execution_engine, namespace, filters):
             x_witness.values.tolist(),
             y_witness.values.tolist(),
             "WITNESS", display_type="scatter",
-            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
-            #text=y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years].values.tolist()
+            text=y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years].values.tolist(),
         )
         new_chart.add_series(new_series)
 
@@ -376,21 +375,19 @@ def post_processings(execution_engine, namespace, filters):
             x_iea.values.tolist(),
             y_iea.values.tolist(),
             "IEA", display_type="scatter",
-            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
-            #text=common_years
+            text=common_years,
         )
         new_chart.add_series(new_series)
 
         df_historical_df = pd.read_csv(join(Path(__file__).parents[3], "data", 'world_gdp_vs_net_energy_consumption.csv'))
-        years_historical = df_historical_df['years']
+        years_historical = df_historical_df['years'].values.tolist()
         x_historical = df_historical_df['Net energy consumption [PWh]']
         y_historical = df_historical_df['World GDP [T$]']
         new_series = InstanciatedSeries(
             x_historical.values.tolist(),
             y_historical.values.tolist(),
             "Historical", display_type="scatter",
-            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
-            #text=years_historical
+            text=years_historical,
         )
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
