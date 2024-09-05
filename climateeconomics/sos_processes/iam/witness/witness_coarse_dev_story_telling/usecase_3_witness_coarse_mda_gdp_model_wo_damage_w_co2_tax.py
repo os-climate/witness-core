@@ -58,8 +58,8 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'activate_climate_effect_population': False,
                                                                 'activate_pandemic_effects': False,
                                                                                                                        },
-                        f"{self.study_name}.ccs_price_percentage": 100.0,
-                        f"{self.study_name}.co2_damage_price_percentage": 0.0,
+                        f"{self.study_name}.ccs_price_percentage": 0.0,
+                        f"{self.study_name}.co2_damage_price_percentage": 100.0,
                         f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}": False
                         }
         data_witness.append(updated_data)

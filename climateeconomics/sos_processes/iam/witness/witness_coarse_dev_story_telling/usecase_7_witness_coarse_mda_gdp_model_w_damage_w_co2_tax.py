@@ -58,7 +58,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'activate_climate_effect_population': True,
                                                                 'activate_pandemic_effects': True,
                                                                                                                        },
-                        f"{self.study_name}.ccs_price_percentage": 100.0,
+                        f"{self.study_name}.ccs_price_percentage": 0.0,
                         f"{self.study_name}.co2_damage_price_percentage": 100.0,
                         f"{self.study_name}.Macroeconomics.damage_to_productivity": True,
                         }
