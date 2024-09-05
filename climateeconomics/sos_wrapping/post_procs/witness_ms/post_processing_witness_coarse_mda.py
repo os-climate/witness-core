@@ -655,7 +655,7 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
 
 def get_shade_of_color(color, weight):
     '''
-    gives the rgb and hex codes for 
+    gives the rgb and hex codes for a color interpolated between a dark and light shade of a color 
     Args:
         color: [str] color to chose from
         weight: [float] between 0 and 1. 0 => the light color. 1 => the dark color
@@ -710,14 +710,12 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
 
         # Tipping point scenarios:
         usecase_ms_mda_tipping_point.USECASE2: dict(color='red'),  # Red
-        usecase_ms_mda_tipping_point.USECASE4_TP3: dict(color=get_shade_of_color('orange', 4./4.)[1]),  # Dark orange
-        usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color=get_shade_of_color('orange', 3./4.)[1]),  # Dark orange
-        usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color=get_shade_of_color('orange', 2./4.)[1]),  # Orange
-        usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color=get_shade_of_color('orange', 1./4.)[1]),  # Light Orange
-        usecase_ms_mda_tipping_point.USECASE7_TP3: dict(color=get_shade_of_color('green', 4./4.)[1]),  # Dark green
-        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color=get_shade_of_color('green', 3./4.)[1]),  # Dark green
-        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color=get_shade_of_color('green', 2./4.)[1]),  # Green
-        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color=get_shade_of_color('green', 1./4.)[1]),  # Light Green
+        usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
+        usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
+        usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
+        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
+        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
+        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
     }
     line_color = None
 

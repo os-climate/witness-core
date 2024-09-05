@@ -43,7 +43,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
 
 class Study(ClimateEconomicsStudyManager):
     TIPPING_POINT = 'Tipping point'
-    TIPPING_POINT_LIST = [6, 4, 3.5, 3]
+    TIPPING_POINT_LIST = [6, 4.5, 3.5]
     SEP = ' '
     UNIT = 'deg C'
     # scenarios name
@@ -53,11 +53,9 @@ class Study(ClimateEconomicsStudyManager):
     USECASE4_TP_REF = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
     USECASE4_TP1 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
     USECASE4_TP2 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
-    USECASE4_TP3 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[3]).replace('.', '_') + UNIT
     USECASE7_TP_REF = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
     USECASE7_TP1 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
     USECASE7_TP2 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
-    USECASE7_TP3 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[3]).replace('.', '_') + UNIT
 
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -77,11 +75,9 @@ class Study(ClimateEconomicsStudyManager):
             self.USECASE4_TP_REF: usecase4,
             self.USECASE4_TP1: usecase4,
             self.USECASE4_TP2: usecase4,
-            self.USECASE4_TP3: usecase4,
             self.USECASE7_TP_REF: usecase7,
             self.USECASE7_TP1: usecase7,
             self.USECASE7_TP2: usecase7,
-            self.USECASE7_TP3: usecase7,
         }
 
         # can select a reduced list of scenarios to compute
@@ -116,10 +112,8 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update({
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP1}.{tipping_point_variable}': self.TIPPING_POINT_LIST[1],
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP2}.{tipping_point_variable}': self.TIPPING_POINT_LIST[2],
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP3}.{tipping_point_variable}': self.TIPPING_POINT_LIST[3],
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP1}.{tipping_point_variable}': self.TIPPING_POINT_LIST[1],
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP2}.{tipping_point_variable}': self.TIPPING_POINT_LIST[2],
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP3}.{tipping_point_variable}': self.TIPPING_POINT_LIST[3],
             })
         # Inputs were optimized manually through the sostrades GUI and saved in csv files  => recover inputs
         invest_gdp_uc4_tp1 = pd.read_csv(join(dirname(__file__), pardir, 'witness_coarse_dev_story_telling',
@@ -133,10 +127,8 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update({
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP1}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc4_tp1,
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP2}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc4_tp2,
-        f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP3}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc4_tp2,
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP1}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc7_tp1,
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP2}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc7_tp2,
-        f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP3}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc7_tp2,
         })
 
         return values_dict

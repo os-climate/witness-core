@@ -53,22 +53,18 @@ class Study(ClimateEconomicsStudyManager):
         uc4_tp_ref = uc_ms_mda.USECASE4_TP_REF
         uc4_tp1 = uc_ms_mda.USECASE4_TP1
         uc4_tp2 = uc_ms_mda.USECASE4_TP2
-        uc4_tp3 = uc_ms_mda.USECASE4_TP3
         uc7_tp_ref = uc_ms_mda.USECASE7_TP_REF
         uc7_tp1 = uc_ms_mda.USECASE7_TP1
         uc7_tp2 = uc_ms_mda.USECASE7_TP2
-        uc7_tp3 = uc_ms_mda.USECASE7_TP3
 
         scenario_dict = {
             uc2: Study1,
             uc4_tp_ref: Study3,
             uc4_tp1: Study3,
             uc4_tp2: Study3,
-            uc4_tp3: Study3,
             uc7_tp_ref: Study4,
             uc7_tp1: Study4,
             uc7_tp2: Study4,
-            uc7_tp3: Study4,
         }
         # changing the tipping point
 
