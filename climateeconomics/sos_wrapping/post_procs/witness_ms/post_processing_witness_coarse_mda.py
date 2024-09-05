@@ -662,20 +662,21 @@ def get_shade_of_color(color, weight):
     returns the rgb code (tuple) and the hex code (string)
     '''
     if color == 'green':
-        light = (144, 238, 144)
-        dark = (0, 100, 0)
+        light = (118, 215, 196)
+        dark = (20, 143, 119)
     elif color == 'orange':
         light = (255, 243, 205)
         dark = (255, 140, 0)
     else:
         color = 'green'
-        light = (144, 238, 144)
-        dark = (0, 100, 0)
+        light = (118, 215, 196)
+        dark = (20, 143, 119)
         logging.info(f'color={color} is not in available list. Imposing color=green')
     if weight > 1. or weight < 0.:
         logging.info(f'weight must be between 0 and 1. weight={weight}. Imposing dark shade of {color}')
-    rgb = tuple(weight * np.array(light) + (1. - weight) * np.array(dark))
-    hex_code = '#{:02x}{:02x}{:02x}'.format(floor(rgb[0]), floor(rgb[1]), floor(rgb[2]))
+    rgb_array = weight * np.array(light) + (1. - weight) * np.array(dark)
+    rgb = tuple([floor(rgb_array[0]), floor(rgb_array[1]), floor(rgb_array[2])])
+    hex_code = '#{:02x}{:02x}{:02x}'.format(rgb[0], rgb[1], rgb[2])
 
     return [rgb, hex_code]
 
@@ -714,9 +715,9 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color=get_shade_of_color('orange', 2./4.)[1]),  # Orange
         usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color=get_shade_of_color('orange', 1./4.)[1]),  # Light Orange
         usecase_ms_mda_tipping_point.USECASE7_TP3: dict(color=get_shade_of_color('green', 4./4.)[1]),  # Dark green
-        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color=get_shade_of_color('orange', 3./4.)[1]),  # Dark green
-        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color=get_shade_of_color('orange', 2./4.)[1]),  # Green
-        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color=get_shade_of_color('orange', 1./4.)[1]),  # Light Green
+        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color=get_shade_of_color('green', 3./4.)[1]),  # Dark green
+        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color=get_shade_of_color('green', 2./4.)[1]),  # Green
+        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color=get_shade_of_color('green', 1./4.)[1]),  # Light Green
     }
     line_color = None
 
