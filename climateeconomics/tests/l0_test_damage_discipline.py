@@ -103,7 +103,7 @@ class DamageDiscTest(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
 
         for graph in graph_list:
-           #graph.to_plotly().show()
+           graph.to_plotly().show()
            pass
 
     def test_execute_dev_formula(self):
