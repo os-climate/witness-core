@@ -53,18 +53,22 @@ class Study(ClimateEconomicsStudyManager):
         uc4_tp_ref = uc_ms_mda.USECASE4_TP_REF
         uc4_tp1 = uc_ms_mda.USECASE4_TP1
         uc4_tp2 = uc_ms_mda.USECASE4_TP2
+        uc4_tp3 = uc_ms_mda.USECASE4_TP3
         uc7_tp_ref = uc_ms_mda.USECASE7_TP_REF
         uc7_tp1 = uc_ms_mda.USECASE7_TP1
         uc7_tp2 = uc_ms_mda.USECASE7_TP2
+        uc7_tp3 = uc_ms_mda.USECASE7_TP3
 
         scenario_dict = {
             uc2: Study1,
             uc4_tp_ref: Study3,
             uc4_tp1: Study3,
             uc4_tp2: Study3,
+            uc4_tp3: Study3,
             uc7_tp_ref: Study4,
             uc7_tp1: Study4,
             uc7_tp2: Study4,
+            uc7_tp3: Study4,
         }
         # changing the tipping point
 
@@ -87,15 +91,6 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update(
             {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
              scenario_dict.keys()})
-
-        # update values dict with tipping point value of the damage model
-        tipping_point_variable = 'Damage.tp_a3'
-        values_dict.update({
-            f'{self.study_name}.{scatter_scenario}.{uc4_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 4.,
-            f'{self.study_name}.{scatter_scenario}.{uc4_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 3.,
-            f'{self.study_name}.{scatter_scenario}.{uc7_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 4.,
-            f'{self.study_name}.{scatter_scenario}.{uc7_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 3.,
-            })
 
         return values_dict
 
