@@ -74,7 +74,7 @@ class Study(StudyMSmdaTippingPoint35):
             self.USECASE7: -2.8 # todo : refit NZE scenario
         }  # todo : replace by GWP in future
 
-        all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.EnergyProductionDetailedValue}')
+        all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.StreamProductionDetailedValue}')
         ref_value_net_energy_production = {
             self.USECASE2: 338*1e3,
             self.USECASE2B: 182*1e3,

@@ -152,7 +152,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'energy mix' in chart_list:
-        energy_production_detailed = get_scenario_value(execution_engine, f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
+        energy_production_detailed = get_scenario_value(execution_engine, f'{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}', scenario_name)
         energy_mean_price = get_scenario_value(execution_engine, GlossaryCore.EnergyMeanPriceValue, scenario_name)
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
 
@@ -325,7 +325,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                                      GlossaryEnergy.clean_energy: [GlossaryEnergy.CleanEnergySimpleTechno]}
 
         # dataframe of energy production by energy in TWh
-        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
+        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}', scenario_name)
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
 
         energy_list = get_scenario_value(execution_engine, GlossaryCore.energy_list, scenario_name)
@@ -343,7 +343,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 techno_list = get_scenario_value(execution_engine, f'{energy}.{GlossaryEnergy.TechnoListName}',
                                                  scenario_name)
                 energy_production_df = get_scenario_value(execution_engine,
-                                                          f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}',
+                                                          f'{energy}.{GlossaryEnergy.StreamProductionDetailedValue}',
                                                           scenario_name)
                 for techno in techno_list:
                     if techno in green_energies_and_technos[energy]:
@@ -488,7 +488,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     if 'KPI4' in chart_list:
         # KPI4 is the electrification of energy, ie ElectricityProduction/TotalEnergyProduction
         # dataframe of energy production by energy in TWh
-        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}', scenario_name)
+        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}', scenario_name)
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
         if f'production {GlossaryEnergy.electricity} (TWh)' in energy_production_detailed.columns:
             energy_electrification = pd.DataFrame()

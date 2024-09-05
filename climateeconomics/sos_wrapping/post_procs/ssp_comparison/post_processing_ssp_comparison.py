@@ -182,28 +182,28 @@ CHARTS_DATA = {
 PRIMARY_ENERGY = 'Primary energy fraction'
 COAL = 'Coal'
 _coal = {FILE_NAME: 'coal_fraction.csv', UNIT_CONV_FACTOR: 1.0,
-         WITNESS_VARS_COLS: [(f'EnergyMix.solid_fuel.{GlossaryCore.EnergyProductionDetailedValue}', 'solid_fuel CoalExtraction (TWh)'),
-                             # ('EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity CoalGen (TWh)'),
+         WITNESS_VARS_COLS: [(f'EnergyMix.solid_fuel.{GlossaryCore.StreamProductionDetailedValue}', 'solid_fuel CoalExtraction (TWh)'),
+                             # ('EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity CoalGen (TWh)'),
                              ]}
 OIL_GAS = 'Oil & Gas'
 _oil_gas = {FILE_NAME: 'oil_gas_fraction.csv', UNIT_CONV_FACTOR: 1.0,
-            WITNESS_VARS_COLS: [(f'EnergyMix.methane.{GlossaryCore.EnergyProductionDetailedValue}', 'methane FossilGas (TWh)'),
-                                # (f'EnergyMix.fuel.{GlossaryCore.EnergyProductionDetailedValue}', 'fuel.biodiesel Transesterification (TWh)'),
-                                # (f'EnergyMix.fuel.{GlossaryCore.EnergyProductionDetailedValue}', 'fuel.ethanol BiomassFermentation (TWh)'),
-                                (f'EnergyMix.fuel.{GlossaryCore.EnergyProductionDetailedValue}', 'fuel.hydrotreated_oil_fuel HefaDecarboxylation (TWh)'),
-                                (f'EnergyMix.fuel.{GlossaryCore.EnergyProductionDetailedValue}', 'fuel.hydrotreated_oil_fuel HefaDeoxygenation (TWh)'),
-                                (f'EnergyMix.fuel.{GlossaryCore.EnergyProductionDetailedValue}', 'fuel.liquid_fuel FischerTropsch (TWh)'),
-                                (f'EnergyMix.fuel.{GlossaryCore.EnergyProductionDetailedValue}', 'fuel.liquid_fuel Refinery (TWh)'),
-                                # (f'EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity CombinedCycleGasTurbine (TWh)'),
-                                # (f'EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity GasTurbine (TWh)'),
-                                # (f'EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity OilGen (TWh)'),
+            WITNESS_VARS_COLS: [(f'EnergyMix.methane.{GlossaryCore.StreamProductionDetailedValue}', 'methane FossilGas (TWh)'),
+                                # (f'EnergyMix.fuel.{GlossaryCore.StreamProductionDetailedValue}', 'fuel.biodiesel Transesterification (TWh)'),
+                                # (f'EnergyMix.fuel.{GlossaryCore.StreamProductionDetailedValue}', 'fuel.ethanol BiomassFermentation (TWh)'),
+                                (f'EnergyMix.fuel.{GlossaryCore.StreamProductionDetailedValue}', 'fuel.hydrotreated_oil_fuel HefaDecarboxylation (TWh)'),
+                                (f'EnergyMix.fuel.{GlossaryCore.StreamProductionDetailedValue}', 'fuel.hydrotreated_oil_fuel HefaDeoxygenation (TWh)'),
+                                (f'EnergyMix.fuel.{GlossaryCore.StreamProductionDetailedValue}', 'fuel.liquid_fuel FischerTropsch (TWh)'),
+                                (f'EnergyMix.fuel.{GlossaryCore.StreamProductionDetailedValue}', 'fuel.liquid_fuel Refinery (TWh)'),
+                                # (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity CombinedCycleGasTurbine (TWh)'),
+                                # (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity GasTurbine (TWh)'),
+                                # (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity OilGen (TWh)'),
                                     ]
             }
 NON_FOSSIL = 'Non-fossil'
 _non_fossil = {FILE_NAME: 'non-fossil_fraction.csv', UNIT_CONV_FACTOR: 1.0,}
 
 HYDROGEN = 'Hydrogen'
-_hydrogen = {WITNESS_VARS_COLS: [(f'EnergyMix.methane.{GlossaryCore.EnergyProductionDetailedValue}', 'methane Methanation (TWh)'),
+_hydrogen = {WITNESS_VARS_COLS: [(f'EnergyMix.methane.{GlossaryCore.StreamProductionDetailedValue}', 'methane Methanation (TWh)'),
                                  ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.gaseous_hydrogen (TWh)'),
                                  ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.liquid_hydrogen (TWh)'),
                                  ]}
@@ -219,12 +219,12 @@ WITNESS_PRIMARY_ENERGY_DATA = {
 } # NON-FOSSIL is deduced from total
 WITNESS_BRUT_ENERGY_TOTAL = ('EnergyMix.energy_production_brut_detailed', GlossaryCore.TotalProductionValue)
 WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
-    (f'EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity CoalGen (TWh)'),
-    (f'EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity CombinedCycleGasTurbine (TWh)'),
-    (f'EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity GasTurbine (TWh)'),
-    (f'EnergyMix.electricity.{GlossaryCore.EnergyProductionDetailedValue}', 'electricity OilGen (TWh)'),
+    (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity CoalGen (TWh)'),
+    (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity CombinedCycleGasTurbine (TWh)'),
+    (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity GasTurbine (TWh)'),
+    (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity OilGen (TWh)'),
 
-    (f'EnergyMix.methane.{GlossaryCore.EnergyProductionDetailedValue}', 'methane Methanation (TWh)'),
+    (f'EnergyMix.methane.{GlossaryCore.StreamProductionDetailedValue}', 'methane Methanation (TWh)'),
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.gaseous_hydrogen (TWh)'),
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.liquid_hydrogen (TWh)'),
 ]

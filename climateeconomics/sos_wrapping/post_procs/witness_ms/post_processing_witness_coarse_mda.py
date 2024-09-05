@@ -508,7 +508,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
 
         df_paths = [
-            f'{EnergyMix.name}.{GlossaryCore.EnergyProductionDetailedValue}']
+            f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
         (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -534,7 +534,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Fossil energy production [TWh]'
 
-        df_paths = [f'{EnergyMix.name}.{GlossaryCore.EnergyProductionDetailedValue}']
+        df_paths = [f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
         (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
@@ -557,7 +557,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = '[TWh]'
 
-        df_paths = [f'{EnergyMix.name}.{GlossaryCore.EnergyProductionDetailedValue}']
+        df_paths = [f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
         (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
