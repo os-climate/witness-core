@@ -51,7 +51,7 @@ class WitnessIndicators(SoSWrapp):
                                            SoSWrapp.UNIT: '$/MWh'},
                GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
                GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
-               GlossaryEnergy.EnergyProductionDetailedValue: {SoSWrapp.TYPE: 'dataframe',
+               GlossaryEnergy.StreamProductionDetailedValue: {SoSWrapp.TYPE: 'dataframe',
                                                               SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
                                                               SoSWrapp.NAMESPACE: GlossaryCore.NS_ENERGY_MIX,
                                                               SoSWrapp.UNIT: 'TWh'}
@@ -72,7 +72,7 @@ class WitnessIndicators(SoSWrapp):
     def run(self):
         mean_energy_price = self.get_sosdisc_inputs(GlossaryEnergy.EnergyMeanPriceValue)['energy_price'].tolist()[-1]
         prices = self.get_sosdisc_inputs('energy_prices_after_tax')
-        prods = self.get_sosdisc_inputs(GlossaryEnergy.EnergyProductionDetailedValue)
+        prods = self.get_sosdisc_inputs(GlossaryEnergy.StreamProductionDetailedValue)
         fossil_price = prices[GlossaryEnergy.fossil].tolist()[-1]
         renewable_price = prices[GlossaryCore.clean_energy].tolist()[-1]
         total_prod = prods['Total production (uncut)'].tolist()[-1] * 1e-3
