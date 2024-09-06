@@ -50,11 +50,11 @@ class Study(ClimateEconomicsStudyManager):
     # NB: this name pattern TIPPING_POINT + SEP + TIPPING_POINT_LIST[0] + UNIT is reused in post-processing_witness_coarse_mda.py
     # cannot keep the decimal in the scenario name, otherwise it adds a node in the usecase
     USECASE2 = uc_ms_mda.USECASE2
-    #USECASE4_TP_REF = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    USECASE4_TP_REF = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
     USECASE4_TP1 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
     USECASE4_TP2 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
     USECASE4_TP3 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
-    #USECASE7_TP_REF = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    USECASE7_TP_REF = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
     USECASE7_TP1 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
     USECASE7_TP2 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
     USECASE7_TP3 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
