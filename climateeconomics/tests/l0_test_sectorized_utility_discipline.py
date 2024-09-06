@@ -24,7 +24,7 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class ConsumptionDiscTest(unittest.TestCase):
+class SectorizedUtilityDiscTest(unittest.TestCase):
     np.set_printoptions(threshold=np.inf)
     def setUp(self):
 
