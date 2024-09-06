@@ -31,12 +31,14 @@ class Study(StudyMSmdaTippingPoints):
         values_dict = super().setup_usecase()
         values_dict.update({
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE2}.{GlossaryCore.YearStart}': 2023,
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP_REF}.{GlossaryCore.YearStart}': 2023,
+            #f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP_REF}.{GlossaryCore.YearStart}': 2023,
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP1}.{GlossaryCore.YearStart}': 2023,
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP2}.{GlossaryCore.YearStart}': 2023,
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP_REF}.{GlossaryCore.YearStart}': 2023,
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP3}.{GlossaryCore.YearStart}': 2023,
+            #f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP_REF}.{GlossaryCore.YearStart}': 2023,
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP1}.{GlossaryCore.YearStart}': 2023,
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP2}.{GlossaryCore.YearStart}': 2023,
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP3}.{GlossaryCore.YearStart}': 2023,
         })
 
         values_dict_2023 = {}

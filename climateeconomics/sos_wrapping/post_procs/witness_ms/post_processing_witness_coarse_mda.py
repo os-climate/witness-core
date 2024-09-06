@@ -12,6 +12,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+from math import floor
+
 import numpy as np
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -48,7 +51,6 @@ END_YEAR_NAME = 'Ending year'
 SCENARIO_NAME = 'Scenarios'
 SCATTER_SCENARIO = 'mda_scenarios'
 TIPPING_POINT = usecase_ms_mda_tipping_point.TIPPING_POINT
-TIPPING_POINT_LIST = usecase_ms_mda_tipping_point.TIPPING_POINT_LIST
 SEP = usecase_ms_mda_tipping_point.SEP
 UNIT = usecase_ms_mda_tipping_point.UNIT
 # list of graphs to be plotted and filtered
@@ -100,8 +102,11 @@ def post_processing_filters(execution_engine, namespace):
                                ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False)) # by default shows all studies, ie does not apply any filter
     #specific case of tipping point study => filter will apply if at least one scenario has TIPPING_POINT in its name
     if True in [TIPPING_POINT in scenario for scenario in scenario_list]:
-        filters.append(ChartFilter(TIPPING_POINT, TIPPING_POINT_LIST,
-                                   TIPPING_POINT_LIST, TIPPING_POINT))
+        # recover the values of tipping points:
+        tp_dict = get_all_scenarios_values(execution_engine, 'Damage.tp_a3')
+        tipping_point_list = list(set(tp_dict.values()))
+        filters.append(ChartFilter(TIPPING_POINT, tipping_point_list,
+                                   tipping_point_list, TIPPING_POINT))
 
     return filters
 
@@ -143,7 +148,9 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == usecase_ms_mda_tipping_point.TIPPING_POINT:
                 # Keep scenarios with selected tipping points + scenarios without tipping point defined (ex: reference scenario without damage)
                 # => remove from selected scenarios the "tipping point scenarios" that do not respect the filtering condition
-                tipping_points_to_drop = [tp for tp in TIPPING_POINT_LIST if tp not in chart_filter.selected_values]
+                tp_dict = get_all_scenarios_values(execution_engine, 'Damage.tp_a3')
+                tipping_point_list = list(set(tp_dict.values()))
+                tipping_points_to_drop = [tp for tp in tipping_point_list if tp not in chart_filter.selected_values]
                 scenarios_to_drop = []
                 for scenario in selected_scenarios:
                     for tipping_point in tipping_points_to_drop:
@@ -646,6 +653,32 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
 
     return status_dict
 
+def get_shade_of_color(color, weight):
+    '''
+    gives the rgb and hex codes for a color interpolated between a dark and light shade of a color 
+    Args:
+        color: [str] color to chose from
+        weight: [float] between 0 and 1. 0 => the light color. 1 => the dark color
+    returns the rgb code (tuple) and the hex code (string)
+    '''
+    if color == 'green':
+        light = (118, 215, 196)
+        dark = (20, 143, 119)
+    elif color == 'orange':
+        light = (255, 243, 205)
+        dark = (255, 140, 0)
+    else:
+        color = 'green'
+        light = (118, 215, 196)
+        dark = (20, 143, 119)
+        logging.info(f'color={color} is not in available list. Imposing color=green')
+    if weight > 1. or weight < 0.:
+        logging.info(f'weight must be between 0 and 1. weight={weight}. Imposing dark shade of {color}')
+    rgb_array = weight * np.array(light) + (1. - weight) * np.array(dark)
+    rgb = tuple([floor(rgb_array[0]), floor(rgb_array[1]), floor(rgb_array[2])])
+    hex_code = '#{:02x}{:02x}{:02x}'.format(rgb[0], rgb[1], rgb[2])
+
+    return [rgb, hex_code]
 
 def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios, status_dict=None):
     min_x = min(x_list)
