@@ -50,12 +50,14 @@ class Study(ClimateEconomicsStudyManager):
     # NB: this name pattern TIPPING_POINT + SEP + TIPPING_POINT_LIST[0] + UNIT is reused in post-processing_witness_coarse_mda.py
     # cannot keep the decimal in the scenario name, otherwise it adds a node in the usecase
     USECASE2 = uc_ms_mda.USECASE2
-    USECASE4_TP_REF = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
-    USECASE4_TP1 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
-    USECASE4_TP2 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
-    USECASE7_TP_REF = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
-    USECASE7_TP1 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
-    USECASE7_TP2 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
+    #USECASE4_TP_REF = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    USECASE4_TP1 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    USECASE4_TP2 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
+    USECASE4_TP3 = uc_ms_mda.USECASE4 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
+    #USECASE7_TP_REF = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    USECASE7_TP1 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    USECASE7_TP2 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
+    USECASE7_TP3 = uc_ms_mda.USECASE7 + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.', '_') + UNIT
 
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -72,12 +74,12 @@ class Study(ClimateEconomicsStudyManager):
 
         scenario_dict = {
             self.USECASE2: usecase2,
-            self.USECASE4_TP_REF: usecase4,
             self.USECASE4_TP1: usecase4,
             self.USECASE4_TP2: usecase4,
-            self.USECASE7_TP_REF: usecase7,
+            self.USECASE4_TP3: usecase4,
             self.USECASE7_TP1: usecase7,
             self.USECASE7_TP2: usecase7,
+            self.USECASE7_TP3: usecase7,
         }
 
         # can select a reduced list of scenarios to compute
@@ -110,10 +112,12 @@ class Study(ClimateEconomicsStudyManager):
         # update values dict with tipping point value of the damage model
         tipping_point_variable = 'Damage.tp_a3'
         values_dict.update({
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP1}.{tipping_point_variable}': self.TIPPING_POINT_LIST[1],
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP2}.{tipping_point_variable}': self.TIPPING_POINT_LIST[2],
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP1}.{tipping_point_variable}': self.TIPPING_POINT_LIST[1],
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP2}.{tipping_point_variable}': self.TIPPING_POINT_LIST[2],
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP1}.{tipping_point_variable}': self.TIPPING_POINT_LIST[0],
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP2}.{tipping_point_variable}': self.TIPPING_POINT_LIST[1],
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP3}.{tipping_point_variable}': self.TIPPING_POINT_LIST[2],
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP1}.{tipping_point_variable}': self.TIPPING_POINT_LIST[0],
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP2}.{tipping_point_variable}': self.TIPPING_POINT_LIST[1],
+            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP3}.{tipping_point_variable}': self.TIPPING_POINT_LIST[2],
             })
         # Inputs were optimized manually through the sostrades GUI and saved in csv files  => recover inputs
         invest_gdp_uc4_tp1 = pd.read_csv(join(dirname(__file__), pardir, 'witness_coarse_dev_story_telling',
@@ -127,8 +131,10 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update({
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP1}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc4_tp1,
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP2}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc4_tp2,
+        f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4_TP3}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc4_tp2,
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP1}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc7_tp1,
         f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP2}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc7_tp2,
+        f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7_TP3}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_gdp_uc7_tp2,
         })
 
         return values_dict
@@ -136,5 +142,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()
