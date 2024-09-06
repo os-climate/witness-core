@@ -1077,6 +1077,7 @@ class GlossaryCore:
         },
     }
 
+
     UtilityDiscountRate = "u_discount_rate"
     DiscountedQuantityUtilityPopulation = "Discounted quantity utility population"
     PerCapitaUtilityQuantity = "Utility quantity per capita"
@@ -1098,6 +1099,7 @@ class GlossaryCore:
         },
         "unit": "-",
     }
+    UtilityObjective = "utility_obj"
 
     QuantityObjectiveValue = "Quantity_objective"
     LastYearUtilityObjectiveValue = "last_year_utility_obj"
