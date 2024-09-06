@@ -6,6 +6,7 @@ from autograd import elementwise_grad, jacobian
 
 from climateeconomics.glossarycore import GlossaryCore
 
+
 def get_inputs_for_utility_all_sectors(inputs_dict: dict):
 
     years = inputs_dict[GlossaryCore.EconomicsDfValue][GlossaryCore.Years].to_numpy()
