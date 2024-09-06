@@ -1,12 +1,28 @@
 from typing import Tuple
 
-import plotly.graph_objects as go
-
 import autograd.numpy as np
+import plotly.graph_objects as go
 from autograd import elementwise_grad, jacobian
 
 from climateeconomics.glossarycore import GlossaryCore
 
+def get_inputs_for_utility_all_sectors(inputs_dict: dict):
+
+    years = inputs_dict[GlossaryCore.EconomicsDfValue][GlossaryCore.Years].to_numpy()
+    population = inputs_dict[GlossaryCore.PopulationDfValue][GlossaryCore.PopulationValue].to_numpy()
+    energy_price = inputs_dict[GlossaryCore.EnergyMeanPriceValue][GlossaryCore.EnergyPriceValue].to_numpy()
+
+    return years, population, energy_price
+
+def get_inputs_for_utility_per_sector(inputs_dict: dict, sector: str):
+
+    consumption = inputs_dict[GlossaryCore.AllSectorsDemandDfValue][sector].to_numpy()
+    energy_price_ref = inputs_dict[f"{sector}.initial_raw_energy_price"]
+    init_rate_time_pref = inputs_dict[f"{sector}.init_rate_time_pref"]
+    scurve_stretch = inputs_dict[f"{sector}.strech_scurve"]
+    scurve_shift = inputs_dict[f"{sector}.shift_scurve"]
+
+    return consumption, energy_price_ref, init_rate_time_pref, scurve_shift, scurve_stretch
 
 def compute_utility_discount_rate(years_range: np.ndarray, year_start: int, time_step: int,
                                   init_rate_time_pref: float) -> np.ndarray:
@@ -26,7 +42,9 @@ def compute_utility_discount_rate(years_range: np.ndarray, year_start: int, time
     u_discount_rate = 1 / ((1 + init_rate_time_pref) ** (time_step * (t - 1)))
     return u_discount_rate
 
-def compute_utility_quantity(consumption: np.ndarray, energy_price: np.ndarray, energy_price_ref: float,) -> np.ndarray:
+
+def compute_utility_quantity(consumption: np.ndarray, energy_price: np.ndarray,
+                             energy_price_ref: float, ) -> np.ndarray:
     """
     Compute utility per capita based on consumption and energy prices.
 
@@ -44,6 +62,7 @@ def compute_utility_quantity(consumption: np.ndarray, energy_price: np.ndarray, 
     quantity = consumption / energy_price
     utility_quantity = quantity / quantity_year_start
     return utility_quantity
+
 
 def compute_utility_per_capita(consumption: np.ndarray, energy_price: np.ndarray, energy_price_ref: float,
                                scurve_shift: float, scurve_stretch: float) -> np.ndarray:
@@ -108,7 +127,7 @@ def compute_utility_quantities(years: np.ndarray, consumption: np.ndarray, energ
             GlossaryCore.UtilityObjective: utility_obj}
 
 
-def derivatives_utility_quantities(quantity_name: str, years: np.ndarray, consumption: np.ndarray,
+def compute_utility_quantities_der(quantity_name: str, years: np.ndarray, consumption: np.ndarray,
                                    energy_price: np.ndarray,
                                    population: np.ndarray, energy_price_ref: float, init_rate_time_pref: float,
                                    scurve_shift: float, scurve_stretch: float) -> Tuple[
@@ -152,7 +171,7 @@ def compute_utility_objective(years: np.ndarray, consumption: np.ndarray, energy
     return utility_quantities[GlossaryCore.UtilityObjective]
 
 
-def derivatives_utility_objective(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
+def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
                                   population: np.ndarray, energy_price_ref: float, init_rate_time_pref: float,
                                   scurve_shift: float, scurve_stretch: float) -> Tuple[
     np.ndarray, np.ndarray, np.ndarray]:
@@ -212,6 +231,7 @@ def d_s_curve_function(x: np.ndarray, shift: float, stretch: float, use_autograd
         f_prime_u = np.exp(-u) / (1.0 + np.exp(-u)) ** 2.0
         return u_prime * f_prime_u
 
+
 def plot_s_curve(x: np.ndarray, shift: float, stretch: float, show: bool = False) -> go.Figure:
     """
     Create a Plotly plot of the S-curve transformation.
@@ -249,6 +269,7 @@ def plot_s_curve(x: np.ndarray, shift: float, stretch: float, show: bool = False
 
     return fig
 
+
 if __name__ == "__main__":
     test_x = np.linspace(0, 50, 10)
 
@@ -272,22 +293,20 @@ if __name__ == "__main__":
     energy_price_ref = 1.0
     init_rate_time_pref = 1.0
 
-    # jac = derivatives_utility_objective(years, consumption, energy_price, population, energy_price_ref,
-    #                                     init_rate_time_pref,
-    #                                     test_shift, test_stretch)
-    #
-    # print(jac)
-
-    jac = derivatives_utility_quantities(GlossaryCore.DiscountedUtilityQuantityPerCapita, years, consumption,
-                                         energy_price, population, energy_price_ref,
-                                         init_rate_time_pref,
-                                         test_shift, test_stretch)
+    jac = compute_utility_objective_der(years, consumption, energy_price, population, energy_price_ref,
+                                        init_rate_time_pref,
+                                        test_shift, test_stretch)
 
     print(jac)
+
+    # jac = compute_utility_quantities_der(GlossaryCore.DiscountedUtilityQuantityPerCapita, years, consumption,
+    #                                      energy_price, population, energy_price_ref,
+    #                                      init_rate_time_pref,
+    #                                      test_shift, test_stretch)
+    #
+    # print(jac)
 
     utility_quantity = compute_utility_quantity(consumption, energy_price, energy_price_ref)
     utility_pc = compute_utility_per_capita(consumption, energy_price, energy_price_ref, test_shift, test_stretch)
 
-    plot_s_curve(utility_quantity, test_shift, test_stretch, show=True)
-
-
+    plot_s_curve(utility_quantity, test_shift, test_stretch, show=False)
