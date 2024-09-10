@@ -186,6 +186,8 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         """
         self.ee.execute()
 
+        # self.override_dump_jacobian = True
+
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sectorized_utility_discipline_sectors_obj.pkl',
                             discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
@@ -193,6 +195,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
+                                    f'{self.name}.{GlossaryCore.AllSectorsDemandDfValue}',
                                     f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
                             outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjective}' for sector in self.sector_list],
                             derr_approx='complex_step')

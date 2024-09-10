@@ -735,7 +735,6 @@ class GlossaryCore:
         },
     }
 
-
     EconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
@@ -1077,7 +1076,7 @@ class GlossaryCore:
         },
     }
 
-
+    UtilityQuantity = "utility_quantity"
     UtilityDiscountRate = "u_discount_rate"
     DiscountedQuantityUtilityPopulation = "Discounted quantity utility population"
     PerCapitaUtilityQuantity = "Utility quantity per capita"
@@ -1099,7 +1098,13 @@ class GlossaryCore:
         },
         "unit": "-",
     }
-    UtilityObjective = "utility_obj"
+    UtilityObjectiveName = "utility_obj"
+    UtilityObjective = {
+        "type": "array",
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+    }
 
     QuantityObjectiveValue = "Quantity_objective"
     LastYearUtilityObjectiveValue = "last_year_utility_obj"
@@ -1649,7 +1654,7 @@ class GlossaryCore:
     StreamsCO2Emissions = {
         "var_name": StreamsCO2EmissionsValue,
         "type": "dataframe",
-        "unit": "kg/kWh ... to be checked for CCUS streams", # fixme todo
+        "unit": "kg/kWh ... to be checked for CCUS streams",  # fixme todo
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dynamic_dataframe_columns": True,
@@ -1691,13 +1696,13 @@ class GlossaryCore:
         "description": "used to debug some gradients",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            #UsableCapital: ("float", None, False),
-            #Capital: ("float", None, False),
-            #Damages: ("float", None, False),
-            #EstimatedDamages: ("float", None, False),
-            #DamagesFromClimate: ("float", None, False),
-            #GrossOutput: ("float", None, False),
-            #OutputNetOfDamage: ("float", None, False),
+            # UsableCapital: ("float", None, False),
+            # Capital: ("float", None, False),
+            # Damages: ("float", None, False),
+            # EstimatedDamages: ("float", None, False),
+            # DamagesFromClimate: ("float", None, False),
+            # GrossOutput: ("float", None, False),
+            # OutputNetOfDamage: ("float", None, False),
             PerCapitaConsumption: ("float", None, False),
         },
     }

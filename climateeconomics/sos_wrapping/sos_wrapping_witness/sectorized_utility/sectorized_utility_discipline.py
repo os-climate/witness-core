@@ -37,10 +37,9 @@ from climateeconomics.core.core_witness.utility_tools import (
     compute_utility_objective,
     compute_utility_objective_der,
     compute_utility_quantities,
-    compute_utility_quantity,
     get_inputs_for_utility_all_sectors,
     get_inputs_for_utility_per_sector,
-    plot_s_curve,
+    s_curve_function,
 )
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -254,12 +253,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 utility_df = GlossaryCore.get_dynamic_variable(GlossaryCore.UtilityDf)
                 utility_df.update({self.NAMESPACE: GlossaryCore.NS_FUNCTIONS})
                 dynamic_outputs[f"{sector}.{GlossaryCore.UtilityDfValue}"] = utility_df
-                dynamic_outputs[f"{sector}.utility_obj"] = {
-                    "type": "float",
-                    "unit": "-",
-                    "visibility": "Shared",
-                    "namespace": GlossaryCore.NS_FUNCTIONS,
-                }
+                dynamic_outputs[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = GlossaryCore.UtilityObjective
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -335,14 +329,13 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
 
             utility_df = pd.DataFrame({GlossaryCore.Years: years} | utility_quantities)
             dict_values[f"{sector}.{GlossaryCore.UtilityDfValue}"] = utility_df
-            dict_values[f"{sector}.utility_obj"] = compute_utility_objective(years, consumption, energy_price,
-                                                                             population,
-                                                                             energy_price_ref, init_rate_time_pref,
-                                                                             scurve_shift,
-                                                                             scurve_stretch)
+            dict_values[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = [compute_utility_objective(years, consumption, energy_price,
+                                                                              population,
+                                                                              energy_price_ref, init_rate_time_pref,
+                                                                              scurve_shift,
+                                                                              scurve_stretch)]
 
         self.store_sos_outputs_values(dict_values)
-
 
     def compute_sos_jacobian(self):
         """
@@ -648,29 +641,30 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         years, population, energy_price = get_inputs_for_utility_all_sectors(self.get_sosdisc_inputs())
         for sector in inputs_dict[GlossaryCore.SectorListValue]:
             consumption, energy_price_ref, init_rate_time_pref, scurve_shift, scurve_stretch = get_inputs_for_utility_per_sector(
-                    self.get_sosdisc_inputs(), sector)
+                self.get_sosdisc_inputs(), sector)
 
-            obj_derivatives = compute_utility_objective_der(years, consumption, energy_price, population, energy_price_ref,
-                                             init_rate_time_pref,
-                                             scurve_shift, scurve_stretch)
+            obj_derivatives = compute_utility_objective_der(years, consumption, energy_price, population,
+                                                            energy_price_ref,
+                                                            init_rate_time_pref,
+                                                            scurve_shift, scurve_stretch)
 
             # d_utility_obj / d_consumption
             self.set_partial_derivative_for_other_types(
-                (f"{sector}.{GlossaryCore.UtilityObjective}",),
+                (f"{sector}.{GlossaryCore.UtilityObjectiveName}",),
                 (GlossaryCore.AllSectorsDemandDfValue, sector),
                 obj_derivatives[0],
             )
 
             # d_utility_obj / d_energy_price
             self.set_partial_derivative_for_other_types(
-                (f"{sector}.{GlossaryCore.UtilityObjective}",),
+                (f"{sector}.{GlossaryCore.UtilityObjectiveName}",),
                 (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
                 obj_derivatives[1],
             )
 
             # d_utility_obj / d_population
             self.set_partial_derivative_for_other_types(
-                (f"{sector}.{GlossaryCore.UtilityObjective}",),
+                (f"{sector}.{GlossaryCore.UtilityObjectiveName}",),
                 (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                 obj_derivatives[2],
             )
@@ -694,7 +688,6 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
 
         return chart_filters
-
 
     def get_post_processing_list(self, chart_filters=None):
         # For the outputs, making a graph for tco vs year for each range and for specific
@@ -968,26 +961,33 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
             energy_mean_price = self.get_sosdisc_inputs(
                 GlossaryCore.EnergyMeanPriceValue
             )
+
+            # S-curve fit
+            new_chart = TwoAxesInstanciatedChart(
+                f'Variation of quantity of things consumed per capita since {years[0]} [%]',
+                'Utility gain per capita', chart_name='Model visualisation : Quantity utility per capita function')
             for sector in sector_list:
-                # S-curve fit
-                # Recompute non-scurve utility quantity
-                consumption = sectors_consumption_df[sector].to_numpy()
-                energy_price = energy_mean_price[GlossaryCore.EnergyPriceValue].to_numpy()
-                energy_price_ref = self.get_sosdisc_inputs(f"{sector}.initial_raw_energy_price")
-                utility_quantity = compute_utility_quantity(consumption, energy_price, energy_price_ref)
                 scurve_stretch = self.get_sosdisc_inputs(f"{sector}.strech_scurve")
                 scurve_shift = self.get_sosdisc_inputs(f"{sector}.shift_scurve")
-                fig = plot_s_curve(utility_quantity, scurve_shift, scurve_stretch)
-                new_chart = InstantiatedPlotlyNativeChart(fig, f"S-curve fit of sector {sector}")
-                new_chart.post_processing_section_name = "Sectorization"
-                instanciated_charts.append(new_chart)
+                n = 200
+                ratios = np.linspace(-0.2, 4, n)
+                new_series = InstanciatedSeries((ratios - 1) * 100,
+                                                s_curve_function(ratios, scurve_shift, scurve_stretch),
+                                                f'{sector}', 'lines', True)
+                new_chart.series.append(new_series)
 
+            instanciated_charts.append(new_chart)
+
+            for sector in sector_list:
                 # Consumption variation from year start
-                variation = (consumption[0] - consumption) / consumption[0] * 100.0
+                consumption = sectors_consumption_df[sector].to_numpy()
+                variation = (consumption - consumption[0]) / consumption[0] * 100.0
                 fig = go.Figure()
-                fig.add_trace(go.Scatter(x=years, y=variation))
-                new_chart = InstantiatedPlotlyNativeChart(fig, f"Variation of consumption in sector {sector}")
-                new_chart.post_processing_section_name = "Sectorization"
+                fig.add_trace(go.Scatter(x=years, y=list(variation)))
+                fig.update_layout(
+                    yaxis_title='Variaton in percentage',
+                )
+                new_chart = InstantiatedPlotlyNativeChart(fig, f"Variation of consumption in {sector} sector")
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
