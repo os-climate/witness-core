@@ -37,9 +37,9 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 class ObjectivesDiscipline(ClimateEcoDiscipline):
-    ''' Discipline to compute objectives for production function fitting optim
+    ''' Discipline to compute objectives for production function fitting optim 
     '''
-
+    
     # ontology information
     _ontology_data = {
         'label': 'Objectives Model',
@@ -53,7 +53,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         'icon': 'fa-solid fa-bullseye',
         'version': '',
     }
-
+    
     default_earlier_energy_eff = pd.DataFrame()
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -79,7 +79,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                               GlossaryCore.SectorAgriculture: ('float', None, True),
                                                               GlossaryCore.SectorIndustry: ('float', None, True),
                                                               GlossaryCore.SectorServices: ('float', None, True),
-                                                              'Total': ('float', None, True), },
+                                                              'Total': ('float', None, True),},
                                      'dataframe_edition_locked': False, },
                GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'namespace': GlossaryCore.NS_WITNESS,
@@ -87,7 +87,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                          GlossaryCore.Capital: ('float', None, False),
                                                          GlossaryCore.UsableCapital: ('float', None, False),
                                                          GlossaryCore.Output: ('float', None, False),
-                                                         GlossaryCore.OutputNetOfDamage: ('float', None, False), }},
+                                                         GlossaryCore.OutputNetOfDamage: ('float', None, False),}},
                'weights_df': {'type': 'dataframe', 'unit': '-',
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                               'weight': ('float', None, True)},
@@ -101,8 +101,8 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                }
 
     DESC_OUT = {'error_pib_total': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_obj'},
-                'year_min_energy_eff': {'type': 'dict', 'unit': '-'},
+                                    'namespace': 'ns_obj'}, 
+                'year_min_energy_eff': {'type': 'dict', 'unit': '-'}, 
                 }
 
     def init_execution(self):
@@ -130,20 +130,20 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                              GlossaryCore.Capital: ('float', None, False),
                                              GlossaryCore.UsableCapital: ('float', None, False),
-                                             GlossaryCore.EnergyEfficiency: ('float', None, False), }
+                                             GlossaryCore.EnergyEfficiency: ('float', None, False),}
                 }
                 dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_SECTORS,
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                              GlossaryCore.Output: ('float', None, False),
-                                             GlossaryCore.OutputNetOfDamage: ('float', None, False), }
+                                             GlossaryCore.OutputNetOfDamage: ('float', None, False),}
                 }
                 dynamic_inputs[f'{sector}.longterm_energy_efficiency'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_SECTORS,
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                             GlossaryCore.EnergyEfficiency: ('float', None, False), }
+                                             GlossaryCore.EnergyEfficiency: ('float', None, False),}
                 }
                 dynamic_outputs[f'{sector}.gdp_error'] = {
                     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -171,9 +171,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         error_pib_total, sectors_gdp_errors, energy_eff_errors, hist_energy_eff, year_min = self.objectives_model.compute_all_errors(inputs_dict)
 
         # store outputs in a dict
-        outputs_dict = {'error_pib_total': np.array([error_pib_total]),
+        outputs_dict = {'error_pib_total': np.array([error_pib_total]), 
                         'year_min_energy_eff': year_min}
-
+        
         if GlossaryCore.SectorListValue in self.get_sosdisc_inputs().keys():
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             for sector in sector_list:
@@ -181,6 +181,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 outputs_dict[f'{sector}.energy_eff_error'] = np.array([energy_eff_errors[sector]])
                 outputs_dict[f'{sector}.historical_energy_efficiency'] = hist_energy_eff[sector]
 
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def get_chart_filter_list(self):
@@ -312,18 +313,18 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'energy efficiency [-]',
                                                      chart_name=f'{sector} energy efficiency fitting comparison with historical data')
-                # filter data above year min
-                years_energ_eff = list(hist_energy_eff_sector[GlossaryCore.Years][hist_energy_eff_sector[GlossaryCore.Years] >= year_min_energy_eff[sector]])
-                hist_energy_eff_s = list(hist_energy_eff_sector[GlossaryCore.EnergyEfficiency][hist_energy_eff_sector[GlossaryCore.Years] >= year_min_energy_eff[sector]])
+                #filter data above year min 
+                years_energ_eff = list(hist_energy_eff_sector[GlossaryCore.Years][hist_energy_eff_sector[GlossaryCore.Years]>=year_min_energy_eff[sector]])
+                hist_energy_eff_s = list(hist_energy_eff_sector[GlossaryCore.EnergyEfficiency][hist_energy_eff_sector[GlossaryCore.Years]>=year_min_energy_eff[sector]])
                 new_series = InstanciatedSeries(
                     years_energ_eff, hist_energy_eff_s, 'historical data', 'scatter', visible_line, marker_symbol='x')
                 new_chart.series.append(new_series)
-                # If extra data plot all the data and use long term energy efficiency
-                if len(years_energ_eff) > len(years):
+                #If extra data plot all the data and use long term energy efficiency
+                if len(years_energ_eff)> len(years): 
                     new_series = InstanciatedSeries(
                         list(simu_energy_eff_sector_lt[GlossaryCore.Years]), list(simu_energy_eff_sector_lt[GlossaryCore.EnergyEfficiency]), 'simulated values', 'lines', visible_line)
-                # If not extra data: plot only calculated values in capital_df
-                else:
+                #If not extra data: plot only calculated values in capital_df
+                else: 
                     new_series = InstanciatedSeries(
                         years, list(simu_energy_eff_sector), 'simulated values', 'lines', visible_line)
                 new_chart.series.append(new_series)

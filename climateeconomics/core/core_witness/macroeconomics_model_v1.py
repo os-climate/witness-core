@@ -151,7 +151,7 @@ class MacroEconomics:
                 str(year): df.loc[year_range]
                 for year_range in df.index[:-1]
                 for year_start, year_end in [year_range.split('-')]
-                for year in range(int(year_start), int(year_end) + 1)
+                for year in range(int(year_start), int(year_end)+1)
             },
             orient='index',
             columns=[df.name],
@@ -185,14 +185,14 @@ class MacroEconomics:
 
     def set_coupling_inputs(self, inputs: dict):
         """
-        Set couplings inputs with right index, scaling...
+        Set couplings inputs with right index, scaling... 
         """
         self.damage_fraction_output_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_output_df.index = self.damage_fraction_output_df[GlossaryCore.Years].values
         # Scale energy production
         self.energy_production = inputs[GlossaryCore.EnergyProductionValue]
         self.energy_production.index = self.energy_production[GlossaryCore.Years].values
-        # Investment in energy
+        #Investment in energy
         self.energy_investment = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue]
         self.share_non_energy_investment = inputs[GlossaryCore.ShareNonEnergyInvestmentsValue]
         self.energy_capital = inputs[GlossaryCore.EnergyCapitalDfValue]
@@ -207,15 +207,15 @@ class MacroEconomics:
         if not self.compute_gdp:
             self.gross_output_in = inputs['gross_output_in']
         self.sector_energy_consumption_percentage_df = inputs[GlossaryCore.SectorEnergyConsumptionPercentageDfName]
-        # self.carbon_intensity_df = inputs[GlossaryCore.EnergyCarbonIntensityDfValue]
+        #self.carbon_intensity_df = inputs[GlossaryCore.EnergyCarbonIntensityDfValue]
         # create dictionary where key is sector and value is the energy consumption percebtage for each section per sector
         self.dict_dataframe_energy_consumption_sections = dict(zip(self.sector_list, [inputs[f'{GlossaryCore.SectorEnergyConsumptionPercentageDfName}_{sector}']
                                                                                        for sector in self.sector_list]))
         self.dict_dataframe_energy_consumption_sections = {key: val.loc[val[GlossaryCore.Years] >= self.year_start] for key, val in self.dict_dataframe_energy_consumption_sections.items()}
 
     def compute_employment_rate(self):
-        """
-        Compute the employment rate. based on prediction from ILO
+        """ 
+        Compute the employment rate. based on prediction from ILO 
         We pyworld3 a recovery from 2020 crisis until 2031 where past level is reached
         For all year not in (2020,2031), value = employment_rate_base_value
         If `activate_pandemic_effects` is True, additionally reduce by pandemic_disability factor
@@ -242,9 +242,9 @@ class MacroEconomics:
         return workforce_df
 
     def compute_workforce(self):
-        """ Compute the workforce based on formula:
-        workforce = people in working age * employment_rate
-        inputs : - number of people in working age
+        """ Compute the workforce based on formula: 
+        workforce = people in working age * employment_rate 
+        inputs : - number of people in working age 
                 - employment rate in %
         Output: number of working people in million of people
         """
@@ -334,9 +334,9 @@ class MacroEconomics:
                                                            self.economics_df[GlossaryCore.NonEnergyInvestmentsValue].values
 
     def compute_gross_output(self):
-        """ Compute the gdp
+        """ Compute the gdp 
         inputs: usable capital by year in trill $ , working population by year in million of people,
-             productivity by year (no unit), alpha (between 0 and 1)
+             productivity by year (no unit), alpha (between 0 and 1) 
         output: gdp in trillion dollars
         """
         alpha = self.output_alpha
@@ -348,7 +348,8 @@ class MacroEconomics:
         gross_output[0] = self.init_gross_output
         self.economics_df[GlossaryCore.GrossOutput] = gross_output
 
-    def set_gross_output(self):
+
+    def set_gross_output(self): 
         """
         Set gross output according to input
         """
@@ -410,8 +411,8 @@ class MacroEconomics:
         """
         # prepare dictionary with values for each section per sector
         dict_sectors_sections = {
-            GlossaryCore.SectorServices: pd.DataFrame({GlossaryCore.Years: self.years_range, **{section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsServices}, }),
-            GlossaryCore.SectorIndustry: pd.DataFrame({GlossaryCore.Years: self.years_range, **{section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsIndustry}, }),
+            GlossaryCore.SectorServices: pd.DataFrame({GlossaryCore.Years: self.years_range, **{section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsServices},}),
+            GlossaryCore.SectorIndustry: pd.DataFrame({GlossaryCore.Years: self.years_range, **{section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsIndustry},}),
             GlossaryCore.SectorAgriculture: pd.DataFrame({GlossaryCore.Years: self.years_range, **{section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsAgriculture}})
         }
         # create dictionary with sector as key and sum of values for sections
@@ -423,7 +424,7 @@ class MacroEconomics:
 
     def compute_output_growth(self):
         """
-        Compute the output growth between year t and year t-1
+        Compute the output growth between year t and year t-1 
         Output growth of the WITNESS pyworld3 (computed from gross_output_ter)
         """
 
@@ -497,7 +498,7 @@ class MacroEconomics:
         ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
         usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
         self.usable_capital_obj_content = (usable_capital - self.capital_utilisation_ratio * ne_capital) / self.usable_capital_objective_ref
-        self.usable_capital_objective = pseudo_abs_obj(self.usable_capital_obj_content)  # np.array([np.sum(self.usable_capital_obj_content)]) # OK
+        self.usable_capital_objective = pseudo_abs_obj(self.usable_capital_obj_content)#np.array([np.sum(self.usable_capital_obj_content)]) # OK
 
     def prepare_outputs(self):
         """post processing"""
@@ -567,7 +568,7 @@ class MacroEconomics:
         # compute percentage of gdp for each group
         percentage_gdp_per_group = gdp_predicted_per_group / gdp_predicted_per_group.sum(axis=1, keepdims=True) * 100
         # compute total based on predicted gdp and on gdp output from model
-        total_gdp_per_group = percentage_gdp_per_group * self.economics_df[GlossaryCore.OutputNetOfDamage].values.reshape(-1, 1) / 100
+        total_gdp_per_group = percentage_gdp_per_group * self.economics_df[GlossaryCore.OutputNetOfDamage].values.reshape(-1,1) / 100
         # store data in total gdp
         self.total_gdp_per_group_df[GlossaryCore.Years] = self.years_range
         self.total_gdp_per_group_df[list(breakdown_countries.keys())] = total_gdp_per_group
@@ -785,7 +786,7 @@ class MacroEconomics:
         d_gross_output_d_wap = np.diag(
             productivity * (1 - alpha) * working_pop ** (gamma - 1) * employment_rate * (
                 alpha * usable_capital ** gamma + (1 - alpha) * working_pop ** gamma
-            ) ** (1 / gamma - 1)
+            ) ** (1/gamma - 1)
         ) if self.compute_gdp else self._null_derivative()
         d_gross_output_d_wap[0, 0] = 0.
 
@@ -794,7 +795,7 @@ class MacroEconomics:
         if not self.compute_climate_impact_on_gdp:
             dQ_dY = np.ones_like(self.years_range)
         d_net_output_d_wap = np.diag(dQ_dY) @ d_gross_output_d_wap
-        _, d_i_d_wap, d_ine_d_wap = self.d_investment_d_user_input(d_net_output_d_wap)
+        _,d_i_d_wap, d_ine_d_wap = self.d_investment_d_user_input(d_net_output_d_wap)
         d_consumption_d_wap = self.d_consumption_d_user_input(d_net_output_d_wap, d_i_d_wap)
         d_consumption_pc_d_wap = self.d_consumption_per_capita_d_user_input(d_consumption_d_wap)
 
@@ -850,7 +851,7 @@ class MacroEconomics:
         Share of the total output
         """
         d_energy_investment_wo_tax_d_energy_investment_wo_tax = np.eye(self.nb_years)
-        d_energy_investment_wo_renewable_d_energy_investment_wo_tax = d_energy_investment_wo_tax_d_energy_investment_wo_tax * 1e3  # TODO ? Sure of 1e3 ?
+        d_energy_investment_wo_renewable_d_energy_investment_wo_tax = d_energy_investment_wo_tax_d_energy_investment_wo_tax * 1e3 # TODO ? Sure of 1e3 ?
 
         d_energy_investment_d_energy_investment_wo_tax = d_energy_investment_wo_tax_d_energy_investment_wo_tax
 
@@ -899,7 +900,7 @@ class MacroEconomics:
         consumption = self.economics_detail_df[GlossaryCore.Consumption].values
         population = self.population_df[GlossaryCore.PopulationValue].values
 
-        d_consumption_pc_d_population = np.diag(- consumption * 1000 / population ** 2)
+        d_consumption_pc_d_population = np.diag( - consumption * 1000 / population ** 2)
         return d_consumption_pc_d_population
 
     def d_damage_frac_output(self):
@@ -908,8 +909,8 @@ class MacroEconomics:
         gross_output = self.economics_df[GlossaryCore.GrossOutput].values
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
 
-        d_gross_output_d_dfo = np.diag(gross_output / productivity) @ self.d_productivity_d_damage_frac_output()
-        d_gross_output_d_dfo[0, :] = 0.
+        d_gross_output_d_dfo =  np.diag(gross_output / productivity) @ self.d_productivity_d_damage_frac_output()
+        d_gross_output_d_dfo[0,:] = 0.
 
         if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             factor = (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
@@ -926,6 +927,7 @@ class MacroEconomics:
         d_energy_investment_d_dfo, d_invest_d_dfo, d_ine_d_dfo = self.d_investment_d_user_input(d_net_output_d_dfo)
         d_consumption_d_dfo = self.d_consumption_d_user_input(d_net_output_d_dfo, d_invest_d_dfo)
         d_consumption_pc_d_dfo = self.d_consumption_per_capita_d_user_input(d_consumption_d_dfo)
+
 
         d_damages_from_productivity_loss_d_dfo, d_estimated_damages_from_productivity_loss_d_dfo = \
             self.d_damages_from_productivity_loss_d_damage_fraction_output(d_gross_output_d_dfo)
@@ -998,10 +1000,10 @@ class MacroEconomics:
         d_estimated_damages_from_productivity_loss_d_damage_fraction_output = self._null_derivative()
         if self.damage_to_productivity:
             for i in range(nb_years):
-                d_estimated_damages_from_productivity_loss_d_damage_fraction_output[i] = d_gross_output_d_damage_fraction_output[i] * (productivity_wo_damage[i] / productivity_w_damage[i] - 1) +\
+                d_estimated_damages_from_productivity_loss_d_damage_fraction_output[i] = d_gross_output_d_damage_fraction_output[i] * (productivity_wo_damage[i]/productivity_w_damage[i] - 1) +\
                     - gross_output[i] * productivity_wo_damage[i] / productivity_w_damage[i] ** 2 * d_productivity_w_damage_d_damage_frac_output[i]
         else:
-            d_estimated_damages_from_productivity_loss_d_damage_fraction_output = np.diag((productivity_wo_damage - productivity_w_damage) / productivity_wo_damage) @ d_gross_output_d_damage_fraction_output - np.diag(gross_output / productivity_wo_damage) @ d_productivity_w_damage_d_damage_frac_output
+            d_estimated_damages_from_productivity_loss_d_damage_fraction_output = np.diag((productivity_wo_damage - productivity_w_damage)/productivity_wo_damage) @ d_gross_output_d_damage_fraction_output - np.diag(gross_output / productivity_wo_damage) @ d_productivity_w_damage_d_damage_frac_output
         if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             d_damages_from_productivity_loss_d_damage_fraction_output = d_estimated_damages_from_productivity_loss_d_damage_fraction_output
 
@@ -1046,3 +1048,6 @@ class MacroEconomics:
         return np.diag(self.sector_energy_consumption_percentage_df[GlossaryCore.Households].values / 100)
 
     """-------------------END of Gradient functions-------------------"""
+
+
+

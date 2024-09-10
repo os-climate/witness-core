@@ -30,11 +30,11 @@ class LaborMarketTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
-        self.years = np.arange(self.year_start, self.year_end + 1)
+        self.years = np.arange(self.year_start, self.year_end+1)
 
         self.workforce_share = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -47,6 +47,8 @@ class LaborMarketTestCase(unittest.TestCase):
             GlossaryCore.Years: self.years,
             GlossaryCore.Population1570: np.linspace(5490, 6061, len(self.years))
         })
+
+        
 
     def test_labormarket_discipline(self):
         '''
@@ -68,7 +70,7 @@ class LaborMarketTestCase(unittest.TestCase):
         ee.display_treeview_nodes()
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{model_name}.workforce_share_per_sector': self.workforce_share,
+                       f'{name}.{model_name}.workforce_share_per_sector': self.workforce_share, 
                        f'{name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_pop_df,
                        }
 
@@ -80,9 +82,9 @@ class LaborMarketTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
 #         for graph in graph_list:
 #           graph.to_plotly().show()
-
+    
     def test_changingworkforceshare_labormarket(self):
-        # test with a decreasing share in agri
+        #test with a decreasing share in agri 
         nb_per = len(self.years)
         indusshare = 21.7
         agri_year_start = 27.4
@@ -90,11 +92,11 @@ class LaborMarketTestCase(unittest.TestCase):
         agri.append(agri_year_start)
         for year in np.arange(1, nb_per):
             agri.append(agri[year - 1] * 0.99)
-        service = np.array([100.0] * nb_per) - agri - indusshare
-        # service = np.substract(total, agri)
-        workforce_share = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.SectorAgriculture: agri,
+        service = np.array([100.0]*nb_per) - agri - indusshare
+        #service = np.substract(total, agri)
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agri,
                                      GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: service})
-
+        
         name = 'Test'
         model_name = 'Labor Market'
         ee = ExecutionEngine(name)
@@ -111,7 +113,7 @@ class LaborMarketTestCase(unittest.TestCase):
         ee.display_treeview_nodes()
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{model_name}.workforce_share_per_sector': workforce_share,
+                       f'{name}.{model_name}.workforce_share_per_sector': workforce_share, 
                        f'{name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_pop_df
                        }
 
@@ -123,3 +125,4 @@ class LaborMarketTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
+            

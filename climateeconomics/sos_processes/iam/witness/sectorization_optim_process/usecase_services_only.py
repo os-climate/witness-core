@@ -172,7 +172,7 @@ class Study(StudyManager):
 
         disc_dict.update(values_dict)
 
-        # Inputs for objective
+        # Inputs for objective 
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
@@ -180,7 +180,7 @@ class Study(StudyManager):
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
 
-        long_term_energy_eff = pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
+        long_term_energy_eff =  pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
         lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorAgriculture]})
         lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorIndustry]})
         lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorServices]})
@@ -225,22 +225,22 @@ class Study(StudyManager):
         energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
         energy_supply_values = energy_supply * brut_net
 
-        energy_production = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.7})
+        energy_production = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values*0.7})
         indus_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.2894})
         agri_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.02136})
         services_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.37})
 
         invest_indus = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 3})
+             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))*1/3})
 
         invest_services = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 6})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1/6})
 
         invest_agriculture = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 2})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))* 1/2})
 
         sect_input = {}
         sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
@@ -252,7 +252,9 @@ class Study(StudyManager):
 
         disc_dict.update(sect_input)
 
+
         return [disc_dict]
+
 
 
 if '__main__' == __name__:

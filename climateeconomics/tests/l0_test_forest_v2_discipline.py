@@ -486,7 +486,7 @@ class ForestTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2080
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)

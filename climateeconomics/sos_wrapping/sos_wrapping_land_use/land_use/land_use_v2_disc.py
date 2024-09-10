@@ -62,7 +62,7 @@ class LandUseV2Discipline(SoSWrapp):
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                LandUseV2.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use',
-                                          "dynamic_dataframe_columns": True, },
+                                          "dynamic_dataframe_columns": True,},
                LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                             'total surface (Gha)': ('float', None, False),
@@ -75,7 +75,7 @@ class LandUseV2Discipline(SoSWrapp):
                                             'global_forest_surface': ('float', None, False), }
                },
                LandUseV2.LAND_DEMAND_CONSTRAINT_REF: {
-                   'type': 'float', 'unit': 'GHa', 'default': 0.1, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE}, }
+                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},}
 
     DESC_OUT = {
         LandUseV2.LAND_DEMAND_CONSTRAINT: {
@@ -92,11 +92,11 @@ class LandUseV2Discipline(SoSWrapp):
 
     def run(self):
 
-        # -- get inputs
+        #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
 
-        # -- compute
+        #-- compute
         land_demand_df = inputs_dict['land_demand_df']
         total_food_land_surface = inputs_dict.pop('total_food_land_surface')
         total_forest_surface_df = deepcopy(inputs_dict['forest_surface_df'])
@@ -113,21 +113,21 @@ class LandUseV2Discipline(SoSWrapp):
                 'Food Surface (Gha)']].rename(columns={'Food Surface (Gha)': 'Agriculture total (Gha)'}),
         }
 
-        # -- store outputs
+        #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
-        """
-        Compute jacobian for each coupling variable
+        """ 
+        Compute jacobian for each coupling variable 
         gradient of coupling variable to compute:
         land_demand_constraint wrt forest_surface_df
         land_demand_constraint wrt food_surface_df
         land_demand_constraint wrt land_demand_df
         """
-        # -- get inputs
+        #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-        years = np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1)
+        years = np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd]+1)
         land_demand_df = inputs_dict['land_demand_df']
         agri_techno = []
         forest_techno = []
@@ -149,10 +149,10 @@ class LandUseV2Discipline(SoSWrapp):
             - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
         # land_demand_constraint wrt food_surface_df
         self.set_partial_derivative_for_other_types(
-            (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'),
+            (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.TOTAL_FOOD_LAND_SURFACE,'total surface (Gha)'),
             - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
         # land_demand_constraint wrt land_demand_df
-        for techno in agri_techno + forest_techno:
+        for techno in agri_techno+forest_techno:
             self.set_partial_derivative_for_other_types(
                 (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.LAND_DEMAND_DF, techno),
                 - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
@@ -187,14 +187,14 @@ class LandUseV2Discipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
-        years = list(np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1))
+        years = list(np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd]+1))
         total_food_land_surface = inputs_dict['total_food_land_surface']
         total_forest_surface_df = inputs_dict['forest_surface_df']
         land_surface_detailed = outputs_dict[LandUseV2.LAND_SURFACE_DETAIL_DF]
         land_demand_constraint = outputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT]
         # Surfaces available
-        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values +
-                                    land_surface_detailed['Available Forest Surface (Gha)'].values +
+        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
+                                    land_surface_detailed['Available Forest Surface (Gha)'].values + \
                                     land_surface_detailed['Available Shrub Surface (Gha)'].values)
         # Habitable land in 2020 covered by agriculture and forest. When agri and forest surface go above
         # this value over the years, shrub surface decreases
@@ -221,7 +221,7 @@ class LandUseV2Discipline(SoSWrapp):
                     for column in list(land_surface_detailed.columns):
                         if column in ['Total Forest Surface (Gha)', 'Total Agriculture Surface (Gha)']:
                             legend = column.replace(' (Gha)', '')
-                            color = {'Total Forest Surface (Gha)': qualitative.Dark2[4],
+                            color={'Total Forest Surface (Gha)': qualitative.Dark2[4],
                                    'Total Agriculture Surface (Gha)': qualitative.Dark2[6]}
                             fig.add_trace(go.Bar(
                                 x=years,
@@ -242,7 +242,7 @@ class LandUseV2Discipline(SoSWrapp):
                                              name='Total Land Available'), secondary_y=False)
                     fig.add_trace(go.Scatter(
                         x=years,
-                        y=list(np.maximum(0.0, -land_demand_constraint)),
+                        y=list(np.maximum(0.0,-land_demand_constraint)),
                         name="Land Demand Constraint (capped below 0)",
                         line=dict(color=qualitative.Set1[0]),
                     ), secondary_y=True)
@@ -251,7 +251,7 @@ class LandUseV2Discipline(SoSWrapp):
 
                     fig.update_yaxes(title_text="Land Surfaces [Gha]", secondary_y=False)
                     fig.update_yaxes(title_text="(-1) * Land Demand Constraint", secondary_y=True,
-                                     color=qualitative.Set1[0], range=[0, 1.1 * max(-land_demand_constraint)])
+                                     color=qualitative.Set1[0], range=[0,1.1*max(-land_demand_constraint)])
                     chart_name = 'Land Demand Constraint'
                     new_chart = InstantiatedPlotlyNativeChart(
                         fig=fig, chart_name=chart_name)
@@ -259,7 +259,7 @@ class LandUseV2Discipline(SoSWrapp):
                     instanciated_charts.append(new_chart)
 
         if 'Detailed Land Usage [Gha]' in chart_list:
-            if land_surface_detailed is not None:
+            if land_surface_detailed is not None :
                 series_to_add = []
                 # Total surface usage
                 for column in list(land_surface_detailed.columns):
@@ -271,7 +271,7 @@ class LandUseV2Discipline(SoSWrapp):
                             years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
                         series_to_add.append(new_series)
 
-                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Detailed Land Usage [Gha]',
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,   'Detailed Land Usage [Gha]',
                                                      chart_name='Detailed Land Usage [Gha]', stacked_bar=True)
                 for serie in series_to_add:
                     new_chart.add_series(serie)
@@ -288,14 +288,14 @@ class LandUseV2Discipline(SoSWrapp):
                 fig = go.Figure()
                 for year in years:
                     # data from the model
-                    agriculture_land = land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years] == year]['Total Agriculture Surface (Gha)'].values[0]  # 5.1 Gha in 2020
-                    forest_land = land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years] == year]['Total Forest Surface (Gha)'].values[0]  # 3.9 Gha in 2020
+                    agriculture_land = land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years]==year]['Total Agriculture Surface (Gha)'].values[0] # 5.1 Gha in 2020
+                    forest_land = land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years]==year]['Total Forest Surface (Gha)'].values[0] # 3.9 Gha in 2020
                     if agriculture_land + forest_land > available_forest_agri_shrub:
                         shrub = 0.
                         agriculture_land = available_forest_agri_shrub * agriculture_land / (agriculture_land + forest_land)
                         forest_land = available_forest_agri_shrub - agriculture_land
                     else:
-                        shrub = available_forest_agri_shrub - agriculture_land - forest_land  # 1.2 Gha in 2020
+                        shrub = available_forest_agri_shrub - agriculture_land - forest_land # 1.2 Gha in 2020
                     # Create figure
                     fig_i = go.Sunburst(
                         labels=["Land", "Ocean", "Habitable land", "Glaciers", "Barren land",

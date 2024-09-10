@@ -212,7 +212,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
                     # section energy consumption
                     section_energy_consumption_df_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.SectionEnergyConsumptionDf)
-                    section_energy_consumption_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]})
+                    section_energy_consumption_df_variable["dataframe_descriptor"].update({section: ('float', [0., 1e30], True) for section in GlossaryCore.SectionDictSectors[sector]}                    )
                     dynamic_outputs.update({f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": section_energy_consumption_df_variable})
 
                     # sections gdp value df
@@ -222,7 +222,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
                 # make sure the namespaces references are good in case shared namespaces were reassociated
                 sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
-                dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc, })
+                dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,})
 
                 # all sections gdp df
 
@@ -288,6 +288,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
                 gross_output_df = pd.concat(df_list, ignore_index=True)
 
+
         else:
             gross_output_df = pd.DataFrame(
                 {GlossaryCore.Years: years, GlossaryCore.GrossOutput: np.linspace(130., 255., len(years))})
@@ -331,6 +332,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # Model execution
         self.macro_model.compute(param)
 
+
         # Store output data
         dict_values = {GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df,
                        GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
@@ -353,7 +355,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.TempOutput: self.macro_model.capital_df[GlossaryCore.TempOutputDf["dataframe_descriptor"].keys()],
                    }
         dict_values.update({
-            f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.macro_model.dict_energy_consumption_detailed[sector]['detailed']  # todo : delete detailed and total
+            f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.macro_model.dict_energy_consumption_detailed[sector]['detailed'] # todo : delete detailed and total
             for sector in self.macro_model.sector_list
         })
 
@@ -700,6 +702,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyInvestmentsValue: 'Energy',
                       GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy sectors', }
 
+
             chart_name = 'Breakdown of Investments'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'investment [trillion $2020]',
@@ -851,6 +854,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             to_plot = [GlossaryCore.EnergyEfficiency]
 
+
             chart_name = 'Capital energy efficiency'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'no unit',
@@ -928,7 +932,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
-
 
 def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impact_on_gdp, damages_to_productivity):
     """ returns dashboard graph for output """

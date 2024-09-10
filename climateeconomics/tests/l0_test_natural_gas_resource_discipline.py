@@ -29,9 +29,9 @@ class NaturalGasModelTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2055
-        self.production_start = 2010
+        self.production_start=2010
 
         data_dir = join(dirname(__file__), 'data')
 
@@ -41,7 +41,7 @@ class NaturalGasModelTestCase(unittest.TestCase):
 
         self.energy_gas_demand_df = self.energy_gas_demand_df.loc[self.energy_gas_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_gas_demand_df = self.energy_gas_demand_df.loc[self.energy_gas_demand_df[GlossaryCore.Years]
+        self.energy_gas_demand_df= self.energy_gas_demand_df.loc[self.energy_gas_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_gas_demand_df,
@@ -51,7 +51,7 @@ class NaturalGasModelTestCase(unittest.TestCase):
                       }
 
     def test_gas_discipline(self):
-        '''
+        ''' 
         Check discipline setup and run
         '''
         name = 'Test'
@@ -88,7 +88,5 @@ class NaturalGasModelTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
         # for graph in graph_list:
         #     graph.to_plotly().show()
-
-
-if __name__ == "__main__":
+if __name__ =="__main__" :
     unittest.main()

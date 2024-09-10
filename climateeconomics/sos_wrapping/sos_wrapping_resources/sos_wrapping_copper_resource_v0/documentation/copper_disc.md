@@ -16,7 +16,7 @@ Stock is yearly updated, it rises if the demand is lower than the extraction, an
 ### Copper data [^1]
 
 |Year |Estimated World Resources [Mt]|World reserves [Mt] | Demand [Mt]|
-| :------- | :---------- | :-----------: | :-----------: |
+| :------- | :---------- | :-----------: | :-----------: | 
 |2021 |3 500|880|26|
 
 
@@ -24,8 +24,8 @@ Stock is yearly updated, it rises if the demand is lower than the extraction, an
 
 ### Sector using gas [^2]
 
-| sector | proportion of the global demand per year in % |
-| :------- | :--------:|
+| sector | proportion of the global demand per year in % | 
+| :------- | :--------:| 
 |Building constructions|50|
 |Infrastructure|22|
 |Transportation	|5|
@@ -34,7 +34,7 @@ Stock is yearly updated, it rises if the demand is lower than the extraction, an
 |Industrial durables|8|
 
 
-### References
+### References 
 
 [^1]: US Geological Survey, Copper - "Hubbert math" (2020) - Retrieved from: 'https://pubs.usgs.gov/periodicals/mcs2022/mcs2022-copper.pdf'
 [^2]: Branco W.Schipper, Hsiu-ChuanLin, Marco A.Meloni, KjellWansleeben, ReinoutHeijungs, Estervan der Voet - Estimating global copper demand until 2100 with regression and stock dynamics - Retrieved from : 'https://www.sciencedirect.com/science/article/pii/S0921344918300041'

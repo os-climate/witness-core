@@ -56,9 +56,9 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
     default_regression_stop = 2005
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
 
-    default_world_consumption_dict = {'exhaust_treatment_system': 0.00008064,
-                                      'jewelry': 0.00005824,
-                                      'chemical_catalysts': 0.00002016,
+    default_world_consumption_dict = {'exhaust_treatment_system': 0.00008064, 
+                                      'jewelry': 0.00005824, 
+                                      'chemical_catalysts': 0.00002016, 
                                       'glass_production': 0.00001792,
                                       'electronics': 0.00000672,
                                       'other': 0.00004032,
@@ -100,7 +100,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_platinum_resource',
                                             'dataframe_descriptor': {
                                                 GlossaryCore.Years: ('float', None, False),
-                                                'platinum': ('float', None, True), }
+                                                'platinum': ('float', None, True),}
                                             },
                'resource_price_data': {'type': 'dataframe', 'unit': 'USD/t', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),
@@ -110,13 +110,13 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_platinum_resource',
                                           'dataframe_descriptor': {
-                                              'platinum_consumption': ('float', None, True), }
+                                              'platinum_consumption': ('float', None, True),}
                                           },
                'production_start': {'type': 'int', 'default': default_regression_start, 'unit': '-',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_platinum_resource'},
                'regression_stop': {'type': 'int', 'default': default_regression_stop, 'unit': '-',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_platinum_resource'},
-               'world_consumption': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': '-', 'default': default_world_consumption_dict, 'visibility': SoSWrapp.SHARED_VISIBILITY,
+               'world_consumption': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '-', 'default': default_world_consumption_dict,'visibility': SoSWrapp.SHARED_VISIBILITY,
                                  'user_level': 2, 'namespace': 'ns_platinum_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': 'Mt'},
                'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'unit': '-'},
@@ -158,11 +158,11 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
 
         for sub_resource_type in sub_resource_list:
             stock_serie = InstanciatedSeries(
-                list(stock_df[GlossaryCore.Years]), (stock_df[sub_resource_type] * 1000 * 1000).values.tolist(), sub_resource_type, InstanciatedSeries.LINES_DISPLAY)
+                list(stock_df[GlossaryCore.Years]), (stock_df[sub_resource_type]*1000*1000).values.tolist(), sub_resource_type, InstanciatedSeries.LINES_DISPLAY)
             stock_chart.add_series(stock_serie)
 
             use_stock_serie = InstanciatedSeries(
-                list(use_stock_df[GlossaryCore.Years]), (use_stock_df[sub_resource_type] * 1000 * 1000).values.tolist(), sub_resource_type, InstanciatedSeries.BAR_DISPLAY)
+                list(use_stock_df[GlossaryCore.Years]), (use_stock_df[sub_resource_type]*1000*1000).values.tolist(), sub_resource_type, InstanciatedSeries.BAR_DISPLAY)
             if len(sub_resource_list) > 1:
                 use_stock_chart.add_series(use_stock_serie)
             use_stock_cumulated_chart.add_series(use_stock_serie)
@@ -229,6 +229,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
             list_of_charts.insert(0, production_chart)
         return list_of_charts
 
+    
     def get_recycling_charts(self, recycling_df, use_stock_df):
         recycling_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} recycling and used stock [t]',
                                                    chart_name=f'{self.resource_name} recycled quantity compared to used quantity through the years',

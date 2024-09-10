@@ -85,7 +85,7 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                  },
                'resource_production_data': {'type': 'dataframe', 'unit': 't', 'optional': True,
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_uranium_resource',
-                                            'dataframe_descriptor': {
+                                            'dataframe_descriptor':{
                                                  GlossaryCore.Years: ('float', None, False),
                                                 'uranium_40': ('float', None, True),
                                                  'uranium_80': ('float', None, True),

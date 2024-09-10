@@ -72,24 +72,24 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # Roundwood demand for industry FAO in the world see fao.org (2020) = 1984 Mm3 ; Total = 1926 + 1984 = 3910 Mm3
     industry_wood_production_2020 = 1984  # Mm3
     # then % of wood for energy = 1926/(1926+1984)= 49.2 %
-    total_wood_production_2020 = energy_wood_production_2020 + industry_wood_production_2020  # 3910 Mm3
-    wood_percentage_for_energy = energy_wood_production_2020 / total_wood_production_2020  # 49.2%
+    total_wood_production_2020 = energy_wood_production_2020 + industry_wood_production_2020 # 3910 Mm3
+    wood_percentage_for_energy = energy_wood_production_2020 / total_wood_production_2020 # 49.2%
     # FAO 2020 : Chips = 262 Mm3, Residues = 233Mm3, Total Wood fuel : 1926 Mm3
     # % of residues  + chips = (233+262)/1926 = 25.7%
     residues_wood_production = 233 + 262  # Mm3
-    residue_percentage = residues_wood_production / total_wood_production_2020  # 12.6%
+    residue_percentage = residues_wood_production / total_wood_production_2020 # 12.6%
     plantation_forest_surface_mha_2020 = 131.
     plantation_forest_supply_Mm3_2020 = 654.
     # Based on FAO, 2020 plantations forest are 131MHa and supply 654Mm3
     # then managed yield or plantation forest yield (which are forest where you invest in for managed wood) is : 654/131 m3/Ha
     # A fraction of the managed wood surface is harvested (and replanted) every year to keep a constant managed forest surface
     # (when managed forest invest = 0).
-    managed_yield = plantation_forest_supply_Mm3_2020 / plantation_forest_surface_mha_2020  # 4.99 m3/ha
+    managed_yield = plantation_forest_supply_Mm3_2020 / plantation_forest_surface_mha_2020 # 4.99 m3/ha
     # However actually roundwood production is not only plantation forests, then the yield is lower and can be computed with 2020 data (FAO)
     # 1.15GHa supply the total roundwood production which is 3910Mm3 in 2020 https://openknowledge.fao.org/server/api/core/bitstreams/5da0482f-d8b2-44e3-9cbb-8e9412b4ea86/content
-    actual_yield = total_wood_production_2020 * 1e6 / (wood_production_surface * 1e9)  # 3.4 m3/ha
+    actual_yield = total_wood_production_2020 * 1e6 / (wood_production_surface * 1e9) # 3.4 m3/ha
     # Deforested surfaces are either replaced by crop or pasture (all trees have been harvested and not replanted) or by tree plantations (for logging, soy, palm oil)
-    unmanaged_yield = (total_wood_production_2020 - plantation_forest_supply_Mm3_2020) * 1e6 / (wood_production_surface * 1e9 - plantation_forest_surface_mha_2020 * 1e6)  # 3.19 m3/ha
+    unmanaged_yield = (total_wood_production_2020 - plantation_forest_supply_Mm3_2020) * 1e6 / (wood_production_surface * 1e9 - plantation_forest_surface_mha_2020 * 1e6) # 3.19 m3/ha
 
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
@@ -110,7 +110,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         'density_unit': 'm^3/ha',
                         'wood_density': wood_density,
                         'residues_density': residues_density,
-                        'residue_calorific_value': 5.61,  # 4.356,
+                        'residue_calorific_value': 5.61, #4.356,
                         'residue_calorific_value_unit': 'kWh/kg',
                         GlossaryCore.ConstructionDelay: construction_delay,
                         'WACC': 0.07,
@@ -265,7 +265,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # -- compute
         inputs_dict = self.get_sosdisc_inputs()
-
+        
         self.forest_model.compute(inputs_dict)
         # Scale production TWh -> PWh
         techno_production = self.forest_model.techno_production[[
@@ -307,7 +307,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'CO2_emissions': self.forest_model.CO2_emissions,
             'forest_lost_capital': self.forest_model.forest_lost_capital
         }
-
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

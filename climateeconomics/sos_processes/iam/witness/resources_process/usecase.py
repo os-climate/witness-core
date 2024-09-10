@@ -44,8 +44,7 @@ AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
-RESOURCE_LIST = ResourceMixModel.RESOURCE_LIST
-
+RESOURCE_LIST=ResourceMixModel.RESOURCE_LIST
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
     ''' type(value) has to be ndarray
@@ -84,6 +83,7 @@ class Study(ClimateEconomicsStudyManager):
     def setup_usecase(self, study_folder_path=None):
 
         setup_data_list = []
+
 
         year_range = self.year_end - self.year_start
         years = arange(self.year_start, self.year_end + 1, 1)

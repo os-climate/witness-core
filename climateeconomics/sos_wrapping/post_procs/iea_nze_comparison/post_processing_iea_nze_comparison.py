@@ -39,7 +39,7 @@ IEA_NAME = IEADataPreparationDiscipline.IEA_NAME
 END_YEAR_NAME = 'Ending year'
 # to plot interpolated IEA data, use SUFFIX_VAR_IEA = IEADataPreparationDiscipline.SUFFIX_VAR_INTERPOLATED
 # to use raw IEA data, use SUFFIX_VAR_IEA = ''
-SUFFIX_VAR_IEA = ''  # IEADataPreparationDiscipline.SUFFIX_VAR_INTERPOLATED
+SUFFIX_VAR_IEA = '' #IEADataPreparationDiscipline.SUFFIX_VAR_INTERPOLATED
 
 
 def get_shared_value(execution_engine, short_name_var: str):
@@ -47,7 +47,6 @@ def get_shared_value(execution_engine, short_name_var: str):
     var_full_name = execution_engine.dm.get_all_namespaces_from_var_name(short_name_var)[0]
     value = execution_engine.dm.get_value(var_full_name)
     return value, var_full_name
-
 
 def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
     """
@@ -148,7 +147,7 @@ def post_processing_filters(execution_engine, namespace):
     chart_filters.append(
         ChartFilter("Charts", chart_list, chart_list, "Charts")
     )
-    chart_filters.append(ChartFilter(END_YEAR_NAME, years_list, year_end, END_YEAR_NAME, multiple_selection=False))  # by default shows all years
+    chart_filters.append(ChartFilter(END_YEAR_NAME, years_list, year_end, END_YEAR_NAME, multiple_selection=False)) # by default shows all years
 
     return chart_filters
 
@@ -159,6 +158,7 @@ def post_processings(execution_engine, namespace, filters):
     """
     logging.debug("post_processing iea nze vs witness")
     year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
+
 
     def get_variable_from_namespace(
         var_name: str, namespace_str: str = None, is_single_occurence: bool = False
@@ -526,9 +526,9 @@ def post_processings(execution_engine, namespace, filters):
             # sum_columns="WITNESS"
         )
         instanciated_charts.append(new_chart)
-
+        
         # SSR: I do not know which one goes here
-        # # "Oil"
+        # # "Oil" 
         # new_chart = create_chart_comparing_WITNESS_and_IEA(
         #     chart_name="Energy from Oil",
         #     y_axis_name="Energy (TWh)",
@@ -588,6 +588,7 @@ def post_processings(execution_engine, namespace, filters):
                 },
             )
             instanciated_charts.append(new_chart)
+
 
     if "Test" not in chart_list:
         # if not in coarse, add primary energy chart

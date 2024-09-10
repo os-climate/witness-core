@@ -33,8 +33,8 @@ if __name__ == '__main__':
     launch_data_pickle_generation(directory)
     os.system(f'git add ./{directory}/*.pkl')
     os.system('git commit -m "regeneration of mda_coarse data pickles"')
-    # os.system('git pull')
-    # os.system('git push')
+    #os.system('git pull')
+    #os.system('git push')
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
         jacobian_target, 'l1_test_gradient_coarse.py', test_names=[
@@ -46,3 +46,4 @@ if __name__ == '__main__':
             'test_06_coarse_renewable_stream_discipline_jacobian',
             'test_07_coarse_fossil_stream_discipline_jacobian',
         ])
+

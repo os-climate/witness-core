@@ -38,7 +38,7 @@ from climateeconomics.glossarycore import GlossaryCore
 class SectorDiscipline(ClimateEcoDiscipline):
     """Generic sector discipline"""
     sector_name = 'UndefinedSector'  # to overwrite
-    prod_cap_unit = 'T$'  # to overwrite if necessary
+    prod_cap_unit = 'T$' # to overwrite if necessary
     NS_SECTORS = GlossaryCore.NS_SECTORS
     DESC_IN = {
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
@@ -119,6 +119,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                         }
                         new_variable_value = pd.DataFrame(section_energy_consumption_percentage_dict)
                         self.set_dynamic_default_values({f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}": new_variable_value})
+
 
     def setup_sos_disciplines(self):
         """setup sos disciplines"""
@@ -201,7 +202,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         inputs = self.get_sosdisc_inputs()
-
+        
         prod_function_fitting = inputs['prod_function_fitting']
         # configure param
         self.model.configure_parameters(inputs, self.sector_name)
@@ -211,7 +212,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         # Store output data
         dict_values = {
             GlossaryCore.ProductivityDfValue: self.model.productivity_df,
-            f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": self.model.capital_df, 'growth_rate_df': self.model.growth_rate_df,
+            f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": self.model.capital_df,'growth_rate_df': self.model.growth_rate_df,
             f"{self.sector_name}.{GlossaryCore.DamageDfValue}": self.model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": self.model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": self.model.production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
@@ -224,6 +225,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if prod_function_fitting:
             dict_values['longterm_energy_efficiency'] = self.model.lt_energy_eff
             dict_values['range_energy_eff_constraint'] = self.model.range_energy_eff_cstrt
+
+        
 
         self.store_sos_outputs_values(dict_values)
 
@@ -344,6 +347,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                     grad_dict[key])
         """
 
+
     def get_chart_filter_list(self):
 
         chart_filters = []
@@ -396,6 +400,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         damage_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}")
         years = list(production_df[GlossaryCore.Years].values)
 
+
         if 'sector output' in chart_list:
             chart_name = f'{self.sector_name} sector economics output'
             new_chart = graph_gross_and_net_output(chart_name=chart_name,
@@ -442,10 +447,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
             to_plot = {}
             if compute_climate_impact_on_gdp:
                 to_plot.update({GlossaryCore.DamagesFromClimate: 'Immediate climate damage (applied to net output)',
-                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damages_to_productivity) + 'applied to gross output)', })
+                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damages_to_productivity) +'applied to gross output)',})
             else:
                 to_plot.update({GlossaryCore.EstimatedDamagesFromClimate: 'Immediate climate damage (estimation not applied to net output)',
-                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damages_to_productivity) + 'applied to gross output)', })
+                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damages_to_productivity) +'applied to gross output)',})
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             all_damages = damage_detailed_df[GlossaryCore.EstimatedDamages].values
 
@@ -563,6 +568,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
                 to_plot = [GlossaryCore.EnergyEfficiency]
 
+
                 chart_name = 'Capital energy efficiency over the years'
 
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
@@ -592,7 +598,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             # loop on all sections of the sector
             for section, section_value in sections_gdp.items():
                 new_series = InstanciatedSeries(
-                    years, list(section_value), f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                    years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
                 new_chart.add_series(new_series)
 
             # have a full label on chart (for long names)
@@ -619,7 +625,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             # loop on all sections of the sector
             for section, section_value in sections_energy_consumption.items():
                 new_series = InstanciatedSeries(
-                    years, list(section_value), f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                    years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
                 new_chart.add_series(new_series)
 
             # have a full label on chart (for long names)

@@ -33,6 +33,7 @@ class ProcessBuilder(BaseProcessBuilder):
     }
 
     COPPER_NAME = CopperResourceDiscipline.resource_name
+   
 
     def get_builders(self):
 
@@ -42,10 +43,10 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_public': ns_scatter,
                    'ns_resource': ns_scatter,
                    }
-
+        
         mods_dict = {'CopperResourceModel': 'climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc.CopperResourceDiscipline'
                      }
-        # chain_builders_resource = self.ee.factory.get_builder_from_module()
+        #chain_builders_resource = self.ee.factory.get_builder_from_module()
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
         # builder_list.append(chain_builders_resource)
         return builder_list

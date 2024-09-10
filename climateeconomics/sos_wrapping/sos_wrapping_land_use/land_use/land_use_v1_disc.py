@@ -114,11 +114,11 @@ class LandUseV1Discipline(SoSWrapp):
                                           },
                LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                            'total surface (Gha)': ('float', None, False), }},
+                                                                            'total surface (Gha)': ('float', None, False),}},
                LandUseV1.DEFORESTED_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                        'forest_surface_evol': ('float', None, False), }},
+                                        'forest_surface_evol': ('float', None, False),}},
                LandUseV1.LAND_USE_CONSTRAINT_REF: {
                    'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE}
                }
@@ -148,11 +148,11 @@ class LandUseV1Discipline(SoSWrapp):
 
     def run(self):
 
-        # -- get inputs
+        #-- get inputs
 
         inputs_dict = self.get_sosdisc_inputs()
 
-        # -- compute
+        #-- compute
         land_demand_df = deepcopy(inputs_dict['land_demand_df'])
         total_food_land_surface = deepcopy(
             inputs_dict['total_food_land_surface'])
@@ -169,13 +169,13 @@ class LandUseV1Discipline(SoSWrapp):
             LandUseV1.LAND_SURFACE_FOR_FOOD_DF: self.land_use_model.land_surface_for_food_df
         }
 
-        # -- store outputs
+        #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
-        """
-        Compute jacobian for each coupling variable
-        gradient of coupling variable to compute:
+        """ 
+        Compute jacobian for each coupling variable 
+        gradient of coupling variable to compute: 
         land_demand_objective_df wrt land_demand_df
         """
         inputs_dict = self.get_sosdisc_inputs()
@@ -206,27 +206,27 @@ class LandUseV1Discipline(SoSWrapp):
         for objective_column in land_demand_constraint_columns:
             for demand_column in land_demand_df_columns:
                 self.set_partial_derivative_for_other_types(
-                    (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column), (LandUseV1.LAND_DEMAND_DF, demand_column), model.get_derivative(objective_column, demand_column),)
+                    (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column),  (LandUseV1.LAND_DEMAND_DF, demand_column), model.get_derivative(objective_column, demand_column),)
 
             self.set_partial_derivative_for_other_types(
-                (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column), (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_land_demand_constraint_d_food_land_surface(objective_column),)
+                (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column),  (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_land_demand_constraint_d_food_land_surface(objective_column),)
 
             self.set_partial_derivative_for_other_types(
-                (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column), (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_demand_constraint_d_deforestation_surface(objective_column),)
+                (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column),  (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_demand_constraint_d_deforestation_surface(objective_column),)
 
         d_surface_d_population = model.d_land_surface_for_food_d_food_land_surface()
         self.set_partial_derivative_for_other_types(
-            (LandUseV1.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), d_surface_d_population)
+            (LandUseV1.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),  (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), d_surface_d_population)
         for objective_column in land_surface_df_columns:
             self.set_partial_derivative_for_other_types(
-                (LandUseV1.LAND_SURFACE_DF, objective_column), (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_agriculture_surface_d_food_land_surface(objective_column),)
+                (LandUseV1.LAND_SURFACE_DF, objective_column),  (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_agriculture_surface_d_food_land_surface(objective_column),)
 
             for demand_column in land_demand_df_columns:
                 self.set_partial_derivative_for_other_types(
-                    (LandUseV1.LAND_SURFACE_DF, objective_column), (LandUseV1.LAND_DEMAND_DF, demand_column), model.d_constraint_d_surface(objective_column, demand_column),)
+                    (LandUseV1.LAND_SURFACE_DF, objective_column),  (LandUseV1.LAND_DEMAND_DF, demand_column), model.d_constraint_d_surface(objective_column, demand_column),)
 
             self.set_partial_derivative_for_other_types(
-                (LandUseV1.LAND_SURFACE_DF, objective_column), (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_surface_d_deforestation_surface(objective_column),)
+                (LandUseV1.LAND_SURFACE_DF, objective_column),  (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_surface_d_deforestation_surface(objective_column),)
 
     def get_chart_filter_list(self):
 

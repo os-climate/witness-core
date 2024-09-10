@@ -29,6 +29,7 @@ from climateeconomics.glossarycore import GlossaryCore
 class TempChangeDiscipline(SoSWrapp):
     "     Temperature evolution"
 
+
     # ontology information
     _ontology_data = {
         'label': 'Temperature Change DICE Model',
@@ -50,14 +51,14 @@ class TempChangeDiscipline(SoSWrapp):
         'init_temp_atmo': {'type': 'float', 'default': 0.85},
         'eq_temp_impact': {'type': 'float', 'default': 3.1},
         'init_forcing_nonco': {'type': 'float', 'default': 0.5},
-        'hundred_forcing_nonco': {'type': 'float', 'default': 1},
+        'hundred_forcing_nonco': {'type': 'float', 'default': 1 },
         'climate_upper': {'type': 'float', 'default': 0.1005},
         'transfer_upper': {'type': 'float', 'default': 0.088},
         'transfer_lower': {'type': 'float', 'default': 0.025},
         'forcing_eq_co2': {'type': 'float', 'default': 3.6813},
         'lo_tocean': {'type': 'float', 'default': -1},
         'up_tatmo': {'type': 'float', 'default': 12},
-        'up_tocean': {'type': 'float', 'default': 20},
+        'up_tocean': {'type': 'float', 'default' : 20},
         GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                            }}
 

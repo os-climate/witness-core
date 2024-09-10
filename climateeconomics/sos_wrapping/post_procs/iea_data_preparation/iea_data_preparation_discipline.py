@@ -138,7 +138,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
     # store list of input variables for later use
     variables_to_store = list(desc_in_updated.keys())
     # create list of units by hand as very generic in Glossary TODO use glossary later
-    list_units = ['Gt', 'T$', 'millions of people', '$/tCO2Eq', 'TWh', '°C', 'Gha', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', '$/MWh', '$/MWh']
+    list_units = ['Gt', 'T$', 'millions of people', '$/tCO2Eq', 'TWh', '°C', 'Gha', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh','TWh','TWh', '$/MWh', '$/MWh']
     variables_to_store_with_units = dict(zip(variables_to_store, list_units))
 
     DESC_IN = {
@@ -229,7 +229,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
                     unit = self.preprocess_column_name_to_get_unit(col)
             # preprocess name of key to obtain unit of variable
             yaxis_title = unit
-            if yaxis_title is None:
+            if yaxis_title is None :
                 yaxis_title = "Unit undefined"
 
             fig.update_layout(

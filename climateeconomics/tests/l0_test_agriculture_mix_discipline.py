@@ -31,7 +31,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
@@ -56,6 +56,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         self.white_meat_percentage = pd.DataFrame({
                                 GlossaryCore.Years: self.years,
                                 'white_meat_percentage': white_meat_percentage})
+
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -143,13 +144,13 @@ class AgricultureMixModelTestCase(unittest.TestCase):
             {GlossaryCore.Years: self.years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4, 'syngas': 0.0, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}": 0.0, 'crude oil': 0.02533})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
+                     29.01,  34.05,   39.08,  44.69,   50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: func(self.years)})
-
+                    
     def test_agriculture_mix_discipline(self):
         '''
         Check discipline setup and run
@@ -160,7 +161,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         ns_dict = {'ns_agriculture': f'{test_name}',
                    'ns_energy_study': f'{test_name}',
                    'ns_public': f'{test_name}',
-                   GlossaryCore.NS_WITNESS: f'{test_name}', }
+                   GlossaryCore.NS_WITNESS: f'{test_name}',}
 
         ee.ns_manager.add_ns_def(ns_dict)
 

@@ -28,7 +28,7 @@ class Study(StudySubOptim):
                          execution_engine=execution_engine)
 
     def setup_usecase(self, study_folder_path=None):
-
+        
         data_witness = super().setup_usecase()
 
         self.study_name += '_no_damage_low_tax'

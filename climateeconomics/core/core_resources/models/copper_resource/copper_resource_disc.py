@@ -54,19 +54,21 @@ class CopperResourceDiscipline(ResourceDiscipline):
     default_stock_start = 780.0
     default_recycled_rate = 0.5
     default_lifespan = 30
-    default_sectorisation_dict = {'power_generation': 0.000213421 / 24.987, }  # 9.86175
-    default_resource_max_price = 50000  # roughly 5 times the current price (10057 $/t)
+    default_sectorisation_dict = {'power_generation': 0.000213421 / 24.987,} # 9.86175
+    default_resource_max_price = 50000 #roughly 5 times the current price (10057 $/t)
     resource_name = CopperResourceModel.resource_name
 
     prod_unit = 'Mt'
     stock_unit = 'Mt'
     price_unit = '$/t'
 
-    # Get default data for resource
-    default_resource_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_data.csv'))
+    #Get default data for resource
+    default_resource_data=pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_data.csv'))
     default_resource_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
     default_resource_price_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_price_data.csv'))
     default_resource_consumed_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
+
+
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '-', 'default': default_resource_data,
                                  'user_level': 2, 'namespace': 'ns_copper_resource',
@@ -105,7 +107,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
                'stock_start': {'type': 'float', 'default': default_stock_start, 'user_level': 2, 'unit': 'Mt', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
                'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'user_level': 2, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
                'lifespan': {'type': 'int', 'default': default_lifespan, 'user_level': 2, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'sectorisation': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': '-', 'default': default_sectorisation_dict, 'visibility': SoSWrapp.SHARED_VISIBILITY,
+               'sectorisation': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '-', 'default': default_sectorisation_dict,'visibility': SoSWrapp.SHARED_VISIBILITY,
                                  'user_level': 2, 'namespace': 'ns_copper_resource'},
                'resource_max_price': {'type': 'float', 'default': default_resource_max_price, 'user_level': 2, 'unit': '$/t'},
                }
@@ -121,7 +123,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
             'type': 'dataframe', 'unit': 'Mt'},
         'predictable_production': {
             'type': 'dataframe', 'unit': 'Mt'},
-        'recycled_production': {
+        'recycled_production' : {
             'type': 'dataframe', 'unit': 'Mt'}
     }
 
@@ -131,3 +133,6 @@ class CopperResourceDiscipline(ResourceDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.resource_model = CopperResourceModel(self.resource_name)
         self.resource_model.configure_parameters(inputs_dict)
+
+
+

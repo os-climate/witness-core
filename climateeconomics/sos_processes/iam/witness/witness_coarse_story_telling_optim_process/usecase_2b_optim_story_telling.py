@@ -45,7 +45,7 @@ class Study(ClimateEconomicsStudyManager):
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step, execution_engine=execution_engine, sub_usecase='uc2b')
+            self.year_start, self.year_end, self.time_step, execution_engine=execution_engine,  sub_usecase='uc2b')
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
@@ -65,7 +65,7 @@ class Study(ClimateEconomicsStudyManager):
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
                              f'{ns}.cache_type': 'SimpleCache',
-                             f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,  # GlossaryCore.UsableCapitalObjectiveName,
+                             f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR, #GlossaryCore.UsableCapitalObjectiveName,
                              f'{ns}.{self.optim_name}.eq_constraints': [],
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 

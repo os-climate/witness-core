@@ -40,7 +40,7 @@ class OrderOfMagnitude():
 
 class Crop():
     """
-    Crop model class
+    Crop model class 
     """
 
     KM_2_unit = 'km2'
@@ -256,7 +256,7 @@ class Crop():
         self.lifetime = inputs_dict[GlossaryEnergy.LifetimeName]
 
     def compute(self):
-        '''
+        ''' 
         Computation methods
         Compute the different output : updated diet, surface used (Gha), surface used (%)
 
@@ -449,7 +449,7 @@ class Crop():
         temperature = self.temperature_df[GlossaryCore.TempAtmo].values
         # Compute the difference in temperature wrt 2020 reference
         temp = temperature - self.temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
-        # Compute reduction in productivity due to increase in temperature
+        # Compute reduction in productivity due to increase in temperature 
         pdctivity_reduction = self.param_a * temp ** 2 + self.param_b * temp
         self.prod_reduction = pdctivity_reduction
         self.productivity_evolution = pd.DataFrame(
@@ -475,7 +475,7 @@ class Crop():
         self.cost_details[GlossaryCore.InvestmentsValue] = compute_func_with_exp_min(
             invest_inputs, self.min_value_invest)
 
-        # CAPEX
+        # CAPEX 
         capex_init = self.check_capex_unity(self.techno_infos_dict)
         self.cost_details['Capex ($/MWh)'] = capex_init * np.ones(len(self.cost_details[GlossaryCore.InvestmentsValue]))
 
@@ -615,9 +615,9 @@ class Crop():
     def compute_aging_distribution_production(self):
         '''
         Compute the aging distribution production of primary energy for years of study
-        Start with the initial distribution and add a year on the age each year
+        Start with the initial distribution and add a year on the age each year 
         Add also the yearly production regarding the investment
-        All productions older than the lifetime are removed from the dataframe
+        All productions older than the lifetime are removed from the dataframe  
         '''
         # To break the object link with initial distrib
         # Creating a DataFrame to separate the initial distribution of production from the rest
@@ -727,8 +727,8 @@ class Crop():
 
     def compute_carbon_emissions(self):
         '''
-        Compute the carbon emissions from the technology taking into account
-        CO2 from production + CO2 from primary resources
+        Compute the carbon emissions from the technology taking into account 
+        CO2 from production + CO2 from primary resources 
         '''
         if 'CO2_from_production' not in self.techno_infos_dict:
             self.CO2_emissions['production'] = self.get_theoretical_co2_prod(
@@ -813,7 +813,7 @@ class Crop():
             self.N2O_land_emissions['emitted_N2O_evol_cumulative'] += self.N2O_land_emissions_detailed[f'{food} (Gt)']
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        '''
+        ''' 
         Get the theoretical CO2 production for a given technology,
         '''
         return 0.0
@@ -824,7 +824,7 @@ class Crop():
         '''
         return 0.0
 
-    # Gradient #########
+    ####### Gradient #########
 
     def d_land_surface_d_population(self, column_name_Gha):
         """
@@ -840,7 +840,7 @@ class Crop():
         column_name = self.column_dict[column_name_Gha]
         d_land_surface_d_pop_before = np.identity(
             number_of_values) * self.updated_diet_df[column_name].values * self.kg_to_m2_dict[column_name] / 1e7
-        # Add climate change impact
+        # Add climate change impact 
         d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction)
 
         return (d_land_surface_d_pop)
@@ -853,11 +853,11 @@ class Crop():
 
         dghg(fish)/dpop = ghg_per_kg(fish)/ 10^12 * kg(fish) * 10^6
         '''
-        dghg_dpop_co2 = np.diag(self.co2_emissions_per_kg[GlossaryCore.Fish] *
+        dghg_dpop_co2 = np.diag(self.co2_emissions_per_kg[GlossaryCore.Fish] * \
                                 self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
-        dghg_dpop_ch4 = np.diag(self.ch4_emissions_per_kg[GlossaryCore.Fish] *
+        dghg_dpop_ch4 = np.diag(self.ch4_emissions_per_kg[GlossaryCore.Fish] * \
                                 self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
-        dghg_dpop_n2o = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] *
+        dghg_dpop_n2o = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] * \
                                 self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
 
         return {GlossaryCore.CO2: dghg_dpop_co2,
@@ -873,13 +873,13 @@ class Crop():
         dghg(fish)/dkcal(fish) = 1/kcal_per_kg(fish) * dghg(fish)/dkg(fish) = ghg_per_kg(fish)/ 10^12/kcal_per_kg(fish) * population * 10^6
         '''
         dco2_dkcal_fish = np.diag(
-            self.co2_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] *
+            self.co2_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
             self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
         dch4_dkcal_fish = np.diag(
-            self.ch4_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] *
+            self.ch4_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
             self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
         dn2o_dkcal_fish = np.diag(
-            self.n2o_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] *
+            self.n2o_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
             self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
 
         return {GlossaryCore.CO2: dco2_dkcal_fish,
@@ -908,7 +908,7 @@ class Crop():
         d_productivity_d_temperature = idty * (2 * a * temp - 2 * a * temp_zero + b)
         # Add derivative wrt t0: 2at0 -2at -b
         d_productivity_d_temperature[:, 0] += 2 * a * temp_zero - 2 * a * temp - b
-        # Step 2:d_climate_d_productivity for each t: land = land_before * (1 - productivity)
+        # Step 2:d_climate_d_productivity for each t: land = land_before * (1 - productivity) 
         d_land_d_productivity = -idty * land_before
         d_food_land_surface_d_temperature = d_land_d_productivity.dot(d_productivity_d_temperature)
 

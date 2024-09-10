@@ -45,7 +45,7 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
         '''
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
-
+    
         self.lifespan = 5
 
         data_dir = join(dirname(__file__), 'data')
@@ -105,7 +105,7 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_platinum_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
@@ -114,9 +114,9 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.predictable_production',
                                      f'{self.name}.{self.model_name}.recycled_production'
                                      ])
-
+        
     def test_platinum_resource_damand_variable_analytic_grad(self):
-
+        
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'platinum_resource'
@@ -150,7 +150,7 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_platinum_demand_variable_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',

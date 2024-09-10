@@ -70,20 +70,20 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_natural_gas_resource': f'{ns_scatter}.{self.NATURAL_GAS_NAME}',
                    'ns_uranium_resource': f'{ns_scatter}.{self.URANIUM_NAME}',
                    'ns_copper_resource': f'{ns_scatter}.{self.COPPER_NAME}',
-                   # 'ns_platinum_resource': f'{ns_scatter}.{self.PLATINUM_NAME}',
+                   #'ns_platinum_resource': f'{ns_scatter}.{self.PLATINUM_NAME}',
                    'ns_public': self.ee.study_name,
                    'ns_resource': ns_scatter,
                    }
-        # 'oil_availability_and_price': f'{ns_scatter}.oil.oil_availability_and_price',
+        #'oil_availability_and_price': f'{ns_scatter}.oil.oil_availability_and_price',
         mods_dict = {f'Resources.{self.COAL_NAME}': 'climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc.CoalResourceDiscipline',
                      f'Resources.{self.OIL_NAME}': 'climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc.OilResourceDiscipline',
                      f'Resources.{self.NATURAL_GAS_NAME}': 'climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc.NaturalGasResourceDiscipline',
                      f'Resources.{self.URANIUM_NAME}': 'climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc.UraniumResourceDiscipline',
                      f'Resources.{self.COPPER_NAME}': 'climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc.CopperResourceDiscipline',
-                     # f'Resources.{self.PLATINUM_NAME}': 'climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc.PlatinumResourceDiscipline',
+                     #f'Resources.{self.PLATINUM_NAME}': 'climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc.PlatinumResourceDiscipline',
                      'Resources': 'climateeconomics.core.core_resources.resource_mix.resource_mix_disc.ResourceMixDiscipline'
                      }
-        # chain_builders_resource = self.ee.factory.get_builder_from_module()
+        #chain_builders_resource = self.ee.factory.get_builder_from_module()
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         # builder_list.append(chain_builders_resource)
         return builder_list

@@ -44,16 +44,23 @@ class TestUseCases(unittest.TestCase):
         self.maxDiff = None
 
     def test_01_dump_and_retrieve_array(self):
-        array_1 = np.array([1, 7, 8, 10])
-        array_1_dict = dump_value_into_dict(array_1, 'array')
-        array_1_retrieved = retrieve_input_from_dict(array_1_dict, 'array')
-        assert_array_equal(array_1, array_1_retrieved)
+        array_1 = np.array([1,7,8,10])
+        array_1_dict = dump_value_into_dict(array_1,'array')
+        array_1_retrieved = retrieve_input_from_dict(array_1_dict,'array')
+        assert_array_equal(array_1,array_1_retrieved)
 
     def test_02_dump_and_retrieve_dataframe(self):
-        dataframe_1 = pd.DataFrame([[1, 2], [3, 4]], columns=['column1', 'column2'], index=['row1', 'row2'])
-        dataframe_1_dict = dump_value_into_dict(dataframe_1, 'dataframe')
-        dataframe_1_retrieved = retrieve_input_from_dict(dataframe_1_dict, 'dataframe')
-        assert_frame_equal(dataframe_1, dataframe_1_retrieved)
+        dataframe_1 = pd.DataFrame([[1,2],[3,4]],columns=['column1','column2'],index=['row1','row2'])
+        dataframe_1_dict = dump_value_into_dict(dataframe_1,'dataframe')
+        dataframe_1_retrieved = retrieve_input_from_dict(dataframe_1_dict,'dataframe')
+        assert_frame_equal(dataframe_1,dataframe_1_retrieved)
+
 
     def test_03_dump_usecases_data_into_json_file(self):
         dump_json_for_database_energy(self.processes_repo)
+
+
+
+
+
+

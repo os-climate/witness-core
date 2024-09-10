@@ -31,11 +31,10 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
-
     def get_builders(self):
 
         ns_macro = self.ee.study_name + '.Macroeconomics'
-        ns_scatter = self.ee.study_name
+        ns_scatter = self.ee.study_name 
 
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_MACRO: ns_macro,
@@ -52,14 +51,14 @@ class ProcessBuilder(BaseProcessBuilder):
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'economics_sector_process')
 
-        mods_dict = {'Population': 'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline',
+        mods_dict = {'Population':'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline',
                      'LaborMarket': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.labor_market.labor_market_discipline.LaborMarketDiscipline',
-                     'Utility': 'climateeconomics.sos_wrapping.sos_wrapping_witness.sectorized_utility.sectorized_utility_discipline.SectorizedUtilityDiscipline',
-                     'Consumption': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.consumption_discipline.ConsumptionDiscipline',
+                     'Utility':'climateeconomics.sos_wrapping.sos_wrapping_witness.sectorized_utility.sectorized_utility_discipline.SectorizedUtilityDiscipline',
+                     'Consumption':'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.consumption_discipline.ConsumptionDiscipline',
                      'SectorsInvestDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invest_discipline.SectorsRedistributionInvestsDiscipline',
                      'SectorsEnergyDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_energy.sectors_redistribution_energy_discipline.SectorsRedistributionEnergyDiscipline',
                      GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline'}
-
+                           
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
         chain_builders.append(builder_list)

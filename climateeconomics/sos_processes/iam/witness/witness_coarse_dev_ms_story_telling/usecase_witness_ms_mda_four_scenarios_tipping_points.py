@@ -70,6 +70,8 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
+
+
         scenario_dict = {
             self.USECASE2: usecase2,
             self.USECASE4_TP1: usecase4,

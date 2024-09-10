@@ -97,7 +97,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
                 (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
-                np.diag(sector_share_invests / 100.)
+                np.diag(sector_share_invests/ 100.)
             )
 
             self.set_partial_derivative_for_other_types(
@@ -173,3 +173,4 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
+

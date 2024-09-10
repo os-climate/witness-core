@@ -76,7 +76,7 @@ class UtilityDiscTest(unittest.TestCase):
                        f'{self.name}.initial_raw_energy_price': energy_price[0],
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
-                       f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price, }
+                       f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,}
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -87,5 +87,5 @@ class UtilityDiscTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass

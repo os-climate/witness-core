@@ -1,6 +1,6 @@
 # How to Contribute?
 
-First off, thanks for considering contributing!
+First off, thanks for considering contributing! 
 
 All types of contributions are encouraged and valued.
 

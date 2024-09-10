@@ -85,7 +85,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
                         'adj_backstop_cost': data,
                         'abatecost': data,
                         'marg_abatecost': data,
-                        'carbon_price': data, },
+                        'carbon_price': data,},
                        index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
 

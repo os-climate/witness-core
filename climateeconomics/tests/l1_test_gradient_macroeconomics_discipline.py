@@ -186,7 +186,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.checked_outputs = [
             f'{self.name}.{self.model_name}.{GlossaryCore.WorkforceDfValue}',
-            # f'{self.name}.{GlossaryCore.TempOutput}',
+            #f'{self.name}.{GlossaryCore.TempOutput}',
             f'{self.name}.{GlossaryCore.DamageDfValue}',
             f'{self.name}.{GlossaryCore.EconomicsDfValue}',
             f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}',
@@ -222,7 +222,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_macroeconomics_discipline.pkl',
@@ -263,7 +263,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
@@ -298,7 +298,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_grad_gigantic_invest.pkl',
@@ -417,7 +417,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 
         self.check_jacobian(location=dirname(__file__),
@@ -447,7 +447,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            # ().show()
+            #().show()
             pass
 
         self.check_jacobian(location=dirname(__file__),
@@ -458,6 +458,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=self.checked_outputs)
 
     def test_gigantic_energy_production_wo_compute_gdp(self):
+
 
         energy_supply = pd.DataFrame.copy(self.energy_supply_df)
         energy_prod = energy_supply[GlossaryCore.TotalProductionValue] * 1.035 ** np.arange(self.nb_per)
@@ -483,7 +484,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 
         self.check_jacobian(location=dirname(__file__),
@@ -499,13 +500,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         import pickle
         with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
             dict_input_optimized_point = pickle.load(f)
-
+        
         def find_var_in_dict(varname: str):
             try:
                 varname_in_dict_optimized = list(filter(lambda x: varname in x, dict_input_optimized_point.keys()))[0]
                 var_value = dict_input_optimized_point[varname_in_dict_optimized]
                 return var_value
-            except IndexError:
+            except IndexError :
                 print(varname)
 
         for checked_input in list(self.inputs_dict.keys()) + self.checked_inputs:
@@ -531,7 +532,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 
         self.check_jacobian(location=dirname(__file__),

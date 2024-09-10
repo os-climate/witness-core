@@ -60,7 +60,7 @@ class ResourceDiscipline(SoSWrapp):
 
     DESC_IN = {'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                    'dynamic_dataframe_columns': True, },
+                                    'dynamic_dataframe_columns': True,},
                GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
 
@@ -71,7 +71,7 @@ class ResourceDiscipline(SoSWrapp):
 
     _maturity = 'Research'
 
-    def __init__(self, sos_name, logger: logging.Logger):
+    def __init__(self, sos_name, logger:logging.Logger):
         super().__init__(sos_name=sos_name, logger=logger)
         self.resource_model = None
 
@@ -89,6 +89,8 @@ class ResourceDiscipline(SoSWrapp):
 
         self.resource_model.compute()
 
+       
+
         outputs_dict = {
             'resource_stock': self.resource_model.resource_stock,
             'resource_price': self.resource_model.resource_price,
@@ -97,8 +99,9 @@ class ResourceDiscipline(SoSWrapp):
             'recycled_production': self.resource_model.recycled_production
         }
 
-        # -- store outputs
+        #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
+        
 
     def compute_sos_jacobian(self):
         """
@@ -135,7 +138,7 @@ class ResourceDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 ('recycled_production', sub_resource_type),
                 ('resources_demand', self.resource_name), grad_recycling[sub_resource_type])
-
+              
         # # ------------------------------------------------
         # # Prod resource gradient did not depend on demand
 
@@ -191,7 +194,7 @@ class ResourceDiscipline(SoSWrapp):
 
         if 'Recycling' in chart_list and number_of_subtypes < 2:
             recycling_df = outputs_dict['recycled_production']
-            # production_df = outputs_dict['predictable_production']
+            #production_df = outputs_dict['predictable_production']
             use_stock_df = outputs_dict['use_stock']
             # use_stock_df = use_stock_df.loc[use_stock_df[GlossaryCore.Years] >= year_start]
             # use_stock_df = use_stock_df.loc[use_stock_df[GlossaryCore.Years] <= year_end]

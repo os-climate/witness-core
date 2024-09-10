@@ -22,7 +22,6 @@ from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 FOSSIL_DEFAULT_TECHNO_DICT = FossilSimpleTechnoDiscipline.techno_infos_dict_default
 
-
 class FossilTechnoInfos(SoSWrapp):
     """
     Utility discipline to analyze Sensitivity Analysis demonstrator outputs in Witness Coarse Storytelling MDA.

@@ -999,3 +999,5 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 52,0.000,0.000,0.007,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/generic.py:10797(max)
 26,0.000,0.000,0.007,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/groupby/grouper.py:639(_codes_and_uniques)
 3,0.000,0.000,0.007,0.002,/usr/local/sostrades/witness-energy/energy_models/core/energy_mix/energy_mix.py:320(compute_price_after_carbon_tax)
+
+

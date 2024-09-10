@@ -68,10 +68,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            coupling_name, after_name=self.ee.study_name, clean_existing=True)
+            coupling_name, after_name=self.ee.study_name, clean_existing = True)
 
         ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{extra_name}',
-                   # 'ns_public': f'{self.ee.study_name}',
+                   #'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{extra_name}.{INVEST_DISC_NAME}', }
@@ -81,6 +81,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         coupling_builder = self.ee.factory.create_builder_coupling(
             coupling_name)
         coupling_builder.set_builder_info('cls_builder', chain_builders)
-        # coupling_builder.set_builder_info('with_data_io', True)
+        #coupling_builder.set_builder_info('with_data_io', True)
 
         return coupling_builder

@@ -99,7 +99,7 @@ class DataStudy():
         global_data_dir = join(Path(__file__).parents[3], 'data')
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
-        # population_df.index = years
+        #population_df.index = years
         witness_input[self.study_name + f'.{GlossaryCore.PopulationDfValue}'] = population_df
         working_age_population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
@@ -160,6 +160,7 @@ class DataStudy():
         df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},
                                                            index=[2017, 2018, 2019])
+
 
         CO2_emitted_land = pd.DataFrame({GlossaryCore.Years: years})
         # GtCO2
@@ -339,6 +340,7 @@ class DataStudy():
         list_weight.append(-0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
+
 
         # -------------------------------------------------
         list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital])

@@ -39,16 +39,15 @@ class OrderOfMagnitude():
         # MILLION_TONNES: 10**6
     }
 
-
 class UraniumResourceModel(ResourceModel):
     """
     Resource pyworld3
     General implementation of a resource pyworld3, to be inherited by specific models for each type of resource
     """
 
-    resource_name = ResourceGlossary.Uranium['name']
+    resource_name=ResourceGlossary.Uranium['name']
 
-    # Units conversion
+    #Units conversion
     oil_barrel_to_tonnes = 6.84
     bcm_to_Mt = 1 / 1.379
     kU_to_Mt = 10 ** -6
@@ -56,8 +55,8 @@ class UraniumResourceModel(ResourceModel):
     conversion_factor = 1 / kU_to_Mt
 
     def convert_demand(self, demand):
-        self.resource_demand = demand
-        self.resource_demand[self.resource_name] = demand[self.resource_name] * self.conversion_factor
+        self.resource_demand=demand
+        self.resource_demand[self.resource_name]=demand[self.resource_name]*self.conversion_factor
 
     def configure_parameters(self, inputs_dict):
         self.regression_start = inputs_dict['regression_start']
@@ -80,7 +79,7 @@ class UraniumResourceModel(ResourceModel):
             {GlossaryCore.Years: self.years})
         self.use_stock = pd.DataFrame(
             {GlossaryCore.Years: self.years})
-
+        
         '''
         Set the index as the years
         '''
@@ -90,6 +89,7 @@ class UraniumResourceModel(ResourceModel):
         self.resource_stock.index = self.resource_stock[GlossaryCore.Years]
         self.resource_price.index = self.resource_price[GlossaryCore.Years]
         self.use_stock.index = self.use_stock[GlossaryCore.Years]
+
 
     def configure_parameters_update(self, inputs_dict):
         self.regression_start = inputs_dict['regression_start']
@@ -114,18 +114,18 @@ class UraniumResourceModel(ResourceModel):
             year = self.predictable_production.loc[idx, GlossaryCore.Years]
             if year > current_year:
                 prod_u40_current_year = self.predictable_production.loc[
-                    self.predictable_production[GlossaryCore.Years] == current_year, 'uranium_40'].values[0]
+                    self.predictable_production[GlossaryCore.Years]==current_year, 'uranium_40'].values[0]
                 prod_u40_regression_start = self.predictable_production.loc[
-                    self.predictable_production[GlossaryCore.Years] == self.regression_start, 'uranium_40'].values[0]
+                    self.predictable_production[GlossaryCore.Years]==self.regression_start, 'uranium_40'].values[0]
                 self.predictable_production.loc[idx, 'uranium_80'] =\
                     production_sample.loc[idx - (current_year - self.production_start), 'uranium_40'] * (
-                    1243900 - 744500) / (prod_u40_current_year -
+                    1243900 - 744500) / (prod_u40_current_year - \
                                          prod_u40_regression_start + 744500)
                 self.predictable_production.loc[idx, 'uranium_130'] =\
                     production_sample.loc[idx - (current_year - self.production_start), 'uranium_40'] * (
-                    3791700 - 1243900) / (prod_u40_current_year -
+                    3791700 - 1243900) / (prod_u40_current_year - \
                                           prod_u40_regression_start + 744500)
                 self.predictable_production.loc[idx, 'uranium_260'] =\
                     production_sample.loc[idx - (current_year - self.production_start), 'uranium_40'] * (
-                    4723700 - 3791700) / (prod_u40_current_year -
+                    4723700 - 3791700) / (prod_u40_current_year - \
                                           prod_u40_regression_start + 744500)

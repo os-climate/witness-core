@@ -76,7 +76,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline.pkl',
-                            local_data=disc.local_data, discipline=disc, inputs=self.checked_inputs,
+                            local_data = disc.local_data,discipline=disc, inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_2(self):
@@ -113,7 +113,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline2.pkl', discipline=disc, local_data=disc.local_data, inputs=self.checked_inputs,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_3(self):
@@ -150,11 +150,11 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline3.pkl', discipline=disc, local_data=disc.local_data, inputs=self.checked_inputs,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def _test_problematic_optim_point(self):
-        # self.override_dump_jacobian = 1
+        #self.override_dump_jacobian = 1
         self.model_name = 'policy'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',

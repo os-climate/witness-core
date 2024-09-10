@@ -46,7 +46,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         climateeconomics/sos_processes/iam/witness/witness_optim_sub_process/process.py
         There is no namespace defined for the input invest_mix variable in independendant_invest_disc. This is done in
         order to keep all the witness coarse tests unchanged.
-        In this new process, invest_mix is now an output of discipline InvestmentsProfileBuilderDisc.
+        In this new process, invest_mix is now an output of discipline InvestmentsProfileBuilderDisc. 
         In InvestmentsProfileBuilderDisc, invest_mix is defined under the namespace 'ns_invest_disc'.
         Since the coeff_i are floats (and not dataframes), there is no need to introduce the design_variables discipline
         which is therefore removed
@@ -57,7 +57,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         func_manager_name = "FunctionsManager"
         extra_name = 'WITNESS'
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
-        self.techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+        self.techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
 
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness',
@@ -92,10 +92,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            coupling_name, after_name=self.ee.study_name, clean_existing=True)
+            coupling_name, after_name=self.ee.study_name, clean_existing = True)
 
         ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{extra_name}',
-                   # 'ns_public': f'{self.ee.study_name}',
+                   #'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{extra_name}.{INVEST_DISC_NAME}', }

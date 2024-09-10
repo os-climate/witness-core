@@ -30,9 +30,9 @@ class OilModelTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
-        self.production_start = 1990
+        self.production_start=1990
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_oil_demand_df = read_csv(
@@ -41,7 +41,7 @@ class OilModelTestCase(unittest.TestCase):
 
         self.energy_oil_demand_df = self.energy_oil_demand_df.loc[self.energy_oil_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_oil_demand_df = self.energy_oil_demand_df.loc[self.energy_oil_demand_df[GlossaryCore.Years]
+        self.energy_oil_demand_df= self.energy_oil_demand_df.loc[self.energy_oil_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_oil_demand_df,
@@ -50,7 +50,7 @@ class OilModelTestCase(unittest.TestCase):
                       'production_start': self.production_start}
 
     def test_oil_discipline(self):
-        '''
+        ''' 
         Check discipline setup and run
         '''
         name = 'Test'
@@ -86,7 +86,5 @@ class OilModelTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
         # for graph in graph_list:
         #    graph.to_plotly().show()
-
-
-if __name__ == "__main__":
+if __name__ =="__main__" :
     unittest.main()

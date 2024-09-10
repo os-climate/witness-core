@@ -29,18 +29,18 @@ class PlatinumModelTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
-        self.production_start = 1995
+        self.production_start=1995
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_platinum_demand_df = read_csv(
-            join(data_dir, 'all_demand_variable.csv'))  # all_demand_from_energy_mix.csv
+            join(data_dir, 'all_demand_variable.csv')) # all_demand_from_energy_mix.csv
         # part to adapt lenght to the year range
-
+       
         self.energy_platinum_demand_df = self.energy_platinum_demand_df.loc[self.energy_platinum_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_platinum_demand_df = self.energy_platinum_demand_df.loc[self.energy_platinum_demand_df[GlossaryCore.Years]
+        self.energy_platinum_demand_df= self.energy_platinum_demand_df.loc[self.energy_platinum_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_platinum_demand_df,
@@ -49,7 +49,7 @@ class PlatinumModelTestCase(unittest.TestCase):
                       'production_start': self.production_start}
 
     def test_platinum_discipline(self):
-        '''
+        ''' 
         Check discipline setup and run
         '''
         name = 'Test'
@@ -58,7 +58,7 @@ class PlatinumModelTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
-                   'ns_platinum_resource': f'{name}.{model_name}',
+                   'ns_platinum_resource':f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
@@ -84,8 +84,7 @@ class PlatinumModelTestCase(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            graph.to_plotly()  # .show()
+            graph.to_plotly()#.show()
 
-
-if __name__ == "__main__":
+if __name__ =="__main__" :
     unittest.main()

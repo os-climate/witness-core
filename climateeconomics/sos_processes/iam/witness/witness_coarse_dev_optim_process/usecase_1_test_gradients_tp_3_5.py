@@ -70,16 +70,16 @@ class Study(StudyOptimInvestDistrib):
         # renewalbe
         dspace_invests.at[1, 'value'] = [1259.0, 1906.9769903242482, 1958.200728325605, 1877.2621735761802, 1595.2683128462338, 944.6238770738995, 1.0]
         dspace_UR.at[1, 'value'] = [100.0, 65.84513878360015, 68.73521893993595, 66.82431187750439, 53.334856359388446, 50.83969255964565, 50.00512248187553, 50.0, 51.99755361635379, 50.545078745107936]
-        # DAC UR
+        #DAC UR
         dspace_invests.at[2, 'value'] = [1.3333, 1e-06, 1e-06, 1e-06, 1e-06, 1e-06, 1e-06]
         dspace_UR.at[2, 'value'] = [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
-        # flue gas UR
+        #flue gas UR
         dspace_invests.at[3, 'value'] = [1.3333, 1e-06, 1e-06, 1e-06, 1e-06, 1e-06, 1e-06]
         dspace_UR.at[3, 'value'] = [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
         # CS UR
         dspace_invests.at[4, 'value'] = [1.3333, 1e-06, 1e-06, 1e-06, 1e-06, 1e-06, 1e-06]
         dspace_UR.at[4, 'value'] = [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0]
-        # INE
+        #INE
         dspace_Ine.at[0, 'value'] = [25.5, 30.0, 30.0, 28.266188087516344, 26.92355374206309, 24.5, 25.887477728784216]
 
         '''
@@ -114,7 +114,7 @@ class Study(StudyOptimInvestDistrib):
         data_witness.update({
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.ccs_price_percentage": 0.0,
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.co2_damage_price_percentage": 0.0,
-            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([27.0] * (GlossaryCore.NB_POLES_COARSE - 1)),
+            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([27.0] * (GlossaryCore.NB_POLES_COARSE-1)),
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.Damage.tp_a3': 3.5,
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.tolerance': 1.e-12,
             f'{self.study_name}.{self.optim_name}.max_iter': 1,
@@ -140,3 +140,4 @@ if '__main__' == __name__:
     for graph in graph_list:
         graph.to_plotly().show()
     '''
+

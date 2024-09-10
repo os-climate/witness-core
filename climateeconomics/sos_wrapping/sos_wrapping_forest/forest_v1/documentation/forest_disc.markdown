@@ -15,7 +15,7 @@ As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a def
 - **Initial CO2 emissions**, CO2 emissions in GtCO2 due to deforestation at the first year of the study. Default value is 3.21 GtCO2 at 2020, which is the value found at [^2].
 - **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 3800 $/ha [^3].
 - **reforestation_investment**, the quantity of money dedicated to reforestation each year in billions of $.
-
+ 
 The outputs of the model are:
 
 - **forest_surface_df**, giving the evolution of forest surface year by year, and cumulative in Gha.

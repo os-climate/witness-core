@@ -67,6 +67,7 @@ class Study(StudyManager):
     def setup_process(self):
         datacase_energy.setup_process(self)
 
+
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
@@ -85,6 +86,7 @@ class Study(StudyManager):
 
         energy_input_list = self.dc_energy.setup_usecase()
         setup_data_list = setup_data_list + energy_input_list
+
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,

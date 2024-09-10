@@ -13,19 +13,19 @@ This document explores the relationship between global warming and its impact on
 
 # Damage Functions
 
-The relationship between global warming and its impact on the economy is driven by the damage function. We have implemented two different equations for the damage model:
-* Standard DICE: the DICE model equation [^1]
-* Tipping point: a more drastic version with damage acceleration.
-You can choose between them by changing the input `tipping_point`: if `tipping_point = False` then the standard DICE is used and if `tipping_point = True` the tipping point version is used.
+The relationship between global warming and its impact on the economy is driven by the damage function. We have implemented two different equations for the damage model: 
+* Standard DICE: the DICE model equation [^1] 
+* Tipping point: a more drastic version with damage acceleration. 
+You can choose between them by changing the input `tipping_point`: if `tipping_point = False` then the standard DICE is used and if `tipping_point = True` the tipping point version is used. 
 
 ## Standard DICE Damage
-In DICE[^1] model, the damage function gives a relationship between temperature increase and economic damage. The fraction of output loss due to climate change $\Omega_t$ at $t$ is:
-$$\Omega_t = \pi_1 T_{t\,AT}+ \pi_2 T_{t\,AT}^\varepsilon$$
-where $\pi_1$ and  $\pi_2$ are `damage_int` and `damage_quad` in the inputs. $T_{t\,AT}$ is the atmospheric temperature increase (see Temperature change model documentation). $\varepsilon$ (`damage_expo`) represents the form of the relationship between temperature and economic damage. We set the default value to $\varepsilon = 2$, such that we have a quadratic relationship. It can be modified by changing the input `damage_expo`.
-Total damage in trillions of dollars is then:
+In DICE[^1] model, the damage function gives a relationship between temperature increase and economic damage. The fraction of output loss due to climate change $\Omega_t$ at $t$ is: 
+$$\Omega_t = \pi_1 T_{t\,AT}+ \pi_2 T_{t\,AT}^\varepsilon$$ 
+where $\pi_1$ and  $\pi_2$ are `damage_int` and `damage_quad` in the inputs. $T_{t\,AT}$ is the atmospheric temperature increase (see Temperature change model documentation). $\varepsilon$ (`damage_expo`) represents the form of the relationship between temperature and economic damage. We set the default value to $\varepsilon = 2$, such that we have a quadratic relationship. It can be modified by changing the input `damage_expo`.   
+Total damage in trillions of dollars is then: 
 $$Damages_t = \Omega _t. Y_t$$
-with $Y_t$ the gross economic output in trillions of dollars (see macroeconomics documentation).
-The form of the damage fraction in the latest version of DICE (2017) is different between the documentation[^1] and the code[^3]. We chose to implement the equation from the code which is the one used to obtain the results.
+with $Y_t$ the gross economic output in trillions of dollars (see macroeconomics documentation). 
+The form of the damage fraction in the latest version of DICE (2017) is different between the documentation[^1] and the code[^3]. We chose to implement the equation from the code which is the one used to obtain the results. 
 
 ![](dice_damage_model.png)
 
@@ -34,7 +34,7 @@ We use another equation for the damage model from Weitzman (2009)[^2][^4] based 
 $$D_t = \left(\frac{T_{t\,AT}}{20.46}\right)^2 + \left(\frac{T_{t\,AT}}{T_3}\right)^{6.754}$$
 and
 $$\Omega_t = \frac{D_t}{1 + D_t}$$
-As before, we have the total economics damage in trillions dollars:
+As before, we have the total economics damage in trillions dollars:  
 $$Damages_t = \Omega _t. Y_t$$
 
 > The severity of the damage model can be modified by adjusting the variable A3 in the GUI in expert mode (referred to as `tp_a3` in the model).
@@ -42,15 +42,15 @@ $$Damages_t = \Omega _t. Y_t$$
 ### Controversy on Tipping Point Value
 The damage function significantly influences GDP and policy making. The DICE model and other IAMs traditionally do not account for tipping points, assuming these occur at 3°C or higher or over a 300-year timescale. This conservative approach has been criticized for underestimating climate change impacts.
 
-The macroeconomics model is highly dependent on the damage model which is highly sensitive to the
-tipping point temperature (when using the tipping point damage function, which is currently the case). This original value of `tp_a3 = 6.081°C` in Weitzman's model was taken from a subjective probability
-estimate among 52 experts of triggering a « tipping point of major changes » in each of five possible
-categories:
+The macroeconomics model is highly dependent on the damage model which is highly sensitive to the 
+tipping point temperature (when using the tipping point damage function, which is currently the case). This original value of `tp_a3 = 6.081°C` in Weitzman's model was taken from a subjective probability 
+estimate among 52 experts of triggering a « tipping point of major changes » in each of five possible 
+categories: 
 1. The Atlantic meridional overturning circulation (AMOC)
 2. The Greenland ice sheet metltdown
 3. West Antarctic Ice Sheet meltdown
 4. Amazon rainforest
-5. El Nino/southern Oscillation
+5. El Nino/southern Oscillation 
 
 At $T_{t\,AT}=6.081°C$, the expected probability is 3/5 [^4].
 
@@ -61,7 +61,7 @@ However, that original tipping point value of 6.081°C has been critized for sev
 - **Call for Realistic Assumptions**: Correcting these errors suggests economic damages from climate change could be much worse than forecasted, necessitating immediate and realistic consideration of lower tipping points.
 
 Some paper suggest radically different values :
-- $T_{3}=3°C$  [^5] (p.34)
+- $T_{3}=3°C$  [^5] (p.34) 
 - $T_{3}=1-2°C$ [^6][^7].
 
 ### Implementation of 3.5°C Tipping Point
@@ -71,10 +71,10 @@ To provide a more accurate representation of climate-economic impacts, we have a
 ![](tipping_point_damage_model35.png)
 ![](tipping_point_damage_model6081.png)
 
-# Damage to Productivity
-See the documentation of macroeconomics model.
+# Damage to Productivity 
+See the documentation of macroeconomics model. 
 
-# References and Notes
+# References and Notes 
 
 [^1]: Nordhaus, W. D. (2017). Revisiting the social cost of carbon. Proceedings of the National Academy of Sciences, 114(7), 1518-1523.
 
@@ -92,7 +92,7 @@ See the documentation of macroeconomics model.
 
 [^8]: Weitzman, M. L. (2012). GHG targets as insurance against catastrophic climate damages, National Bureau of Economic Research. [https://www.nber.org/system/files/working_papers/w16136/w16136.pdf](https://www.nber.org/system/files/working_papers/w16136/w16136.pdf)
 
-[^9]: Kriegler, E., Hall, J. W., Held, H., Dawson, R., & Schnellnhuber, H. J. (2009). Imprecise probability assessment of tipping points in the climate system. Proceedings of the National Academy of Sciences, 106, 5041-5046.
+[^9]: Kriegler, E., Hall, J. W., Held, H., Dawson, R., & Schnellnhuber, H. J. (2009). Imprecise probability assessment of tipping points in the climate system. Proceedings of the National Academy of Sciences, 106, 5041-5046. 
 
 [^10]: DeCanio, S. (2003). Economic models of climate change: a critique. Springer.
 

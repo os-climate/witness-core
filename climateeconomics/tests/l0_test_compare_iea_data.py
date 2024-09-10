@@ -77,6 +77,7 @@ class PostProcessEnergy(unittest.TestCase):
                 graph.to_plotly().show()
 
 
+
 if '__main__' == __name__:
     cls = PostProcessEnergy()
     cls.setUp()

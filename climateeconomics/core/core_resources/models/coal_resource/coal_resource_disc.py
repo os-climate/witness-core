@@ -86,7 +86,7 @@ class CoalResourceDiscipline(ResourceDiscipline):
                                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                      'sub_bituminous_and_lignite': ('float', None, False),
                                                                      'bituminous_and_anthracite': (
-                                                                     'float', None, False), }
+                                                                     'float', None, False),}
                                             },
                'resource_price_data': {'type': 'dataframe', 'unit': '$/MCF', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),

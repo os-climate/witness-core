@@ -75,9 +75,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',
                                        'dataframe_descriptor': {'param': ('string', None, False),
-                                                                'beta': ('float', None, False), }
+                                                                'beta': ('float', None, False),}
                                        },
-        'calibration_temperature_increase': {'type': 'float', 'default': 2.5, 'user_level': 3, 'unit': '°C'},
+        'calibration_temperature_increase': {'type': 'float', 'default': 2.5, 'user_level': 3 , 'unit': '°C'},
         'theta': {'type': 'float', 'default': 2, 'user_level': 3, 'unit': '-'},
         'death_rate_param': {'type': 'dataframe', 'default': default_death_rate_params_df, 'user_level': 3, 'unit': '-',
                              'dataframe_descriptor': {'param': ('string', None, False),
@@ -85,7 +85,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                       'death_rate_lower': ('float', None, False),
                                                       'death_rate_delta': ('float', None, False),
                                                       'death_rate_phi': ('float', None, False),
-                                                      'death_rate_nu': ('float', None, False), }
+                                                      'death_rate_nu': ('float', None, False),}
                              },
         'birth_rate_upper': {'type': 'float', 'default': 1.12545946e-01, 'user_level': 3, 'unit': '-'},
         # 2.2e-2
@@ -120,13 +120,14 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                       'namespace': GlossaryCore.NS_WITNESS},
         'population_detail_df': {'type': 'dataframe', 'unit': 'people'},
         'birth_rate_df': {'type': 'dataframe', 'unit': '-'},
-        'death_rate_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'dataframe'}, 'unit': '-'},
-        'death_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'dataframe'}, 'unit': 'people'},
+        'death_rate_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': '-'},
+        'death_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': 'people' },
         'birth_df': {'type': 'dataframe', 'unit': 'people'},
         'life_expectancy_df': {'type': 'dataframe', 'unit': 'age'}
     }
 
     _maturity = 'Research'
+        
 
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
@@ -156,6 +157,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         ''' model execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        
 
         # model execution
         population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_age_population_df = self.model.compute(
@@ -168,11 +170,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         population_df[GlossaryCore.PopulationValue] = population_df[GlossaryCore.PopulationValue] / \
             self.model.million
         # disable pylint warning, known issue for pylint >2.4, pylint cannot get some variable type even if it has been set
-        population_detail_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570]  # pylint: disable=unsubscriptable-object
-        working_age_population_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] / self.model.million  # pylint: disable=unsupported-assignment-operation,unsubscriptable-object
+        population_detail_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] # pylint: disable=unsubscriptable-object
+        working_age_population_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] / self.model.million # pylint: disable=unsupported-assignment-operation,unsubscriptable-object
         # store output data
         out_dict = {GlossaryCore.PopulationDfValue: population_df,
-                    GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df,  # pylint: disable=unsubscriptable-object
+                    GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df, # pylint: disable=unsubscriptable-object
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,
                     "death_rate_dict": death_rate_dict,
@@ -180,12 +182,13 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                     "death_dict": death_dict,
                     "life_expectancy_df": life_expectancy_df}
 
+        
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
-        """
-        Compute jacobian for each coupling variable
-        gradiant of coupling variable to compute:
+        """ 
+        Compute jacobian for each coupling variable 
+        gradiant of coupling variable to compute: 
         """
 
         d_pop_d_output, d_working_pop_d_output = self.model.compute_d_pop_d_output()
@@ -207,7 +210,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             d_working_pop_d_temp / self.model.million)
-
+        
         d_pop_d_kcal_pc, d_working_pop_d_kcal_pc = self.model.compute_d_pop_d_kcal_pc()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
@@ -326,6 +329,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if '15-49 age range birth rate' in chart_list:
 
+
             year_start = years[0]
             year_end = years[len(years) - 1]
 
@@ -349,6 +353,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'knowledge' in chart_list:
+
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -442,6 +447,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Number of birth and death per year' in chart_list:
 
+
             year_start = years[0]
             year_end = years[len(years) - 1]
 
@@ -480,6 +486,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Number of climate death per year' in chart_list:
 
+
             year_start = years[0]
             year_end = years[len(years) - 1]
 
@@ -509,7 +516,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts = graph_model_cumulative_climate_deaths(death_dict, instanciated_charts)
 
+            
         if 'Number of malnutrition death per year' in chart_list:
+
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -571,6 +580,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'Life expectancy evolution' in chart_list:
+
 
             year_start = years[0]
             year_end = years[len(years) - 1]

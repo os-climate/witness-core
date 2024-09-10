@@ -244,10 +244,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                            ]
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_all_resource_discipline.pkl',
-                            discipline=disc_techno, local_data=disc_techno.local_data, inputs=input_names,
+                            discipline=disc_techno, local_data = disc_techno.local_data, inputs=input_names,
                             outputs=resource_output, step=1e-15,
                             derr_approx='complex_step')
-
-
 if __name__ == "__main__":
     unittest.main()

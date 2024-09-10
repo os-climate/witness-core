@@ -1,41 +1,17 @@
 {
-  "process_module_path": "climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling",
-  "namespace_datasets_mapping": {
-    "v0|<study_ph>.mda_scenarios.- damage - tax, fossil 100%.Macroeconomics|all_sections_gdp_df": [
-      "bigquery_datasets_connector|SC0_NO_DAMAGE|GDP0"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 100%.Macroeconomics|all_sections_gdp_df": [
-      "bigquery_datasets_connector|SC1_BAU|GDP1"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 40%.Macroeconomics|all_sections_gdp_df": [
-      "bigquery_datasets_connector|SC2_MOW|GDP2"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage + tax, NZE.Macroeconomics|all_sections_gdp_df": [
-      "bigquery_datasets_connector|SC3_NZE|GDP3"
-    ],
-    "v0|<study_ph>.mda_scenarios.- damage - tax, fossil 100%.GHGEmissions|all_sections_emissions_df": [
-      "bigquery_datasets_connector|SC0_NO_DAMAGE|EM0"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 100%.GHGEmissions|all_sections_emissions_df": [
-      "bigquery_datasets_connector|SC1_BAU|EM1"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 40%.GHGEmissions|all_sections_emissions_df": [
-      "bigquery_datasets_connector|SC2_MOW|EM2"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage + tax, NZE.GHGEmissions|all_sections_emissions_df": [
-      "bigquery_datasets_connector|SC3_NZE|EM3"
-    ],
-    "v0|<study_ph>.mda_scenarios.- damage - tax, fossil 100%.EnergyMix|energy_mean_price": [
-      "bigquery_datasets_connector|SC0_NO_DAMAGE|EP0"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 100%.EnergyMix|energy_mean_price": [
-      "bigquery_datasets_connector|SC1_BAU|EP1"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 40%.EnergyMix|energy_mean_price": [
-      "bigquery_datasets_connector|SC2_MOW|EP2"
-    ],
-    "v0|<study_ph>.mda_scenarios.+ damage + tax, NZE.EnergyMix|energy_mean_price": [
-      "bigquery_datasets_connector|SC3_NZE|EP3"
-    ]
-  }
+    "process_module_path": "climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling",
+    "namespace_datasets_mapping": {
+        "v0|<study_ph>.mda_scenarios.- damage - tax, fossil 100%.Macroeconomics|all_sections_gdp_df": ["bigquery_datasets_connector|SC0_NO_DAMAGE|GDP0"],
+        "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 100%.Macroeconomics|all_sections_gdp_df": ["bigquery_datasets_connector|SC1_BAU|GDP1"],
+        "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 40%.Macroeconomics|all_sections_gdp_df": ["bigquery_datasets_connector|SC2_MOW|GDP2"],
+        "v0|<study_ph>.mda_scenarios.+ damage + tax, NZE.Macroeconomics|all_sections_gdp_df": ["bigquery_datasets_connector|SC3_NZE|GDP3"],
+        "v0|<study_ph>.mda_scenarios.- damage - tax, fossil 100%.GHGEmissions|all_sections_emissions_df": ["bigquery_datasets_connector|SC0_NO_DAMAGE|EM0"],
+        "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 100%.GHGEmissions|all_sections_emissions_df": ["bigquery_datasets_connector|SC1_BAU|EM1"],
+        "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 40%.GHGEmissions|all_sections_emissions_df": ["bigquery_datasets_connector|SC2_MOW|EM2"],
+        "v0|<study_ph>.mda_scenarios.+ damage + tax, NZE.GHGEmissions|all_sections_emissions_df": ["bigquery_datasets_connector|SC3_NZE|EM3"],
+        "v0|<study_ph>.mda_scenarios.- damage - tax, fossil 100%.EnergyMix|energy_mean_price": ["bigquery_datasets_connector|SC0_NO_DAMAGE|EP0"],
+        "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 100%.EnergyMix|energy_mean_price": ["bigquery_datasets_connector|SC1_BAU|EP1"],
+        "v0|<study_ph>.mda_scenarios.+ damage - tax, fossil 40%.EnergyMix|energy_mean_price": ["bigquery_datasets_connector|SC2_MOW|EP2"],
+        "v0|<study_ph>.mda_scenarios.+ damage + tax, NZE.EnergyMix|energy_mean_price": ["bigquery_datasets_connector|SC3_NZE|EP3"]
+    }
 }

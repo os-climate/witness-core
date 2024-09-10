@@ -58,7 +58,7 @@ class Study(ClimateEconomicsStudyManager):
             # self.UC5: Study5 # deactivate usecase 5 as it is the same as the one with no CCUS
         }
 
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict), 'scenario_name': list(scenario_dict.keys())})
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{scatter_scenario}.samples_df': scenario_df,
             f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))

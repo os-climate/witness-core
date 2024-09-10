@@ -72,15 +72,15 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         'forest_lost_capital': {'type': 'dataframe', 'unit': 'G$', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                'namespace': 'ns_forest', 'dataframe_descriptor': {
+                                'namespace': 'ns_forest', 'dataframe_descriptor':{
                                                          GlossaryCore.Years: ('float', None, False),
                                                          'reforestation': ('float', None, True),
                                                          'managed_wood': ('float', None, True),
                                                          'deforestation': ('float', None, True),
                                                      }
                                                  },
-        'forest_lost_capital_cons_ref': {'type': 'float', 'unit': 'G$', 'default': 20., 'user_level': 2,
-                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE, },
+        'forest_lost_capital_cons_ref': {'type': 'float',  'unit': 'G$', 'default': 20., 'user_level': 2,
+                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE,},
         'forest_lost_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 40., 'user_level': 2,
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE,
                                            }
@@ -195,9 +195,9 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """
-        Compute jacobian for each coupling variable
-        gradiant of coupling variable to compute:
+        """ 
+        Compute jacobian for each coupling variable 
+        gradiant of coupling variable to compute: 
         non_use_capital_objective
         """
         inputs_dict = self.get_sosdisc_inputs()
@@ -215,7 +215,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_objective',),
                 (non_use_capital, column_name),
-                np.ones(len(years)) / non_use_capital_obj_ref / delta_years)
+                np.ones(len(years))  / non_use_capital_obj_ref / delta_years)
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_cons',),
                 (non_use_capital, column_name),

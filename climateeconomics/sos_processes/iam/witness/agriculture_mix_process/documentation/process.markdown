@@ -10,7 +10,7 @@ But agriculture-driven growth, poverty reduction, and food security are at risk:
 
 Accelerating climate change could further cut crop yields, especially in the world’s most food-insecure regions. Agriculture, forestry, and land use change are responsible for about 25% of greenhouse gas emissions. Mitigation in the agriculture sector is part of the solution to climate change.
 
-Current food systems also threaten the health of people and the planet and generate unsustainable levels of pollution and waste.
+Current food systems also threaten the health of people and the planet and generate unsustainable levels of pollution and waste. 
 
 One third of food produced globally is either lost or wasted. Addressing food loss and waste is critical to improving food and nutrition security, as well as helping to meet climate goals and reduce stress on the environment.
 
@@ -32,7 +32,7 @@ Biomass sources for energy include:
 
 * Wood and wood processing wastes—firewood, wood pellets, and wood chips, lumber and furniture mill sawdust and waste, and black liquor from pulp and paper mills
 * Agricultural crops and waste materials—corn, soybeans, sugar cane, switchgrass, woody plants, and algae, and crop and food processing residues
-* Biogenic materials in municipal solid waste—paper, cotton, and wool products, and food, yard, and wood wastes
+* Biogenic materials in municipal solid waste—paper, cotton, and wool products, and food, yard, and wood wastes 
 * Animal manure and human sewage
 
 ![](biomass_prod.PNG) [^1]

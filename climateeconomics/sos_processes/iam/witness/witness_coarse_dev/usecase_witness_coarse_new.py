@@ -129,9 +129,9 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.cache_type': 'SimpleCache'}
         return numerical_values_dict
 
-
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
+
 
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')

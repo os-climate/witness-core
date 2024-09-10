@@ -999,3 +999,5 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 214815,0.102,0.000,0.102,0.000,C:\Users\ng87a63\Anaconda3\lib\site-packages\pandas\core\indexes\base.py:497(_ensure_array)
 32305,0.017,0.000,0.102,0.000,C:\Users\ng87a63\Anaconda3\lib\site-packages\pandas\core\internals\managers.py:1749(_extract_array)
 110722,0.051,0.000,0.101,0.000,C:\Users\ng87a63\Anaconda3\lib\site-packages\pandas\_config\config.py:606(_translate_key)
+
+

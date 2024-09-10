@@ -41,7 +41,7 @@ class DamageModel():
         self.damag_int = self.param['damag_int']
         self.damag_quad = self.param['damag_quad']
         self.damag_expo = self.param['damag_expo']
-        # self.init_damag_quad = self.param['init_damag_quad']
+        #self.init_damag_quad = self.param['init_damag_quad']
         self.exp_cont_f = self.param['exp_cont_f']
         self.cost_backtsop = self.param['cost_backstop']
         self.init_cost_bacsktop = self.param['init_cost_backstop']

@@ -256,12 +256,15 @@ class Study(ClimateEconomicsStudyManager):
 
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
+
         # Ajout design var Share Non Energy invest
+
 
         out.update({
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor': updated_dvar_descriptor
         })
+
 
         import numpy as np
         a = {

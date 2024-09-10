@@ -78,17 +78,17 @@ class Study(StudyMSmdaTippingPoint35):
             self.USECASE2: 139,
             self.USECASE2B: 73,
             self.USECASE4: 51,
-            self.USECASE7: -2.8  # todo : refit NZE scenario
+            self.USECASE7: -2.8 # todo : refit NZE scenario
         }  # todo : replace by GWP in future
 
         all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.StreamProductionDetailedValue}')
         ref_value_net_energy_production = {
-            self.USECASE2: 338 * 1e3,
-            self.USECASE2B: 182 * 1e3,
-            self.USECASE4: 223 * 1e3,
-            self.USECASE7: 248 * 1e3
+            self.USECASE2: 338*1e3,
+            self.USECASE2B: 182*1e3,
+            self.USECASE4: 223*1e3,
+            self.USECASE7: 248*1e3
         }
-        ref_net_prod_2020 = 116 * 1e3
+        ref_net_prod_2020 = 116*1e3
 
         all_populations = dm.get_all_namespaces_from_var_name(GlossaryCore.PopulationDfValue)
         ref_value_populations = {
@@ -121,7 +121,7 @@ class Study(StudyMSmdaTippingPoint35):
                     error_msg += self.should_be_greater(value_temp_increase, ref_value_temp_increase[scenario] * 0.8, f"{scenario_temp_increase}[2100]")
                     error_msg += self.should_be_lower(value_temp_increase, ref_value_temp_increase[scenario] * 1.2, f"{scenario_temp_increase}[2100]")
                     error_msg += self.should_be_greater(value_temp_2020, ref_temperature_2020 * tolerance_low_ref_2020, f"{scenario_temp_increase}[2020]")
-                    error_msg += self.should_be_lower(value_temp_2020, ref_temperature_2020 * tolerance_high_ref_2020, f"{scenario_temp_increase}[2020]")
+                    error_msg += self.should_be_lower(value_temp_2020,  ref_temperature_2020 * tolerance_high_ref_2020, f"{scenario_temp_increase}[2020]")
 
             # Checking that the CO2 tax value in 2100 is in an acceptable range for each usecase
             for scenario_co2_tax in all_co2_taxes:
@@ -144,8 +144,8 @@ class Study(StudyMSmdaTippingPoint35):
             for scenario_emissions in all_co2_emissions:
                 if scenario in scenario_emissions:
                     emissions_df = dm.get_value(scenario_emissions)
-                    value_emissions = emissions_df.loc[emissions_df['years'] == 2100]['CO2_20'].values[0]  # todo : replace by GWP in futur
-                    value_emissions_2020 = emissions_df.loc[emissions_df['years'] == 2020]['CO2_20'].values[0]  # todo : replace by GWP in futur
+                    value_emissions = emissions_df.loc[emissions_df['years'] == 2100]['CO2_20'].values[0] # todo : replace by GWP in futur
+                    value_emissions_2020 = emissions_df.loc[emissions_df['years'] == 2020]['CO2_20'].values[0] # todo : replace by GWP in futur
                     if self.USECASE7 in scenario:
                         error_msg += self.should_be_lower(value_emissions, ref_value_co2_emissions[scenario] * 0.8, f"{scenario_emissions}[2100]")
                         error_msg += self.should_be_greater(value_emissions, ref_value_co2_emissions[scenario] * 1.2, f"{scenario_emissions}[2100]")
@@ -166,6 +166,7 @@ class Study(StudyMSmdaTippingPoint35):
                     error_msg += self.should_be_lower(value_net_energy_production, ref_value_net_energy_production[scenario] * 1.2, f"{scenario_net_energy_production}[2100]")
                     error_msg += self.should_be_greater(value_net_energy_production_2020, ref_net_prod_2020 * tolerance_low_ref_2020, f"{scenario_net_energy_production}[2020]")
                     error_msg += self.should_be_lower(value_net_energy_production_2020, ref_net_prod_2020 * tolerance_high_ref_2020, f"{scenario_net_energy_production}[2020]")
+
 
             for scenario_population in all_populations:
                 if scenario in scenario_population:
@@ -208,6 +209,7 @@ if '__main__' == __name__:
     DatasetsConnectorManager.register_connector(connector_identifier="bigquery_datasets_connector",
                                                 connector_type=DatasetConnectorType.get_enum_value("Bigquery"),
                                                 **connector_args)
+
 
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()

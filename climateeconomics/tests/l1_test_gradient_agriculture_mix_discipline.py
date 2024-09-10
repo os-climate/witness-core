@@ -37,7 +37,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         return [
             self.test_agriculture_discipline_mix_analytic_grad
         ]
-
+                    
     def test_agriculture_discipline_mix_analytic_grad(self):
         '''
         Check discipline setup and run
@@ -58,8 +58,8 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-        self.year_start = GlossaryCore.YearStartDefault
+        
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
@@ -163,11 +163,12 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
 
         CH4_emitted_land = pd.DataFrame()
         CH4_emitted_land[GlossaryCore.Years] = self.years
-        CH4_emitted_land['emitted_CH4_evol_cumulative'] = cum_emission / 100
+        CH4_emitted_land['emitted_CH4_evol_cumulative'] = cum_emission/100
 
         N2O_emitted_land = pd.DataFrame()
         N2O_emitted_land[GlossaryCore.Years] = self.years
         N2O_emitted_land['emitted_N2O_evol_cumulative'] = cum_emission / 500
+
 
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
@@ -184,7 +185,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: self.years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4, 'syngas': 0.0, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}": 0.0, 'crude oil': 0.02533})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69, 50.29]
+                     29.01,  34.05,   39.08,  44.69,   50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -196,7 +197,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.Capital: 20000 * np.ones_like(self.years),
             GlossaryCore.NonUseCapital: 0.,
         })
-
+                                                        
         inputs_dict = {f'{self.test_name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.test_name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.test_name}.{disc_name}.Crop.techno_consumption': self.techno_consumption_crop,
@@ -223,7 +224,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_agriculture_mix_discipline.pkl', discipline=disc_techno,
-                            step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.test_name}.{disc_name}.Crop.techno_consumption',
                                     f'{self.test_name}.{disc_name}.Crop.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                     f'{self.test_name}.{disc_name}.Crop.techno_production',

@@ -61,7 +61,7 @@ class YearStartTest(unittest.TestCase):
                 valid_years.append(year)
             output_msg += f"{year}: {msg}\n"
 
-        # print(output_msg)
+        #print(output_msg)
         self.assertIn(GlossaryCore.YearStartDefault, valid_years,
                       msg=f"There are some missing inputs for the selected year start ({GlossaryCore.YearStartDefault})")
 
@@ -109,7 +109,8 @@ class YearStartTest(unittest.TestCase):
         # invest_before_year_start
         for techno_name in techno_list:
             is_available = DatabaseWitnessEnergy.get_techno_invest_before_year_start(techno_name=techno_name,
-                                                                                     construction_delay=GlossaryEnergy.TechnoConstructionDelayDict[
+                                                                                     construction_delay=
+                                                                                     GlossaryEnergy.TechnoConstructionDelayDict[
                                                                                          techno_name], year_start=year,
                                                                                      is_available_at_year=True)
             if not is_available:
@@ -129,3 +130,4 @@ class YearStartTest(unittest.TestCase):
         missing_variables = self._test_year_witness_core(year=year)
         missing_variables.extend(self._test_year_witness_energy(year=year, techno_dict=techno_dict))
         return missing_variables
+

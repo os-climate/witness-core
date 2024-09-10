@@ -48,7 +48,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     # fixme : dict of variables used to force update of namespace used only by post-proc modules OR namespace that only belongs to dynamic variables
     cheat_variables_dict = \
-        {'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float', 'namespace': 'ns_dashboard', 'visibility': 'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
+        {'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'cheat_var_to_update_ns_regions_in_ms_mdo': {'type': 'float', 'namespace': GlossaryCore.NS_REGIONALIZED_POST_PROC,
                                                        'visibility': 'Shared', 'default': 0.0, 'unit': '-',
                                                        'user_level': 3},
@@ -69,7 +69,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'cheat_var12': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorServices.lower()}_emissions',
                         'visibility': 'Shared', 'default': 0.0, 'unit': '-',
                         'user_level': 3},
-        # 'cheat_var13': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorAgriculture.lower()}_emissions',
+        #'cheat_var13': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorAgriculture.lower()}_emissions',
         #                'visibility': 'Shared', 'default': 0.0, 'unit': '-',
         #                'user_level': 3},
         'cheat_var21': {'type': 'float', 'namespace': f'ns_{GlossaryCore.SectorIndustry.lower()}_gdp',
@@ -90,9 +90,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'damag_quad': {'type': 'float', 'default': 0.0022, 'unit': '-', 'user_level': 3},
         'damag_expo': {'type': 'float', 'default': 2.0, 'unit': '-', 'user_level': 3},
         'tipping_point': {'type': 'bool', 'default': True},
-        'tp_a1': {'type': 'float', 'default': 20.46, 'user_level': 3, 'unit': '-'},
-        'tp_a2': {'type': 'float', 'default': 2, 'user_level': 3, 'unit': '-'},
-        'tp_a3': {'type': 'float', 'default': 3.5, 'user_level': 3, 'unit': '-'},
+        'tp_a1': {'type': 'float',  'default': 20.46, 'user_level': 3, 'unit': '-'},
+        'tp_a2': {'type': 'float',  'default': 2, 'user_level': 3, 'unit': '-'},
+        'tp_a3': {'type': 'float',  'default': 3.5, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'default': 6.754, 'user_level': 3, 'unit': '-'},
         'total_emissions_damage_ref': {'type': 'float', 'default': 60.0, 'unit': 'Gt',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -137,7 +137,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     def update_default_with_years(self):
         '''
-        Update all default dataframes with years
+        Update all default dataframes with years 
         '''
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
@@ -153,7 +153,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         # todo: for sensitivity, generalise ?
         self.model.tp_a3 = in_dict['tp_a3']
-
+        
         damage_df = in_dict.pop(GlossaryCore.DamageDfValue)
         temperature_df = in_dict.pop(GlossaryCore.TemperatureDfValue)
         extra_gigatons_co2_eq_df = in_dict.pop(GlossaryCore.ExtraCO2EqSincePreIndustrialValue)
@@ -168,12 +168,13 @@ class DamageDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.CO2DamagePrice: co2_damage_price_df,
                     GlossaryCore.ExtraCO2tDamagePrice: extra_co2_damage_price}
 
+        
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
-        """
-        Compute jacobian for each coupling variable
-        gradiant of coupling variable to compute:
+        """ 
+        Compute jacobian for each coupling variable 
+        gradiant of coupling variable to compute: 
         damage_df
           - GlossaryCore.Damages:
                 - temperature_df, GlossaryCore.TempAtmo
@@ -338,7 +339,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
                                                  'Impact on GDP (%)',
                                                  chart_name=chart_name)
 
-            legend = "Tipping point damage model (Weitzman, 2009)" + ' (selected model)' * tipping_point_model
+            legend = "Tipping point damage model (Weitzman, 2009)" + ' (selected model)'* tipping_point_model
             new_series = InstanciatedSeries(list(temperature_increase), list(damage_frac),
                 legend, 'lines', True)
 

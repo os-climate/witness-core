@@ -9,39 +9,39 @@ The ultimate goal consists in comparing IEA data with witness data. However, IEA
 and some data processing is required. This section describes how the IEA data have been processed.
 - **population**: data are directly taken from [^1]
 - **GDP**: data are directly taken from [^2]
-- **CO2 price**: IEA report provides the average CO2 price for categories of countries [^1]: 1) Advanced economies with
-net zero emissions pledges, 2) Emerging market and developing economies with net zero emissions pledges, 3) Selected
-emerging market and developing economies (without net zero emissions pledges) and 4) Other emerging market and developing
-economies. Then, in order to compute an average worldwide CO2 price, the CO2 price of each category is weighted by the share of
-world GDP of this category. Indeed, more than 140 countries have pledged to be net zero emissions which covers 88% of
-the global CO2 emissions [^3]. Therefore, as a first order of magnitude, assuming that global contribution (in %)
-to CO2 emissions and GDP are equal for a given country, then it is assumed that 12% of the GDP of emerging market and
-developing economies account for countries that have not pledged for net zero emissions. Arbitrarily (no data available),
-it is assumed that half of that GDP is equally split between categories 3) and 4). Furthermore, this ratio of GDP
-between countries is assumed to be constant until 2050, which is a highly debatable hypothesis. Since IEA data start in 2030
+- **CO2 price**: IEA report provides the average CO2 price for categories of countries [^1]: 1) Advanced economies with 
+net zero emissions pledges, 2) Emerging market and developing economies with net zero emissions pledges, 3) Selected 
+emerging market and developing economies (without net zero emissions pledges) and 4) Other emerging market and developing 
+economies. Then, in order to compute an average worldwide CO2 price, the CO2 price of each category is weighted by the share of 
+world GDP of this category. Indeed, more than 140 countries have pledged to be net zero emissions which covers 88% of 
+the global CO2 emissions [^3]. Therefore, as a first order of magnitude, assuming that global contribution (in %) 
+to CO2 emissions and GDP are equal for a given country, then it is assumed that 12% of the GDP of emerging market and 
+developing economies account for countries that have not pledged for net zero emissions. Arbitrarily (no data available), 
+it is assumed that half of that GDP is equally split between categories 3) and 4). Furthermore, this ratio of GDP 
+between countries is assumed to be constant until 2050, which is a highly debatable hypothesis. Since IEA data start in 2030 
 for the CO2 price, then value for 2020 is taken from witness directly
 - **CO2 emissions**: data from [^1] were extracted using [^4] from 2022 to 2050 with a step of 5 years
 - **Atmospheric Temperature**: data from [^5] were extracted using [^4] from 2022 to 2100 with a step of 5 years
-- **Energy production**: Data are taken from [^2], fig 02_05. The values correspond to the raw energy of a given techno.
-For nuclear for instance, this corresponds to the TWh of electricity and heat produced. Therefore, the witness data of
-heat and electricity must be added for nuclear to be comparable with the IEA data. Same goes with wind energy where
-witness offshore and onshore wind energy data must be added to be compared to the global IEA windenergy data.
-Similarly, the witness solar pv and solar thermal must be added to be compared to the IEA data. Evenutally, for coal, fuel,
-IEA data correspond to the energy associated to the Mt of coal and fuel extracted. For the bioenergy, IEA splits into
-liquid, solid and traditional use of biomass. In order to compare witness and IEA, the witness crop model energy production
-is compared with the sum of the IEA energy production in "Conventional bioenergy crops" and "Short-rotation woody crops".
-Similarly, the witness forest model energy production is compared with the sum of the IEA energy production in
+- **Energy production**: Data are taken from [^2], fig 02_05. The values correspond to the raw energy of a given techno. 
+For nuclear for instance, this corresponds to the TWh of electricity and heat produced. Therefore, the witness data of 
+heat and electricity must be added for nuclear to be comparable with the IEA data. Same goes with wind energy where 
+witness offshore and onshore wind energy data must be added to be compared to the global IEA windenergy data. 
+Similarly, the witness solar pv and solar thermal must be added to be compared to the IEA data. Evenutally, for coal, fuel, 
+IEA data correspond to the energy associated to the Mt of coal and fuel extracted. For the bioenergy, IEA splits into 
+liquid, solid and traditional use of biomass. In order to compare witness and IEA, the witness crop model energy production 
+is compared with the sum of the IEA energy production in "Conventional bioenergy crops" and "Short-rotation woody crops". 
+Similarly, the witness forest model energy production is compared with the sum of the IEA energy production in 
 "Traditional use of biomass", "Forestry plantings" and "Forest and wood residues".
 - **Energy prices**: only the electricity prices are compared between witness and IEA. IEA provides data for 4 regions
-  (USA, China, EU, India) [^2]. Then the average electricity price per techno is obtained by weighting the price of each region
-by the GDP share of that region. This is an approximation since the sum of the GDP shares of those regions amounts for
-64% of the world GDP in 2022. It is therefore debatable to consider that this electricity price is representative of the world's
+  (USA, China, EU, India) [^2]. Then the average electricity price per techno is obtained by weighting the price of each region 
+by the GDP share of that region. This is an approximation since the sum of the GDP shares of those regions amounts for 
+64% of the world GDP in 2022. It is therefore debatable to consider that this electricity price is representative of the world's 
 average electricity price. This however allows to make a first comparison.
 
-Eventually, the data processed as above are saved under witness-core\climateeconomics\data\IEA_NZE*.csv. In the csv,
-the column name is identical to the corresponding witness variable name. Furthermore, the name of the corresponding witness dataframe
-that the variable is taken from is described in the csv file name. This is however not applied to quantities that
-require for instance summing of several witness variables. In this case, the variable name is just "Nuclear" for instance.
+Eventually, the data processed as above are saved under witness-core\climateeconomics\data\IEA_NZE*.csv. In the csv, 
+the column name is identical to the corresponding witness variable name. Furthermore, the name of the corresponding witness dataframe 
+that the variable is taken from is described in the csv file name. This is however not applied to quantities that  
+require for instance summing of several witness variables. In this case, the variable name is just "Nuclear" for instance. 
 
 
 ## Input Data
@@ -61,7 +61,7 @@ Example DataFrames:
 ## Output Data
 
 The output of the model is a dictionary of DataFrames similar to the input, but with the following modifications:
-- Output variable have the same format as input, the name of each output is the name of the corresponding input with
+- Output variable have the same format as input, the name of each output is the name of the corresponding input with 
 a "_interpolated" suffix.
 - The 'years' column spans from `year_start` to `year_end`.
 - The values in the other columns are interpolated linearly for the years within the provided data range.

@@ -34,7 +34,7 @@ class ObjectivesTestCase(unittest.TestCase):
         self.year_end = 2020
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
-        self.years = np.arange(self.year_start, self.year_end + 1)
+        self.years = np.arange(self.year_start, self.year_end+1)
 
         # Test With a GDP and capital that grows at 2%
         gdp_year_start = 130.187
@@ -43,29 +43,29 @@ class ObjectivesTestCase(unittest.TestCase):
         gdp_serie = gdp_year_start * (1.02 ** np.arange(self.nb_per))
         capital_serie = capital_year_start * (1.02 ** np.arange(self.nb_per))
 
-        # for each sector share of total gdp 2020
-        gdp_agri = gdp_serie * 6.775773 / 100
-        gdp_indus = gdp_serie * 28.4336 / 100
-        gdp_service = gdp_serie * 64.79 / 100
-        self.prod_agri = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.Output: gdp_agri, GlossaryCore.OutputNetOfDamage: gdp_agri * 0.995})
-        self.prod_indus = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.Output: gdp_indus, GlossaryCore.OutputNetOfDamage: gdp_indus * 0.995})
-        self.prod_service = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.Output: gdp_service, GlossaryCore.OutputNetOfDamage: gdp_service * 0.995})
+        #for each sector share of total gdp 2020
+        gdp_agri = gdp_serie * 6.775773/100
+        gdp_indus = gdp_serie * 28.4336/100
+        gdp_service = gdp_serie * 64.79/100
+        self.prod_agri = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Output: gdp_agri, GlossaryCore.OutputNetOfDamage: gdp_agri*0.995})
+        self.prod_indus = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Output: gdp_indus, GlossaryCore.OutputNetOfDamage: gdp_indus*0.995})
+        self.prod_service = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Output: gdp_service, GlossaryCore.OutputNetOfDamage: gdp_service*0.995})
         cap_agri = capital_serie * 0.018385
         cap_indus = capital_serie * 0.234987
         cap_service = capital_serie * 0.74662
         energy_eff = np.linspace(2, 3, self.nb_per)
-        self.cap_agri_df = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.Capital: cap_agri, GlossaryCore.UsableCapital: cap_agri * 0.8, GlossaryCore.EnergyEfficiency: energy_eff})
-        self.cap_indus_df = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.Capital: cap_indus, GlossaryCore.UsableCapital: cap_indus * 0.8, GlossaryCore.EnergyEfficiency: energy_eff})
-        self.cap_service_df = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.Capital: cap_service, GlossaryCore.UsableCapital: cap_service * 0.8, GlossaryCore.EnergyEfficiency: energy_eff})
-
-        self.economics_df = DataFrame({GlossaryCore.Years: self. years, GlossaryCore.Capital: capital_serie, GlossaryCore.UsableCapital: capital_serie * 0.8,
-                                       GlossaryCore.Output: gdp_serie, GlossaryCore.OutputNetOfDamage: gdp_serie * 0.995})
-
+        self.cap_agri_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: cap_agri, GlossaryCore.UsableCapital: cap_agri*0.8, GlossaryCore.EnergyEfficiency: energy_eff})
+        self.cap_indus_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: cap_indus, GlossaryCore.UsableCapital: cap_indus*0.8, GlossaryCore.EnergyEfficiency: energy_eff})
+        self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: cap_service, GlossaryCore.UsableCapital: cap_service*0.8, GlossaryCore.EnergyEfficiency: energy_eff})
+        
+        self.economics_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: capital_serie, GlossaryCore.UsableCapital: capital_serie*0.8,
+                                       GlossaryCore.Output: gdp_serie, GlossaryCore.OutputNetOfDamage: gdp_serie*0.995})
+        
         data_dir = join(dirname(__file__), 'data/sectorization_fitting')
         self.hist_gdp = read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         self.hist_capital = read_csv(join(data_dir, 'hist_capital_sect.csv'))
         self.hist_energy = read_csv(join(data_dir, 'hist_energy_sect.csv'))
-        long_term_energy_eff = read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
+        long_term_energy_eff =  read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
         self.lt_enef_agri = DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorAgriculture]})
         self.lt_enef_indus = DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorIndustry]})
         self.lt_enef_services = DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorServices]})
@@ -100,11 +100,11 @@ class ObjectivesTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_indus_df,
                        f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_service_df,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_agri_df,
+                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DetailedCapitalDfValue}':self.cap_agri_df,
                        f'{name}.{model_name}.historical_gdp': self.hist_gdp,
                        f'{name}.{model_name}.historical_capital': self.hist_capital,
-                       f'{name}.{model_name}.historical_energy': self.hist_energy,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.longterm_energy_efficiency': self.lt_enef_agri,
+                       f'{name}.{model_name}.historical_energy': self.hist_energy, 
+                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.longterm_energy_efficiency': self.lt_enef_agri, 
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.longterm_energy_efficiency': self.lt_enef_indus,
                        f'{name}.{model_name}.{GlossaryCore.SectorServices}.longterm_energy_efficiency': self.lt_enef_services,
                        }
@@ -113,13 +113,13 @@ class ObjectivesTestCase(unittest.TestCase):
         ee.execute()
         disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}')[0]
-        error_pib_total = disc.get_sosdisc_outputs(['error_pib_total'])
-        # print(error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors)
+        error_pib_total= disc.get_sosdisc_outputs(['error_pib_total'])
+        #print(error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors)
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
-
+            
     def test_objectives_discipline_withextradata(self):
         name = 'Test'
         model_name = 'Objectives'
@@ -136,7 +136,7 @@ class ObjectivesTestCase(unittest.TestCase):
         ee.factory.set_builders_to_coupling_builder(builder)
         ee.configure()
         ee.display_treeview_nodes()
-
+        
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
@@ -145,16 +145,16 @@ class ObjectivesTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_indus_df,
                        f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_service_df,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_agri_df,
+                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DetailedCapitalDfValue}':self.cap_agri_df,
                        f'{name}.{model_name}.historical_gdp': self.hist_gdp,
                        f'{name}.{model_name}.historical_capital': self.hist_capital,
-                       f'{name}.{model_name}.historical_energy': self.hist_energy,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.longterm_energy_efficiency': self.lt_enef_agri,
+                       f'{name}.{model_name}.historical_energy': self.hist_energy, 
+                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.longterm_energy_efficiency': self.lt_enef_agri, 
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.longterm_energy_efficiency': self.lt_enef_indus,
                        f'{name}.{model_name}.{GlossaryCore.SectorServices}.longterm_energy_efficiency': self.lt_enef_services,
                        f'{name}.{model_name}.data_for_earlier_energy_eff': self.extra_data
                        }
-
+        
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
         disc = ee.dm.get_disciplines_with_name(f'{name}.{model_name}')[0]
@@ -162,7 +162,8 @@ class ObjectivesTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
-
+        
+        
     def test_objectives_discipline_withextradata_wrongdata(self):
         name = 'Test'
         model_name = 'Objectives'
@@ -179,11 +180,11 @@ class ObjectivesTestCase(unittest.TestCase):
         ee.factory.set_builders_to_coupling_builder(builder)
         ee.configure()
         ee.display_treeview_nodes()
-
-        # modify extra data to have one column with only O
+        
+        #modify extra data to have one column with only O 
         extra_data = self.extra_data.copy()
-        extra_data['Industry.capital'] = 0
-
+        extra_data['Industry.capital'] = 0 
+        
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
@@ -192,16 +193,16 @@ class ObjectivesTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_indus_df,
                        f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_service_df,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DetailedCapitalDfValue}': self.cap_agri_df,
+                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DetailedCapitalDfValue}':self.cap_agri_df,
                        f'{name}.{model_name}.historical_gdp': self.hist_gdp,
                        f'{name}.{model_name}.historical_capital': self.hist_capital,
-                       f'{name}.{model_name}.historical_energy': self.hist_energy,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.longterm_energy_efficiency': self.lt_enef_agri,
+                       f'{name}.{model_name}.historical_energy': self.hist_energy, 
+                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.longterm_energy_efficiency': self.lt_enef_agri, 
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.longterm_energy_efficiency': self.lt_enef_indus,
                        f'{name}.{model_name}.{GlossaryCore.SectorServices}.longterm_energy_efficiency': self.lt_enef_services,
                        f'{name}.{model_name}.data_for_earlier_energy_eff': extra_data
                        }
-
+        
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
         disc = ee.dm.get_disciplines_with_name(f'{name}.{model_name}')[0]

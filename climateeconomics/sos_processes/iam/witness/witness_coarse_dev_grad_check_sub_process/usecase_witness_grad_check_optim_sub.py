@@ -52,12 +52,10 @@ Compared to the classic witness coarse process where design variables are the in
 the weights coef_i to be applied to the generic investment profiles df_i
 Therefore, this usecase can be deduced from the standard witness coarse sub-process by:
 - defining the  InvestmentsProfileBuilderDisc inputs (n_profiles, df_i)
-- defining from scratch a new design space with coef_i (ie excluding the standard design variables such as investments
+- defining from scratch a new design space with coef_i (ie excluding the standard design variables such as investments 
 in fossil, renewable and CCUS and their utilization ratios)
 - imposing the utilization ratios at 100%
 '''
-
-
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
@@ -144,7 +142,7 @@ class Study(ClimateEconomicsStudyManager):
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}',
                          f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno']
 
-        n_profiles = 2  # * len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile
+        n_profiles = 2 #* len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile
 
         # create the design var descriptor for the design variables discipline. In this usecase, all outputs of
         # investprofilebuilder are provided with poles into the design variable discipline
@@ -169,22 +167,22 @@ class Study(ClimateEconomicsStudyManager):
         })
 
         years_dfi = np.arange(self.year_start, self.year_end + 1, self.time_step)
-        # values_dict.update({
+        #values_dict.update({
         #    f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{i}":
         #        self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
-        # })
-        min = 1.e-6
-        max = 3000.
+        #})
+        min=1.e-6
+        max=3000.
         # profile min
         values_dict.update({
             f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{0}":
-                # self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
+                #self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
                 self.df_generator_constant_profile(years_dfi, columns_names, [min] * len(columns_names))
         })
         # profile max
         values_dict.update({
             f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{1}":
-                # self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
+                #self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
                 self.df_generator_constant_profile(years_dfi, columns_names, [max] * len(columns_names))
         })
         # impose values to the utilization ratios that are not design variables anymore
@@ -228,7 +226,7 @@ class Study(ClimateEconomicsStudyManager):
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
                              f'{ns}.cache_type': 'SimpleCache',
-                             f'{ns}.warm_start': False,  # so that mda is computed identically for analytical and approx gradients
+                             f'{ns}.warm_start': False, # so that mda is computed identically for analytical and approx gradients
                              f'{ns}.design_space': dspace_df,
                              f'{ns}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
                              f'{ns}.eq_constraints': [],
@@ -254,3 +252,5 @@ if '__main__' == __name__:
     for graph in graph_list:
         graph.to_plotly().show()
     '''
+
+

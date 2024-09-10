@@ -285,7 +285,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
 
-    # get ns_object with longest
+    # get ns_object with longest 
     for ns in ns_list:
         if hasattr(ns, 'value') and isinstance(ns.value, str):
             if namespace in ns.value:
@@ -370,7 +370,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                                              carbon_emissions[techno].values
                 else:
                     CO2_from_other_consumption += carbon_emissions[emission_type].values
-            if total_carbon_emissions is None:
+            if total_carbon_emissions is None :
                 raise Exception("variable total carbon emissions not defined")
             CO2_after_use = total_carbon_emissions
             CO2_per_kWh_techno = total_carbon_emissions

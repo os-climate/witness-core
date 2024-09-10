@@ -45,52 +45,56 @@ class OrderOfMagnitude():
         # MILLION_TONNES: 10**6
     }
 
-
 class CopperResourceModel(ResourceModel):
     """
     Resource pyworld3
     General implementation of a resource pyworld3, to be inherited by specific models for each type of resource
     """
 
-    resource_name = ResourceGlossary.Copper['name']
+    resource_name=ResourceGlossary.Copper['name']
 
+    
     def configure_parameters(self, inputs_dict):
         super().configure_parameters(inputs_dict)
         self.sectorisation_dict = inputs_dict['sectorisation']
         self.resource_max_price = inputs_dict['resource_max_price']
+    
+    
 
-    # Units conversion
+    #Units conversion
     oil_barrel_to_tonnes = 6.84
     bcm_to_Mt = 1 / 1.379
     kU_to_Mt = 10 ** -6
 
-    # To convert from 1E6 oil_barrel to Mt
+    #To convert from 1E6 oil_barrel to Mt
     conversion_factor = 1.0
-    # Average copper price rise and decrease
+    #Average copper price rise and decrease
     price_rise = 1.494
     price_decrease = 0.95
+    
 
     def convert_demand(self, demand):
-        self.resource_demand = demand
-        self.resource_demand[self.resource_name] = demand[self.resource_name]
-
+        self.resource_demand=demand
+        self.resource_demand[self.resource_name]=demand[self.resource_name]
+    
     def get_global_demand(self, demand):
         energy_demand = self.sectorisation_dict['power_generation']
-        self.resource_demand = demand
-        self.resource_demand[self.resource_name] = demand[self.resource_name] / energy_demand
+        self.resource_demand=demand
+        self.resource_demand[self.resource_name]=demand[self.resource_name] / energy_demand
         self.conversion_factor = 1 / energy_demand
 
-    def sigmoid(self, ratio, sigmoid_min):
+    def sigmoid(self, ratio, sigmoid_min ):  
             '''
             function sigmoid redefined for the ratio :
             sigmoid([-10;10])->[0;1] becomes sigmoid([1;0])->[sigmoid_min, resource_max_price] (ratio = 1 matches sigmoids' lower bound, and ratio = 0 matches sigmoid's upper bound)
             '''
-            x = -20 * ratio + 10
-
-            sig = 1 / (1 + math.exp(-x))
-
-            return sig * (self.resource_max_price - sigmoid_min) + sigmoid_min
-
+            x= -20*ratio +10
+            
+            sig = 1/ (1 + math.exp(-x))
+            
+            return sig*(self.resource_max_price-sigmoid_min) + sigmoid_min
+            
+    
     def compute_price(self):
         """
         price function depends on the ratio use_stock/demand
@@ -98,51 +102,53 @@ class CopperResourceModel(ResourceModel):
         """
 
         # dataframe initialization
-        self.resource_price['price'] = np.insert(np.zeros(len(self.years) - 1), 0, self.resource_price_data.loc[0, 'price'])
+        self.resource_price['price'] = np.insert(np.zeros(len(self.years)-1), 0, self.resource_price_data.loc[0, 'price'])
         resource_price_dict = self.resource_price.to_dict()
         self.resource_demand = self.resources_demand[[GlossaryCore.Years, self.resource_name]]
         self.get_global_demand(self.resource_demand)
 
-        demand = deepcopy(self.resource_demand[self.resource_name].values)
+        demand = deepcopy(self.resource_demand[self.resource_name].values)      
         demand_limited = compute_func_with_exp_min(
             np.array(demand), 1.0e-10)
-
+ 
         self.ratio_usable_demand = np.maximum(self.use_stock[self.sub_resource_list[0]].values / demand_limited, 1E-15)
 
-        for year_cost in self.years[1:]:
-
+        for year_cost in self.years[1:] : 
+          
             resource_price_dict['price'][year_cost] = \
                     (self.resource_max_price - self.resource_price_data.loc[0, 'price']) *\
-                        (1 - self.ratio_usable_demand[year_cost - self.year_start]) + self.resource_price_data.loc[0, 'price']
+                        (1- self.ratio_usable_demand[year_cost - self.year_start]) + self.resource_price_data.loc[0, 'price']
+    
+        self.resource_price= pd.DataFrame.from_dict(resource_price_dict)
 
-        self.resource_price = pd.DataFrame.from_dict(resource_price_dict)
-
-    def get_d_price_d_demand(self, year_start, year_end, nb_years, grad_use, grad_price):
+ 
+    def get_d_price_d_demand (self, year_start, year_end, nb_years, grad_use, grad_price):
         ascending_price_resource_list = list(
             self.resource_price_data.sort_values(by=['price'])['resource_type'])
-
-        demand = deepcopy(self.resource_demand[self.resource_name].values)
+        
+        demand = deepcopy(self.resource_demand[self.resource_name].values)      
         demand_limited = compute_func_with_exp_min(np.array(demand), 1.0e-10)
         grad_demand_limited = compute_dfunc_with_exp_min(np.array(demand), 1.0e-10)
-
-        self.ratio_usable_demand = np.maximum(self.use_stock[self.sub_resource_list[0]].values / demand_limited, 1E-15)
+        
+        self.ratio_usable_demand = np.maximum(self.use_stock[self.sub_resource_list[0]].values / demand_limited, 1E-15) 
         # # ------------------------------------------------
         # # price is cst *u/v function with u = use and v = demand
         # # price gradient is cst * (u'v - uv') / v^2
-        for year_demand in range(year_start + 1, year_end + 1):
+        for year_demand in range(year_start + 1, year_end + 1):  
             for resource_type in ascending_price_resource_list:
-
+    
                 for year in range(year_start + 1, year_demand + 1):
-                    # grad_price = cst * u'v  / v^2 (cst < 0)
-                    if self.use_stock[self.sub_resource_list[0]][year_demand] / demand_limited[year_demand - year_start] > 1E-15:
+                    #grad_price = cst * u'v  / v^2 (cst < 0)
+                    if self.use_stock[self.sub_resource_list[0]][year_demand]/demand_limited[year_demand - year_start] > 1E-15 :
                         grad_price[year_demand - year_start, year - year_start] = \
                             - grad_use[resource_type][year_demand - year_start, year - year_start]
-                        # grad_price -= cst *  uv'  / v^2 (cst < 0)
-                        if year == year_demand:
-                                grad_price[year_demand - year_start, year - year_start] += self.use_stock[self.sub_resource_list[0]][year_demand]\
-                                        * self.conversion_factor / demand_limited[year_demand - year_start]
+                        ## grad_price -= cst *  uv'  / v^2 (cst < 0)
+                        if year == year_demand :
+                                grad_price[year_demand - year_start, year - year_start] +=   self.use_stock[self.sub_resource_list[0]][year_demand]\
+                                        * self.conversion_factor / demand_limited[year_demand - year_start] 
                         grad_price[year_demand - year_start, year - year_start] = grad_price[year_demand - year_start, year - year_start] *\
                             (self.resource_max_price - self.resource_price_data.loc[0, 'price']) *\
-                            grad_demand_limited[year_demand - year_start] / demand_limited[year_demand - year_start]
+                            grad_demand_limited[year_demand - year_start]/ demand_limited[year_demand - year_start]
+                    
 
         return grad_price

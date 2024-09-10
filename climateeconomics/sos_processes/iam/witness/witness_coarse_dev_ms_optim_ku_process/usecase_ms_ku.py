@@ -40,7 +40,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_opt
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
+    def __init__(self, year_start=GlossaryCore.YearStartDefault,filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
@@ -55,10 +55,9 @@ class Study(ClimateEconomicsStudyManager):
             uc_ms_mda.USECASE4: Study3,
             uc_ms_mda.USECASE7: Study4,
         }
-
     def setup_usecase(self, study_folder_path=None):
 
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(self.scenario_dict), 'scenario_name': list(self.scenario_dict.keys())})
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(self.scenario_dict) ,'scenario_name': list(self.scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{self.scatter_scenario}.samples_df': scenario_df,
             f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))

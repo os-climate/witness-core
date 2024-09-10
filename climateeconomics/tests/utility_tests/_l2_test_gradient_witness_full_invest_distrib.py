@@ -59,11 +59,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_05_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess_each_step(self):
         '''
-        Test on the witness full MDA + design var to get bspline with func manager
+        Test on the witness full MDA + design var to get bspline with func manager 
 
         we can test only lagrangian objective vs design var
 
-        Need to checkout to gems_without_cache in gems repository
+        Need to checkout to gems_without_cache in gems repository 
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)

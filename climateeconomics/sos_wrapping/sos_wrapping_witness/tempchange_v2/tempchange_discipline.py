@@ -166,6 +166,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         # todo: for sensitivity, generalise ?
         self.model.init_temp_atmo = in_dict['init_temp_atmo']
+        
 
         # pyworld3 execution
         temperature_df = self.model.compute(in_dict)
@@ -175,11 +176,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.TemperatureDfValue: temperature_df[GlossaryCore.TemperatureDf['dataframe_descriptor'].keys()],
                     'forcing_detail_df': self.model.forcing_df,
                     'temperature_constraint': self.model.temperature_end_constraint}
-
+        
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
-        """
+        """ 
         Compute jacobian for each coupling variable
         """
         temperature_model = self.get_sosdisc_inputs('temperature_model')
@@ -341,7 +342,6 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         return instanciated_charts
 
-
 def temperature_evolution(model, temperature_df, instanciated_charts):
     if model == 'DICE':
         to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
@@ -439,7 +439,6 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
 
     return instanciated_charts
 
-
 def radiative_forcing(forcing_df, instanciated_charts):
     years = forcing_df[GlossaryCore.Years].values.tolist()
 
@@ -458,3 +457,4 @@ def radiative_forcing(forcing_df, instanciated_charts):
     instanciated_charts.append(new_chart)
 
     return instanciated_charts
+

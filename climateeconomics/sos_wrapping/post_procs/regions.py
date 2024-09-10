@@ -153,3 +153,5 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     return instanciated_charts
+
+

@@ -999,3 +999,5 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 401,0.017,0.000,0.233,0.001,/usr/local/sostrades/witness-energy/energy_models/core/techno_type/techno_type.py:1309(compute_dlanduse_dinvest)
 3171,0.008,0.000,0.233,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/indexes/base.py:3306(_convert_can_do_setop)
 8610,0.024,0.000,0.231,0.000,/usr/local/lib/python3.7/site-packages/numpy/lib/arraysetops.py:138(unique)
+
+

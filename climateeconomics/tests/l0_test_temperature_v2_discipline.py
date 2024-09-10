@@ -56,8 +56,8 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
-        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222 / 296
-        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296 / 296
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
@@ -110,8 +110,8 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
-        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222 / 296
-        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296 / 296
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
@@ -164,8 +164,8 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
-        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222 / 296
-        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296 / 296
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
@@ -218,9 +218,10 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
-        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222 / 296
-        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296 / 296
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
+
 
         # put manually the index
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
@@ -271,9 +272,10 @@ class TemperatureDiscTest(unittest.TestCase):
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
-        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222 / 296
-        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296 / 296
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
+
 
         # put manually the index
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)

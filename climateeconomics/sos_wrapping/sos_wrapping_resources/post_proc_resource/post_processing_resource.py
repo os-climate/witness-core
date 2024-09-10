@@ -82,18 +82,18 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     resource_name = namespace.split('Resources.')[-1]
     first_part_ns = namespace.split('Resources.')[0]
     ns_val = None
-    # TODO quick fix but need to do a cleaner way but needs deeper reflexion
+    # TODO quick fix but need to do a cleaner way but needs deeper reflexion 
     ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
     max_length = 0
     longest_object = None
 
-    # get ns_object with longest
+    # get ns_object with longest 
     for ns in ns_list:
         if hasattr(ns, 'value') and isinstance(ns.value, str):
             if first_part_ns in ns.value and len(ns.value) > max_length:
                 max_length = len(ns.value)
-                longest_object = ns
-    ns_energy_mix = longest_object.value
+                longest_object = ns  
+    ns_energy_mix = longest_object.value     
     index = ns_energy_mix.find('.EnergyMix')
     if index != -1:
         ns_val = ns_energy_mix[:index]

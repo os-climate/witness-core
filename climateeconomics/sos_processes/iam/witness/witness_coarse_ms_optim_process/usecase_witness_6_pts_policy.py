@@ -57,7 +57,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 6
 
         len_scenarios = len(scenario_list)
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios, 'scenario_name': scenario_list})
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
 
@@ -73,7 +73,7 @@ class Study(ClimateEconomicsStudyManager):
 
             for dict_data in scenarioData:
                 values_dict.update(dict_data)
-            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.{witness_ms_usecase.optim_name}'
+            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.{witness_ms_usecase.optim_name}' \
                         f'.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.FunctionsManager.function_df'] = default_func_df
             values_dict[
                     f'{self.study_name}.{self.scatter_scenario}.{scenario}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = 1.
@@ -81,7 +81,7 @@ class Study(ClimateEconomicsStudyManager):
         year_end = scenarioUseCase.year_end
         years = np.arange(year_start, year_end + 1)
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5) / 1e-4, np.ones(len(years) - 5) / 4), axis=None)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)/1e-4,np.ones(len(years)-5)/4), axis=None)
 
         return values_dict
 

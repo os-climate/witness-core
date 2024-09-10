@@ -51,14 +51,14 @@ class CopperDisc(SoSWrapp):
     DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt',
                                  'dataframe_descriptor': {'Year': ('float', None, False),
                                                           'Demand': ('float', None, False),
-                                                          'unit': ('string', None, False), }
+                                                          'unit': ('string', None, False),}
                                  },
                GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
 
                'annual_extraction': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': 'Mt',
                                      'default': [26] * 81},
-               'initial_copper_reserve': {'type': 'float', 'unit': 'Mt', 'default': 3500, 'user_level': 2},
+               'initial_copper_reserve': {'type': 'float', 'unit': 'Mt', 'default': 3500,'user_level': 2},
 
                'initial_copper_stock': {'type': 'float', 'unit': 'Mt', 'default': 880, 'user_level': 2}}
 

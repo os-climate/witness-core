@@ -58,6 +58,6 @@ The model outputs are:
 * **Land surface for food** represents the land surface for food that is in input of the model.
 
 
-### References
+### References 
 
 [^1]: Hannah Ritchie and Max Roser (2013) - "Land Use". Published online at OurWorldInData.org. Retrieved from: 'https://ourworldindata.org/land-use'

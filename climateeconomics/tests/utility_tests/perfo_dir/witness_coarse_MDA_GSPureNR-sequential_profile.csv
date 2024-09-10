@@ -999,3 +999,5 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 223,0.001,0.000,0.023,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/nanops.py:119(f)
 671,0.006,0.000,0.023,0.000,/usr/local/sostrades/sostrades-core/sos_trades_core/tools/base_functions/exp_min.py:25(compute_func_with_exp_min)
 101,0.001,0.000,0.023,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/indexing.py:1926(_setitem_single_block)
+
+

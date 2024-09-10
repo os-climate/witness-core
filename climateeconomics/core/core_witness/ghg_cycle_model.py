@@ -106,13 +106,13 @@ class GHGCycle():
         computes derivative of co2_ppm with respect to CO2 emissions
         """
 
-        coeff = 0.000471 * self.em_ratios[0] * 1e3
+        coeff = 0.000471*self.em_ratios[0] * 1e3
         decay = self.decays[0]
-        mat = np.diag(coeff * np.ones(len(self.years_range)))
+        mat = np.diag(coeff*np.ones(len(self.years_range)))
 
-        for i in np.arange(1, len(self.years_range - 1)):
-            coeff = coeff * decay
-            mat += np.diag(coeff * np.ones(len(self.years_range) - i), -i)
+        for i in np.arange(1, len(self.years_range-1)):
+            coeff = coeff*decay
+            mat += np.diag(coeff*np.ones(len(self.years_range)-i), -i)
 
         # first year is from initial data and is fixed ==> grad is zero
         mat[:, 0] = 0.0
@@ -323,7 +323,7 @@ class GHGCycle():
         d_conc_d_emissions = np.zeros((n_years, n_years))
         for i in range(1, n_years):
             d_conc_d_emissions[i] = (1 - decay_rate) * d_conc_d_emissions[i - 1]
-            d_conc_d_emissions[i, i - 1] += emissions_to_pp
+            d_conc_d_emissions[i, i-1] += emissions_to_pp
 
         return d_conc_d_emissions
 
@@ -334,3 +334,4 @@ class GHGCycle():
     def d_conc_n2o_d_emissions(self):
         return self.d_conc_d_emission(decay_rate=self.decay_n2o,
                                       emissions_to_pp=self.gt_to_pp[GlossaryCore.N2O])
+

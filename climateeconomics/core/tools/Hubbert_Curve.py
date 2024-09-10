@@ -22,16 +22,16 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 def compute_Hubbert_regression(past_production, production_years, regression_start, resource_type):
-
+    
     '''
     Compute Hubbert Regression Curve from past production
     '''
     # initialization
-    past_production_years = past_production[GlossaryCore.Years]
+    past_production_years=past_production[GlossaryCore.Years]
     cumulative_production = pd.DataFrame(
         {GlossaryCore.Years: past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
     ratio_P_by_Q = pd.DataFrame({GlossaryCore.Years: past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
-
+    
     # Cf documentation for the hubbert curve computing
     Q = 0  # Q is the cumulative production at one precise year
 
@@ -43,10 +43,11 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
                                        resource_type] = Q + P
         Q = cumulative_production.loc[i_year, resource_type]
         ratio_P_by_Q.loc[i_year, resource_type] = P / Q
-
+    
     # keep only the part you want to make a regression on
     cumulative_sample = cumulative_production.loc[
         cumulative_production[GlossaryCore.Years] >= regression_start]
+    
 
     ratio_sample = ratio_P_by_Q.loc[ratio_P_by_Q[GlossaryCore.Years] >= regression_start]
 
@@ -54,10 +55,12 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
         cumulative_sample[resource_type], ratio_sample[resource_type], 1)
 
     w = fit[1]  # imaginary frequency
+    
 
     # sum of the available and recoverable reserve (predict by Hubbert
     # pyworld3 from the start of the exploitation to the end)
     Q_inf = -1 * (w / fit[0])
+
 
     tho = 0  # year of resource peak
 
@@ -73,5 +76,5 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
     for year in production_years:
         predictable_production += [Q_inf * w * (
                 (1 / (np.exp((-(w / 2)) * (tho - year)) + np.exp((w / 2) * (tho - year)))) ** 2),]
-
+    
     return predictable_production

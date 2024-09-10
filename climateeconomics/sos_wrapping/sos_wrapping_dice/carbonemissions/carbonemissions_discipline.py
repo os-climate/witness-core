@@ -29,6 +29,7 @@ from climateeconomics.glossarycore import GlossaryCore
 class CarbonemissionsDiscipline(SoSWrapp):
     "carbonemissions discipline for DICE"
 
+
     # ontology information
     _ontology_data = {
         'label': 'Carbon Emissions DICE Model',
@@ -111,7 +112,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
         if 'carbon emission' in chart_list:
 
             to_plot = ['total_emissions', 'land_emissions', 'indus_emissions']
-            # emissions_df = discipline.get_sosdisc_outputs('emissions_df')
+            #emissions_df = discipline.get_sosdisc_outputs('emissions_df')
 
             total_emission = emissions_df['total_emissions']
 

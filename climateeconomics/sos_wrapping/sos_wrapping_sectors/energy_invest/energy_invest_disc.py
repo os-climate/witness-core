@@ -59,7 +59,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
     def run(self):
         """run"""
         inputs = self.get_sosdisc_inputs()
-
+        
         self.model = EnergyInvestModel()
 
         self.model.compute(inputs)
@@ -68,7 +68,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
             GlossaryCore.CleanEnergyInvestmentsValue: self.model.added_renewables_investments,
             GlossaryCore.EnergyInvestmentsValue: self.model.energy_investments,
         }
-
+        
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

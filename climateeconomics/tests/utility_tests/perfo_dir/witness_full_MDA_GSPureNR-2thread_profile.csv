@@ -999,3 +999,5 @@ ncalls,tottime,percall,cumtime,percall,filename:lineno(function)
 6,0.000,0.000,0.063,0.011,/usr/local/sostrades/witness-energy/energy_models/core/techno_type/techno_type.py:463(add_percentage_to_total)
 365,0.004,0.000,0.063,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/nanops.py:83(_f)
 380,0.002,0.000,0.063,0.000,/usr/local/lib/python3.7/site-packages/pandas/core/indexes/base.py:4682(_concat)
+
+

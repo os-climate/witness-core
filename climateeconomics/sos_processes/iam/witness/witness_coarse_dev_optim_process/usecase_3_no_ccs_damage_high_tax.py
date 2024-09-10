@@ -34,7 +34,7 @@ class Study(StudyOptimInvestDistrib):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-
+        
         data_witness = super().setup_usecase()
         # update fossil invest & utilization ratio lower bound to not be too low
         min_invest = 1.
@@ -63,7 +63,7 @@ class Study(StudyOptimInvestDistrib):
         # update design var descriptor with Ine variable
         dvar_descriptor = data_witness[f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor']
         design_var_descriptor_ine_variable = self.get_ine_dvar_descr()
-
+        
         dvar_descriptor.update({
             "share_non_energy_invest_ctrl": design_var_descriptor_ine_variable
         })
@@ -80,6 +80,7 @@ class Study(StudyOptimInvestDistrib):
         }
 
         data_witness.update(updated_data)
+
 
         # Put high tax
         data_witness.update({

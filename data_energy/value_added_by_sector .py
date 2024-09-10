@@ -20,7 +20,7 @@ import pandas as pd
 
 "read DataFrame"
 data_folder = join(dirname(dirname(__file__)), 'data_energy', 'data')
-data = pd.read_csv(join(data_folder, 'value_added_by_sector.csv'))
+data=pd.read_csv(join(data_folder, 'value_added_by_sector.csv'))
 "we only keep data for 2017 and we calculate the average for each country and then the global value"
 dt = data[data['Year'] == 2017]
 mean_per_country = dt.groupby('Country')['Value USD (Million USD)'].mean()
@@ -36,10 +36,10 @@ total_values_per_country = dt.groupby('Country')['Value USD (Million USD)'].sum(
 "Step 2: Divide the total sum by the total weight to get the weight per country"
 total_value = total_values_per_country.sum()
 weights_per_country = total_values_per_country / total_value
-total_weight = weights_per_country.sum()
+total_weight=weights_per_country.sum()
 grouped_data = dt.groupby(['Country', 'ISIC Section'])
 weighted_avg_by_group = {}
-section_sums = {}
+section_sums={}
 for name, group in grouped_data:
     weighted_avg = group['Value USD (Million USD)'] * weights_per_country[name[0]]
     weighted_avg_by_group[name] = weighted_avg
@@ -47,6 +47,7 @@ for name, group in grouped_data:
     section_name = name[1]
 
     weighted_avg_value = weighted_avg.values[0]
+
 
    # print(f"Country: {country_name}, Section: {section_name}, Weighted Value: {weighted_avg_value}")
     if section_name in section_sums:
@@ -61,7 +62,7 @@ for section, section_sum in section_sums.items():
     section_weighted_average = section_sum / total_weight
     section_weighted_averages[section] = section_weighted_average
 
-    # print(f"Section: {section}, Weighted Average: {section_weighted_average}")
+    #print(f"Section: {section}, Weighted Average: {section_weighted_average}")
 
 # Calcul de la somme des Weighted Averages
 total_weighted_average = sum(value for value in section_weighted_averages.values() if not math.isnan(value))
@@ -71,7 +72,7 @@ section_weighted_averages_percent = {}
 
 # Mise à jour des pourcentages pondérés dans le même dictionnaire
 for section, weighted_average in section_weighted_averages.items():
-    percent = (weighted_average / total_weighted_average) * 100
+    percent =(weighted_average / total_weighted_average) *100
     if not math.isnan(percent):
         section_weighted_averages_percent[section] = percent
 

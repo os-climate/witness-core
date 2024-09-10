@@ -43,7 +43,7 @@ class Study(ClimateEconomicsStudyManager):
         '''
         NZE inspired: Net Zero Emissions just for the energy sector, ie CO2 emissions = 0 for the energy sector
             for the other sectors, it is non-zero
-        NZE:  Net Zero Emissions for all sectors, therefore the energy sector captures and stores CO2 (therefore
+        NZE:  Net Zero Emissions for all sectors, therefore the energy sector captures and stores CO2 (therefore 
             the energy sector has a negative CO2 emission balance to compensate the non zero emissions of the other sectors
         '''
 
@@ -86,6 +86,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.SampleGenerator.eval_inputs'] = input_selection
         values_dict[f'{self.study_name}.{self.driver_name}.gather_outputs'] = output_selection
 
+
         # setup each scenario (mda settings ignored)
         for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.driver_name}.{scenario}'
@@ -95,7 +96,6 @@ class Study(ClimateEconomicsStudyManager):
             values_dict[f'{self.study_name}.{self.driver_name}.{scenario}.sub_mda_class'] = 'MDAGaussSeidel'
             values_dict[f'{self.study_name}.{self.driver_name}.{scenario}.max_mda_iter'] = 2
         return values_dict
-
 
 if '__main__' == __name__:
     uc_cls = Study()

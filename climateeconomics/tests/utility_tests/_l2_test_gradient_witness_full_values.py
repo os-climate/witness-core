@@ -45,11 +45,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_01(self):
         '''
-        Test on the witness full MDA + design var to get bspline with func manager
+        Test on the witness full MDA + design var to get bspline with func manager 
 
         we can test only lagrangian objective vs design var
 
-        Need to checkout to gems_without_cache in gems repository
+        Need to checkout to gems_without_cache in gems repository 
         '''
         max_discipline = {}
         for i in range(79):

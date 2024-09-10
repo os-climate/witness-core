@@ -111,26 +111,26 @@ def post_processings(execution_engine, namespace, filters):
         new_pareto_chart.add_pareto_front_optimal(pareto_front_serie)
 
         instanciated_charts.append(new_pareto_chart)
-#
+#      
 
 #     if 'Temperature vs Utility' in graphs_list:
-#
+# 
 #         chart_name = f'Temperature vs Utility per capita in {year_end}'
-#
+# 
 #         temperature = {}
 #         utility = {}
-#
+# 
 #         for scenario in scenario_list:
 #             temperature[scenario] = temperature_df_dict[scenario][GlossaryCore.TempAtmo][year_end]
 #             utility[scenario] = utility_df_dict[scenario]['period_utility'][year_end]
-#
+# 
 #         min_temp = min(list(temperature.values()))
 #         max_temp = max(list(temperature.values()))
 #         maxs = max(max_temp, abs(min_temp))
-#
+# 
 #         max_value_utility = max(list(utility.values()))
 #         min_value_utility = min(list(utility.values()))
-#
+# 
 #         new_pareto_chart = InstantiatedParetoFrontOptimalChart(
 #             abscissa_axis_name=f'Temperature increase in degree Celsius at {year_end} since industrial revolution',
 #             primary_ordinate_axis_name=f'Utility per capita in thousand dollars at {year_end}',
@@ -138,14 +138,14 @@ def post_processings(execution_engine, namespace, filters):
 #             primary_ordinate_axis_range=[
 #                 min_value_utility - max_value_utility * 0.03, max_value_utility * 1.03],
 #             chart_name=chart_name)
-#
+# 
 #         for scenario in scenario_list:
 #             new_serie = InstanciatedSeries([temperature[scenario]],
 #                                            [utility[scenario]],
 #                                            scenario, 'scatter',
 #                                            custom_data=f'{namespace_w}.{scenario}')
 #             new_pareto_chart.add_serie(new_serie)
-#
+# 
 #             # Calculating and adding pareto front
 #         sorted_temp = sorted(temperature.values())
 #         sorted_scenarios = []
@@ -153,22 +153,24 @@ def post_processings(execution_engine, namespace, filters):
 #             for scen, temp in temperature.items():
 #                 if temp == val:
 #                     sorted_scenarios.append(scen)
-#
+# 
 #         sorted_list = sorted([[temperature[scenario], utility[scenario]]
 #                               for scenario in sorted_scenarios], reverse=True)
 #         pareto_front = [sorted_list[0]]
 #         for pair in sorted_list[1:]:
 #             if pair[1] <= pareto_front[-1][1]:
 #                 pareto_front.append(pair)
-#
+# 
 #         pareto_front_serie = InstanciatedSeries(
 #             [pair[0] for pair in pareto_front], [pair[1] for pair in pareto_front], 'Pareto front', 'lines')
 #         new_pareto_chart.add_pareto_front_optimal(pareto_front_serie)
-#
+# 
 #         instanciated_charts.append(new_pareto_chart)
 #         new_pareto_chart.to_plotly().show()
+        
 
     return instanciated_charts
+
 
 
 def get_df(execution_engine, namespace):

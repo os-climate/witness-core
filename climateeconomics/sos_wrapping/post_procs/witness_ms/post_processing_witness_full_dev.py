@@ -435,13 +435,13 @@ def get_chart_pareto_front(x_dict, y_dict, scenario_list, namespace_w, chart_nam
     :params: y_dict, dict containing the data for the y axis of the pareto front per scenario
     :type: dict
 
-    :params: scenario_list, list containing the name of the scenarios
+    :params: scenario_list, list containing the name of the scenarios 
     :type: list
 
     :params: namespace_w, namespace of scatter scenario
     :type: string
 
-    :params: chart_name, name of the chart used as title
+    :params: chart_name, name of the chart used as title 
     :type: string
 
     :returns: new_pareto_chart, the chart object to be displayed
@@ -496,7 +496,7 @@ def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
     @param execution_engine: Execution_engine, object from which the data is gathered
     @param df_paths: list of string, containing the paths to access the df
 
-    @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe}
+    @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
     '''
     df_per_scenario_dicts = [{} for _ in df_paths]
     scatter_scenario = 'optimization scenarios'

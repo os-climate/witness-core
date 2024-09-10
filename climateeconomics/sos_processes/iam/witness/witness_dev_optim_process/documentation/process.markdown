@@ -11,7 +11,7 @@ Multi-disciplinary design optimization (MDO) is a field of engineering that uses
 
 The problem is given with an objective to minimize, respecting a certain number of constraints. As a result, the optimized solution will attend the lowest objective, following the given constraints.
 
-The problem is defined as follow :
+The problem is defined as follow : 
 
 ![](witness_formulation.PNG)
 
@@ -28,15 +28,15 @@ $\gamma$ represents if we prefer maximum average utility or do not fall to low a
 
 ### Utility
 
-Utility represents the global wealth of the population. The physical meaning of the utility objective is to maximise the average wealth of the population over the entire period of the study.
+Utility represents the global wealth of the population. The physical meaning of the utility objective is to maximise the average wealth of the population over the entire period of the study. 
 
 Last utility objective, formula:
 
-$$utility\_objective =\alpha\frac{initial\_utility}{last\_utility}$$
+$$utility\_objective =\alpha\frac{initial\_utility}{last\_utility}$$  
 
 Welfare objective, formula:
 
-$$utility\_objective =\alpha\frac{initial\_discounted\_utility * Δyears}{welfare}$$
+$$utility\_objective =\alpha\frac{initial\_discounted\_utility * Δyears}{welfare}$$  
 
 ### Min Utility
 
@@ -44,25 +44,25 @@ As utility is the wealth of the population, it is important it remains likely st
 
 Last min_utility objective, formula:
 
-$$min\_utility\_objective =(1 - α)\frac{initial\_min\_utility}{last\_min\_utility}$$
+$$min\_utility\_objective =(1 - α)\frac{initial\_min\_utility}{last\_min\_utility}$$  
 
 
 ### Carbon Emission
 
 Carbon emissions are central for sustainability. This objective tends to reduce the CO2 emissions by wisely choosing energy production technologies.
 
-The formula of carbon emission objective is the following:
+The formula of carbon emission objective is the following: 
 $$carbon\_objective = 0.5*(1 - α)\frac{ \sum{carbon\_emissions} }{initial\_carbon\_emissions*Δyears}$$
 
 ## Boundaries
 
 As the problem is numerical and resolved by computer, the research domain can not be infinite. As a result, bounds are set to limit it, but are kept large enough to do not affect the result.
-* invest_mix is set between 0% and 100%.
+* invest_mix is set between 0% and 100%. 
 
 ## Constraints
 
 As the problem is resolved numerically, a great number of solutions can be found, including non realistic ones. In order to keep solution as realistic as possible, constraints are set.
-Here is the physical meaning of the constraints :
+Here is the physical meaning of the constraints : 
 
 ### Total energy production
 The total energy production is one of the outputs of the witness process. This represents the total amount of energy produced. As our society strongly rely on energy production (electricity, transport, gas,...) we do not want energy production to fall under a certain amount min_energy.
@@ -86,7 +86,7 @@ With the same logic than the constraint about energy for transport, the society 
 Gaseous hydrogen is difficult to transport and stock, while it is easier with liquid hydrogen. That is why liquid hydrogen is privileged.
 
 ### Land use
-Witness model computes land use by technologies and agriculture. This constraints assures
+Witness model computes land use by technologies and agriculture. This constraints assures 
 that the land used is available, and does not exceed forest and crops land limits.
 
 ## Design variables

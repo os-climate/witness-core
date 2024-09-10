@@ -100,7 +100,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                             'fruits and vegetables': ('float', [0, 1e9], True)},
                                    'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
                'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
-               'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg', 'namespace': 'ns_agriculture'},
+               'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
                # design variables of changing diet
                'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -138,12 +138,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
     def run(self):
 
-        # -- get inputs
+        #-- get inputs
 
         inp_dict = self.get_sosdisc_inputs()
+        
 
         self.agriculture_model.apply_percentage(inp_dict)
-        # -- compute
+        #-- compute
         population_df = inp_dict[GlossaryCore.PopulationDfValue]
         temperature_df = inp_dict[GlossaryCore.TemperatureDfValue]
         self.agriculture_model.compute(population_df, temperature_df)
@@ -155,8 +156,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             'updated_diet_df': self.agriculture_model.updated_diet_df,
             'agriculture_productivity_evolution': self.agriculture_model.productivity_evolution,
         }
-
-        # -- store outputs
+        
+        #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

@@ -1,7 +1,7 @@
 The Earth offers a finite amount of gas. Theses gas stocks take different forms and according to the gas kind and the region it come from, the price varies.
 
 In order to find these parameters we need to find the data for the past production per year from the beginning of the production.
-The used data are taken from 1950 to 2020 there is several categories of gas which represent a percentage of the total production. These proportions change with the production year. In order to get an idea of this percentage, we use a linear evolution of each gas proportion between 2000 and 2020.
+The used data are taken from 1950 to 2020 there is several categories of gas which represent a percentage of the total production. These proportions change with the production year. In order to get an idea of this percentage, we use a linear evolution of each gas proportion between 2000 and 2020. 
 
 Production data sources : [^1] and [^2]
 
@@ -24,7 +24,7 @@ We use the price of the different type of as :
 
 ### Other data [^3]
 
-We take the mean price of the different gas type according their proportion in the global gas production.
+We take the mean price of the different gas type according their proportion in the global gas production. 
 
 To complete information about resource and demand the following data is also in the code :
 
@@ -44,7 +44,7 @@ To complete information about resource and demand the following data is also in 
 
 Data implemented in the gas demand csv.
 
-### References
+### References 
 
 [^1]: IEA 2022; World Energy Outlook 2021 Free Dataset, https://www.iea.org/data-and-statistics/data-product/world-energy-outlook-2021-free-dataset#tables-for-scenario-projections, License: CC BY 4.0.
 [^2]: Wang, Jianliang & Bentley, Yongmei - "Modelling world natural gas production." (2020) Energy. Vol. 1363-1372. 10.1016/j.egyr.2020.05.018. - Retrieved from: 'https://www.researchgate.net/publication/341598129_Modelling_world_natural_gas_production'

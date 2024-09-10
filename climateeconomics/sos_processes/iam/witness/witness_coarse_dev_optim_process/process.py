@@ -42,7 +42,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+        techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
@@ -52,7 +52,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
             optim_name, after_name=self.ee.study_name, clean_existing=True)  # optim_name
 
-        # -- set optim builder
+        #-- set optim builder
         opt_builder = self.ee.factory.create_optim_builder(
             optim_name, [coupling_builder])
 
@@ -66,7 +66,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                                                                                 'climateeconomics.sos_wrapping.post_procs.dashboard')
 
         # Uncomment to validate the adjoint vs finite differences gradient
-        # self.ee.post_processing_manager.add_post_processing_module_to_namespace(GlossaryCore.NS_WITNESS,
+        #self.ee.post_processing_manager.add_post_processing_module_to_namespace(GlossaryCore.NS_WITNESS,
         #                                                                        'climateeconomics.sos_wrapping.post_procs.compare_gradients')
+
 
         return opt_builder

@@ -62,3 +62,4 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         excluded_disc = []
         self.all_usecase_disciplines_jacobian_test(usecase, directory=directory, excluded_disc=excluded_disc)
+

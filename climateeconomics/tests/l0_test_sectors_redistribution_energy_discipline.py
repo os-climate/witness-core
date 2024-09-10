@@ -26,7 +26,7 @@ class SectorsRedistributionEnergyDisciplineTest(unittest.TestCase):
 
     def setUp(self):
         """Initialize third data needed for testing"""
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         n_years = len(self.years)
@@ -82,5 +82,6 @@ class SectorsRedistributionEnergyDisciplineTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
+

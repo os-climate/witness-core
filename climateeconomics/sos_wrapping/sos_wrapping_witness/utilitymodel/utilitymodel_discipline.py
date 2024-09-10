@@ -96,9 +96,9 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """
+        """ 
         Compute jacobian for each coupling variable
-        gradiant of coupling variable to compute:
+        gradiant of coupling variable to compute: 
         utility_df
           - GlossaryCore.PeriodUtilityPerCapita:
                 - economics_df, GlossaryCore.PerCapitaConsumption
@@ -115,7 +115,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         d_discounted_utility_quantity_denergy_price, d_discounted_utility_quantity_dpcc, \
         d_pop_discounted_utility_quantity_denergy_price, d_pop_discounted_utility_quantity_dpcc, d_pop_discounted_utility_quantity_dpop, \
         d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop,\
-        d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop = self.utility_m.d_utility_quantity()
+        d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop= self.utility_m.d_utility_quantity()
 
         d_decreasing_obj_d_economic = self.utility_m.d_decreasing_gdp_obj()
 
@@ -193,6 +193,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.NetGdpGrowthRateObjectiveValue,),
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
             self.utility_m.d_net_gdp_growth_rate_obj())
+
 
     def get_chart_filter_list(self):
 
@@ -272,9 +273,10 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             ratios = np.linspace(-0.2, 4, n)
 
             new_chart = TwoAxesInstanciatedChart(f'Variation of quantity of things consumed per capita since {years[0]} [%]', 'Utility gain per capita', chart_name='Model visualisation : Quantity utility per capita function')
-            new_series = InstanciatedSeries(list((ratios - 1) * 100), list(self.utility_m.s_curve_function(ratios)), 'welfare quantity', 'lines', True)
+            new_series = InstanciatedSeries(list((ratios -1)*100), list(self.utility_m.s_curve_function(ratios)), 'welfare quantity', 'lines', True)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
-            # new_chart.to_plotly().show()
+            #new_chart.to_plotly().show()
 
         return instanciated_charts
+

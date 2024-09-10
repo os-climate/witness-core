@@ -26,7 +26,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class PolicyModel():
     '''
-    Used to compute carbon emissions from gross output
+    Used to compute carbon emissions from gross output 
     '''
 
     def __init__(self):
@@ -53,6 +53,7 @@ class PolicyModel():
         self.CO2_tax[GlossaryCore.CO2Tax] = smooth_maximum_vect(
             np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)
 
+
     def compute_CO2_tax_dCCS_dCO2_damage_smooth(self):
         """
         compute dCO2_tax/dCO2_damage and dCO2_tax/dCCS_price
@@ -62,5 +63,5 @@ class PolicyModel():
         CCS_price_array = self.ccs_price_percentage * self.CCS_price['ccs_price_per_tCO2'].values
         dsmooth = get_dsmooth_dvariable_vect(
             np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)
-        l_CO2, l_CCS = self.co2_damage_price_percentage * dsmooth.T[0], self.ccs_price_percentage * dsmooth.T[1]
+        l_CO2, l_CCS =self.co2_damage_price_percentage * dsmooth.T[0], self.ccs_price_percentage * dsmooth.T[1]
         return l_CO2, l_CCS

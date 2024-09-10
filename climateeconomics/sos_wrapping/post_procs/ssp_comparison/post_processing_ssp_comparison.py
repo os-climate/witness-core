@@ -200,7 +200,7 @@ _oil_gas = {FILE_NAME: 'oil_gas_fraction.csv', UNIT_CONV_FACTOR: 1.0,
                                     ]
             }
 NON_FOSSIL = 'Non-fossil'
-_non_fossil = {FILE_NAME: 'non-fossil_fraction.csv', UNIT_CONV_FACTOR: 1.0, }
+_non_fossil = {FILE_NAME: 'non-fossil_fraction.csv', UNIT_CONV_FACTOR: 1.0,}
 
 HYDROGEN = 'Hydrogen'
 _hydrogen = {WITNESS_VARS_COLS: [(f'EnergyMix.methane.{GlossaryCore.StreamProductionDetailedValue}', 'methane Methanation (TWh)'),
@@ -216,7 +216,7 @@ WITNESS_PRIMARY_ENERGY_DATA = {
     COAL: _coal,
     OIL_GAS: _oil_gas,
     # HYDROGEN: _hydrogen
-}  # NON-FOSSIL is deduced from total
+} # NON-FOSSIL is deduced from total
 WITNESS_BRUT_ENERGY_TOTAL = ('EnergyMix.energy_production_brut_detailed', GlossaryCore.TotalProductionValue)
 WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
     (f'EnergyMix.electricity.{GlossaryCore.StreamProductionDetailedValue}', 'electricity CoalGen (TWh)'),
@@ -228,8 +228,7 @@ WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.gaseous_hydrogen (TWh)'),
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.liquid_hydrogen (TWh)'),
 ]
-CHART_LIST = list(CHARTS_DATA.keys())
-
+CHART_LIST = list(CHARTS_DATA.keys()) 
 
 def get_ssp_data(data_name, data_dict, region='World'):
     """
@@ -246,12 +245,11 @@ def get_ssp_data(data_name, data_dict, region='World'):
     var_df.columns.name = None
     return var_df
 
-
 def post_processing_filters(execution_engine, namespace):
 
-    # get energy list
+    # get energy list 
     energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.energy_list}')
-    # if renewable not in energy list, we are not in coarse
+    # if renewable not in energy list, we are not in coarse 
     chart_l = CHART_LIST
 
     if GlossaryCore.clean_energy not in energy_list:
@@ -259,7 +257,6 @@ def post_processing_filters(execution_engine, namespace):
         chart_l = chart_l + [PRIMARY_ENERGY]
 
     return [ChartFilter('Charts', chart_l, chart_l, 'Charts')]
-
 
 def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
     """
@@ -280,7 +277,6 @@ def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
             years, series[sc].values.tolist(), sc, 'lines')
         new_chart.series.append(new_series)
     return new_chart
-
 
 def get_witness_primary_energy_chart(execution_engine, namespace):
     """
@@ -325,7 +321,6 @@ def get_witness_primary_energy_chart(execution_engine, namespace):
         new_chart.add_series(series)
     return new_chart
 
-
 def get_ssp_primary_energy_charts():
     """
     Create the primary energy fractions charts for ssp.
@@ -361,7 +356,6 @@ def get_ssp_primary_energy_charts():
         primary_energy_charts.append(new_chart)
     return primary_energy_charts
 
-
 def post_processings(execution_engine, namespace, filters):
     """
     Instantiate postprocessing charts.
@@ -386,7 +380,7 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
     energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.energy_list}')
-    # if renewable not in energy list, we are not in coarse
+    # if renewable not in energy list, we are not in coarse 
     chart_l = CHART_LIST
 
     if GlossaryCore.clean_energy not in energy_list:

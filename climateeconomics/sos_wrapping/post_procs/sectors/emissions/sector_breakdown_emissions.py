@@ -234,3 +234,5 @@ def post_processings(execution_engine, scenario_name, sector, chart_filters=None
             default_title=True, default_legend=False))
 
     return instanciated_charts
+
+

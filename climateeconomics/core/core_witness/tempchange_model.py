@@ -185,9 +185,9 @@ class TempChange(object):
     def compute_forcing_meinshausen(self, atmo_conc):
         """
         Compute radiative forcing following MeinsHausen pyworld3 (found in FAIR)
-        Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J., Vogel, E., Freund,
+        Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J., Vogel, E., Freund, 
         M., Beyerle, U., Gessner, C., Nauels, A., Bauer, N. and Canadell, J.G., 2020.
-        The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500.
+        The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. 
         Geoscientific Model Development, 13(8), pp.3571-3605.
         """
         a1 = -2.4785e-07
@@ -308,13 +308,13 @@ class TempChange(object):
         Compute temperature constraint
         """
         temp_ocean_year_end = self.temperature_df.at[self.year_end, GlossaryCore.TempAtmo]
-        self.temperature_end_constraint = np.array([(self.temperature_end_constraint_limit - temp_ocean_year_end) / self.temperature_end_constraint_ref])
+        self.temperature_end_constraint = np.array([(self.temperature_end_constraint_limit - temp_ocean_year_end)/self.temperature_end_constraint_ref])
 
-    # GRADIENTS ########
+    ######### GRADIENTS ########
 
     def compute_d_forcing(self):
         """
-        Compute gradient for radiative forcing
+        Compute gradient for radiative forcing 
         """
 
         atmo_conc = self.carboncycle_df['atmo_conc'].values
@@ -528,14 +528,14 @@ class TempChange(object):
                 d_tempatmo_d_atmoconc[i, i] = 0
 
             while j < i:
-                # -------atmo temp derivative------------
+                #-------atmo temp derivative------------
                 d_tempatmo_d_atmoconc[i, j] = d_tempatmo_d_atmoconc[i - 1, j] \
                     - self.climate_upper * self.time_step / 5.0 * self.forcing_eq_co2 / self.eq_temp_impact * d_tempatmo_d_atmoconc[i - 1, j] \
                     - self.climate_upper * self.time_step / 5.0 * self.transfer_upper * self.time_step / \
                     5.0 * \
                     (d_tempatmo_d_atmoconc[i - 1, j] -
                      d_tempocean_d_atmoconc[i - 1, j])
-                # -------ocean temp derivative-----------
+                #-------ocean temp derivative-----------
                 # if atmo temp is saturated
                 if (self.temperature_df.at[self.years_range[i], GlossaryCore.TempAtmo] == self.up_tatmo):
                     d_tempatmo_d_atmoconc[i, j] = 0
@@ -624,7 +624,7 @@ class TempChange(object):
         self.temperature_df = self.temperature_df.replace(
             [np.inf, -np.inf], np.nan)
 
-        # -- Compute temperature objectives with alpha trades and beta weight with CO2 objective
+        #-- Compute temperature objectives with alpha trades and beta weight with CO2 objective
         temperature_df_values = self.temperature_df[GlossaryCore.TempAtmo].values
         delta_years = len(temperature_df_values)
 

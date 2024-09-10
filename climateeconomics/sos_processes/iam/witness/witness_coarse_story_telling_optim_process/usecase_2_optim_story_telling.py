@@ -66,7 +66,7 @@ class Study(ClimateEconomicsStudyManager):
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
                              f'{ns}.cache_type': 'SimpleCache',
-                             f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,  # GlossaryCore.UsableCapitalObjectiveName,
+                             f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR, #GlossaryCore.UsableCapitalObjectiveName,
                              f'{ns}.{self.optim_name}.eq_constraints': [],
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 

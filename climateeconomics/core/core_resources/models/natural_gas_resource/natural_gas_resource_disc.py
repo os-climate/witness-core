@@ -86,7 +86,7 @@ class NaturalGasResourceDiscipline(ResourceDiscipline):
                                                                      'tight': ('float', None, False),
                                                                      'shale': ('float', None, False),
                                                                      'Coalbed_methane': ('float', None, False),
-                                                                     'other': ('float', None, False), }
+                                                                     'other': ('float', None, False),}
                                             },
                'resource_price_data': {'type': 'dataframe', 'unit': '$/MMBTU', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),

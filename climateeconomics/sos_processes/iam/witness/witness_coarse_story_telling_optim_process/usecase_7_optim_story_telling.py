@@ -83,7 +83,7 @@ class Study(ClimateEconomicsStudyManager):
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
                              f'{ns}.cache_type': 'SimpleCache',
-                             f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,  # GlossaryCore.UsableCapitalObjectiveName,
+                             f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR, #GlossaryCore.UsableCapitalObjectiveName,
                              f'{ns}.{self.optim_name}.eq_constraints': [],
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
@@ -126,6 +126,8 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': None,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.propagate_cache_to_children': True,
                              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
+
+
 
         return [values_dict] + [optim_values_dict]
 

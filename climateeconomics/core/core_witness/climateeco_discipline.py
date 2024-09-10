@@ -49,7 +49,7 @@ class ClimateEcoDiscipline(SoSWrapp):
                       GlossaryCore.CH4: 85.,
                       GlossaryCore.N2O: 265.}
     ASSUMPTIONS_DESC_IN = {
-        'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'structuring': True, 'unit': '-'}
+        'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'structuring': True, 'unit': '-'}
 
     desc_in_default_pandemic_param = GlossaryCore.PandemicParamDf
     # https://stackoverflow.com/questions/13905741/accessing-class-variables-from-a-list-comprehension-in-the-class-definition
@@ -93,7 +93,7 @@ class ClimateEcoDiscipline(SoSWrapp):
 
     def get_greataxisrange(self, serie):
         """
-        Get the lower and upper bound of axis for graphs
+        Get the lower and upper bound of axis for graphs 
         min_value: lower bound
         max_value: upper bound
         """

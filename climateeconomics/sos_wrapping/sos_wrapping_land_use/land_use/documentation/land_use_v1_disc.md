@@ -39,6 +39,6 @@ The following data (taken from 'Our World in Data'[^1]) are integrated into the 
 |Agriculture|Livestock|40|M|km2|
 |Agriculture|Crops|11|M|km2|
 
-### References
+### References 
 
 [^1]: Hannah Ritchie and Max Roser (2013) - "Land Use". Published online at OurWorldInData.org. Retrieved from: 'https://ourworldindata.org/land-use'

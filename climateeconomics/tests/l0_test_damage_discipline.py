@@ -29,7 +29,7 @@ class DamageDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-
+        
         self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
 
         self.temperature_df = pd.DataFrame({
@@ -136,6 +136,7 @@ class DamageDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.assumptions_dict': {'compute_gdp': True,
                                 'compute_climate_impact_on_gdp': False,
@@ -159,5 +160,5 @@ class DamageDiscTest(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
 
         for graph in graph_list:
-           # graph.to_plotly().show()
+           #graph.to_plotly().show()
            pass

@@ -35,16 +35,15 @@ class OrderOfMagnitude():
         # MILLION_TONNES: 10**6
     }
 
-
 class NaturalGasResourceModel(ResourceModel):
     """
     NaturalGas Resource pyworld3
     Overloads the generic resource pyworld3
     """
 
-    resource_name = ResourceGlossary.NaturalGas['name']
+    resource_name=ResourceGlossary.NaturalGas['name']
 
-    # Units conversion
+    #Units conversion
     oil_barrel_to_tonnes = 6.84
     bcm_to_Mt = 1 / 1.379
     kU_to_Mt = 10 ** -6
@@ -52,5 +51,5 @@ class NaturalGasResourceModel(ResourceModel):
     conversion_factor = 1 / bcm_to_Mt
 
     def convert_demand(self, demand):
-        self.resource_demand = demand
-        self.resource_demand[self.resource_name] = demand[self.resource_name] * self.conversion_factor
+        self.resource_demand=demand
+        self.resource_demand[self.resource_name]=demand[self.resource_name]*self.conversion_factor

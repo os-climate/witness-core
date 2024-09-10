@@ -152,7 +152,7 @@ if '__main__' == __name__:
     # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
     # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
     # uc_cls.execution_engine.set_debug_mode()
-    # uc_cls.run()
+    #uc_cls.run()
 
 #     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_reduced_graph(
 #         "reduced.pdf")

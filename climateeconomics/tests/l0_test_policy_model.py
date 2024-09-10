@@ -55,7 +55,7 @@ class PolicyDiscTest(unittest.TestCase):
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(345.5, 433.2, len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(345.5, 433.2,  len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,

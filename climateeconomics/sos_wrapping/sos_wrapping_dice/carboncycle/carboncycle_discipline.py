@@ -110,7 +110,7 @@ class CarbonCycleDiscipline(SoSWrapp):
         years = list(carboncycle_df[GlossaryCore.Years].values)
         if 'atmosphere concentration' in chart_list:
 
-            # carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
+            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             atmo_conc = carboncycle_df['atmo_conc']
 
             year_start = years[0]
@@ -138,7 +138,7 @@ class CarbonCycleDiscipline(SoSWrapp):
 
         if 'Atmospheric concentrations parts per million' in chart_list:
 
-            # carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
+            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             ppm = carboncycle_df['ppm']
 
             year_start = years[0]

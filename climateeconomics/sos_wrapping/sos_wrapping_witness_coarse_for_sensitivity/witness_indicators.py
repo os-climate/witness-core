@@ -27,7 +27,6 @@ from climateeconomics.glossarycore import GlossaryCore
 RENEWABLE_DEFAULT_TECHNO_DICT = CleanEnergySimpleTechnoDiscipline.techno_infos_dict_default
 FOSSIL_DEFAULT_TECHNO_DICT = FossilSimpleTechnoDiscipline.techno_infos_dict_default
 
-
 class WitnessIndicators(SoSWrapp):
     """
     Utility discipline to analyze Sensitivity Analysis demonstrator outputs in Witness Coarse Storytelling MDA.
