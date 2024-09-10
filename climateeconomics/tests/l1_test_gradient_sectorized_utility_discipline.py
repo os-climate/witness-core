@@ -197,5 +197,5 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.AllSectorsDemandDfValue}',
                                     f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
-                            outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjective}' for sector in self.sector_list],
+                            outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjectiveName}' for sector in self.sector_list],
                             derr_approx='complex_step')
