@@ -37,7 +37,7 @@ class EnergyInvestModel:
 
         self.added_renewables_investments = pd.DataFrame({
             GlossaryCore.Years: self.co2_emissions_Gt[GlossaryCore.Years],
-            GlossaryCore.InvestmentsValue : renewables_investments * 10 # 100 G$
+            GlossaryCore.InvestmentsValue: renewables_investments * 10  # 100 G$
         })
 
     def compute_energy_investments(self):
@@ -63,4 +63,3 @@ class EnergyInvestModel:
 
         self.compute_added_energy_investments_in_renewables()
         self.compute_energy_investments()
-

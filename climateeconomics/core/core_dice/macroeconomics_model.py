@@ -144,7 +144,7 @@ class MacroEconomics():
                                                   self.time_step, GlossaryCore.ProductivityGrowthRate]
         damefrac = self.damefrac[year]
         if damage_to_productivity:
-            #damage = 1-damefrac
+            # damage = 1-damefrac
             productivity = (1 - self.frac_damage_prod * damefrac) * \
                 (p_productivity / (1 - p_productivity_gr))
         else:

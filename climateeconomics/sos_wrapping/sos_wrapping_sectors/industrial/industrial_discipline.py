@@ -40,7 +40,7 @@ class IndustrialDiscipline(SectorDiscipline):
     }
     _maturity = 'Research'
 
-    #Update default values
+    # Update default values
     def setup_sos_disciplines(self):
         SectorDiscipline.setup_sos_disciplines(self)
         self.update_default_value('capital_start', 'in', DatabaseWitnessCore.SectorIndustryCapitalStart.value)
@@ -50,7 +50,6 @@ class IndustrialDiscipline(SectorDiscipline):
         self.update_default_value('energy_eff_k', 'in', 0.026986)
         self.update_default_value('energy_eff_cst', 'in', 0.171694)
         self.update_default_value('energy_eff_xzero', 'in', 2015)
-        self.update_default_value('energy_eff_max', 'in',3.1562276)
+        self.update_default_value('energy_eff_max', 'in', 3.1562276)
         self.update_default_value('output_alpha', 'in', 0.909985)
         self.update_default_value('depreciation_capital', 'in', 0.075)
-

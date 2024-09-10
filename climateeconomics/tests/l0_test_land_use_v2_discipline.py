@@ -32,7 +32,7 @@ class LandUseV2TestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2055
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
@@ -73,7 +73,7 @@ class LandUseV2TestCase(unittest.TestCase):
                       }
 
     def test_land_use_v2_model(self):
-        ''' 
+        '''
         Basic test of land use pyworld3
         Mainly check the overal run without value checks (will be done in another test)
         '''
@@ -84,7 +84,7 @@ class LandUseV2TestCase(unittest.TestCase):
                          self.total_food_land_surface, self.forest_surface_df)
 
     def test_land_use_v2_discipline(self):
-        ''' 
+        '''
         Check discipline setup and run
         '''
 

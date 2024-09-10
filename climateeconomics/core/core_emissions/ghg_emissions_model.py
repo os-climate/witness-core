@@ -49,7 +49,7 @@ class GHGEmissions:
         self.configure_parameters()
         self.create_dataframe()
         self.total_energy_production = None
-        self.epsilon = 1.e-5 # for the CO2 objective function
+        self.epsilon = 1.e-5  # for the CO2 objective function
         self.all_sections_emissions_df = None
 
     def configure_parameters(self):
@@ -71,7 +71,6 @@ class GHGEmissions:
 
         self.CO2EmissionsRef = self.param[GlossaryCore.CO2EmissionsRef['var_name']]
         self.total_energy_production = self.param[GlossaryCore.EnergyProductionValue]
-
 
     def configure_parameters_update(self, inputs_dict):
 
@@ -113,7 +112,7 @@ class GHGEmissions:
     def compute_total_emissions(self):
         """
         Total emissions is defined as : land use emissions + energy mix emissions + non energy emissions from economy
-        
+
         Note : Non energy emissions from economy are only in CO2 Equivalent
         """
         for ghg in self.GHG_TYPE_LIST:
@@ -163,11 +162,10 @@ class GHGEmissions:
 
         if self.affine_co2_objective:
             self.co2_emissions_objective = np.array(
-                [(10 * self.CO2EmissionsRef + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()) / \
+                [(10 * self.CO2EmissionsRef + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()) /
                  (20. * self.CO2EmissionsRef)])
         else:
             self.co2_emissions_objective = np.array([(np.sqrt((annual_co2_emissions_ref + mean_annual_co2_emissions)**2 + epsilon**2) - epsilon) / (2. * annual_co2_emissions_ref)])
-
 
     def d_CO2_emissions_objective_d_total_co2_emissions(self):
         '''
@@ -185,7 +183,6 @@ class GHGEmissions:
             d_CO2_emissions_objective_d_total_co2_emissions = np.array([dCO2 * (annual_co2_emissions_ref + mean_annual_co2_emissions) / np.sqrt((annual_co2_emissions_ref + mean_annual_co2_emissions)**2 + epsilon**2) / (2. * annual_co2_emissions_ref)])
 
         return d_CO2_emissions_objective_d_total_co2_emissions
-
 
     def compute_total_co2_eq_energy_emissions(self):
         columns_to_sum = [GlossaryCore.insertGHGTotalEmissions.format(ghg) for ghg in self.gwp_100.keys()]
@@ -284,7 +281,7 @@ class GHGEmissions:
         # Calculate total GWP100 per year
         total_gwp_100 = pd.DataFrame({
             GlossaryCore.Years: self.ghg_emissions_df[GlossaryCore.Years],
-            GlossaryCore.SectionA: sum(gwp_100_by_gas.values())  #store values in the only section of agriculture sector
+            GlossaryCore.SectionA: sum(gwp_100_by_gas.values())  # store values in the only section of agriculture sector
         })
 
         # add it to dictionary
@@ -364,10 +361,8 @@ class GHGEmissions:
         self.compute_CO2_emissions_objective()
         self.compute_net_zero_2050_constraint_df()
 
-
         # compute emission households
         self.compute_energy_emission_households()
-
 
     def compute_carbon_intensity_of_energy_mix(self):
         """
@@ -391,7 +386,7 @@ class GHGEmissions:
         total_energy_production = self.total_energy_production[GlossaryCore.TotalProductionValue].values
         return np.diag(self.gwp_100[ghg] / total_energy_production)
 
-    def d_section_energy_emissions_d_user_input(self, d_carbon_intensity_d_user_input, sector_name:str, section_name: str):
+    def d_section_energy_emissions_d_user_input(self, d_carbon_intensity_d_user_input, sector_name: str, section_name: str):
         return np.diag(self.param[f"{sector_name}.{GlossaryCore.SectionEnergyConsumptionDfValue}"][section_name].values) * d_carbon_intensity_d_user_input
 
     def d_section_non_energy_emissions_d_gdp_section(self, sector: str, section: str):

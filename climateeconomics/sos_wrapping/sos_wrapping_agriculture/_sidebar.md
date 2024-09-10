@@ -1,4 +1,4 @@
-<!-- SoS wrapping agriculture sidebar.md -->           
+<!-- SoS wrapping agriculture sidebar.md -->
 | [Up](../)
 
 * [Agriculture](agriculture/documentation/)

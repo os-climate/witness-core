@@ -101,7 +101,7 @@ class OilResourceDiscipline(ResourceDiscipline):
                                               'light_consumption': ('float', None, True),
                                               'medium_consumption': ('float', None, True),
                                               'heavy_consumption': ('float', None, True),
-                                              'unassigned_production_consumption': ('float', None, True),}
+                                              'unassigned_production_consumption': ('float', None, True), }
                },
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_oil_resource'},

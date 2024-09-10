@@ -44,7 +44,7 @@ class Study(StudyMSmdaTippingPoint35):
         })
 
         values_dict_2023 = {}
-        for key,value in values_dict.items():
+        for key, value in values_dict.items():
             if isinstance(value, pd.DataFrame) and GlossaryCore.Years in value.columns:
                 new_value = value.loc[value[GlossaryCore.Years] >= 2023]
                 values_dict_2023[key] = new_value

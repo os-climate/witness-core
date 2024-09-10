@@ -47,8 +47,6 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_forest': ns_scatter,
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
-
-
         builder_list = []
 
         chain_builders_landuse = self.ee.factory.get_builder_from_process(

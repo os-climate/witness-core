@@ -235,7 +235,7 @@ class DataStudy():
 
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
 
-        # 
+        #
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),

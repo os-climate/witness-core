@@ -49,7 +49,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
 class Study(ClimateEconomicsStudyManager):
 
     USECASE2 = '- damage - tax, fossil 100%'
-    USECASE2B ='+ damage - tax, fossil 100%'
+    USECASE2B = '+ damage - tax, fossil 100%'
     USECASE3 = '- damage + tax, IEA'
     USECASE4 = '+ damage - tax, fossil 40%'
     USECASE5 = '+ damage - tax, STEP inspired'
@@ -78,7 +78,7 @@ class Study(ClimateEconomicsStudyManager):
         '''
         NZE inspired: Net Zero Emissions just for the energy sector, ie CO2 emissions = 0 for the energy sector
             for the other sectors, it is non-zero
-        NZE:  Net Zero Emissions for all sectors, therefore the energy sector captures and stores CO2 (therefore 
+        NZE:  Net Zero Emissions for all sectors, therefore the energy sector captures and stores CO2 (therefore
             the energy sector has a negative CO2 emission balance to compensate the non zero emissions of the other sectors
         '''
 
@@ -102,8 +102,6 @@ class Study(ClimateEconomicsStudyManager):
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
         return values_dict
-
-
 
 
 if '__main__' == __name__:

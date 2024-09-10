@@ -161,7 +161,7 @@ class Study(StudyManager):
 
         disc_dict.update(values_dict)
 
-        # Inputs for objective 
+        # Inputs for objective
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
@@ -224,15 +224,15 @@ class Study(StudyManager):
 
         invest_indus = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))*1/3})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 3})
 
         invest_services = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1/6})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 6})
 
         invest_agriculture = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))* 1/2})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 2})
 
         sect_input = {}
         sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
@@ -244,9 +244,7 @@ class Study(StudyManager):
 
         disc_dict.update(sect_input)
 
-
         return [disc_dict]
-
 
 
 if '__main__' == __name__:

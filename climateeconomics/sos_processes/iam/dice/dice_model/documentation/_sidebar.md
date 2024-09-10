@@ -2,4 +2,3 @@
 [Up](../../)
 
 * [DICE process](process)
- 

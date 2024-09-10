@@ -102,7 +102,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             self.list_coupled_var_mda = pickle.load(f)
         f.close()
 
-
     def test_01_gradient_subprocess_objective_over_design_var(self):
         """
         """
@@ -179,7 +178,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         pkl_name = 'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
 
         # self.override_dump_jacobian = True
-        #TODO: correct if condition of 597 of gemseo/mda/mda.py
+        # TODO: correct if condition of 597 of gemseo/mda/mda.py
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                             discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                             step=1.0e-4, derr_approx='finite_differences', threshold=1e-15,
@@ -192,7 +191,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         Check gradient of objective wrt design variables for all stored iterations of a previously runned study
         """
         # Add design space to the study by filling design variables :
-        design_space = pd.read_csv(join(dirname(__file__), 'data',  'all_iteration_dict.csv'))
+        design_space = pd.read_csv(join(dirname(__file__), 'data', 'all_iteration_dict.csv'))
         all_iterations_dspace_list = [eval(dspace) for dspace in design_space['value'].values]
         iter = 0
 
@@ -269,7 +268,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             inputs = []
             for name in inputs_name:
                 inputs.extend(self.ee.dm.get_all_namespaces_from_var_name(name))
-            #inputs = [
+            # inputs = [
             #    'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.{GlossaryEnergy.DirectAirCaptureTechno}.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
             pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess_iter_{iter}.pkl'
 
@@ -295,11 +294,11 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                self.ee.dm.get_all_namespaces_from_var_name('function_df')[0],
                                ]
             self.dict_val_updt = {}
-            
+
             for elem in var_in_to_store:
                 self.dict_val_updt.update({elem: self.ee.dm.get_value(elem)})
             """
-            #self.ee.execute()
+            # self.ee.execute()
             dict_values_cleaned = {k: v for k, v in design_space_values_dict.items() if self.ee.dm.check_data_in_dm(k)}
 
             try:
@@ -308,7 +307,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                                     discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                                     step=1.0e-18, derr_approx='complex_step', threshold=1e-16,
-                                    local_data=dict_values_cleaned,#coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,#design_space_values_dict,
+                                    local_data=dict_values_cleaned,  # coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,#design_space_values_dict,
                                     inputs=inputs,
                                     outputs=outputs)
                 test_results.append((iter, True))
@@ -421,7 +420,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[
             f'{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.Damage.tp_a3'] = 3.5
         full_values_dict[
-            f'{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.share_non_energy_invest_ctrl'] = np.array([27.0] * (GlossaryCore.NB_POLES_COARSE-1))
+            f'{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.share_non_energy_invest_ctrl'] = np.array([27.0] * (GlossaryCore.NB_POLES_COARSE - 1))
 
         # get design space and dvar descriptor from climateeconomics/sos_processes/iam/witness/witness_coarse_dev_optim_process/usecase_1_fossil_only_no_damage_low_tax.py
         # with converged point at tipping point = 3.5 deg from the optim process
@@ -461,23 +460,23 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         coupling_disc = self.ee.root_process.proxy_disciplines[0]
 
         inputs = [
-            #'Test.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryCore.clean_energy}.CleanEnergySimpleTechno.renewable_RenewableSimpleTechno_array_mix', #OK lagr
+            # 'Test.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryCore.clean_energy}.CleanEnergySimpleTechno.renewable_RenewableSimpleTechno_array_mix', #OK lagr
             'Test.WITNESS_Eval.WITNESS.EnergyMix.fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix',
-            ##'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
-            ##'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
-            ##'Test.WITNESS_Eval.WITNESS.CCUS.carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
+            # 'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
+            # 'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
+            # 'Test.WITNESS_Eval.WITNESS.CCUS.carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
             'Test.WITNESS_Eval.WITNESS.EnergyMix.fossil_FossilSimpleTechno_utilization_ratio_array',
-            #'Test.WITNESS_Eval.WITNESS.EnergyMix.renewable_RenewableSimpleTechno_utilization_ratio_array', #OK lagr
+            # 'Test.WITNESS_Eval.WITNESS.EnergyMix.renewable_RenewableSimpleTechno_utilization_ratio_array', #OK lagr
             'Test.WITNESS_Eval.WITNESS.share_non_energy_invest_ctrl'
             ]
         ref1 = '_level_lagr_var_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
-        #ref = f'_level_0_invest_mix_'
-        #outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
-        #ref = f'_level_1_'
+        # ref = f'_level_0_invest_mix_'
+        # outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
+        # ref = f'_level_1_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_wasted_objective')[0],
-                   #self.ee.dm.get_all_namespaces_from_var_name('Quantity_objective')[0],
-                   #self.ee.dm.get_all_namespaces_from_var_name('decreasing_gdp_increments_obj')[0],
+                   # self.ee.dm.get_all_namespaces_from_var_name('Quantity_objective')[0],
+                   # self.ee.dm.get_all_namespaces_from_var_name('decreasing_gdp_increments_obj')[0],
                    ]
         dict_success = {}
         dict_fail = {}
@@ -537,11 +536,11 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # -- i/o setup
         '''
-        WARNING: in the optim, the sub-objective functions are 1D variable array-like as defined as output of disciplines 
-        utility and macroeconomics. However, here, the sub-objective functions are defined from scratch and therefore, 
+        WARNING: in the optim, the sub-objective functions are 1D variable array-like as defined as output of disciplines
+        utility and macroeconomics. However, here, the sub-objective functions are defined from scratch and therefore,
         sostrades_optimization_plugins/models/func_manager/func_manager_disc.py, will execpt a dataframe .
-        Therefore, to make a test consistent with what happens in the optimization, line 213 of 
-        sostrades_optimization_plugins/models/func_manager/func_manager_disc.py 
+        Therefore, to make a test consistent with what happens in the optimization, line 213 of
+        sostrades_optimization_plugins/models/func_manager/func_manager_disc.py
         must be changed by self.TYPE: 'array' instead of self.TYPE: 'dataframe'
         '''
         obj_energy_wasted = array([0.34908776])
@@ -558,7 +557,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         func_df['aggr'] = ["sum", "sum", "sum"]
         func_df['parent'] = ['invest_objective', 'utility_objective', 'utility_objective']
         func_df['namespace'] = ['ns_functions', 'ns_functions', 'ns_functions']
-
 
         values_dict = {}
         values_dict[prefix + FunctionManagerDisc.FUNC_DF] = func_df
@@ -667,7 +665,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         with open(input_pkl, 'rb') as f:
             dm = pickle.load(f)
         f.close()
-        #TODO: rtol in gemseo/utils/compare_data_manager_tooling.py l.188 must be checkexact or < 1.e-9
+        # TODO: rtol in gemseo/utils/compare_data_manager_tooling.py l.188 must be checkexact or < 1.e-9
         compare_test_passed, error_msg_compare = test_compare_dm(dm, dm_h, self.name, 'dm in X vs in X+h')
         # extract the list of variables that differ
         pattern = r"Mismatch in \.(.*?)\:"
@@ -714,18 +712,18 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs = [
             self.ee.dm.get_all_namespaces_from_var_name(
-                f'{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix')[0], #OK lagr
+                f'{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix')[0],  # OK lagr
             self.ee.dm.get_all_namespaces_from_var_name('FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix')[0],
-            ##self.ee.dm.get_all_namespaces_from_var_name('DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix')[0],
-            ##self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
-            ##self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
+            # self.ee.dm.get_all_namespaces_from_var_name('DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix')[0],
+            # self.ee.dm.get_all_namespaces_from_var_name('FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix')[0],
+            # self.ee.dm.get_all_namespaces_from_var_name('CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix')[0],
             self.ee.dm.get_all_namespaces_from_var_name('fossil_FossilSimpleTechno_utilization_ratio_array')[0],
-            self.ee.dm.get_all_namespaces_from_var_name(f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array")[0], #OK lagr
+            self.ee.dm.get_all_namespaces_from_var_name(f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array")[0],  # OK lagr
             self.ee.dm.get_all_namespaces_from_var_name('share_non_energy_invest_ctrl')[0],
             ]
-        #ref1 = f'_lagr_var_'
+        # ref1 = f'_lagr_var_'
         ref1 = '_level_0_invest_mix_'
-        #outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
+        # outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('energy_production')[0],
                    self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0]
                    ]
@@ -793,7 +791,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         # list inputs and outputs for the gradient computation
-        #the default inputs checked in the l1 tests are:
+        # the default inputs checked in the l1 tests are:
         l1_inputs_checked = [f'{GlossaryCore.CaloriesPerCapitaValue}',
                              f'{GlossaryCore.EconomicsDfValue}',
                              f'{GlossaryCore.TemperatureDfValue}'
@@ -801,7 +799,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         l1_outputs_checked = [f'{GlossaryCore.PopulationDfValue}',
                               f'{GlossaryCore.WorkingAgePopulationDfValue}',
                               ]
-
 
         inputs_var_grad, input_var_missing_in_l1_test = \
             self.determine_var_for_check_jac(list_input_var, l1_inputs_checked)
@@ -898,7 +895,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         # list inputs and outputs for the gradient computation
-        #For macroeconomics, the default inputs and outputs checked in the l1 tests are:
+        # For macroeconomics, the default inputs and outputs checked in the l1 tests are:
         l1_inputs_checked = [f'{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                f'{GlossaryCore.EnergyProductionValue}',
                                f'{GlossaryCore.DamageFractionDfValue}',
@@ -924,7 +921,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         if len(inputs_var_grad) < 1:
             raise ValueError(
                 f'inputs for discipline {self.model_name} are only parameters. No gradient will be computed')
-
 
         # by default take all the disciplines' outputs.
         list_output_var = [var for var in list(MacroeconomicsDiscipline.DESC_OUT.keys())]
@@ -992,9 +988,8 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         list_input_var = [var.split(f'{self.name}.')[1] for var in list_input_var_all if var in self.list_coupled_var_mda]
         list_output_var = [var.split(f'{self.name}.')[1] for var in list_output_var_all if var in self.list_coupled_var_mda]
 
-
         # list inputs and outputs for the gradient computation
-        #the default inputs and outputs checked in the l1 tests are:
+        # the default inputs and outputs checked in the l1 tests are:
         l1_inputs_checked = []
         energy_list = [GlossaryCore.clean_energy, GlossaryEnergy.fossil]
 
@@ -1024,7 +1019,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list
              if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
-
 
         l1_outputs_checked = [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{GlossaryEnergy.EnergyMeanPriceValue}',
                              f'WITNESS_MDO.WITNESS_Eval.WITNESS.FunctionManagerDisc.{GlossaryEnergy.EnergyMeanPriceObjectiveValue}',
@@ -1076,7 +1070,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # TODO change rtol from 1e-3 to 1e-9 at least or check abs
         compare_test_passed, error_msg_compare = test_compare_dm(dm0, dm0_h, self.name, 'dm in X vs in X+h')
 
-        assert compare_test_passed==df_are_equal
+        assert compare_test_passed == df_are_equal
 
     def check_jac(self, discipline, inputs, outputs, location, filename, step, derr_approx, threshold, override_dump_jacobian):
         test_pass = True
@@ -1152,7 +1146,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         for x in discipline_var:
             # only variables that are weakly coupled in the mda chain and that vary in X+h wrt value in X need their grad to be evaluated
             for var in list(set(self.list_coupled_var_mda).intersection(set(self.list_chain_var_non_zero_gradient))):
-                if (x in var) and (f'{self.name}.{x}' not in var_grad): # avoid duplicates if var exist in different disciplines
+                if (x in var) and (f'{self.name}.{x}' not in var_grad):  # avoid duplicates if var exist in different disciplines
                     var_grad.append(f'{self.name}.{x}')
 
         # reconstruct the full name of the variable including the test name in order to compare var with var_grad
@@ -1191,7 +1185,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # loop over all disciplines
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
-        with open(os.path.join("data","uc4optim.pkl"), "wb") as f:
+        with open(os.path.join("data", "uc4optim.pkl"), "wb") as f:
             import pickle
             pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
@@ -1234,7 +1228,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             #self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0],
         ]
         #ref1 = f'_lagr_var_'
-        
+
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
         ref1 = '_level_0_invest_mix_'
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('invest_mix')[0]]
@@ -1254,7 +1248,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                    self.ee.dm.get_all_namespaces_from_var_name('energy_mean_price')[0]
                    ]
         outputs = [self.ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
-        
+
 
         location = dirname(__file__)
         filename = f'jacobian_lagrangian_{self.name}_vs_design_var.pkl'

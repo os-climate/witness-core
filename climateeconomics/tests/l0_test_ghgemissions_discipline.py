@@ -71,7 +71,7 @@ class GHGEmissionDiscTest(unittest.TestCase):
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})
 
-        CO2_emissions_ref = 6.49 # Gt
+        CO2_emissions_ref = 6.49  # Gt
 
         energy_production = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -129,5 +129,5 @@ class GHGEmissionDiscTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass

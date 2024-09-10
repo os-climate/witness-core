@@ -117,8 +117,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_02_gradient_objective_constraint_wrt_design_var_on_witness_full_subprocess_wofuncmanager(self):
         '''
-        Test on the witness full MDA + design var to get bspline without func manager 
-        If strong coupling we cannot check the adjoint then if we delete the func manager 
+        Test on the witness full MDA + design var to get bspline without func manager
+        If strong coupling we cannot check the adjoint then if we delete the func manager
         we can test over all constraint and objectives with the efficiency of bsplines compared to test 1
         '''
         self.name = 'Test'
@@ -219,7 +219,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_03_gradient_lagrangian_objective_wrt_design_var_on_witness_full_subprocess(self):
         '''
-        Test on the witness full MDA + design var to get bspline with func manager 
+        Test on the witness full MDA + design var to get bspline with func manager
 
         we can test only lagrangian objective vs design var
         '''
@@ -292,7 +292,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_04_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess(self):
         '''
-        Test on the witness full MDA + design var to get bspline with func manager 
+        Test on the witness full MDA + design var to get bspline with func manager
 
         we can test only lagrangian objective vs design var
         '''
@@ -379,11 +379,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_05_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess_each_step(self):
         '''
-        Test on the witness full MDA + design var to get bspline with func manager 
+        Test on the witness full MDA + design var to get bspline with func manager
 
         we can test only lagrangian objective vs design var
 
-        Need to checkout to gems_without_cache in gems repository 
+        Need to checkout to gems_without_cache in gems repository
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -528,7 +528,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_06_gradient_each_discipline_on_dm_pkl(self):
         '''
-        Test on the witness full MDA + design var to get bspline with func manager 
+        Test on the witness full MDA + design var to get bspline with func manager
 
         we can test only lagrangian objective vs design var
         '''
@@ -591,11 +591,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_06_gradient_lagrangian_objective_wrt_csv_design_var_on_crashed_x(self):
         '''
-        Test on the witness full MDA + design var to get bspline with func manager 
+        Test on the witness full MDA + design var to get bspline with func manager
 
         we can test only lagrangian objective vs design var
 
-        Need to checkout to gems_without_cache in gems repository 
+        Need to checkout to gems_without_cache in gems repository
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)

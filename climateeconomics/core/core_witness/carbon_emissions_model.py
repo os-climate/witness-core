@@ -23,7 +23,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class CarbonEmissions():
     '''
-    Used to compute carbon emissions from gross output 
+    Used to compute carbon emissions from gross output
     '''
     GHG_TYPE_LIST = [N2O.name, GlossaryCore.CO2, GlossaryCore.CH4]
 
@@ -120,7 +120,7 @@ class CarbonEmissions():
 
     def compute_sigma(self, year):
         '''
-        Compute CO2-equivalent-emissions output ratio at t 
+        Compute CO2-equivalent-emissions output ratio at t
         using sigma t-1 and growht_rate sigma  t-1
         '''
         # declare class variable as local ones
@@ -146,7 +146,7 @@ class CarbonEmissions():
 
     def compute_change_sigma(self, year):
         """
-        Compute change in sigma growth rate at t 
+        Compute change in sigma growth rate at t
         using sigma grouwth rate t-1
         """
         # declare class variable as local ones
@@ -200,17 +200,17 @@ class CarbonEmissions():
 
     def compute_indus_emissions(self, year):
         """
-        Compute industrial emissions at t 
+        Compute industrial emissions at t
         using gross output (t)
         emissions control rate (t)
-        emissions not coming from land change or energy 
+        emissions not coming from land change or energy
         """
         sigma = self.CO2_emissions_df.at[year, 'sigma']
         gross_output_ter = self.economics_df.at[year, GlossaryCore.GrossOutput]
         energy_emis_share = self.energy_emis_share
         share_land_emis = self.land_emis_share
         energy_emissions = self.co2_emissions.at[year, GlossaryCore.TotalCO2Emissions]
-        #emissions_control_rate = self.emissions_control_rate[year]
+        # emissions_control_rate = self.emissions_control_rate[year]
         # Version with emission control rate
 #         indus_emissions = sigma * gross_output_ter * \
 #             (1.0 - emissions_control_rate)
@@ -222,7 +222,7 @@ class CarbonEmissions():
     def compute_cum_indus_emissions(self, year):
         """
         Compute cumulative industrial emissions at t
-        using emissions indus at t- 1 
+        using emissions indus at t- 1
         and cumulative indus emissions at t-1
         """
         # declare class variable as local ones
@@ -265,12 +265,12 @@ class CarbonEmissions():
                                   'cum_total_emissions'] = cum_total_emissions
         return cum_total_emissions
 
-    ######### GRADIENTS ########
+    # GRADIENTS ########
 
     def compute_d_indus_emissions(self):
         """
-        Compute gradient d_indus_emissions/d_gross_output, 
-        d_cum_indus_emissions/d_gross_output, 
+        Compute gradient d_indus_emissions/d_gross_output,
+        d_cum_indus_emissions/d_gross_output,
         d_cum_indus_emissions/d_total_CO2_emitted
         """
         years = np.arange(self.year_start,
@@ -398,7 +398,7 @@ class CarbonEmissions():
             self.compute_cum_indus_emissions(year)
             self.compute_cum_total_emissions(year)
 
-        #-- Compute CO2 objective with alpha trade and beta weight with temperature objective
+        # -- Compute CO2 objective with alpha trade and beta weight with temperature objective
 
         delta_years = len(self.years_range)
         self.CO2_objective = np.asarray([self.beta * (1 - self.alpha) * self.CO2_emissions_df['total_emissions'].sum()

@@ -540,7 +540,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -775,7 +774,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             varname_in_input_dicts = f'{self.name}.{self.energy_name}.{checked_input}'
             inputs_dict.update({varname_in_input_dicts: var_value})
 
-
             a = 1
 
         inputs_dict.update({
@@ -874,7 +872,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             varname_in_input_dicts = f'{self.name}.{self.energy_name}.{checked_input}'
             inputs_dict.update({varname_in_input_dicts: var_value})
 
-
             a = 1
 
         inputs_dict.update({
@@ -900,7 +897,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                             inputs=checked_input_jacobian,
                             outputs=[f"{self.name}.CCS_price",
                                      ],)
-
 
     def _test_problematic_optim_point_2(self):
         self.energy_name = 'energymix_coarse'
@@ -970,7 +966,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             inputs_dict.update({varname_in_input_dicts: var_value})
             varname_in_input_dicts = f'{self.name}.{self.energy_name}.{checked_input}'
             inputs_dict.update({varname_in_input_dicts: var_value})
-
 
         inputs_dict.update({
             f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),

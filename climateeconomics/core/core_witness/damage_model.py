@@ -82,7 +82,7 @@ class DamageModel:
     def compute_CO2_damage_price_dev(self):
         """
         Compute CO2 tax - CO2 damage constraint:
-                 CO2 tax - fact * CO2_damage_price  > 0  
+                 CO2 tax - fact * CO2_damage_price  > 0
             with CO2_damage_price[year] = 1e3 * 1.01**(year_start-year) * mean(damage_df[year:year+25] (T$)) / total_emissions_ref (Gt)
         """
 
@@ -148,7 +148,7 @@ class DamageModel:
 
     def d_extra_co2_t_damage_price_d_damages(self):
         extra_co2t_since_pre_indus = self.extra_gigatons_co2eq_since_pre_indus_df[GlossaryCore.ExtraCO2EqSincePreIndustrialValue].values
-        return np.diag(1e3/extra_co2t_since_pre_indus)
+        return np.diag(1e3 / extra_co2t_since_pre_indus)
 
     def compute_extra_ton_damage_price(self):
         """
@@ -159,7 +159,7 @@ class DamageModel:
         extra_CO2eq = self.extra_gigatons_co2eq_since_pre_indus_df[GlossaryCore.ExtraCO2EqSincePreIndustrialValue].values  # Gt
         damages_on_economy = self.damage_df[GlossaryCore.EstimatedDamages].values  # T$
 
-        extra_CO2t_eq_cost = 1e12 * 1e-9 * damages_on_economy / extra_CO2eq  #$/tCO2Eq
+        extra_CO2t_eq_cost = 1e12 * 1e-9 * damages_on_economy / extra_CO2eq  # $/tCO2Eq
 
         self.extra_co2_eq_damage_price_df = pd.DataFrame({
             GlossaryCore.Years: self.years_range,

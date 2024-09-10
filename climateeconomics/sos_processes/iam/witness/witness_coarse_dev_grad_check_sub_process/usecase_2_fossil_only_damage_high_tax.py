@@ -29,7 +29,7 @@ class Study(StudySubOptim):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        
+
         data_witness = super().setup_usecase()
 
         self.study_name += '_damage_high_tax'
@@ -45,7 +45,6 @@ class Study(StudySubOptim):
         }
 
         data_witness[0].update(updated_data)
-
 
         # Put high tax
         data_witness[0].update({

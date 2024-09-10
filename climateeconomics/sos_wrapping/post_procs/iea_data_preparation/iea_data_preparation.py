@@ -45,12 +45,12 @@ class IEADataPreparation:
         self.year_start = input_dict[Glossary.YearStart]
         self.year_end = input_dict[Glossary.YearEnd]
         self.dict_df_in = {key_name: input_dict[key_name] for key_name in list(self.variables_to_store_dict.keys()) if key_name in input_dict}
+
     def compute(self):
         """
         Interpolate between year start and year end all the dataframes
         """
         self.dict_df_out = self.interpolate_dataframes(self.dict_df_in)
-
 
     def interpolate_dataframes(self, dataframes_dict):
         """
@@ -120,6 +120,6 @@ class IEADataPreparation:
             df.rename(columns={col: f"{col} [{self.variables_to_store_dict[key]}]" for col in columns_to_rename}, inplace=True)
 
             # Add the interpolated DataFrame to the dictionary
-            interpolated_dfs_dict[key+'_interpolated'] = df
+            interpolated_dfs_dict[key + '_interpolated'] = df
 
         return interpolated_dfs_dict

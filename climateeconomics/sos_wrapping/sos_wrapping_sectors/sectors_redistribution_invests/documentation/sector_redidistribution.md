@@ -27,7 +27,6 @@ Inputs :
 - Investments [Trillion $] for sector S (for each sector, fixed or design variable)
 
 Output:
-- Total investments 
+- Total investments
 
 $$ Total\ investments\ = Sum\ of\ investments\ on\ sectors\$$
-

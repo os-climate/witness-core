@@ -93,11 +93,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         for year_index, year in enumerate(years):
             storage_limit = co2_emissions['carbon_storage Limited by capture (Gt)'][year_index]
             graph_gross_co2.append(total_ghg_df['Total CO2 emissions'][year_index] + storage_limit)
-            captured_total = carbon_captured['DAC'][year_index]*0.001+carbon_captured['flue gas'][year_index]*0.001
+            captured_total = carbon_captured['DAC'][year_index] * 0.001 + carbon_captured['flue gas'][year_index] * 0.001
             if captured_total > 0.0:
-                proportion_stockage = storage_limit/captured_total
-                graph_dac.append(proportion_stockage * carbon_captured['DAC'][year_index]*0.001)
-                graph_flue_gas.append(proportion_stockage * carbon_captured['flue gas'][year_index]*0.001)
+                proportion_stockage = storage_limit / captured_total
+                graph_dac.append(proportion_stockage * carbon_captured['DAC'][year_index] * 0.001)
+                graph_flue_gas.append(proportion_stockage * carbon_captured['flue gas'][year_index] * 0.001)
             else:
                 graph_dac.append(0)
                 graph_flue_gas.append(0)
@@ -131,8 +131,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             name='Total CO2 emissions',
         ), secondary_y=False)
 
-        fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
-        fig.update_yaxes(title_text='CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
+        fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)', secondary_y=True, rangemode="tozero")
+        fig.update_yaxes(title_text='CO2 emissions [Gt]', rangemode="tozero", secondary_y=False)
 
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
@@ -181,14 +181,14 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             x=years,
             y=energy_mean_price[GlossaryEnergy.EnergyPriceValue].values.tolist(),
             name='Mean energy prices',
-            #line=dict(color=qualitative.Set1[0]),
+            # line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
 
         fig.update_yaxes(title_text="Net Energy [TWh]", secondary_y=False, rangemode="tozero")
         fig.update_yaxes(title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero")
 
         new_chart = InstantiatedPlotlyNativeChart(
-        fig = fig, chart_name = chart_name)
+        fig=fig, chart_name=chart_name)
 
         instanciated_charts.append(new_chart)
 
@@ -276,8 +276,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         ))
 
         # total land available
-        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
-                                    land_surface_detailed['Available Forest Surface (Gha)'].values + \
+        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values +
+                                    land_surface_detailed['Available Forest Surface (Gha)'].values +
                                     land_surface_detailed['Available Shrub Surface (Gha)'])
 
         # shrub surface cannot be <0
@@ -325,7 +325,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                                      GlossaryEnergy.clean_energy: [GlossaryEnergy.CleanEnergySimpleTechno]}
 
         # dataframe of energy production by energy in TWh
-        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}', scenario_name)
+        energy_production_detailed = get_scenario_value(execution_engine, f'{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}', scenario_name)
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
 
         energy_list = get_scenario_value(execution_engine, GlossaryCore.energy_list, scenario_name)
@@ -428,7 +428,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     if 'KPI2' in chart_list:
         # KPI2 is the energy efficiency, ie the variation of GDP/TotalEnergyProduction
         #  dataframe of energy production in PWh
-        energy_production = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionValue}', scenario_name)
+        energy_production = get_scenario_value(execution_engine, f'{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionValue}', scenario_name)
         years = energy_production[GlossaryEnergy.Years].values.tolist()
         gdp = get_scenario_value(execution_engine, GlossaryCore.EconomicsDfValue, scenario_name)
         gdp = gdp.reset_index(drop=True)
@@ -488,7 +488,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     if 'KPI4' in chart_list:
         # KPI4 is the electrification of energy, ie ElectricityProduction/TotalEnergyProduction
         # dataframe of energy production by energy in TWh
-        energy_production_detailed = get_scenario_value(execution_engine,f'{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}', scenario_name)
+        energy_production_detailed = get_scenario_value(execution_engine, f'{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}', scenario_name)
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
         if f'production {GlossaryEnergy.electricity} (TWh)' in energy_production_detailed.columns:
             energy_electrification = pd.DataFrame()
@@ -585,14 +585,13 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         instanciated_charts.append(new_chart)
 
-
     if 'KPI6' in chart_list:
         # KPI6 is the global warming impact, ie the damages as % of GDP at tipping point 3°C
-        tipping_point_model = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tipping_point', scenario_name)
-        tp_a1 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a1', scenario_name)
-        tp_a2 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a2', scenario_name)
-        tp_a3 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a3', scenario_name)
-        tp_a4 = get_scenario_value(execution_engine,f'{DAMAGE_DISC}.tp_a4', scenario_name)
+        tipping_point_model = get_scenario_value(execution_engine, f'{DAMAGE_DISC}.tipping_point', scenario_name)
+        tp_a1 = get_scenario_value(execution_engine, f'{DAMAGE_DISC}.tp_a1', scenario_name)
+        tp_a2 = get_scenario_value(execution_engine, f'{DAMAGE_DISC}.tp_a2', scenario_name)
+        tp_a3 = get_scenario_value(execution_engine, f'{DAMAGE_DISC}.tp_a3', scenario_name)
+        tp_a4 = get_scenario_value(execution_engine, f'{DAMAGE_DISC}.tp_a4', scenario_name)
 
         def damage_fraction(damage):
             return damage / (1 + damage) * 100
@@ -641,5 +640,3 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     return instanciated_charts
-
-

@@ -79,7 +79,7 @@ class ResourceMixDiscipline(SoSWrapp):
     default_conversion_dict = {
         UraniumResourceDiscipline.resource_name:
             {'price': (1 / 0.001102) * 0.907185,
-             'production': 10 ** -6, 'stock': 10 ** -6, 
+             'production': 10 ** -6, 'stock': 10 ** -6,
              'global_demand': 1.0},
         CoalResourceDiscipline.resource_name:
             {'price': 0.907185, 'production': 1.0, 'stock': 1.0,
@@ -113,10 +113,10 @@ class ResourceMixDiscipline(SoSWrapp):
                                                              },
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                    'dynamic_dataframe_columns': True,},
+                                    'dynamic_dataframe_columns': True, },
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                            'dynamic_dataframe_columns': True,},
+                                            'dynamic_dataframe_columns': True, },
                'conversion_dict': {'type': 'dict', 'subtype_descriptor': {'dict': {'dict': 'float'}}, 'unit': '[-]', 'default': default_conversion_dict,
                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }
@@ -127,10 +127,10 @@ class ResourceMixDiscipline(SoSWrapp):
         GlossaryCore.ResourcesPriceValue: GlossaryCore.ResourcesPrice,
         ResourceMixModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
-        ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION:  {'type': 'dataframe', 'unit': 'million_tonnes'} ,
+        ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION:  {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default,
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'unit': '%',
-                                               'namespace': 'ns_resource',},
+                                               'namespace': 'ns_resource', },
         ResourceMixModel.ALL_RESOURCE_DEMAND: {'type': 'dataframe', 'unit': '-',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                'namespace': 'ns_resource'},
@@ -164,16 +164,15 @@ class ResourceMixDiscipline(SoSWrapp):
                     'dynamic_dataframe_columns': True,
                 }
                 dynamic_inputs[f'{resource}.recycled_production'] = {
-                    'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource] ,
+                    'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource],
                     'dynamic_dataframe_columns': True,
                 }
                 dynamic_inputs[f'{resource}.predictable_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PROD_UNIT[resource],
                     'dynamic_dataframe_columns': True,
                 }
-                
-            self.add_inputs(dynamic_inputs)
 
+            self.add_inputs(dynamic_inputs)
 
     def run(self):
 
@@ -220,7 +219,7 @@ class ResourceMixDiscipline(SoSWrapp):
         resource_list = self.get_sosdisc_inputs('resource_list')
         output_dict = self.get_sosdisc_outputs()
         for resource_type in resource_list:
-            grad_price, grad_use, grad_stock, grad_recycling,  grad_demand = self.all_resource_model.get_derivative_all_resource(
+            grad_price, grad_use, grad_stock, grad_recycling, grad_demand = self.all_resource_model.get_derivative_all_resource(
                 inputs_dict, resource_type)
             grad_ratio_on_stock, grad_ratio_on_demand, grad_ratio_on_recycling = self.all_resource_model.get_derivative_ratio(
                 inputs_dict, resource_type, output_dict)
@@ -243,7 +242,7 @@ class ResourceMixDiscipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.RATIO_USABLE_DEMAND, resource_type),
                         (f'{resource_type}.resource_stock', types), grad_ratio_on_stock * grad_stock)
-            
+
             for types in inputs_dict[f'{resource_type}.recycled_production']:
                 if types != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
@@ -252,8 +251,7 @@ class ResourceMixDiscipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.RATIO_USABLE_DEMAND, resource_type),
                         (f'{resource_type}.recycled_production', types), grad_ratio_on_recycling * grad_recycling)
-            
-            
+
             self.set_partial_derivative_for_other_types(
                 (ResourceMixModel.ALL_RESOURCE_DEMAND, resource_type),
                 ('resources_demand', resource_type), grad_demand)
@@ -262,7 +260,7 @@ class ResourceMixDiscipline(SoSWrapp):
                 (GlossaryCore.ResourcesPriceValue,
                  resource_type), (f'{resource_type}.resource_price', 'price'),
                 grad_price)
-            
+
         data_frame_other_resource_price = inputs_dict['non_modeled_resource_price']
 
         for resource_type in data_frame_other_resource_price:

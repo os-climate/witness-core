@@ -43,7 +43,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
 class Study(ClimateEconomicsStudyManager):
 
     USECASE2 = '- damage - tax, fossil 100%'
-    USECASE2B ='+ damage - tax, fossil 100%'
+    USECASE2B = '+ damage - tax, fossil 100%'
     USECASE4 = '+ damage - tax, fossil 40%'
     USECASE7 = '+ damage + tax, NZE'
 

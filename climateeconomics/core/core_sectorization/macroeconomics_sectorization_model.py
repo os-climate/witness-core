@@ -65,7 +65,7 @@ class MacroeconomicsModel():
         self.years_range = self.invests_energy_wo_tax[GlossaryCore.Years].values
         self.max_invest_constraint_ref = inputs_dict[GlossaryCore.MaxInvestConstraintRefName]
         # get share max invest and convert percentage
-        self.share_max_invest = inputs_dict[GlossaryCore.ShareMaxInvestName] / 100 # input is in %
+        self.share_max_invest = inputs_dict[GlossaryCore.ShareMaxInvestName] / 100  # input is in %
 
     def compute_economics(self):
         """Compute economics dataframes"""
@@ -108,7 +108,7 @@ class MacroeconomicsModel():
         self.economics_df = economics_detail_df[GlossaryCore.SectorizedEconomicsDf['dataframe_descriptor'].keys()]
 
         # compute total sum of all invests
-        self.sum_invests_df = pd.DataFrame(columns= [GlossaryCore.Years, GlossaryCore.InvestmentsValue])
+        self.sum_invests_df = pd.DataFrame(columns=[GlossaryCore.Years, GlossaryCore.InvestmentsValue])
         self.sum_invests_df[GlossaryCore.Years] = self.years_range
         self.sum_invests_df[GlossaryCore.InvestmentsValue] = sum(df_invest[GlossaryCore.InvestmentsValue].values for df_invest in invest_to_sum)
         # add invests in energy to sum of invests (use .values to avoid index issues)
@@ -146,7 +146,7 @@ class MacroeconomicsModel():
         Method to compute maximum investment constraint in all sectors
         Used formula is : max_investment_constraint = (share_max_invest/100 * output_net_of_damage - total_invest) / max_invest_ref
         """
-        self.max_invest_constraint = (self.share_max_invest * self.sum_net_output - self.sum_invests_df[GlossaryCore.InvestmentsValue].values)/self.max_invest_constraint_ref
+        self.max_invest_constraint = (self.share_max_invest * self.sum_net_output - self.sum_invests_df[GlossaryCore.InvestmentsValue].values) / self.max_invest_constraint_ref
 
     # GRADIENTS
     def get_derivative_sectors(self):

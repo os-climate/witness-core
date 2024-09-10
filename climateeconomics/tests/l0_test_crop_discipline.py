@@ -44,7 +44,7 @@ class CropTestCase(unittest.TestCase):
         self.population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
-        temperature = np.array(np.linspace(0.0,0.0, year_range))
+        temperature = np.array(np.linspace(0.0, 0.0, year_range))
         self.temperature_df = pd.DataFrame({
             GlossaryCore.Years: years,
             GlossaryCore.TempAtmo: temperature,
@@ -52,7 +52,7 @@ class CropTestCase(unittest.TestCase):
         self.temperature_df.index = years
 
         lifetime = 50
-    
+
         # Age distribution of forests in 2008 (
         initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.16, 0.24, 0.31, 0.39, 0.47, 0.55, 0.63, 0.71, 0.78, 0.86,
@@ -98,7 +98,7 @@ class CropTestCase(unittest.TestCase):
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.ones(len(years)) * 0.381})
-             
+
         self.margin = pd.DataFrame(
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
@@ -196,14 +196,12 @@ class CropTestCase(unittest.TestCase):
                                 GlossaryCore.Years: years,
                                 'milk_and_eggs_calories_per_day': milk_and_eggs})
 
-
         self.fish_calories_per_day = pd.DataFrame({
                                 GlossaryCore.Years: years,
                                 GlossaryCore.FishDailyCal: fish_daily_cal})
         self.other_food_calories_per_day = pd.DataFrame({
                                 GlossaryCore.Years: years,
                                 GlossaryCore.OtherDailyCal: other_food_daily_cal})
-
 
         self.param = {GlossaryCore.YearStart: self.year_start,
                       GlossaryCore.YearEnd: self.year_end,
@@ -213,7 +211,7 @@ class CropTestCase(unittest.TestCase):
                       GlossaryCore.PopulationDfValue: self.population_df,
                       GlossaryCore.TemperatureDfValue: self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
-                      'param_a':  - 0.00833,
+                      'param_a': - 0.00833,
                       'param_b': - 0.04167,
                       'crop_investment': self.crop_investment,
                       'margin': self.margin,
@@ -254,9 +252,9 @@ class CropTestCase(unittest.TestCase):
                    GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_biomass_dry': f'{name}.{model_name}',
-                   'ns_land_use':f'{name}.{model_name}',
-                   'ns_crop':f'{name}.{model_name}',
-                   'ns_invest':f'{name}.{model_name}'}
+                   'ns_land_use': f'{name}.{model_name}',
+                   'ns_crop': f'{name}.{model_name}',
+                   'ns_invest': f'{name}.{model_name}'}
 
         ee.ns_manager.add_ns_def(ns_dict)
 
@@ -295,8 +293,8 @@ class CropTestCase(unittest.TestCase):
 
         disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}')[0]
-        #outputs = disc.get_sosdisc_outputs() # to compare the emissions and land use with the ones computed on excel
+        # outputs = disc.get_sosdisc_outputs() # to compare the emissions and land use with the ones computed on excel
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
+        # for graph in graph_list:
         #    graph.to_plotly().show()

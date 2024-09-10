@@ -50,7 +50,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2035
         years = np.arange(self.year_start, self.year_end + 1)
         nb_per = self.year_end + 1 - self.year_start
@@ -67,7 +67,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.economics_df_y = pd.DataFrame({GlossaryCore.Years: years,
                                             GlossaryCore.OutputNetOfDamage: gdp_serie,
                                             GlossaryCore.GrossOutput: 0.,
-                                            GlossaryCore.PerCapitaConsumption: 0.,})
+                                            GlossaryCore.PerCapitaConsumption: 0., })
         self.economics_df_y.index = years
         self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         self.temperature_df.index = years
@@ -560,20 +560,20 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'
                                      ],
                             step=1e-15, derr_approx='complex_step')
-    
+
     def _test_problematic_optim_point(self):
-        #self.override_dump_jacobian= 1
+        # self.override_dump_jacobian= 1
         import os
         import pickle
         with open(os.path.join("data", "uc1optim.pkl"), "rb") as f:
             dict_input_optimized_point = pickle.load(f)
-        
+
         def find_var_in_dict(varname: str):
             try:
                 varname_in_dict_optimized = list(filter(lambda x: varname in x, dict_input_optimized_point.keys()))[0]
                 var_value = dict_input_optimized_point[varname_in_dict_optimized]
                 return var_value
-            except IndexError :
+            except IndexError:
                 print(varname)
 
         for checked_input in list(self.inputs_dict.keys()) + self.checked_inputs:
@@ -599,7 +599,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass
 
         self.check_jacobian(location=dirname(__file__),
@@ -608,5 +608,3 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=self.checked_inputs,
                             outputs=self.checked_outputs)
-
-

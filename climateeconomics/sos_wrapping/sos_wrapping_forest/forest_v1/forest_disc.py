@@ -86,13 +86,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     def run(self):
 
-        #-- get inputs
+        # -- get inputs
         #         inputs = list(self.DESC_IN.keys())
         #         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
 
-        #-- compute
+        # -- compute
         in_dict = self.get_sosdisc_inputs()
-        
+
         self.forest_model.compute(in_dict)
 
         outputs_dict = {
@@ -101,8 +101,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[[GlossaryCore.Years, 'forest_surface_evol', 'global_forest_surface']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[[GlossaryCore.Years, 'emitted_CO2_evol_cumulative']],
         }
-        
-        #-- store outputs
+
+        # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

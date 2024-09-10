@@ -56,9 +56,11 @@ IEA_DISC = IEADataPreparationDiscipline.IEA_NAME
 
 DATA_DIR = Path(__file__).parents[4] / "data"
 
+
 def create_df_from_csv(filename: str, data_dir=DATA_DIR, **kwargs):
     """Creates a pandas DataFrame from a given filename"""
     return pd.read_csv(str(data_dir / filename), **kwargs)
+
 
 # usecase of witness full to evaluate a design space with NZE investments
 class Study(ClimateEconomicsStudyManager):
@@ -166,10 +168,8 @@ class Study(ClimateEconomicsStudyManager):
 
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
-
         dspace_file_name = 'invest_design_space_NZE.csv'
         dspace_out = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', dspace_file_name))
-
 
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
 
@@ -204,7 +204,7 @@ class Study(ClimateEconomicsStudyManager):
         invest_mix = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', invest_mix_file))
         forest_invest_file = 'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
-        #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
+        # dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
@@ -288,5 +288,3 @@ if '__main__' == __name__:
     for graph in graph_list:
         graph.to_plotly().show()
     '''
-
-

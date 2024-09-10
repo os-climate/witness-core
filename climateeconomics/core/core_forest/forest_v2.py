@@ -28,8 +28,8 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class Forest():
     """
-    Forest model class 
-    basic for now, to evolve 
+    Forest model class
+    basic for now, to evolve
 
     """
     YEAR_START = GlossaryCore.YearStart
@@ -192,7 +192,7 @@ class Forest():
 
         # techno production in TWh
         self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = (self.managed_wood_df[
-                                                                                'wood_production_for_energy (Mt)'] + \
+                                                                                'wood_production_for_energy (Mt)'] +
                                                                             self.biomass_dry_df[
                                                                                 'deforestation_for_energy']) * self.biomass_dry_calorific_value + \
                                                                            self.managed_wood_df[
@@ -353,7 +353,7 @@ class Forest():
 
                 # lost capital of managed wood is what is deforested into
                 # managed forest
-                self.forest_lost_capital.loc[i, 'managed_wood'] = -  self.forest_surface_df.loc[i,
+                self.forest_lost_capital.loc[i, 'managed_wood'] = - self.forest_surface_df.loc[i,
                 'unmanaged_forest'] * self.techno_wood_info['managed_wood_price_per_ha']
                 # set unmanaged forest to 0
                 self.forest_surface_df.loc[i, 'unmanaged_forest'] = 0
@@ -519,8 +519,8 @@ class Forest():
 
     def compute_carbon_emissions(self):
         '''
-        Compute the carbon emissions from the technology taking into account 
-        CO2 from production + CO2 from primary resources 
+        Compute the carbon emissions from the technology taking into account
+        CO2 from production + CO2 from primary resources
         '''
         if 'CO2_from_production' not in self.techno_wood_info:
             self.CO2_emissions['production'] = self.get_theoretical_co2_prod(
@@ -545,7 +545,7 @@ class Forest():
                                        co2_emissions_frominput_energies
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
+        '''
         Get the theoretical CO2 production for a given technology,
         '''
         return 0.0
@@ -698,7 +698,7 @@ class Forest():
                     d_lc_reforestation_d_invest[i] = (
                                                              d_cum_umw_surface_d_invest[i - 1] +
                                                              d_reforestation_surface_d_invest[i]) * self.cost_per_ha
-                d_lc_mw_d_invest[i] = -  d_cum_umw_surface_d_invest[i] * \
+                d_lc_mw_d_invest[i] = - d_cum_umw_surface_d_invest[i] * \
                                       self.techno_wood_info['managed_wood_price_per_ha']
                 # set unmanaged forest to 0
                 d_cum_umw_surface_d_invest[i] = np.zeros(number_of_values)

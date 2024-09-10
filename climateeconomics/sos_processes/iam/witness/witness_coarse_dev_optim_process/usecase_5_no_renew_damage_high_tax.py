@@ -33,11 +33,10 @@ class Study(StudyOptimInvestDistrib):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        
-        data_witness = super().setup_usecase()
-        
-        dspace = data_witness[f'{self.study_name}.{self.optim_name}.design_space']
 
+        data_witness = super().setup_usecase()
+
+        dspace = data_witness[f'{self.study_name}.{self.optim_name}.design_space']
 
         # Activate damage
         updated_data = {

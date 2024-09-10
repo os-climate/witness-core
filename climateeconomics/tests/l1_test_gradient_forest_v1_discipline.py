@@ -56,7 +56,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -90,8 +90,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_forest_v1_discipline.pkl',
-                            discipline=disc_techno, local_data= disc_techno.local_data, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, local_data=disc_techno.local_data, step=1e-15, derr_approx='complex_step',
                             inputs=[
-                                f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}'],
+                                f'{self.name}.{Forest.DEFORESTATION_SURFACE}', f'{self.name}.{Forest.REFORESTATION_INVESTMENT}'],
                             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
                                      f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}'])

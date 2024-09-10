@@ -4,7 +4,7 @@
 
 Generation of the consumption in $ for each sector based on :
 - population
-- a value of reference for yearly need in each sector, in $/person. For example, GDP Agriculture 2020 / GDP 2020. 
+- a value of reference for yearly need in each sector, in $/person. For example, GDP Agriculture 2020 / GDP 2020.
 
 For each sector, consumption, expressed in $, is calculated as :
 $$consumption\ sector\ S = population \times Value\ of \reference \sector S$$
@@ -32,7 +32,6 @@ Inputs :
 - Investments [Trillion $] for sector S (for each sector, fixed or design variable)
 
 Output:
-- Total investments 
+- Total investments
 
 $$Total\ investments\ = Sum\ of\ investments\ on\ sectors\$$
-

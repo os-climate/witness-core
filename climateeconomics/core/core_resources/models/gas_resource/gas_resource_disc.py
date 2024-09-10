@@ -59,12 +59,11 @@ class OilResourceDiscipline(ResourceDiscipline):
     stock_unit = 'Mt'
     price_unit = '$/bbl'
 
-    #Get default data for resource
-    default_resource_data=pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_data.csv'))
+    # Get default data for resource
+    default_resource_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_data.csv'))
     default_resource_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
     default_resource_price_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_price_data.csv'))
     default_resource_consumed_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
-
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_data,
                                  'user_level': 2, 'namespace': 'ns_oil_resource'},
@@ -90,8 +89,8 @@ class OilResourceDiscipline(ResourceDiscipline):
         'resource_stock': {'type': 'dataframe', 'unit': 'billion cubic metres', },
         'resource_price': {'type': 'dataframe', 'unit': 'USD/MMBTU', },
         'use_stock': {'type': 'dataframe', 'unit': 'billion cubic metre', },
-        'predictable_production': {'type': 'dataframe', 'unit': 'billion cubic metre',},
-        'recycled_production' : {
+        'predictable_production': {'type': 'dataframe', 'unit': 'billion cubic metre', },
+        'recycled_production': {
             'type': 'dataframe', 'unit': 'billion cubic metres'}
     }
     DESC_OUT.update(ResourceDiscipline.DESC_OUT)

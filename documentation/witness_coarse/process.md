@@ -15,7 +15,7 @@
 # WITNESS Coarse Optimisation problem documentation
 
 This process is a version of the Witness coarse problem made with validated models. Witness coarse refers to a reduced complexity of energy models in witness, as opposed to witness full that considers an extended number of energy models.
-In witness coarse, energy models are reduced to three categories: fossil, renewable and CCUS (carbon capture and storage).   
+In witness coarse, energy models are reduced to three categories: fossil, renewable and CCUS (carbon capture and storage).
 The optimization process adjusts the values of the design variables in order to minimize the value of the objective function under given constraints.
 
 ## Definition[^1]
@@ -44,16 +44,16 @@ They are all inputs of the five witness coarse energy models, namely:
 #### Design variables controling energy and CCUS techno production
 
 ##### Energy technos:
-The energies in witness coarse are 
+The energies in witness coarse are
 - **Fossil simple techno**: a simplified model that mimics all fossil energies (gas, fuel, coal, etc.)
 - **Renewable simple techno**: a simplified model that mimics all the renewable energies (wind energy, solar energy, etc.) or energy with low carbon footprint such as nuclear energy
 
 ##### CCUS technos
-- **Carbon capture direct air capture**: CCUS technology that models carbon dioxide capture directly from the air 
+- **Carbon capture direct air capture**: CCUS technology that models carbon dioxide capture directly from the air
 - **Carbon capture flue gas capture**: CCUS technology that models carbon dioxide capture directly from flue gas
-- **Carbon storage**: CCUS technology that models storage of carbon dioxide that has been captured through the two previous models  
+- **Carbon storage**: CCUS technology that models storage of carbon dioxide that has been captured through the two previous models
 
-For each techno there are design variables controling 
+For each techno there are design variables controling
 - The investement : a investement leads to a given maximal production capacity (mimics building new plants of the techno).
 - An utilization ratio : describes the intensity, in percent, at which the techno is used. For instance, an utilization ratio of 50% means that the technology is used at 50% of its maximum capacity.
 Introducing poles reduces the dimensionality of the optimization problem. For instance if 7 and 11 poles are used for the investments and utilization ratios respectively, then the number of design variables reaches:
@@ -69,13 +69,13 @@ $$300 \leq investment \textunderscore renewable \leq 3000$$
 $$1 \leq investment \textunderscore CCUS \leq 3000$$
 $$30 \leq utilization \textunderscore ratio \leq 100$$
 
-It is of utmost importance to check that for the optimized solution, the design variables do not meet the bounds. 
+It is of utmost importance to check that for the optimized solution, the design variables do not meet the bounds.
 If this case, the bound plays the role of an unwanted constraint that needs to be relieved by considering larger bound values.
 
 Investments are in G<span>$</span> and utilization ratio in percentage.
 
-Better managing the bounds could also potentially improve the mda convergence. 
-Indeed, in the GS pure Newton mda algorithm, a gradient is computed using the same analytical formulas as for the MDO. 
+Better managing the bounds could also potentially improve the mda convergence.
+Indeed, in the GS pure Newton mda algorithm, a gradient is computed using the same analytical formulas as for the MDO.
 Matrix inversion can be difficult and if preconditionning does not help, the gradients at the bounds could be a root cause of the issue.
 
 ### Objective Population Utility
@@ -86,7 +86,7 @@ $$\text{maximize}_{x \in \text{design space}} \text{ Population utility objectiv
 The `Population utility objective` (a float) is the average over the years of utility of the population.
 $$\text{Population utility objective} = \frac{1}{\text{nb years}}\sum_{\text{year in years}} \text{Population utility (year)}$$
 
-with 
+with
 
 $$\text{Population utility} = \frac{\text{Population}}{\text{Population at year start}} \text{Utility per capita}$$
 
@@ -96,11 +96,11 @@ The next section described the notion of  *Utility per capita*.
 
 The utility per capita relies on two variables available in witness, *Consumption per capita* and *Energy price*. The next two sections gives a quick explanation of these variables.
 
-In our optimization formulation, we want to maximize the quantity of things consumed. For that, we can see *Consumption per capita* can be seen as 
+In our optimization formulation, we want to maximize the quantity of things consumed. For that, we can see *Consumption per capita* can be seen as
 
 $$C^{pc} = Q^{pc} \times P$$
 
-that is, a quantity (of "things" consumed) $\times$ Price ("average price of things consumed"). 
+that is, a quantity (of "things" consumed) $\times$ Price ("average price of things consumed").
 The assumption we make is that the average price of things that are consumed is driven by energy price, leading to :
 
 
@@ -110,7 +110,7 @@ If we take year start as a reference point, and apply a function $f$ to mimic sa
 
 $$\text{utility per capita (year)} = f \left(\frac{\text{quantity per capita (year)}}{\text{quantity per capita (year start)}} \right)$$
 
-> This saturation function is an S-curve, whose parameters have been fine-tuned, but can be tweeked based on your preferences. 
+> This saturation function is an S-curve, whose parameters have been fine-tuned, but can be tweeked based on your preferences.
 
 ##### Consumption per capita in Witness
 
@@ -128,7 +128,7 @@ Consumption per capita $C^{pc}$ is simply the $C$ divided by the population.
 The energy price in Witness is the average of the prices of all the energy mix technologies at a given year, namely:
 $$energy \textunderscore price_{mean}[years] = \frac{1}{n_{technos}} \times \sum_{technos}energy \textunderscore price[years, technos]$$
 
-The energy price is affected by the value of the CO2 tax. If the CO2 tax is deactivated, fossil energies are preferred since they are cheaper. 
+The energy price is affected by the value of the CO2 tax. If the CO2 tax is deactivated, fossil energies are preferred since they are cheaper.
 However, if CO2 tax is activated, renewable energies are preferred as they emit less CO2 and eventually lead to a energy mean price (including CO2 tax) that is lower.
 
 
@@ -148,8 +148,8 @@ No equality or inequality constraint has been activated in this optimization.
 
 ## Main MDA/MDO algorithm parameters
 
-Robustness of MDA/MDO can be impacted by the choice of some parameters. For instance, solving the MDA with a Gauss-Seidel 
-approach can require several times less memory than a Gauss Seidel pure Newton approach. This could lead to out of memory issues. 
+Robustness of MDA/MDO can be impacted by the choice of some parameters. For instance, solving the MDA with a Gauss-Seidel
+approach can require several times less memory than a Gauss Seidel pure Newton approach. This could lead to out of memory issues.
 This is due to the need to invert a matrix in the Newton approach as already discussed earlier in the section "lower and upper bounds"
 Precondionning can help as well as the linear solver used, this is why those parameters are noted in the table.
 Then, some optimization algorithms can hit the bounds at the beginning of the optimization which can lead to convergence issues as discussed earlier.
@@ -160,9 +160,9 @@ The algorithm chose is therefore reminded in the table below.
 |      MDA algorithm      | MDA Gauss-Seidel  |
 | Differentiation method  | Analytical (user) |
 | Linear solvers MDA/MDO  |    GMRES-PETSC    |
-| MDA/MDO preconditioners |       gasm        | 
+| MDA/MDO preconditioners |       gasm        |
 |      MDO algorithm      |     L-BFGFS-B     |
-|  Linearization method   |      Adjoint      | 
+|  Linearization method   |      Adjoint      |
 
 
 [^1]: Wikipedia - Multidisciplinary design optimization - Retrieved from: 'https://en.wikipedia.org/wiki/Multidisciplinary_design_optimization'

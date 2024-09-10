@@ -89,7 +89,7 @@ class PolicyDiscipline(SoSWrapp):
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """ 
+        """
         Compute sos jacobian
         """
 

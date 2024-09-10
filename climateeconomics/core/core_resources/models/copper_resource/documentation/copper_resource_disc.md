@@ -1,15 +1,15 @@
-The Earth offers a finite amount of copper. 
+The Earth offers a finite amount of copper.
 The first model just takes into account the world copper stock.
 
 In order to find these parameters we need to find the data for the past production per year from the beginning of the production
-The used data are taken from 1925 to 2020. 
+The used data are taken from 1925 to 2020.
 
-production data sources: [^2] 
+production data sources: [^2]
 
 ### Copper data
 
 |Year |Copper [Mt]|
-| :------- | :---------- | 
+| :------- | :---------- |
 |1925|1.761|
 |...|...|
 |2020|20.6|
@@ -49,7 +49,7 @@ The following data are integrated into the model
 
 Data implemented in the copper input.
 
-### References 
+### References
 
 [^1]: Jon Claerbout and Francis Muir - "Hubbert math" (2020) - Retrieved from: 'http://sepwww.stanford.edu/sep/jon/hubbert.pdf'
 [^2]: US Geological Survey - "Copper Statistics and Information" - Retrieved from: 'https://www.usgs.gov/centers/national-minerals-information-center/copper-statistics-and-information'

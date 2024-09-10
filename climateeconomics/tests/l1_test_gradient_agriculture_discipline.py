@@ -59,7 +59,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2055
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -141,7 +141,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_agriculture_discipline.pkl', discipline=disc_techno,
-                            step=1e-15, derr_approx='complex_step',local_data=disc_techno.local_data,
+                            step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                     f'{self.name}.red_meat_percentage',

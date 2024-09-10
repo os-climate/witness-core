@@ -48,7 +48,7 @@ class Study(ClimateEconomicsStudyManager):
 
         scatter_scenario = 'optimization scenarios'
 
-        #scenarios name:
+        # scenarios name:
         uc2 = uc_ms_mda.USECASE2
         uc4_tp_ref = uc_ms_mda.USECASE4_TP_REF
         uc4_tp1 = uc_ms_mda.USECASE4_TP1
@@ -68,7 +68,7 @@ class Study(ClimateEconomicsStudyManager):
         }
         # changing the tipping point
 
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict), 'scenario_name': list(scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{scatter_scenario}.samples_df': scenario_df,
             f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))

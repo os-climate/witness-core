@@ -61,7 +61,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         """
 
-
         builder_cdf_list = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_coarse_optim_process')
 

@@ -37,7 +37,7 @@ For more information, please look at the documentation associated.
 
 Models are in **core** folder. Disciplines and associated documentations are in **sos\_wrapping folder**.
 To create a documentation associated to a discipline, create a **documentation** folder in **sos\_wrapping/discipline_folder** and name the documentation file as the discipline file, disc\_file\_name.markdown.
-Processes(couple several disciplines) and usecases(process with specific inputs) are in sos\_processes folder. 
+Processes(couple several disciplines) and usecases(process with specific inputs) are in sos\_processes folder.
 To run a usecase, run usecase.py file as Python run.
 
 Associated tests are in tests folder.
@@ -60,7 +60,7 @@ documentation folder gives details about the optimisation problem formulation.
 At the moment, results given by Witness process and the different models are global results which are an average over the world.
 In order to have more accuracy, we want to add regionalisation aspect. The first step is to propose a regionalisation continent by continent.
 
-## License 
+## License
 The witness-core source code is distributed under the Apache License Version 2.0.
 A copy of it can be found in the LICENSE file.
 

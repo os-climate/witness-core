@@ -1,4 +1,4 @@
-<!-- Wrappings sidebar.md -->           
+<!-- Wrappings sidebar.md -->
 [Up](../)
 
 * [Land](sos_wrapping_agriculture/)

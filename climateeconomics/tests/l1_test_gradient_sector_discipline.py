@@ -66,7 +66,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         }
         self.section_gdp_df = pd.DataFrame(subsector_share_dict)
 
-
     def analytic_grad_entry(self):
         return [
         ]
@@ -96,11 +95,11 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',}
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
@@ -135,7 +134,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
@@ -158,7 +157,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
@@ -203,7 +202,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
@@ -249,11 +248,11 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',}
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
@@ -288,7 +287,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
@@ -311,7 +310,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
@@ -356,7 +355,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
@@ -402,11 +401,11 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',}
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
@@ -441,7 +440,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
@@ -464,7 +463,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
@@ -509,7 +508,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        #mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)

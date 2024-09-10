@@ -42,7 +42,7 @@ class Agriculture():
     """
     Agriculture pyworld3 class
 
-    basic for now, to evolve 
+    basic for now, to evolve
 
     """
 
@@ -108,7 +108,7 @@ class Agriculture():
                             'other (Gha)': 'other', 'total surface (Gha)': 'total surface'}
 
     def compute(self, population_df, temperature_df):
-        ''' 
+        '''
         Computation methods
         Compute the different output : updated diet, surface used (Gha), surface used (%)
 
@@ -186,7 +186,7 @@ class Agriculture():
             else:
                 result[key] = population_df[GlossaryCore.PopulationValue] * diet_df[key] * 1e6
         # as population is in million of habitants, *1e6 is needed
-        return(result)
+        return (result)
 
     def compute_surface(self, quantity_of_food_df, kg_food_to_surface, population_df):
         """
@@ -229,7 +229,7 @@ class Agriculture():
         # put data in [Gha]
         result = result * self.hatom2 / 1e9
 
-        return(result)
+        return (result)
 
     def update_diet(self):
         '''
@@ -268,7 +268,7 @@ class Agriculture():
             # removed_kcal/3 for each 3 category of vegetable
             if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
                 proportion = self.kcal_diet_df[key] / \
-                    (self.kcal_diet_df['fruits and vegetables'] + 
+                    (self.kcal_diet_df['fruits and vegetables'] +
                      self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
                 changed_diet_df[key] = [starting_diet[key].values[0]] * len(self.years) + \
                     (removed_red_meat_kcal + removed_white_meat_kcal) * \
@@ -302,7 +302,7 @@ class Agriculture():
 
         land_surface_percentage_df.rename(
             columns=self.column_dict, inplace=True)
-        return(land_surface_percentage_df)
+        return (land_surface_percentage_df)
 
     def add_climate_impact(self, surface_df_before, temperature_df):
         """ Add productivity reduction due to temperature increase and compute the new required surface
@@ -325,7 +325,7 @@ class Agriculture():
 
         return surface_df
 
-    ####### Gradient #########
+    # Gradient #########
 
     def d_land_surface_d_population(self, column_name_Gha):
         """
@@ -345,7 +345,7 @@ class Agriculture():
         d_land_surface_d_pop = d_land_surface_d_pop_before * \
             (1 - self.prod_reduction.values)
 
-        return(d_land_surface_d_pop)
+        return (d_land_surface_d_pop)
 
     def d_other_surface_d_population(self):
         """
@@ -357,7 +357,7 @@ class Agriculture():
         # Add climate change impact
         result = result_without_climate * (1 - self.prod_reduction.values)
 
-        return(result)
+        return (result)
 
     def d_food_land_surface_d_temperature(self, temperature_df, column_name):
         """
@@ -411,7 +411,7 @@ class Agriculture():
         for vegetable_name in vegetables_column_names:
 
             proportion = self.kcal_diet_df[vegetable_name] / \
-                (self.kcal_diet_df['fruits and vegetables'] + 
+                (self.kcal_diet_df['fruits and vegetables'] +
                  self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
             sub_total_surface_grad = sub_total_surface_grad + removed_red_kcal * proportion / \
                 self.kg_to_kcal_dict[vegetable_name] * \
@@ -445,7 +445,7 @@ class Agriculture():
         for vegetable_name in vegetables_column_names:
 
             proportion = self.kcal_diet_df[vegetable_name] / \
-                (self.kcal_diet_df['fruits and vegetables'] + 
+                (self.kcal_diet_df['fruits and vegetables'] +
                  self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
             sub_total_surface_grad = sub_total_surface_grad + removed_white_kcal * proportion / \
                 self.kg_to_kcal_dict[vegetable_name] * \

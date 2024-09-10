@@ -12,7 +12,7 @@ The model inputs are:
 * **year start**, this defines the starting year of the study.
 * **year end**, this defines the last year of the study.
 * **population_df**, this gives the population number, for each year of the study. The unit is the million of people.
-* **temperature_df**, gives the temperature in degree Celsius above pre-industrial level for each year of the study. 
+* **temperature_df**, gives the temperature in degree Celsius above pre-industrial level for each year of the study.
 * **starting diet**, this gives the food diet for the first year of the study. For each food, the quantity in kg/person/year need to be filled. The different food taken into account are:
 red meat, white meat, milk, eggs, rice and maize, potatoes, fruits and vegetables. By default, data are:
 
@@ -34,7 +34,7 @@ These data are extracted from [^3].
 * **red meat calory percentage**, gives the percentage of red meat kcal in a person diet.
 * **white meat calory percentage**, gives the percentage of white meat kcal in a person diet.
 * **other_use_agriculture**, gives the average ha per person for the use of agriculture in other way that the 7 food types. It mainly takes into account :
-cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other)... 
+cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other)...
 By default, it is set to 0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^4]
 
 The model outputs are:
@@ -98,14 +98,14 @@ $$base\_diet\_fruit\_and\_vegetables += (red\_energy\_removed + white\_energy\_r
 The same formula is applicated to the 'potatoes' and 'rice and maize' food categories.
 
 ## Climate change impact
-The increase in temperature due to global warming has consequences on crop productivity. Effects of global warming on agriculture are for example drought, flooding and increased crops water needs.   
-Some models estimate the impact of increased temperature on crop productivity but results are quite disparate. We therefore chose to implement one impact for all agriculture productivity and not one per type of crop (maize, rice, wheat...). Our bilbiography to define the effect includes IPCC[^5] (Intergovernmental Panel on Climate Change), the FAO[^6] (Food and Agriculture Organization), Carl-Friedrich Schleussner et al (2018)[^8] and Rosenzweig et al. (2014)[^7].   
+The increase in temperature due to global warming has consequences on crop productivity. Effects of global warming on agriculture are for example drought, flooding and increased crops water needs.
+Some models estimate the impact of increased temperature on crop productivity but results are quite disparate. We therefore chose to implement one impact for all agriculture productivity and not one per type of crop (maize, rice, wheat...). Our bilbiography to define the effect includes IPCC[^5] (Intergovernmental Panel on Climate Change), the FAO[^6] (Food and Agriculture Organization), Carl-Friedrich Schleussner et al (2018)[^8] and Rosenzweig et al. (2014)[^7].
 The surface required taking into account climate change is:
 $$Required\_surface\_with\_global\_warming = required\_surface * (1- productivity\_change)$$
-$$Productivity\_change = \alpha T^2+bT$$ 
-$$with~~T_t = temperature_t -temperature_{t=0}$$ 
-By default $\alpha$ and $b$ are respectively set at  -0.00833 and - 0.04167. So that at +2 degrees (above pre industrial level) the decrease in productivity is 5% and 30% at +5 degrees celsius.   
-Then, when temperature rises, the surface required to produce the same amount of food increases by the share of production reduction. 
+$$Productivity\_change = \alpha T^2+bT$$
+$$with~~T_t = temperature_t -temperature_{t=0}$$
+By default $\alpha$ and $b$ are respectively set at  -0.00833 and - 0.04167. So that at +2 degrees (above pre industrial level) the decrease in productivity is 5% and 30% at +5 degrees celsius.
+Then, when temperature rises, the surface required to produce the same amount of food increases by the share of production reduction.
 
 ## Results
 This sections aims to describes the results charts.
@@ -121,7 +121,7 @@ This graphs gives the diet evolution for each year of the study, in kg / person 
 ## Model limitation
 This section aims to gives the limitations of the model.
 
-The agriculture model gives output data as the result of different computations described previously. 
+The agriculture model gives output data as the result of different computations described previously.
 However, the different hypothesis lead to limitations that should be kept in mind in order to have a critical point of view regarding results.
 The following points list the limitations of the agriculture model:
 

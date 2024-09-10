@@ -99,12 +99,12 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     does not consider farm fish for land use at this stage as it would require to split farm fish from wild fish in the computations
     The land use for category 'other' is adjusted to calibrate the land surface
-    Method 1:  
-    It used to be computed from the variable self.other_use_crop = 0.01719 [ha/person] that has been removed. 
+    Method 1:
+    It used to be computed from the variable self.other_use_crop = 0.01719 [ha/person] that has been removed.
     relationship between self.other_use_crop and other: [m2/kg] = [m2/ha*ha/person*person*year/kg/year]
     other[m2/kg] = 10000.other_use_crop/other[kg/person/year]/year = 10000*0.01719/77.24/year = 2.25 m2/kg/year WARNING on units
     Method 2:
-    It could be computed from the average of all land use per kg of all components of others (12.41 m2/kg) 
+    It could be computed from the average of all land use per kg of all components of others (12.41 m2/kg)
     but assuming the same ponderation for each food of others does not provide reliable results
     '''
     default_kg_to_m2 = {'red meat': 345.,
@@ -129,7 +129,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                           GlossaryCore.OtherFood: 3061.06,
                           }
 
-    #diet default for veg = 260+32.93 of cereals
+    # diet default for veg = 260+32.93 of cereals
     # unit: kg/person/year
     '''
     Default diet baseline comes from [1] modified manually following [2] in order to:
@@ -202,7 +202,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              'rice and maize': 9.486e-4,
                              'cereals': 1.477e-3,
                              'fruits and vegetables': 2.63e-4,
-                             GlossaryCore.Fish: 0., #no crop or livestock related
+                             GlossaryCore.Fish: 0.,  # no crop or livestock related
                              GlossaryCore.OtherFood: 1.68e-3,
                              }
 
@@ -212,20 +212,19 @@ class CropDiscipline(ClimateEcoDiscipline):
     # Difference method
     default_co2_emissions = {}
     for food in default_ghg_emissions:
-        default_co2_emissions[food] = max(0., (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100 - default_n2o_emissions[food]*n2o_gwp_100) / co2_gwp_100)
-
+        default_co2_emissions[food] = max(0., (default_ghg_emissions[food] - default_ch4_emissions[food] * ch4_gwp_100 - default_n2o_emissions[food] * n2o_gwp_100) / co2_gwp_100)
 
     year_range = default_year_end - default_year_start + 1
-    total_kcal = 1067961. #kcal/person/year
+    total_kcal = 1067961.  # kcal/person/year
     # Take diet per year in kg / 365 * kg to cal to get consumption per day in kcal
-    red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0]/365
-    milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0]/365 + \
-                                        default_kg_to_kcal['milk'] * diet_df_default['milk'].values[0]/365
+    red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0] / 365
+    milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0] / 365 + \
+                                        default_kg_to_kcal['milk'] * diet_df_default['milk'].values[0] / 365
     white_meat_average_ca_daily_intake = default_kg_to_kcal[
-                                             'white meat'] * diet_df_default['white meat'].values[0]/365
-    #kcal per kg 'vegetables': 200 https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
-    vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * default_kg_to_kcal['fruits and vegetables'] + \
-                                                    diet_df_default['cereals'].values[0]/365 * default_kg_to_kcal['cereals'] + \
+                                             'white meat'] * diet_df_default['white meat'].values[0] / 365
+    # kcal per kg 'vegetables': 200 https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
+    vegetables_and_carbs_average_ca_daily_intake = diet_df_default['fruits and vegetables'].values[0] / 365 * default_kg_to_kcal['fruits and vegetables'] + \
+                                                    diet_df_default['cereals'].values[0] / 365 * default_kg_to_kcal['cereals'] + \
                                                     diet_df_default['rice and maize'].values[0] / 365 * default_kg_to_kcal['rice and maize']
     fish_average_ca_daily_intake = default_kg_to_kcal[GlossaryCore.Fish] * \
                                     diet_df_default[GlossaryCore.Fish].values[0] / 365
@@ -254,7 +253,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     # 50% of crops are left on the field,
     # 50% of the left on the field can be used as crop residue =>
     # 25% of the crops is residue
-    residue_percentage = 0.25 # TODO delete residue percentage from here as it'll be computed in organic waste stream
+    residue_percentage = 0.25  # TODO delete residue percentage from here as it'll be computed in organic waste stream
     # 23$/t for residue, 60$/t for crop
     crop_residue_price_percent_dif = 23 / 60
     # bioenergyeurope.org : Dedicated energy crops
@@ -313,8 +312,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                          1.73, 1.81, 1.88, 1.96, 2.04, 2.12, 2.2, 2.28, 2.35, 2.43,
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
-
-
 
     crop_investment_default = pd.read_csv(join(dirname(__file__), 'data/crop_investment.csv'), index_col=0)
 
@@ -449,7 +446,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                       'namespace': GlossaryCore.NS_REFERENCE, 'default': 2000.},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.FoodWastePercentageValue: GlossaryCore.FoodWastePercentage,
-        GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "default": lifetime,"description": "lifetime of a plant of the techno"},
+        GlossaryEnergy.LifetimeName: {'type': 'int', 'unit': 'years', "default": lifetime, "description": "lifetime of a plant of the techno"},
     }
 
     DESC_OUT = {
@@ -570,7 +567,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             GlossaryCore.CaloriesPerCapitaBreakdownValue: self.crop_model.consumed_calories_pc_breakdown_per_day_df,
             GlossaryCore.OrganicWasteValue: self.crop_model.organic_waste_df
         }
-        
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -607,7 +604,6 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
-
 
         d_surface_d_red_meat_percentage = model.d_surface_d_calories(population_df, 'red meat')
         d_surface_d_white_meat_percentage = model.d_surface_d_calories(population_df, 'white meat')
@@ -661,13 +657,12 @@ class CropDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('calories_per_day_constraint',),
                 (food_type, food_type),
-                np.identity(l_years) * (1 -  food_waste_percentage /100.) / self.crop_model.constraint_calories_ref)
+                np.identity(l_years) * (1 - food_waste_percentage / 100.) / self.crop_model.constraint_calories_ref)
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
                 (food_type, food_type),
-                np.identity(l_years) * (1 -  food_waste_percentage /100.))
-
+                np.identity(l_years) * (1 - food_waste_percentage / 100.))
 
         # gradients for techno_production from total food land surface
         d_prod_dpopulation = model.compute_d_prod_dland_for_food(summ)
@@ -761,7 +756,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
             ('crop_investment', GlossaryCore.InvestmentsValue),
-            -CO2_from_production / high_calorific_value *dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
+            -CO2_from_production / high_calorific_value * dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
 
         # --------------------------------------------------------------
         # Techno consumption wo ratio gradients
@@ -1125,7 +1120,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        ##################### Kcal per kg per category #################
+        # Kcal per kg per category #################
 
         list_categories = ['red meat', 'white meat', 'eggs_milk', 'vegetables_and_carbs', GlossaryCore.Fish, GlossaryCore.OtherFood]
 
@@ -1186,13 +1181,12 @@ class CropDiscipline(ClimateEcoDiscipline):
             n2o_emissions_per_kcal_dict_mean[food] = n2o_gwp_100 * n2o_emissions_per_kg[food] / kg_to_kcal_dict[
                 food]
 
-
         for category in list_categories:
             ghg_emissions_per_kcal[category] = co2_emissions_per_kcal_dict_mean[category] + \
                                                ch4_emissions_per_kcal_dict_mean[category] + \
                                                n2o_emissions_per_kcal_dict_mean[category]
 
-        ##################### m2/kcal ############
+        # m2/kcal ############
 
         chart_name = "m2 per kcal per category"
 
@@ -1206,7 +1200,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         instanciated_charts.append(new_chart)
 
-        ################## ghg total ###############
+        # ghg total ###############
         chart_name = "ghg emissions per kcal per category"
 
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'ghg per category per kcal [co2eq/kcal]',

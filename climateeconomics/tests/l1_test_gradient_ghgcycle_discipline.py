@@ -77,7 +77,7 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_ghg_cycle_discipline1.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}',
                                      f'{self.name}.gwp20_objective',

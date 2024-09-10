@@ -27,7 +27,7 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
     def setUp(self):
         """Initialize third data needed for testing"""
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.time_step = 1
@@ -101,12 +101,12 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         capital_year_start = 376.6387
         gdp_serie = np.zeros(self.nb_per)
         capital_serie = np.zeros(self.nb_per)
-        gdp_serie[0] =gdp_year_start
+        gdp_serie[0] = gdp_year_start
         capital_serie[0] = capital_year_start
         for year in np.arange(1, self.nb_per):
             gdp_serie[year] = gdp_serie[year - 1] * 1.02
             capital_serie[year] = capital_serie[year - 1] * 1.02
-        #for each sector share of total gdp 2020
+        # for each sector share of total gdp 2020
         gdp_agri = gdp_serie * 6.775773 / 100
         gdp_indus = gdp_serie * 28.4336 / 100
         gdp_service = gdp_serie * 64.79 / 100
@@ -119,7 +119,6 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         self.prod_service = pd.DataFrame({GlossaryCore.Years: self.years,
                                        GlossaryCore.GrossOutput: gdp_service,
                                        GlossaryCore.OutputNetOfDamage: gdp_service * 0.995})
-
 
     def test(self):
         """Check discipline setup and run"""
@@ -173,6 +172,5 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass
-

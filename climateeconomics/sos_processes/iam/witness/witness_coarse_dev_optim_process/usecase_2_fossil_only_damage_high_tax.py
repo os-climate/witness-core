@@ -33,9 +33,9 @@ class Study(StudyOptimInvestDistrib):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        
+
         data_witness = super().setup_usecase()
-        
+
         # update fossil invest & utilization ratio lower bound to not be too low
         min_invest = 1.
         max_invest = 8000.
@@ -83,7 +83,6 @@ class Study(StudyOptimInvestDistrib):
         }
 
         data_witness.update(updated_data)
-
 
         # Put high tax
         data_witness.update({

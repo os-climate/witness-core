@@ -101,7 +101,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     def run(self):
         """run method"""
         inputs_dict = self.get_sosdisc_inputs()
-        
+
         self.macro_model.compute(inputs_dict)
 
         outputs_dict = {
@@ -112,7 +112,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.DamageDfValue: self.macro_model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             GlossaryCore.DamageDetailedDfValue: self.macro_model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
         }
-        
 
         self.store_sos_outputs_values(outputs_dict)
 
@@ -147,7 +146,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.MaxInvestConstraintName, ),
                 (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
-                identity_mat/100 * share_max_invest / max_invest_ref)
+                identity_mat / 100 * share_max_invest / max_invest_ref)
 
             # gradient of constraint and invest_df wrt invest for each sector (except for energy)
             self.set_partial_derivative_for_other_types(
@@ -156,7 +155,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 -1.0 * identity_mat / max_invest_ref)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.InvestmentDfValue,GlossaryCore.InvestmentsValue),
+                (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
                 (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
                 identity_mat)
             self.set_partial_derivative_for_other_types(
@@ -382,7 +381,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 years, ordonate_data, 'energy investments', 'bar')
             new_chart.add_series(new_series)
 
-            #add total investments
+            # add total investments
             total_invest = self.get_sosdisc_outputs(GlossaryCore.InvestmentDfValue)
             ordonate_data = list(total_invest[GlossaryCore.InvestmentsValue])
             new_series = InstanciatedSeries(

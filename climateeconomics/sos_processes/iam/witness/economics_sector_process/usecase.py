@@ -71,7 +71,7 @@ class Study(StudyManager):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
 
-        # data dir 
+        # data dir
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
 
@@ -86,7 +86,7 @@ class Study(StudyManager):
             # Workforce
             hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
             workforce_df = hist_workforce
-            #Tshare sectors invest
+            # Tshare sectors invest
 
         else:
             # Energy
@@ -116,30 +116,28 @@ class Study(StudyManager):
         # Damage
         damage_df = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),})
+             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per), })
 
         invest_indus = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))*1/3})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 3})
 
         invest_services = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1/6})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 6})
 
         invest_agriculture = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))* 1/2})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 2})
 
         invest_energy_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.EnergyInvestmentsWoTaxValue: np.linspace(40, 65, len(years))})
 
-
         energy_emission_df = pd.DataFrame({
             GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
-
 
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start

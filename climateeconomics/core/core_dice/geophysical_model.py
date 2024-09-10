@@ -22,7 +22,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class CarbonEmissions():
     '''
-    Used to compute carbon emissions from gross output 
+    Used to compute carbon emissions from gross output
     '''
 
     def __init__(self, param):
@@ -69,7 +69,7 @@ class CarbonEmissions():
 
     def compute_sigma(self, year):
         '''
-        Compute CO2-equivalent-emissions output ratio at t 
+        Compute CO2-equivalent-emissions output ratio at t
         using sigma t-1 and growht_rate sigma  t-1
         '''
         if year == self.year_start:
@@ -86,7 +86,7 @@ class CarbonEmissions():
 
     def compute_change_sigma(self, year):
         """
-        Compute change in sigma growth rate at t 
+        Compute change in sigma growth rate at t
         using sigma grouwth rate t-1
         """
         if year == self.year_start:
@@ -131,7 +131,7 @@ class CarbonEmissions():
 
     def compute_indus_emissions(self, year):
         """
-        Compute industrial emissions at t 
+        Compute industrial emissions at t
         using gross output (t)
         emissions control rate (t)
         """
@@ -145,7 +145,7 @@ class CarbonEmissions():
     def compute_cum_indus_emissions(self, year):
         """
         Compute cumulative industrial emissions at t
-        using emissions indus at t- 1 
+        using emissions indus at t- 1
         and cumulative indus emissions at t-1
         """
         if year == self.year_start:
@@ -211,7 +211,7 @@ class CarbonEmissions():
 
 class CarbonCycle():
     """
-    Carbon cycle 
+    Carbon cycle
     """
 
     def __init__(self, param):
@@ -361,7 +361,7 @@ class CarbonCycle():
 
 class TempChange():
     """
-     Temperature evolution 
+     Temperature evolution
     """
 
     def __init__(self, param):
@@ -422,7 +422,7 @@ class TempChange():
 
     def compute_forcing(self, year):
         """
-        Compute increase in radiative forcing for t using values at t-1 
+        Compute increase in radiative forcing for t using values at t-1
         (watts per m2 from 1900)
         """
         atmo_conc = self.carboncycle_df.loc[year, 'atmo_conc']

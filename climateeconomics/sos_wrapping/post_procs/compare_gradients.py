@@ -37,12 +37,12 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 )
 
 '''
-Post-processing that compares the analytical vs the approximated gradient of the objective lagrangian function wrt the design 
-variables defined in the design_space. Therefore, this post-processing only works on processes that inherit from 
+Post-processing that compares the analytical vs the approximated gradient of the objective lagrangian function wrt the design
+variables defined in the design_space. Therefore, this post-processing only works on processes that inherit from
 an optim process, namely optimization and multi-scenario optimization processes
 The gradient is computed at the last iteration of the optimization problem
-Does not work for optim sub-processes, since mdo_disc._differentiated_inputs=[] 
-NB: the mdo_discipline is set to None in the execution engine when the graphs are updated => the gradients must be computed 
+Does not work for optim sub-processes, since mdo_disc._differentiated_inputs=[]
+NB: the mdo_discipline is set to None in the execution engine when the graphs are updated => the gradients must be computed
 at the end of a computation
 '''
 
@@ -62,7 +62,7 @@ def find_mdo_disc(execution_engine, scenario_name, class_to_check):
     the scenario name value = namespace value is something.WITNESS
     The mdo_discipline should be in WITNESS_EVAL which is one step above witness
     '''
-    scenario_name_trimmed = scenario_name[:scenario_name.rfind('.')] # remove the .WITNESS of the namespace value
+    scenario_name_trimmed = scenario_name[:scenario_name.rfind('.')]  # remove the .WITNESS of the namespace value
     levels = [execution_engine.root_process]
     while levels:
         current_level = levels.pop(0)
@@ -91,12 +91,12 @@ def post_processing_filters(execution_engine, namespace):
     chart_list = ['Objective Lagrangian']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
-        'Charts_grad', chart_list, chart_list, 'Charts_grad')) # name 'Charts' is already used by ssp_comparison post-proc
+        'Charts_grad', chart_list, chart_list, 'Charts_grad'))  # name 'Charts' is already used by ssp_comparison post-proc
 
     return chart_filters
 
 
-def post_processings(execution_engine, scenario_name, chart_filters=None): #scenario_name, chart_filters=None):
+def post_processings(execution_engine, scenario_name, chart_filters=None):  # scenario_name, chart_filters=None):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
@@ -114,10 +114,10 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
 
     if 'Objective Lagrangian' in chart_list:
         '''
-        The l1s_test compare the variables before and after the post-processing. 
+        The l1s_test compare the variables before and after the post-processing.
         In the post-processing below, the approx gradient computes the mda in X+h as opposed to X for the initial mda
-        Therefore, data in the datamanager change and the l1s_test would fail. To prevent that, the data manager is recovered 
-        at the end of post-processing  
+        Therefore, data in the datamanager change and the l1s_test would fail. To prevent that, the data manager is recovered
+        at the end of post-processing
         '''
         # The hierarchical level of the mdo discipline depends on the process used (sub-optim, optim, ms_optim, etc.)
         # the mdo discipline used to compute the gradients is a SoSMDAChain instance, not a SoSMDOScenario isntance
@@ -137,7 +137,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         pkl_path = join(dirname(__file__), TEMP_PKL_PATH)
         if not os.path.isdir(pkl_path):
             os.mkdir(pkl_path)
-        recompute_gradients = True # initialize
+        recompute_gradients = True  # initialize
         input_pkl = join(pkl_path, scenario_name + '_inputs_dm_data_dict.pkl')
         output_pkl = join(pkl_path, scenario_name + '_approx_jacobian.pkl')
         try:
@@ -148,7 +148,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             logging.info(f'Cannot open file {input_pkl}. Must recompute approximated gradients')
             dm_data_dict_pkl = None
         if dm_data_dict_pkl is not None:
-            compare_test_passed, error_msg_compare = test_compare_dm(dm_data_dict_before, dm_data_dict_pkl, scenario_name, 'pkl vs case dm' )
+            compare_test_passed, error_msg_compare = test_compare_dm(dm_data_dict_before, dm_data_dict_pkl, scenario_name, 'pkl vs case dm')
             logging.info(error_msg_compare)
             recompute_gradients = not compare_test_passed
         if recompute_gradients:
@@ -169,7 +169,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             dump_compressed_pickle(output_pkl, grad_approx)
         else:
             logging.info(f'Post-processing: recovering approximated gradient from pkl file {output_pkl}')
-
 
         logging.info('Post-processing: generating gradient charts')
         # extract the gradient values for the objective lagrangian only
@@ -204,7 +203,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
 
         visible_line = True
         for index, k in enumerate(inputs):
-            color_dict_index = index - floor(index / len(color_dict.keys())) * len(color_dict.keys()) # when reach last color, start again with first color
+            color_dict_index = index - floor(index / len(color_dict.keys())) * len(color_dict.keys())  # when reach last color, start again with first color
             color_name = list(color_dict.keys())[color_dict_index]
             color_code = color_dict[color_name]
             v_analytical = grad_analytical_dict[k]
@@ -251,7 +250,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         instanciated_charts.append(new_chart)
 
         var_list_with_ns_val = list(grad_approx_dict.keys())
-        var_list = [var.split('.')[-1] for var in var_list_with_ns_val] #only keep var name without full namespace value in front
+        var_list = [var.split('.')[-1] for var in var_list_with_ns_val]  # only keep var name without full namespace value in front
         x = list(range(len(var_list)))
 
         # Plot gradient norm vs each var

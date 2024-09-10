@@ -56,7 +56,7 @@ class Study(ClimateEconomicsStudyManager):
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.ccs_price_percentage'] = alpha_i
 
         len_scenarios = len(scenario_list)
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios, 'scenario_name': scenario_list})
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 3
@@ -75,7 +75,7 @@ class Study(ClimateEconomicsStudyManager):
         year_end = scenarioUseCase.year_end
         years = np.arange(year_start, year_end + 1)
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)/1e-4,np.ones(len(years)-5)/4), axis=None)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5) / 1e-4, np.ones(len(years) - 5) / 4), axis=None)
 
         return values_dict
 

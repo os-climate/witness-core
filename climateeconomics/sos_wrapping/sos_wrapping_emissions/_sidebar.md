@@ -4,4 +4,3 @@
 * [Agriculture emissions](agriculture_emissions/documentation/agriculture_emissions_discipline)
 * [GHG emissions](ghgemissions/documentation/ghgemissions_discipline)
 * [Industrial emissions](indus_emissions/documentation/indusemissions_discipline)
- 

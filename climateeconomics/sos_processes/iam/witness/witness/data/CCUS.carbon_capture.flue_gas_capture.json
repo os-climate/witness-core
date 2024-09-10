@@ -1,117 +1,117 @@
 {
-    "US": {
-        "year_start": 2020,
-        "year_end": 2100,
-        "technologies_list": [
-            "electricity.CoalGen",
-            "electricity.GasTurbine",
-            "electricity.CombinedCycleGasTurbine",
-            "hydrogen.gaseous_hydrogen.WaterGasShift",
-            "methane.FossilGas",
-            "solid_fuel.Pelletizing",
-            "syngas.CoalGasification",
-            "carbon_capture.direct_air_capture.AmineScrubbing",
-            "carbon_capture.direct_air_capture.CalciumPotassiumScrubbing"
-        ],
-        "scaling_factor_techno_consumption": 1000.0,
-        "scaling_factor_techno_production": 1000.0,
-        "ccs_list": [
-            "carbon_capture",
-            "carbon_storage"
-        ],
-        "electricity#CoalGen#techno_production": null,
-        "electricity#CoalGen#flue_gas_co2_ratio": [
-            0.13
-        ],
-        "electricity#GasTurbine#techno_production": null,
-        "electricity#GasTurbine#flue_gas_co2_ratio": [
-            0.035
-        ],
-        "electricity#CombinedCycleGasTurbine#techno_production": null,
-        "electricity#CombinedCycleGasTurbine#flue_gas_co2_ratio": [
-            0.035
-        ],
-        "hydrogen#gaseous_hydrogen#WaterGasShift#techno_production": null,
-        "hydrogen#gaseous_hydrogen#WaterGasShift#flue_gas_co2_ratio": [
-            0.175
-        ],
-        "methane#FossilGas#techno_production": null,
-        "methane#FossilGas#flue_gas_co2_ratio": [
-            0.085
-        ],
-        "solid_fuel#Pelletizing#techno_production": null,
-        "solid_fuel#Pelletizing#flue_gas_co2_ratio": [
-            0.12
-        ],
-        "syngas#CoalGasification#techno_production": null,
-        "syngas#CoalGasification#flue_gas_co2_ratio": [
-            0.13
-        ],
-        "carbon_capture#direct_air_capture#AmineScrubbing#techno_production": null,
-        "carbon_capture#direct_air_capture#AmineScrubbing#flue_gas_co2_ratio": [
-            0.035
-        ],
-        "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#techno_production": null,
-        "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#flue_gas_co2_ratio": [
-            0.035
-        ]
-    },
-    "UE": {
-        "year_start": 2020,
-        "year_end": 2100,
-        "technologies_list": [
-            "electricity.CoalGen",
-            "electricity.GasTurbine",
-            "electricity.CombinedCycleGasTurbine",
-            "hydrogen.gaseous_hydrogen.WaterGasShift",
-            "methane.FossilGas",
-            "solid_fuel.Pelletizing",
-            "syngas.CoalGasification",
-            "carbon_capture.direct_air_capture.AmineScrubbing",
-            "carbon_capture.direct_air_capture.CalciumPotassiumScrubbing"
-        ],
-        "scaling_factor_techno_consumption": 1000.0,
-        "scaling_factor_techno_production": 1000.0,
-        "ccs_list": [
-            "carbon_capture",
-            "carbon_storage"
-        ],
-        "electricity#CoalGen#techno_production": null,
-        "electricity#CoalGen#flue_gas_co2_ratio": [
-            0.13
-        ],
-        "electricity#GasTurbine#techno_production": null,
-        "electricity#GasTurbine#flue_gas_co2_ratio": [
-            0.035
-        ],
-        "electricity#CombinedCycleGasTurbine#techno_production": null,
-        "electricity#CombinedCycleGasTurbine#flue_gas_co2_ratio": [
-            0.035
-        ],
-        "hydrogen#gaseous_hydrogen#WaterGasShift#techno_production": null,
-        "hydrogen#gaseous_hydrogen#WaterGasShift#flue_gas_co2_ratio": [
-            0.175
-        ],
-        "methane#FossilGas#techno_production": null,
-        "methane#FossilGas#flue_gas_co2_ratio": [
-            0.085
-        ],
-        "solid_fuel#Pelletizing#techno_production": null,
-        "solid_fuel#Pelletizing#flue_gas_co2_ratio": [
-            0.12
-        ],
-        "syngas#CoalGasification#techno_production": null,
-        "syngas#CoalGasification#flue_gas_co2_ratio": [
-            0.13
-        ],
-        "carbon_capture#direct_air_capture#AmineScrubbing#techno_production": null,
-        "carbon_capture#direct_air_capture#AmineScrubbing#flue_gas_co2_ratio": [
-            0.035
-        ],
-        "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#techno_production": null,
-        "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#flue_gas_co2_ratio": [
-            0.035
-        ]
-    },
-    "id": "flue_gas_capture"
+  "US": {
+    "year_start": 2020,
+    "year_end": 2100,
+    "technologies_list": [
+      "electricity.CoalGen",
+      "electricity.GasTurbine",
+      "electricity.CombinedCycleGasTurbine",
+      "hydrogen.gaseous_hydrogen.WaterGasShift",
+      "methane.FossilGas",
+      "solid_fuel.Pelletizing",
+      "syngas.CoalGasification",
+      "carbon_capture.direct_air_capture.AmineScrubbing",
+      "carbon_capture.direct_air_capture.CalciumPotassiumScrubbing"
+    ],
+    "scaling_factor_techno_consumption": 1000.0,
+    "scaling_factor_techno_production": 1000.0,
+    "ccs_list": [
+      "carbon_capture",
+      "carbon_storage"
+    ],
+    "electricity#CoalGen#techno_production": null,
+    "electricity#CoalGen#flue_gas_co2_ratio": [
+      0.13
+    ],
+    "electricity#GasTurbine#techno_production": null,
+    "electricity#GasTurbine#flue_gas_co2_ratio": [
+      0.035
+    ],
+    "electricity#CombinedCycleGasTurbine#techno_production": null,
+    "electricity#CombinedCycleGasTurbine#flue_gas_co2_ratio": [
+      0.035
+    ],
+    "hydrogen#gaseous_hydrogen#WaterGasShift#techno_production": null,
+    "hydrogen#gaseous_hydrogen#WaterGasShift#flue_gas_co2_ratio": [
+      0.175
+    ],
+    "methane#FossilGas#techno_production": null,
+    "methane#FossilGas#flue_gas_co2_ratio": [
+      0.085
+    ],
+    "solid_fuel#Pelletizing#techno_production": null,
+    "solid_fuel#Pelletizing#flue_gas_co2_ratio": [
+      0.12
+    ],
+    "syngas#CoalGasification#techno_production": null,
+    "syngas#CoalGasification#flue_gas_co2_ratio": [
+      0.13
+    ],
+    "carbon_capture#direct_air_capture#AmineScrubbing#techno_production": null,
+    "carbon_capture#direct_air_capture#AmineScrubbing#flue_gas_co2_ratio": [
+      0.035
+    ],
+    "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#techno_production": null,
+    "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#flue_gas_co2_ratio": [
+      0.035
+    ]
+  },
+  "UE": {
+    "year_start": 2020,
+    "year_end": 2100,
+    "technologies_list": [
+      "electricity.CoalGen",
+      "electricity.GasTurbine",
+      "electricity.CombinedCycleGasTurbine",
+      "hydrogen.gaseous_hydrogen.WaterGasShift",
+      "methane.FossilGas",
+      "solid_fuel.Pelletizing",
+      "syngas.CoalGasification",
+      "carbon_capture.direct_air_capture.AmineScrubbing",
+      "carbon_capture.direct_air_capture.CalciumPotassiumScrubbing"
+    ],
+    "scaling_factor_techno_consumption": 1000.0,
+    "scaling_factor_techno_production": 1000.0,
+    "ccs_list": [
+      "carbon_capture",
+      "carbon_storage"
+    ],
+    "electricity#CoalGen#techno_production": null,
+    "electricity#CoalGen#flue_gas_co2_ratio": [
+      0.13
+    ],
+    "electricity#GasTurbine#techno_production": null,
+    "electricity#GasTurbine#flue_gas_co2_ratio": [
+      0.035
+    ],
+    "electricity#CombinedCycleGasTurbine#techno_production": null,
+    "electricity#CombinedCycleGasTurbine#flue_gas_co2_ratio": [
+      0.035
+    ],
+    "hydrogen#gaseous_hydrogen#WaterGasShift#techno_production": null,
+    "hydrogen#gaseous_hydrogen#WaterGasShift#flue_gas_co2_ratio": [
+      0.175
+    ],
+    "methane#FossilGas#techno_production": null,
+    "methane#FossilGas#flue_gas_co2_ratio": [
+      0.085
+    ],
+    "solid_fuel#Pelletizing#techno_production": null,
+    "solid_fuel#Pelletizing#flue_gas_co2_ratio": [
+      0.12
+    ],
+    "syngas#CoalGasification#techno_production": null,
+    "syngas#CoalGasification#flue_gas_co2_ratio": [
+      0.13
+    ],
+    "carbon_capture#direct_air_capture#AmineScrubbing#techno_production": null,
+    "carbon_capture#direct_air_capture#AmineScrubbing#flue_gas_co2_ratio": [
+      0.035
+    ],
+    "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#techno_production": null,
+    "carbon_capture#direct_air_capture#CalciumPotassiumScrubbing#flue_gas_co2_ratio": [
+      0.035
+    ]
+  },
+  "id": "flue_gas_capture"
 }

@@ -53,7 +53,7 @@ class ServicesDiscTest(unittest.TestCase):
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
-        
+
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
@@ -62,7 +62,6 @@ class ServicesDiscTest(unittest.TestCase):
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         self.time_step = 1
-
 
         # input
         self.workforce_df = pd.DataFrame({
@@ -77,11 +76,10 @@ class ServicesDiscTest(unittest.TestCase):
 
         self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
                                           GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(len(self.years))})
-        
-        #damage
-        self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),})
 
+        # damage
+        self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)), })
 
     def test_execute(self):
         section_list = GlossaryCore.SectionsIndustry
@@ -93,8 +91,8 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
-                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
-                       f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902,  # 2019 value for test
                        f'{self.name}.prod_function_fitting': False,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 100.92448579,
@@ -134,14 +132,14 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest, #To check if not used
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,  # To check if not used
                        f'{self.name}.{SectorDiscipline.sector_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
-                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
-                       f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902,  # 2019 value for test
                        f'{self.name}.prod_function_fitting': True,
-                       f'{self.name}.{SectorDiscipline.sector_name}.energy_eff_max_range_ref' : 15,
+                       f'{self.name}.{SectorDiscipline.sector_name}.energy_eff_max_range_ref': 15,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
@@ -170,4 +168,3 @@ class ServicesDiscTest(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filterr)
         # for graph in graph_list:
         #     graph.to_plotly().show()
-

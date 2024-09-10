@@ -140,7 +140,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
                              f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_macroeconomics_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
-                            outputs=output_full_names, local_data = {},derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
+                            outputs=output_full_names, local_data={}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
 
     def test_02_check_gradient_damage_witness_wo_energy(self):
         # New Execution Engine to check macro economics gradients
@@ -172,7 +172,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
                              f'{self.name}.CO2_tax_minus_CO2_damage_constraint_df']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_damage_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
-                            outputs=output_full_names,local_data = {}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
+                            outputs=output_full_names, local_data={}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
 
     def test_03_check_gradient_carbon_emissions_witness_wo_energy(self):
         # New Execution Engine to check macro economics gradients
@@ -204,7 +204,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}', f'{self.name}.CO2_objective']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_carbon_emissions_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
-                            outputs=output_full_names, local_data = {},derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
+                            outputs=output_full_names, local_data={}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
 
     def test_04_check_gradient_carboncycle_witness_wo_energy(self):
         # New Execution Engine to check macro economics gradients
@@ -234,7 +234,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         output_full_names = [f'{self.name}.{GlossaryCore.CarbonCycleDfValue}']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_carboncycle_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
-                            outputs=output_full_names,local_data = {}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
+                            outputs=output_full_names, local_data={}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
 
     def test_05_check_gradient_temperature_change_witness_wo_energy(self):
         # New Execution Engine to check macro economics gradients
@@ -265,7 +265,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_temperature_change_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
-                            outputs=output_full_names, local_data = {},derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
+                            outputs=output_full_names, local_data={}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
 
     def test_06_check_gradient_utility_witness_wo_energy(self):
         # New Execution Engine to check macro economics gradients
@@ -296,4 +296,4 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
                              f'{self.name}.{GlossaryCore.WelfareObjective}']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_utility_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
-                            outputs=output_full_names, local_data = {},derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
+                            outputs=output_full_names, local_data={}, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)

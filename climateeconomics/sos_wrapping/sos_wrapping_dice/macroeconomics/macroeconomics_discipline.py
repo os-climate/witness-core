@@ -29,7 +29,6 @@ from climateeconomics.glossarycore import GlossaryCore
 class MacroeconomicsDiscipline(SoSWrapp):
     "Macroeconomics discipline for DICE"
 
-
     # ontology information
     _ontology_data = {
         'label': 'MacroEconomics DICE Model',
@@ -57,7 +56,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
         'popasym': {'type': 'float', 'unit': 'millions of people', 'default': 11500},
         'population_growth': {'type': 'float', 'default': 0.134},
-        'productivity_gr_start': {'type': 'float', 'default':0.076},
+        'productivity_gr_start': {'type': 'float', 'default': 0.076},
         'decline_rate_tfp': {'type': 'float', 'default': 0.005},
         'depreciation_capital': {'type': 'float', 'default': .1},
         'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice', 'default': .015},
@@ -131,7 +130,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
             legend = {GlossaryCore.GrossOutput: 'world gross output',
                       GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
 
-
             year_start = years[0]
             year_end = years[len(years) - 1]
 
@@ -164,7 +162,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
         if GlossaryCore.PopulationValue in chart_list:
 
             to_plot = [GlossaryCore.PopulationValue]
-
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -199,7 +196,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             to_plot = [GlossaryCore.Productivity]
 
-
             year_start = years[0]
             year_end = years[len(years) - 1]
 
@@ -232,7 +228,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
         if GlossaryCore.Consumption in chart_list:
 
             to_plot = [GlossaryCore.Consumption]
-
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -302,7 +297,6 @@ def resize_array(array):
     new_array = array[0:i]
 
     return new_array
-
 
 
 def resize_index(index, array):

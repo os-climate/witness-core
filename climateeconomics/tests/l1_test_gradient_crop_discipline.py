@@ -37,7 +37,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2035
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -147,10 +147,10 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    'ns_biomass_dry': f'{self.name}',
-                   'ns_land_use':f'{self.name}',
-                   'ns_crop':f'{self.name}',
+                   'ns_land_use': f'{self.name}',
+                   'ns_crop': f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
-                   'ns_invest':f'{self.name}'}
+                   'ns_invest': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

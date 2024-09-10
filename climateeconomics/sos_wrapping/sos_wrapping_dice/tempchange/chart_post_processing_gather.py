@@ -37,56 +37,57 @@ def get_chart_filter_list(discipline):
 
     return chart_filters
 
+
 def get_instanciated_charts(discipline, chart_filters=None):
-    
+
     instanciated_charts = []
     graphs_list = []
-    
+
     if chart_filters is not None:
         for chart_filter in chart_filters:
             if chart_filter.filter_key == 'graphs':
                 graphs_list = chart_filter.selected_values
-                
+
     temperature_df_dict = discipline.get_sosdisc_outputs(
             'temperature_df_dict')
 
-    if 'Atmospheric temperature evolution' in graphs_list:       
-        
+    if 'Atmospheric temperature evolution' in graphs_list:
+
         chart_name = 'Atmospheric temperature evolution over years'
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
-                                            chart_name = chart_name)
-        
+                                            chart_name=chart_name)
+
         for scenario, temp_df in temperature_df_dict.items():
             years = list(temp_df.index)
 #            year_start = years[0]
 #            year_end = years[len(years) - 1]
             temp_atmo = temp_df[GlossaryCore.TempAtmo]
-            #temp_ocean = temp_df[GlossaryCore.TempOcean]
-            
-            new_series = InstanciatedSeries( years, temp_atmo.tolist(), f'{scenario} Atmospheric temperature', 'lines')
+            # temp_ocean = temp_df[GlossaryCore.TempOcean]
+
+            new_series = InstanciatedSeries(years, temp_atmo.tolist(), f'{scenario} Atmospheric temperature', 'lines')
             new_chart.series.append(new_series)
 #             new_series = InstanciatedSeries( years, temp_ocean.tolist(), f'{scenario} Ocean temperature', 'lines')
 #             new_chart.series.append(new_series)
 
         instanciated_charts.append(new_chart)
-        
-    if 'Ocean temperature evolution' in graphs_list:       
-        
+
+    if 'Ocean temperature evolution' in graphs_list:
+
         chart_name = 'Ocean temperature evolution over years'
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
-                                            chart_name = chart_name)
-        
+                                            chart_name=chart_name)
+
         for scenario, temp_df in temperature_df_dict.items():
             years = list(temp_df.index)
 #            year_start = years[0]
 #            year_end = years[len(years) - 1]
             temp_ocean = temp_df[GlossaryCore.TempOcean]
-            
-            new_series = InstanciatedSeries( years, temp_ocean.tolist(), f'{scenario} Ocean temperature', 'lines')
+
+            new_series = InstanciatedSeries(years, temp_ocean.tolist(), f'{scenario} Ocean temperature', 'lines')
             new_chart.series.append(new_series)
 
         instanciated_charts.append(new_chart)
-# 
+#
     return instanciated_charts
-# 
-#    
+#
+#

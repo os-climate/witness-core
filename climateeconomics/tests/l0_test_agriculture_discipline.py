@@ -30,7 +30,7 @@ class AgricultureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2055
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -99,7 +99,7 @@ class AgricultureTestCase(unittest.TestCase):
                       }
 
     def test_agriculture_model(self):
-        ''' 
+        '''
         Basique test of agriculture pyworld3
         Mainly check the overal run without value checks (will be done in another test)
         '''

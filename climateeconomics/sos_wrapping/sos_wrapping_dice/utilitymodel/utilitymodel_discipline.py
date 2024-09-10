@@ -29,7 +29,6 @@ from climateeconomics.glossarycore import GlossaryCore
 class UtilityModelDiscipline(SoSWrapp):
     "UtilityModel discipline for DICE"
 
-
     # ontology information
     _ontology_data = {
         'label': 'Utility DICE Model',

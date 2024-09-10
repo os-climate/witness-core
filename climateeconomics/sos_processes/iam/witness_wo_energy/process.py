@@ -76,7 +76,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-
         '''
         Add emissions disciplines
         '''

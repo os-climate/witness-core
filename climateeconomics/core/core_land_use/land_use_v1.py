@@ -42,7 +42,7 @@ class LandUseV1():
     """
     Land use pyworld3 class
 
-    basic for now, to evolve 
+    basic for now, to evolve
 
     source: https://ourworldindata.org/land-use
     """
@@ -106,7 +106,7 @@ class LandUseV1():
         self.surface_df = pd.read_csv(data_file)
 
     def compute(self, land_demand_df, total_food_land_surface, deforested_surface_df):
-        ''' 
+        '''
         Computation methods, comput land demands and constraints
 
         @param land_demand_df:  land demands from all techno in inputs

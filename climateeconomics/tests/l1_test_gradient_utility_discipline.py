@@ -33,7 +33,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.model_name = 'utility'
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
@@ -55,7 +55,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        f = interp1d([self.year_start, self.year_start + 1, self.year_start +2, (self.year_start + self.year_end) / 2, self.year_end], [100, 100, 100, 200, 100])
+        f = interp1d([self.year_start, self.year_start + 1, self.year_start + 2, (self.year_start + self.year_end) / 2, self.year_end], [100, 100, 100, 200, 100])
         gdp_net = f(self.years)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -83,7 +83,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
-
     def analytic_grad_entry(self):
         return [
             self.test_01_utility_analytic_grad_welfare,
@@ -93,7 +92,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'
@@ -102,6 +101,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
                                      f'{self.name}.{GlossaryCore.LastYearUtilityObjectiveValue}',
                                      f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
-                                     #f'{self.name}.{GlossaryCore.NetGdpGrowthRateObjectiveValue}',
+                                     # f'{self.name}.{GlossaryCore.NetGdpGrowthRateObjectiveValue}',
                             ],
                             derr_approx='complex_step')

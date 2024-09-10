@@ -1,6 +1,6 @@
 To describe wich dataset goes with wich data in a specific usecase, the usecase will need a dataset_mapping file.
 
-This file can be created next to the usecase.py file For testing purpose, or in the "datasets_database\mappings" folder if the mapping is official and where everyone can retrieve it. 
+This file can be created next to the usecase.py file For testing purpose, or in the "datasets_database\mappings" folder if the mapping is official and where everyone can retrieve it.
 
 The dataset mapping file has the following structure:
 
@@ -31,4 +31,3 @@ A dataset information has the following format:
 - dataset_disc1 → name of the dataset
 - |* → means that it is for all parameters of this dataset. For now you can't specify a single parameter but it will be possible in the future.
 If several dataset are specified for one namespace, if a parameter is present in several datasets, the value of the parameter will be the value of the last dataset to have the parameter value.
-

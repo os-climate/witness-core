@@ -59,7 +59,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
                GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                      GlossaryCore.Population1570: ('float', None, False),}
+                                                                      GlossaryCore.Population1570: ('float', None, False), }
                                              },
                GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
               }
@@ -83,36 +83,34 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                 df_descriptor = {GlossaryCore.Years: ('float', None, False)}
                 df_descriptor.update({col: ('float', None, True)
                                  for col in sector_list})
-                
+
                 dynamic_inputs['workforce_share_per_sector'] = {'type': 'dataframe', 'unit': '%',
                                                 'dataframe_descriptor': df_descriptor,
                                                 'dataframe_edition_locked': False}
-              
-            self.add_inputs(dynamic_inputs)
 
+            self.add_inputs(dynamic_inputs)
 
     def run(self):
 
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
-        
+
         # -- configure class with inputs
         self.labor_model.configure_parameters(inputs_dict)
 
         # -- compute
-        workforce_df, employment_df  = self.labor_model.compute(inputs_dict)
+        workforce_df, employment_df = self.labor_model.compute(inputs_dict)
 
         outputs_dict = {GlossaryCore.WorkforceDfValue: workforce_df,
                         'employment_df': employment_df}
 
-        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
         """
         Compute jacobian for each coupling variable
         gradient of coupling variable to compute:
-        net_output and invest wrt sector net_output 
+        net_output and invest wrt sector net_output
         """
         sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
         # Gradient wrt working age population
@@ -125,13 +123,12 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, sector),
                                                         (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
                                                         grad_workforcesector)
-            
 
     def get_chart_filter_list(self):
 
         chart_filters = []
 
-        chart_list = ['workforce per sector', 'total workforce', 'employment rate','workforce share per sector']
+        chart_list = ['workforce per sector', 'total workforce', 'employment rate', 'workforce share per sector']
 
         chart_filters.append(ChartFilter(
             'Charts filter', chart_list, chart_list, 'charts'))
@@ -160,7 +157,6 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         if 'employment rate' in chart_list:
-
 
             year_start = years[0]
             year_end = years[len(years) - 1]

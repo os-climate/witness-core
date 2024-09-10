@@ -89,7 +89,6 @@ class UtilityModel():
         self.utility_df[GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
 
-
     def compute(self, economics_df, energy_mean_price, population_df):
         """compute"""
         self.economics_df = economics_df
@@ -141,7 +140,7 @@ class UtilityModel():
     def d_s_curve_function(self, x):
         u_prime = self.strech_scurve
         u = (x - 1 - self.shift_scurve) * self.strech_scurve
-        f_prime_u = np.exp(-u) / (1+np.exp(-u)) ** 2
+        f_prime_u = np.exp(-u) / (1 + np.exp(-u)) ** 2
         return u_prime * f_prime_u
 
     def compute_discounted_utility_quantity_per_capita(self):
@@ -172,7 +171,7 @@ class UtilityModel():
         last_year_utility_objective = self.utility_df[GlossaryCore.DiscountedQuantityUtilityPopulation].values[-1]
         self.last_year_utility_objective = np.array([last_year_utility_objective])
 
-    ######### GRADIENTS ########
+    # GRADIENTS ########
     def d_utility_quantity(self):
         energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
         pcc = self.economics_df[GlossaryCore.PerCapitaConsumption].values
@@ -187,7 +186,7 @@ class UtilityModel():
         d_utility_dpcc = np.diag(d_u_d_pcc * self.d_s_curve_function(u))
         d_utility_dpcc0 = d_u_d_pcc0 * self.d_s_curve_function(u)
         d_utility_dpcc[:, 0] = d_utility_dpcc0
-        d_utility_dpcc[0,0] = 0.
+        d_utility_dpcc[0, 0] = 0.
         discount_rate = self.utility_df[GlossaryCore.UtilityDiscountRate].values
         d_discounted_utility_quantity_denergy_price = np.diag(discount_rate) * d_utility_denergy_price
         d_discounted_utility_quantity_dpcc = np.diag(discount_rate) @ d_utility_dpcc
@@ -225,7 +224,7 @@ class UtilityModel():
         :rtype:
         """
         output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
-        increments = list(output_net_of_damage[1:]/output_net_of_damage[:-1])
+        increments = list(output_net_of_damage[1:] / output_net_of_damage[:-1])
         increments.append(0)
         increments = np.array(increments)
 
@@ -246,12 +245,12 @@ class UtilityModel():
         increments = np.array(increments)
 
         a = list(- output_shift / output_net_of_damage**2)
-        derivative = np.diag(a) + np.diag(1/output_net_of_damage[:-1], k=1)
+        derivative = np.diag(a) + np.diag(1 / output_net_of_damage[:-1], k=1)
 
         derivative[increments > 1] = 0.
         for i, incr in enumerate(increments):
             if incr == 1:
-                derivative[i, i+1] = 0.
+                derivative[i, i + 1] = 0.
         derivative = -np.mean(derivative, axis=0)
 
         return derivative
@@ -266,7 +265,7 @@ class UtilityModel():
         :rtype:
         """
         output_net_of_damage = self.economics_df[GlossaryCore.OutputNetOfDamage].values
-        increments = list(output_net_of_damage[1:]/output_net_of_damage[:-1])
+        increments = list(output_net_of_damage[1:] / output_net_of_damage[:-1])
         increments.append(0)
         increments = np.array(increments)
 
@@ -286,11 +285,11 @@ class UtilityModel():
         increments = np.array(increments)
 
         a = list(- output_shift / output_net_of_damage**2)
-        derivative = np.diag(a) + np.diag(1/output_net_of_damage[:-1], k=1)
+        derivative = np.diag(a) + np.diag(1 / output_net_of_damage[:-1], k=1)
 
         for i, incr in enumerate(increments):
             if incr == 1:
-                derivative[i, i+1] = 0.
+                derivative[i, i + 1] = 0.
         derivative = -np.mean(derivative, axis=0)
 
         return derivative

@@ -38,7 +38,7 @@ class EnergyInvestDiscTest(unittest.TestCase):
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',}
+                   'ns_energy_study': f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -88,5 +88,5 @@ class EnergyInvestDiscTest(unittest.TestCase):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass

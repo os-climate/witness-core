@@ -160,9 +160,9 @@ class TempChange(object):
     def compute_forcing_meinshausen(self, co2_ppm, ch4_ppm, n2o_ppm):
         """
         Compute radiative forcing following MeinsHausen pyworld3 (found in FAIR)
-        Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J., Vogel, E., Freund, 
+        Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J., Vogel, E., Freund,
         M., Beyerle, U., Gessner, C., Nauels, A., Bauer, N. and Canadell, J.G., 2020.
-        The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. 
+        The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500.
         Geoscientific Model Development, 13(8), pp.3571-3605.
         """
         a1 = -2.4785e-07
@@ -243,7 +243,7 @@ class TempChange(object):
 
         self.temperature_df[GlossaryCore.Forcing] = forcing
 
-    ######### DICE ########
+    # DICE ########
     def compute_temp_atmo_ocean_dice(self):
         """
         Compute temperature of atmosphere (t) using t-1 values
@@ -254,7 +254,7 @@ class TempChange(object):
         temp_atmo_list = [temp_atmo]
         temp_ocean_list = [temp_ocean]
 
-        for year, forcing in zip(self.years_range[1:], self.temperature_df[GlossaryCore.Forcing].values[1:]) :
+        for year, forcing in zip(self.years_range[1:], self.temperature_df[GlossaryCore.Forcing].values[1:]):
             new_temp_ocean = temp_ocean + (self.transfer_lower / (5.0 / self.time_step)) * (temp_atmo - temp_ocean)
             new_temp_atmo = temp_atmo + (self.climate_upper / (5.0 / self.time_step)) * \
                 ((forcing - (self.forcing_eq_co2 / self.eq_temp_impact) *
@@ -276,7 +276,7 @@ class TempChange(object):
         self.temperature_df[GlossaryCore.TempOcean] = temp_ocean_list
         self.temperature_df[GlossaryCore.TempAtmo] = temp_atmo_list
 
-    ######### FUND ########
+    # FUND ########
     def compute_temp_fund(self):
         """
         Compute temperature of atmosphere (t) using t-1 values following FUND Model
@@ -293,7 +293,7 @@ class TempChange(object):
         temperature_list = [temperature]
 
         for year, radiative_forcing in zip(self.years_range[1:], self.temperature_df[GlossaryCore.Forcing].values[1:]):
-            temperature = (1-1/e_folding_time) * temperature + cs/(5.35*np.log(2)*e_folding_time) * radiative_forcing
+            temperature = (1 - 1 / e_folding_time) * temperature + cs / (5.35 * np.log(2) * e_folding_time) * radiative_forcing
             temperature_list.append(temperature)
 
         self.temperature_df[GlossaryCore.TempAtmo] = temperature_list
@@ -310,19 +310,19 @@ class TempChange(object):
 
         self.temperature_df['sea_level'] = sea_level
 
-    ######### CONSTRAINT ########
+    # CONSTRAINT ########
     def compute_temperature_year_end_constraint(self):
         """
         Compute temperature constraint
         """
         temp_atmo_year_end = self.temperature_df[GlossaryCore.TempAtmo].values[-1]
-        self.temperature_end_constraint = np.array([(self.temperature_end_constraint_limit - temp_atmo_year_end)/self.temperature_end_constraint_ref])
+        self.temperature_end_constraint = np.array([(self.temperature_end_constraint_limit - temp_atmo_year_end) / self.temperature_end_constraint_ref])
 
-    ######### GRADIENTS ########
+    # GRADIENTS ########
 
     def compute_d_forcing(self):
         """
-        Compute gradient for radiative forcing 
+        Compute gradient for radiative forcing
         """
 
         co2_ppm = self.ghg_cycle_df[GlossaryCore.CO2Concentration].values
@@ -417,7 +417,7 @@ class TempChange(object):
         dn2o_forcing_dn2o_ppm = (4.2e-6 * 0.5) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm)) + \
             (-8.0e-6 * co2mean + 4.2e-6 * n2omean - 4.9e-6 * ch4mean + 0.117) * 1.0 / (2.0 * np.sqrt(n2o_ppm))
         dn2o_forcing_dco2_ppm = (-8.0e-6 * 0.5) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
-        dn2o_forcing_dch4_ppm = (- 4.9e-6 * 0.5 ) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
+        dn2o_forcing_dch4_ppm = (- 4.9e-6 * 0.5) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
 
         dco2_forcing = dco2_forcing_dco2_ppm + dco2_forcing_dn2o_ppm
         dch4_forcing = dch4_forcing_dch4_ppm + dch4_forcing_dn2o_ppm
@@ -524,14 +524,14 @@ class TempChange(object):
                 d_tempatmo_d_atmoconc[i, i] = 0
 
             while j < i:
-                #-------atmo temp derivative------------
+                # -------atmo temp derivative------------
                 d_tempatmo_d_atmoconc[i, j] = d_tempatmo_d_atmoconc[i - 1, j] \
                     - self.climate_upper * self.time_step / 5.0 * self.forcing_eq_co2 / self.eq_temp_impact * d_tempatmo_d_atmoconc[i - 1, j] \
                     - self.climate_upper * self.time_step / 5.0 * self.transfer_upper * self.time_step / \
                     5.0 * \
                     (d_tempatmo_d_atmoconc[i - 1, j] -
                      d_tempocean_d_atmoconc[i - 1, j])
-                #-------ocean temp derivative-----------
+                # -------ocean temp derivative-----------
                 # if atmo temp is saturated
                 if self.temperature_df[GlossaryCore.TempAtmo].values[i] == self.up_tatmo:
                     d_tempatmo_d_atmoconc[i, j] = 0
@@ -556,13 +556,13 @@ class TempChange(object):
                              beta_q * self.climate_sensitivity * self.climate_sensitivity,
                              1)
 
-        coeff = self.climate_sensitivity/(5.35*np.log(2)*e_folding_time)
-        decay = (1-1/e_folding_time)
-        mat = np.diag(coeff*np.ones(len(self.years_range)))
+        coeff = self.climate_sensitivity / (5.35 * np.log(2) * e_folding_time)
+        decay = (1 - 1 / e_folding_time)
+        mat = np.diag(coeff * np.ones(len(self.years_range)))
 
-        for i in np.arange(1, len(self.years_range-1)):
-            coeff = coeff*decay
-            mat += np.diag(coeff*np.ones(len(self.years_range)-i), -i)
+        for i in np.arange(1, len(self.years_range - 1)):
+            coeff = coeff * decay
+            mat += np.diag(coeff * np.ones(len(self.years_range) - i), -i)
 
         # first year is from initial data and is fixed ==> grad is zero
         mat[:, 0] = 0.0

@@ -6,4 +6,3 @@
 * [Macroeconomics](macroeconomics/documentation/macroeconomics_discipline)
 * [Objectives](objectives/documentation/objectives_discipline)
 * [Services](services/documentation/services_discipline)
- 

@@ -31,16 +31,16 @@ class CopperModelTestCase(unittest.TestCase):
         '''
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
-        self.production_start=1974
+        self.production_start = 1974
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_copper_demand_df = read_csv(
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
-       
+
         self.energy_copper_demand_df = self.energy_copper_demand_df.loc[self.energy_copper_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_copper_demand_df= self.energy_copper_demand_df.loc[self.energy_copper_demand_df[GlossaryCore.Years]
+        self.energy_copper_demand_df = self.energy_copper_demand_df.loc[self.energy_copper_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_copper_demand_df,
@@ -49,7 +49,7 @@ class CopperModelTestCase(unittest.TestCase):
                       'production_start': self.production_start}
 
     def test_copper_discipline(self):
-        ''' 
+        '''
         Check discipline setup and run
         '''
         name = 'Test'
@@ -58,7 +58,7 @@ class CopperModelTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
-                   'ns_copper_resource':f'{name}.{model_name}',
+                   'ns_copper_resource': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
@@ -86,5 +86,6 @@ class CopperModelTestCase(unittest.TestCase):
         # for graph in graph_list:
         #     graph.to_plotly().show()
 
-if __name__ =="__main__" :
+
+if __name__ == "__main__":
     unittest.main()

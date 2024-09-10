@@ -101,9 +101,9 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f"{self.name}.{GlossaryCore.ConstraintCarbonNegative2050}"
         ]
 
-        #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
-        #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
-        #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.EmissionsDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        # self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        # self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionNonEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
+        # self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.EmissionsDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
 
     def analytic_grad_entry(self):
         return [
@@ -152,7 +152,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_ghg_emission_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=self.inputs_cheked,
                             outputs=self.outputs_checked)
 
@@ -199,6 +199,6 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_ghg_emission_discipline_affine_co2_objective.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=self.inputs_cheked,
                             outputs=self.outputs_checked)

@@ -28,6 +28,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def get_builders(self):
 
         ns_macro = f"{self.ee.study_name}.{'Macroeconomics'}"
@@ -44,9 +45,9 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: self.ee.study_name}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
-                     f'Macroeconomics.{GlossaryCore.SectorServices}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline' ,
-                     f'Macroeconomics.{GlossaryCore.SectorAgriculture}':'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline',
-                     f'Macroeconomics.{GlossaryCore.SectorIndustry}':'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
+                     f'Macroeconomics.{GlossaryCore.SectorServices}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline',
+                     f'Macroeconomics.{GlossaryCore.SectorAgriculture}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline',
+                     f'Macroeconomics.{GlossaryCore.SectorIndustry}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
                      }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 

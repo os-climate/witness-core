@@ -41,7 +41,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+        techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_story_telling_sub_process',
@@ -50,7 +50,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(optim_name, after_name=self.ee.study_name)  # optim_name
 
-        #-- set optim builder
+        # -- set optim builder
         opt_builder = self.ee.factory.create_optim_builder(
             optim_name, [coupling_builder])
 

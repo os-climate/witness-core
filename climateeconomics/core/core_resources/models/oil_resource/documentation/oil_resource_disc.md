@@ -2,7 +2,7 @@ The Earth offers a finite amount of oil. Theses oil stocks take different forms 
 The first model just takes into account the world oil stock.
 
 In order to find these parameters we need to find the data for the past production per year from the beginning of the production
-The used data are taken from 1933 to 2020 there is several categories of oil which represent a percentage of the total production. These proportions change with the production year but in this model we take the repartition at year 2020. 
+The used data are taken from 1933 to 2020 there is several categories of oil which represent a percentage of the total production. These proportions change with the production year but in this model we take the repartition at year 2020.
 
 production data sources: [^2] and [^3]
 
@@ -20,7 +20,7 @@ To fit the curve with the maximum reserve estimated by BP we adjust the beginnin
 
 ### Extraction Price [^5]
 
-We use the price of the different types according to API type: 
+We use the price of the different types according to API type:
 ![](APII.png)
 
 And we find the mean price:
@@ -49,7 +49,7 @@ The following data are integrated into the model
 |other sector|22.2|7868.124|
 Data implemented in the oil demand csv.
 
-### References 
+### References
 
 [^1]: Jon Claerbout and Francis Muir - "Hubbert math" (2020) - Retrieved from: 'http://sepwww.stanford.edu/sep/jon/hubbert.pdf'
 [^2]: Eni S.p.A. - "World Oil Review 2020" - Retrieved from: 'https://www.eni.com/assets/documents/eng/scenari-energetici/WORLD-OIL-REVIEW-2020-vol1.pdf'

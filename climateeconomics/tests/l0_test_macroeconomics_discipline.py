@@ -57,7 +57,7 @@ class MacroDiscTest(unittest.TestCase):
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   'ns_energy_study': f'{self.name}',}
+                   'ns_energy_study': f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -100,7 +100,7 @@ class MacroDiscTest(unittest.TestCase):
 
         default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 50.0}, index=years)
-        
+
         # energy_capital
         nb_per = len(self.years)
         energy_capital_year_start = 16.09
@@ -128,7 +128,7 @@ class MacroDiscTest(unittest.TestCase):
             GlossaryCore.SectorServices: 14.56,
             GlossaryCore.SectorAgriculture: 2.13,
             GlossaryCore.SectorIndustry: 63.30,
-            #GlossaryCore.SectorNonEco: 20.0, # not an economic sector
+            # GlossaryCore.SectorNonEco: 20.0, # not an economic sector
         })
 
         carbon_intensity_energy = pd.DataFrame({
@@ -189,7 +189,6 @@ class MacroDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        for i,graph in enumerate(graph_list):
-            #graph.to_plotly().show()
+        for i, graph in enumerate(graph_list):
+            # graph.to_plotly().show()
             pass
-

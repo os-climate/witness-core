@@ -37,6 +37,7 @@ class Study(StudyMSmdaTippingPoint35):
     def setup_usecase(self, study_folder_path=None):
         return {}
 
+
 if '__main__' == __name__:
     uc_export = StudyToExport()
     uc_export.load_data()

@@ -27,4 +27,3 @@ def get_scenario_value(execution_engine, var_name, scenario_name):
          selected_scenario_varname = all_scenario_varnames[0]
     value_selected_scenario = execution_engine.dm.get_value(selected_scenario_varname)
     return value_selected_scenario
-

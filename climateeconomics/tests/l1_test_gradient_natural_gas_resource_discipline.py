@@ -40,15 +40,15 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
 
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_natural_gas_demand_df = read_csv(
-            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=[GlossaryCore.Years,'natural_gas_resource'])
+            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=[GlossaryCore.Years, 'natural_gas_resource'])
         self.energy_natural_gas_variable_demand_df = read_csv(
-            join(data_dir, 'all_demand_variable.csv'), usecols=[GlossaryCore.Years,'natural_gas_resource'])
+            join(data_dir, 'all_demand_variable.csv'), usecols=[GlossaryCore.Years, 'natural_gas_resource'])
         # part to adapt lenght to the year range
 
         self.energy_natural_gas_demand_df = self.energy_natural_gas_demand_df.loc[self.energy_natural_gas_demand_df[GlossaryCore.Years]
@@ -59,6 +59,7 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
                                                                     >= self.year_start]
         self.energy_natural_gas_variable_demand_df = self.energy_natural_gas_variable_demand_df.loc[self.energy_natural_gas_variable_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
+
     def test_natural_gas_resource_analytic_grad(self):
 
         self.name = 'Test'
@@ -91,7 +92,7 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_natural_gas_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
@@ -102,7 +103,7 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
                                      ])
 
     def test_natural_gas_resource_demand_variable_analytic_grad(self):
-        
+
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'natural_gas_resource'
@@ -141,4 +142,3 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.predictable_production',
                                      f'{self.name}.{self.model_name}.recycled_production',
                                      ])
-

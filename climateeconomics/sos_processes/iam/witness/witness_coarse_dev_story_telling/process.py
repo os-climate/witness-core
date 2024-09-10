@@ -49,7 +49,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+        techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',

@@ -31,7 +31,7 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start =GlossaryCore.YearStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         n_years = len(self.years)
@@ -89,7 +89,7 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
         inputs_checked += [f'{name}.{sector}.{GlossaryCore.ShareSectorEnergyDfValue}' for sector in self.sector_list[:-1]]
         output_checked = [f'{name}.{sector}.{GlossaryCore.EnergyProductionValue}' for sector in self.sector_list]
         output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}']
-        
+
         disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sectors_redistribution_energy_discipline.pkl',

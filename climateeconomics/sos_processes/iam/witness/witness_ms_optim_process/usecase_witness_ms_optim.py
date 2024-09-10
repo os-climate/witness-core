@@ -56,7 +56,7 @@ class Study(StudyManager):
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 11
         len_scenarios = len(scenario_list)
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios, 'scenario_name': scenario_list})
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         for scenario in scenario_list:

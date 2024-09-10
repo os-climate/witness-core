@@ -24,7 +24,7 @@ from climateeconomics.glossarycore import GlossaryCore
 class Forest():
     """
     Forest pyworld3 class
-    basic for now, to evolve 
+    basic for now, to evolve
 
     """
     YEAR_START = GlossaryCore.YearStart
@@ -141,8 +141,8 @@ class Forest():
             self.CO2_per_ha / 1000 + self.initial_emissions
         self.CO2_emitted_df['captured_CO2_cumulative'] = -self.forest_surface_df['forested_surface_cumulative'] * \
             self.CO2_per_ha / 1000
-        #To make forest_disc work with forest_model v1 & v2
-        self.forest_surface_df['global_forest_surface']=np.zeros(len(years))
+        # To make forest_disc work with forest_model v1 & v2
+        self.forest_surface_df['global_forest_surface'] = np.zeros(len(years))
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):

@@ -82,7 +82,7 @@ class ForestTestCase(unittest.TestCase):
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
-                   'ns_invest': f'{name}.{model_name}' }
+                   'ns_invest': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v1.forest_disc.ForestDiscipline'

@@ -2,4 +2,3 @@
 [Up](../)
 
 * [Integrated Assessment Models](iam/)
- 

@@ -78,7 +78,7 @@ class IndusEmissions():
 
     def compute_sigma(self, year):
         '''
-        Compute CO2-equivalent-emissions output ratio at t 
+        Compute CO2-equivalent-emissions output ratio at t
         using sigma t-1 and growht_rate sigma  t-1
         '''
 
@@ -96,7 +96,7 @@ class IndusEmissions():
 
     def compute_change_sigma(self, year):
         """
-        Compute change in sigma growth rate at t 
+        Compute change in sigma growth rate at t
         using sigma grouwth rate t-1
         """
 
@@ -112,10 +112,10 @@ class IndusEmissions():
 
     def compute_indus_emissions(self, year):
         """
-        Compute industrial emissions at t 
+        Compute industrial emissions at t
         using gross output (t)
         emissions control rate (t)
-        emissions not coming from land change or energy 
+        emissions not coming from land change or energy
         """
         sigma = self.indus_emissions_df.at[year, 'sigma']
         gross_output_ter = self.economics_df.at[year, GlossaryCore.GrossOutput]
@@ -128,7 +128,7 @@ class IndusEmissions():
     def compute_cum_indus_emissions(self, year):
         """
         Compute cumulative industrial emissions at t
-        using emissions indus at t- 1 
+        using emissions indus at t- 1
         and cumulative indus emissions at t-1
         """
 
@@ -145,12 +145,12 @@ class IndusEmissions():
                                         'cum_indus_emissions'] = cum_indus_emissions
             return cum_indus_emissions
 
-    ######### GRADIENTS ########
+    # GRADIENTS ########
 
     def compute_d_indus_emissions(self):
         """
-        Compute gradient d_indus_emissions/d_gross_output, 
-        d_cum_indus_emissions/d_gross_output, 
+        Compute gradient d_indus_emissions/d_gross_output,
+        d_cum_indus_emissions/d_gross_output,
         d_cum_indus_emissions/d_total_CO2_emitted
         """
         years = np.arange(self.year_start,

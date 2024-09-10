@@ -133,7 +133,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
                 (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
                 np.diag(-total_energy_production / 100.)
             )
-        #For residential
+        # For residential
         res_share_energy = inputs[f'{GlossaryCore.ShareResidentialEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
         self.set_partial_derivative_for_other_types(
             (f'{GlossaryCore.ResidentialEnergyConsumptionDfValue}', GlossaryCore.TotalProductionValue),
@@ -154,7 +154,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         )
         sum_share_other_sectors.append(res_share_energy)
 
-        #Deduced sector
+        # Deduced sector
         other_share_energy = inputs[f'{GlossaryCore.ShareOtherEnergyDfValue}'][
             GlossaryCore.ShareSectorEnergy].values
         sum_share_other_sectors.append(other_share_energy)
@@ -165,7 +165,6 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             np.diag(1 - sum_share_other_sectors / 100.)
         )
-
 
     def get_chart_filter_list(self):
         chart_filters = []

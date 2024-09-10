@@ -119,7 +119,7 @@ class TestScatter(unittest.TestCase):
                             for line in result.split('\n')])
 #
         with open(join(dirname(__file__), 'witness_wo_energy_perfos.csv'), 'w+') as f:
-            #f = open(result.rsplit('.')[0] + '.csv', 'w')
+            # f = open(result.rsplit('.')[0] + '.csv', 'w')
             f.write(result)
             f.close()
 
@@ -138,7 +138,7 @@ class TestScatter(unittest.TestCase):
 
         _convert_array_into_df_time = float([line for line in lines if '_convert_array_into_df' in line][0].split(',')[
             3])
-        labels = 'Linearize', 'Pre-run', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+        labels = 'Linearize', 'Pre-run', 'Execute', 'Matrix Inversion', 'Matrix Build', 'Others'
         sizes = [linearize_time, pre_run_mda_time, execute_time, inversion_time, dres_dvar_time,
                  total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time]
 
@@ -150,7 +150,7 @@ class TestScatter(unittest.TestCase):
             return my_autopct
 
         fig1, ax1 = plt.subplots()
-        ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+        ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
                 shadow=True, startangle=90)
         # Equal aspect ratio ensures that pie is drawn as a circle.
         ax1.axis('equal')

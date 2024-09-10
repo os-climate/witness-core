@@ -1,29 +1,29 @@
 {
-    "US": {
-        "year_start": 2020,
-        "year_end": 2100,
-        "technologies_list": [
-            "Crop",
-            "Forest"
-        ],
-        "other_land_CO2_emissions": 10.1,
-        "Crop#CO2_land_emission_df": null,
-        "Crop#CH4_land_emission_df": null,
-        "Crop#N2O_land_emission_df": null,
-        "Forest#CO2_land_emission_df": null
-    },
-    "UE": {
-        "year_start": 2020,
-        "year_end": 2100,
-        "technologies_list": [
-            "Crop",
-            "Forest"
-        ],
-        "other_land_CO2_emissions": 10.1,
-        "Crop#CO2_land_emission_df": null,
-        "Crop#CH4_land_emission_df": null,
-        "Crop#N2O_land_emission_df": null,
-        "Forest#CO2_land_emission_df": null
-    },
-    "id": "Agriculture"
+  "US": {
+    "year_start": 2020,
+    "year_end": 2100,
+    "technologies_list": [
+      "Crop",
+      "Forest"
+    ],
+    "other_land_CO2_emissions": 10.1,
+    "Crop#CO2_land_emission_df": null,
+    "Crop#CH4_land_emission_df": null,
+    "Crop#N2O_land_emission_df": null,
+    "Forest#CO2_land_emission_df": null
+  },
+  "UE": {
+    "year_start": 2020,
+    "year_end": 2100,
+    "technologies_list": [
+      "Crop",
+      "Forest"
+    ],
+    "other_land_CO2_emissions": 10.1,
+    "Crop#CO2_land_emission_df": null,
+    "Crop#CH4_land_emission_df": null,
+    "Crop#N2O_land_emission_df": null,
+    "Forest#CO2_land_emission_df": null
+  },
+  "id": "Agriculture"
 }

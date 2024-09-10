@@ -36,11 +36,13 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 from climateeconomics.core.tools.post_proc import get_scenario_value
 
 '''
-Post-processing designe to compare the analytical vs the approximated gradient of the objective function wrt the design 
+Post-processing designe to compare the analytical vs the approximated gradient of the objective function wrt the design
 variables
 '''
 
 TEMP_PKL_PATH = 'temp_pkl'
+
+
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -50,12 +52,12 @@ def post_processing_filters(execution_engine, namespace):
     chart_list = ['Objective Lagrangian']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
-        'Charts_grad', chart_list, chart_list, 'Charts_grad')) # name 'Charts' is already used by ssp_comparison post-proc
+        'Charts_grad', chart_list, chart_list, 'Charts_grad'))  # name 'Charts' is already used by ssp_comparison post-proc
 
     return chart_filters
 
 
-def post_processings(execution_engine, scenario_name, chart_filters=None): #scenario_name, chart_filters=None):
+def post_processings(execution_engine, scenario_name, chart_filters=None):  # scenario_name, chart_filters=None):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
@@ -73,10 +75,10 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
 
     if 'Objective Lagrangian' in chart_list:
         '''
-        The l1s_test compare the variables before and after the post-processing. 
+        The l1s_test compare the variables before and after the post-processing.
         In the post-processing below, the approx gradient computes the mda in X+h as opposed to X for the initial mda
-        Therefore, data in the datamanager change and the l1s_test would fail. To prevent that, the data manager is recovered 
-        at the end of post-processing  
+        Therefore, data in the datamanager change and the l1s_test would fail. To prevent that, the data manager is recovered
+        at the end of post-processing
         '''
         # add the invest profile to understand what could make the gradients go wrong
         invest_profile = get_scenario_value(execution_engine, GlossaryEnergy.invest_mix, scenario_name)
@@ -93,12 +95,12 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         n_profiles = get_scenario_value(execution_engine, 'n_profiles', scenario_name)
         mdo_disc = execution_engine.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         inputs = [f'{scenario_name}.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
-        outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"] # the objective lagrangian is one level above the scenario level
+        outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"]  # the objective lagrangian is one level above the scenario level
         # compute analytical gradient first at the converged point of the MDA
         mdo_disc.add_differentiated_inputs(inputs)
         mdo_disc.add_differentiated_outputs(outputs)
         logging.info('Post-processing: Computing analytical gradient')
-        grad_analytical = mdo_disc.linearize(force_no_exec=True) #can add data of the converged point (see sos_mdo_discipline.py)
+        grad_analytical = mdo_disc.linearize(force_no_exec=True)  # can add data of the converged point (see sos_mdo_discipline.py)
 
         # computed approximated gradient in 2nd step so that the analytical gradient is not computed in X0 + h
         # warm start must have been removed so that mda and convergence criteria are the same for analytical and approximated gradients
@@ -109,7 +111,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         pkl_path = join(dirname(__file__), TEMP_PKL_PATH)
         if not os.path.isdir(pkl_path):
             os.mkdir(pkl_path)
-        recompute_gradients = True # initialize
+        recompute_gradients = True  # initialize
         input_pkl = join(pkl_path, scenario_name + '_inputs_dm_data_dict.pkl')
         output_pkl = join(pkl_path, scenario_name + '_approx_jacobian.pkl')
         try:
@@ -120,7 +122,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             logging.info(f'Cannot open file {input_pkl}. Must recompute approximated gradients')
             dm_data_dict_pkl = None
         if dm_data_dict_pkl is not None:
-            compare_test_passed, error_msg_compare = test_compare_dm(dm_data_dict_before, dm_data_dict_pkl, scenario_name, 'pkl vs case dm' )
+            compare_test_passed, error_msg_compare = test_compare_dm(dm_data_dict_before, dm_data_dict_pkl, scenario_name, 'pkl vs case dm')
             logging.info(error_msg_compare)
             recompute_gradients = not compare_test_passed
         if recompute_gradients:
@@ -141,7 +143,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             dump_compressed_pickle(output_pkl, grad_approx)
         else:
             logging.info(f'Post-processing: recovering approximated gradient from pkl file {output_pkl}')
-
 
         logging.info('Post-processing: generating gradient charts')
         coeff_i = [i for i in range(n_profiles)]
@@ -174,7 +175,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         new_chart.primary_ordinate_axis_range = [-100., 100]
         visible_line = True
         # unless the optimum is reached, a non-zero gradient is expected
-        error = (np.array(grad_analytical_list) - np.array(grad_approx_list))/np.array(grad_approx_list) * 100.
+        error = (np.array(grad_analytical_list) - np.array(grad_approx_list)) / np.array(grad_approx_list) * 100.
         new_series = InstanciatedSeries(
             coeff_i, list(error), '', 'lines', visible_line)
         new_chart.add_series(new_series)
@@ -184,10 +185,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         execution_engine.dm.set_values_from_dict(dm_data_dict_before)
         execution_engine.dm.create_reduced_dm()
         '''
-        NB: on the GUI, to visualize the gradients graph once the computation has run, it is necessary first to 
+        NB: on the GUI, to visualize the gradients graph once the computation has run, it is necessary first to
         close the study and reopen it
         '''
 
     return instanciated_charts
-
-

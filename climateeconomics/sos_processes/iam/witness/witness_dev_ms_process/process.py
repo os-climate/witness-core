@@ -78,7 +78,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         scatter_scenario_name = 'optimization scenarios'
 
-
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
                    'ns_post_processing': f'{self.ee.study_name}.Post-processing',

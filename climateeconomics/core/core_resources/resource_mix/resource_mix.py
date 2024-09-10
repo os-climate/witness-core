@@ -47,13 +47,13 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class OrderOfMagnitude():
     KILO = 'k'
-    #USD_PER_USton = 'USD/USton'
+    # USD_PER_USton = 'USD/USton'
     # MILLION_TONNES='million_tonnes'
 
     magnitude_factor = {
         KILO: 10 ** 3
         # USD_PER_USton:1/0.907
-        #MILLION_TONNES: 10**6
+        # MILLION_TONNES: 10**6
     }
 
 
@@ -74,7 +74,7 @@ class ResourceMixModel():
     NON_MODELED_RESOURCE_PRICE = 'non_modeled_resource_price'
     RESOURCE_DISC_LIST = [OilResourceDiscipline, UraniumResourceDiscipline,
                           NaturalGasResourceDiscipline, CoalResourceDiscipline,
-                          CopperResourceDiscipline, ]#PlatinumResourceDiscipline]
+                          CopperResourceDiscipline, ]  # PlatinumResourceDiscipline]
 
     RESOURCE_LIST = [disc.resource_name for disc in RESOURCE_DISC_LIST]
 
@@ -279,7 +279,7 @@ class ResourceMixModel():
         grad_price = self.conversion_dict[resource_type]['price'] * \
             np.identity(
             len(inputs_dict[f'{resource_type}.resource_price'].index))
-        grad_recycling =  self.conversion_dict[resource_type]['stock'] * \
+        grad_recycling = self.conversion_dict[resource_type]['stock'] * \
             np.identity(
             len(inputs_dict[f'{resource_type}.recycled_production'].index))
         grad_demand = self.conversion_dict[resource_type]['global_demand'] * \
@@ -302,7 +302,7 @@ class ResourceMixModel():
         demand_limited = compute_func_with_exp_min(
             demand.values, 1.0e-10)
         d_demand_limited = compute_dfunc_with_exp_min(
-            demand.values, 1.0e-10) 
+            demand.values, 1.0e-10)
 
         # If prod < cons, set the identity element for the given year to
         # the corresponding value
@@ -310,7 +310,7 @@ class ResourceMixModel():
             np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
                      d_available_resource_limited / demand_limited,
                      0.0)
-        
+
         d_ratio_d_recycling = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
             np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
                      d_available_resource_limited / demand_limited,
@@ -318,8 +318,8 @@ class ResourceMixModel():
 
         d_ratio_d_demand = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
             np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
-                     -available_resource_limited * d_demand_limited * self.conversion_dict[resource_type]['global_demand'] / 
-                     demand_limited ** 2 ,
+                     -available_resource_limited * d_demand_limited * self.conversion_dict[resource_type]['global_demand'] /
+                     demand_limited ** 2,
                      0.0)
 
         return d_ratio_d_stock, d_ratio_d_demand, d_ratio_d_recycling

@@ -69,7 +69,7 @@ class Study(ClimateEconomicsStudyManager):
         invest_percentage_per_techno_df = pd.read_csv(join(dirname(__file__), 'uc6_techno_invest_percentage.csv'))
 
         # csv files are valid for years 2020 to 2100 => to be adapted if year range is smaller.
-        #TODO: implement if year range is larger than 2020-2100
+        # TODO: implement if year range is larger than 2020-2100
         invest_percentage_gdp_df = invest_percentage_gdp_df[
             (invest_percentage_gdp_df[GlossaryCore.Years] >= self.year_start) &
             (invest_percentage_gdp_df[GlossaryCore.Years] <= self.year_end)].reset_index(drop=True)
@@ -89,7 +89,6 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    #uc_cls.load_data()
-    #uc_cls.run()
+    # uc_cls.load_data()
+    # uc_cls.run()
     uc_cls.test()
-

@@ -51,11 +51,12 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
+
 class Study(ClimateEconomicsStudyManager):
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
 
-        #self.study_name = 'default_name'
+        # self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -94,7 +95,7 @@ class Study(ClimateEconomicsStudyManager):
 
         self.share_energy_investment_array = asarray([1.65] * nb_per)
 
-        gdp = [130.187]*len(years)
+        gdp = [130.187] * len(years)
 
         df_eco = DataFrame({GlossaryCore.Years: years,
                             GlossaryCore.OutputNetOfDamage: gdp,
@@ -117,7 +118,6 @@ class Study(ClimateEconomicsStudyManager):
         witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
         self.CO2_tax = np.asarray([50.] * len(years))
-
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -156,7 +156,6 @@ class Study(ClimateEconomicsStudyManager):
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
 
-
         setup_data_list.append(witness_input)
 
         self.func_df = pd.concat([self.setup_constraint_land_use(), self.setup_objectives()])
@@ -175,7 +174,7 @@ class Study(ClimateEconomicsStudyManager):
         list_var.extend(
             ['co2_eq_100', 'co2_eq_20'])
         list_parent.extend([
-                            'CO2_obj','CO2_obj'])
+                            'CO2_obj', 'CO2_obj'])
         list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend(
             [OBJECTIVE, OBJECTIVE])
@@ -221,8 +220,6 @@ class Study(ClimateEconomicsStudyManager):
         """
 
         return func_df
-
-
 
     def setup_constraint_land_use(self):
         func_df = DataFrame(

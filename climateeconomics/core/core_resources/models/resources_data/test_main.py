@@ -27,21 +27,22 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 def sigmoid(ratio):
-    x= -20*ratio +10
+    x = -20 * ratio + 10
     print(x)
-    
-    sig = 1/ (1 + math.exp(-x))
-   
-    return sig*5*10057 +10057
-  
+
+    sig = 1 / (1 + math.exp(-x))
+
+    return sig * 5 * 10057 + 10057
+
 # p1 = sigmoid(0)
 # p2 = sigmoid(1)
 # p3 = sigmoid(0.5)
 # print("les valeurs sont :  0 1 et 0.5")
 # print([p1, p2, p3])
 
-coal_name=ResourceGlossary.Coal['name']
-copper_name=ResourceGlossary.Copper['name']
+
+coal_name = ResourceGlossary.Coal['name']
+copper_name = ResourceGlossary.Copper['name']
 
 year_start = GlossaryCore.YearStartDefault
 year_end = GlossaryCore.YearEndDefault
@@ -49,10 +50,10 @@ years = np.arange(year_start, year_end + 1)
 lifespan = 30
 new_stock = 47
 
-print(1 / (1 +2)**2)
-print(1/((1 +2)**2))
+print(1 / (1 + 2)**2)
+print(1 / ((1 + 2)**2))
 
-copper = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_consumed_data.csv')) #pd.read_csv(join(dirname(__file__),'copper_resource_consumed_data.csv')) ou : pd.DataFrame(columns= [GlossaryCore.Years , 'copper_consumption' ])
+copper = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_consumed_data.csv'))  # pd.read_csv(join(dirname(__file__),'copper_resource_consumed_data.csv')) ou : pd.DataFrame(columns= [GlossaryCore.Years , 'copper_consumption' ])
 copper_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_production_data.csv'))
 
 copper_dict = copper.to_dict()
@@ -74,16 +75,16 @@ use_stock = pd.DataFrame(
 copper_sub_resource_list = [col for col in list(copper_production_data.columns) if col != GlossaryCore.Years]
 copper_dict = {}
 for resource_type in copper_sub_resource_list:
-    use_stock[resource_type] = np.insert(np.zeros(len(years)-1), 0, copper[f'{resource_type}_consumption'])
-#print(use_stock['copper'])
+    use_stock[resource_type] = np.insert(np.zeros(len(years) - 1), 0, copper[f'{resource_type}_consumption'])
+# print(use_stock['copper'])
 
 coal_sub_resource_list = [col for col in list(coal_production_data.columns) if col != GlossaryCore.Years]
 coal_dict = {}
 for resource_type in coal_sub_resource_list:
-    
+
     coal_dict[resource_type] = coal[f'{resource_type}_consumption'].values
 
-#print (coal_dict)    
+# print (coal_dict)
 
 
 """copper_oui= copper.to_dict()

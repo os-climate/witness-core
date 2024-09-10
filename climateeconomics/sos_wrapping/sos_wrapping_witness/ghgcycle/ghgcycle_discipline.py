@@ -53,7 +53,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
 
     # init concentrations in each box from FUND repo in ppm/volume in 1950
     # https://github.com/fund-model/MimiFUND.jl/blob/master/src
-    co2_init_conc_fund = np.array([296.002949511, 5.52417779186, 6.65150094285, 2.39635475726, 0.17501699667]) * 412.4/296.002949511
+    co2_init_conc_fund = np.array([296.002949511, 5.52417779186, 6.65150094285, 2.39635475726, 0.17501699667]) * 412.4 / 296.002949511
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -66,10 +66,10 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
                              'user_level': 2},
         'co2_boxes_init_conc': {'type': 'array', 'unit': 'ppm', 'default': co2_init_conc_fund, 'user_level': 2},
         'co2_pre_indus_conc': {'type': 'float', 'unit': 'ppm', 'default': DatabaseWitnessCore.CO2PreIndustrialConcentration.value, 'user_level': 2},
-        'ch4_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default': 1/12, 'user_level': 2},
+        'ch4_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default': 1 / 12, 'user_level': 2},
         'ch4_pre_indus_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.CH4PreIndustrialConcentration.value, 'user_level': 2},
         'ch4_init_conc': {'type': 'float', 'unit': 'ppb', 'user_level': 2},
-        'n2o_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default':  1/114, 'user_level': 2},
+        'n2o_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default':  1 / 114, 'user_level': 2},
         'n2o_pre_indus_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.N2OPreIndustrialConcentration.value, 'user_level': 2},
         'n2o_init_conc': {'type': 'float', 'unit': 'ppb', 'user_level': 2},
         'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
@@ -121,7 +121,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
     def run(self):
         # get input of discipline
         param_in = self.get_sosdisc_inputs()
-        
 
         # compute output
         self.ghg_cycle.compute(param_in)
@@ -140,16 +139,15 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             "pre_indus_gwp_100": self.ghg_cycle.pred_indus_gwp100,
         }
 
-        
         # store data
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """ 
-        Compute jacobian for each coupling variable 
+        """
+        Compute jacobian for each coupling variable
         gradient of coupling variable to compute:
         """
-        d_conc_co2= self.ghg_cycle.compute_dco2_ppm_d_emissions()
+        d_conc_co2 = self.ghg_cycle.compute_dco2_ppm_d_emissions()
         d_conc_ch4 = self.ghg_cycle.d_conc_ch4_d_emissions()
         d_conc_n2o = self.ghg_cycle.d_conc_n2o_d_emissions()
         d_ghg_ppm_d_emissions = {

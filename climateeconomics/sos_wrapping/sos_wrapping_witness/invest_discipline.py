@@ -80,8 +80,8 @@ class InvestDiscipline(ClimateEcoDiscipline):
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """ 
-        Compute jacobian for each coupling variable 
+        """
+        Compute jacobian for each coupling variable
         gradiant of coupling variable to compute
         """
         inputs = self.get_sosdisc_inputs()
