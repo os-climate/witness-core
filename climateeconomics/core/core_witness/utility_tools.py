@@ -2,7 +2,7 @@ from typing import Tuple
 
 import autograd.numpy as np
 import plotly.graph_objects as go
-from autograd import elementwise_grad, jacobian
+from autograd import jacobian
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -212,26 +212,6 @@ def s_curve_function(x: np.ndarray, shift: float, stretch: float) -> np.ndarray:
     y = (x - 1.0 - shift) * stretch
     s = np.exp(-y)
     return 1.0 / (1.0 + s)
-
-
-def d_s_curve_function(x: np.ndarray, shift: float, stretch: float, use_autograd: bool = True) -> np.ndarray:
-    """
-    Compute the derivative of the S-curve function.
-
-    :param x: Input array
-    :param shift: Shift parameter
-    :param stretch: Stretch parameter
-    :param use_autograd: Whether to use autograd for computation
-    :return: Derivative of S-curve function values
-    """
-    if use_autograd:
-        grad_scurve = elementwise_grad(s_curve_function)
-        return grad_scurve(x, shift, stretch)
-    else:
-        u_prime = stretch
-        u = (x - 1.0 - shift) * stretch
-        f_prime_u = np.exp(-u) / (1.0 + np.exp(-u)) ** 2.0
-        return u_prime * f_prime_u
 
 
 def plot_s_curve(x: np.ndarray, shift: float, stretch: float, show: bool = False) -> go.Figure:
