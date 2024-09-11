@@ -190,9 +190,9 @@ def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, en
     :param scurve_stretch: S-curve stretch parameter
     :return: Tuple of derivatives with respect to consumption, energy price, and population
     """
-    d_consumption = jacobian(compute_utility_objective, argnum=1)
-    d_energy_price = jacobian(compute_utility_objective, argnum=2)
-    d_population = jacobian(compute_utility_objective, argnum=3)
+    d_consumption = jacobian(compute_utility_objective, 1)
+    d_energy_price = jacobian(compute_utility_objective, 2)
+    d_population = jacobian(compute_utility_objective, 3)
 
     args = (years, consumption, energy_price, population, energy_price_ref,
             init_rate_time_pref, scurve_shift, scurve_stretch)
@@ -309,6 +309,6 @@ if __name__ == "__main__":
     # print(jac)
 
     utility_quantity = compute_utility_quantity(consumption, energy_price, energy_price_ref)
-    utility_pc = compute_utility_per_capita(consumption, energy_price, energy_price_ref, test_shift, test_stretch)
+    utility_pc = compute_utility_per_capita(consumption, population, test_shift, test_stretch)
 
     plot_s_curve(utility_quantity, test_shift, test_stretch, show=False)
