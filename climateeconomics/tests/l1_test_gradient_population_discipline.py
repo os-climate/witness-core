@@ -551,8 +551,10 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
+        self.override_dump_jacobian = True
+        pickle_filename = 'jacobian_population_discipline_output_w_pandemic_effect.pkl'
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_output_w_pandemic_effect.pkl',
+        self.check_jacobian(location=dirname(__file__), filename=pickle_filename,
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
@@ -560,6 +562,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'
                                      ],
                             step=1e-15, derr_approx='complex_step')
+        os.remove(os.path.join(dirname(__file__), 'jacobian_pkls', pickle_filename))
     
     def _test_problematic_optim_point(self):
         #self.override_dump_jacobian= 1
