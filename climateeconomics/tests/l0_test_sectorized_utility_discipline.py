@@ -1,6 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/08/17-2023/11/03 Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 import unittest
 from os.path import dirname, join
 
@@ -24,10 +24,10 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class ConsumptionDiscTest(unittest.TestCase):
+class SectorizedUtilityDiscTest(unittest.TestCase):
     np.set_printoptions(threshold=np.inf)
-    def setUp(self):
 
+    def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
@@ -39,19 +39,21 @@ class ConsumptionDiscTest(unittest.TestCase):
             GlossaryCore.PerCapitaConsumption: 0.,
         })
 
-    def test_execute(self):
+        self.sector_list = GlossaryCore.SectorsPossibleValues
 
+    def test_execute(self):
         self.model_name = GlossaryCore.Consumption
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    GlossaryCore.NS_GHGEMISSIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.consumption.consumption_discipline.ConsumptionDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.sectorized_utility.sectorized_utility_discipline.SectorizedUtilityDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -61,7 +63,6 @@ class ConsumptionDiscTest(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         data_dir = join(dirname(__file__), 'data')
-
 
         population_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -77,10 +78,16 @@ class ConsumptionDiscTest(unittest.TestCase):
         residential_energy = np.linspace(21, 15, len(years))
         residential_energy_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: residential_energy})
-        #Share invest
+        # Share invest
         invest = np.asarray([10] * len(years))
         investment_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: invest})
         np.set_printoptions(threshold=np.inf)
+
+        # Sectorized Consumption
+        sectorized_consumption_df = pd.DataFrame({GlossaryCore.Years: years})
+        for sector in self.sector_list:
+            sectorized_consumption_df[sector] = 1.0
+
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
@@ -92,6 +99,7 @@ class ConsumptionDiscTest(unittest.TestCase):
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,
                        f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}': residential_energy_df,
                        f'{self.name}.{GlossaryCore.InvestmentDfValue}': investment_df,
+                       f'{self.name}.{GlossaryCore.AllSectorsDemandDfValue}': sectorized_consumption_df,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -103,4 +111,4 @@ class ConsumptionDiscTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         # for graph in graph_list:
-        #     graph.to_plotly().show()
+        #    graph.to_plotly().show()
