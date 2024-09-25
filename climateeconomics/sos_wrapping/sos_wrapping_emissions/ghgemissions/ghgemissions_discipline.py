@@ -92,6 +92,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
         'affine_co2_objective': {'type': 'bool','default': True, 'user_level': 2, 'namespace': GlossaryCore.NS_WITNESS},
+        'constraint_nze_2050_ref': {'type': 'float', 'default': 70, 'user_level': 2},
         GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         GlossaryCore.SectorListValue: sector_list_variable,
         GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf

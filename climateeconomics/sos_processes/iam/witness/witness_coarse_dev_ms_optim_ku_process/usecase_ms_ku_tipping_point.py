@@ -20,7 +20,6 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
     Study as uc_ms_mda,
 )
@@ -37,7 +36,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_opt
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
+    def __init__(self, year_start=2023, filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
@@ -89,24 +88,19 @@ class Study(ClimateEconomicsStudyManager):
              scenario_dict.keys()})
         # update the tipping point value
         values_dict.update({
-            f'{self.study_name}.{scatter_scenario}.{uc4_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':
-                uc_ms_mda.TIPPING_POINT_LIST[0],
-            f'{self.study_name}.{scatter_scenario}.{uc4_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':
-                uc_ms_mda.TIPPING_POINT_LIST[1],
-            f'{self.study_name}.{scatter_scenario}.{uc4_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':
-                uc_ms_mda.TIPPING_POINT_LIST[2],
-            f'{self.study_name}.{scatter_scenario}.{uc7_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':
-                uc_ms_mda.TIPPING_POINT_LIST[0],
-            f'{self.study_name}.{scatter_scenario}.{uc7_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':
-                uc_ms_mda.TIPPING_POINT_LIST[1],
-            f'{self.study_name}.{scatter_scenario}.{uc7_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':
-                uc_ms_mda.TIPPING_POINT_LIST[2],
+            f'{self.study_name}.{scatter_scenario}.{uc4_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[0],
+            f'{self.study_name}.{scatter_scenario}.{uc4_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[1],
+            f'{self.study_name}.{scatter_scenario}.{uc4_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[2],
+            f'{self.study_name}.{scatter_scenario}.{uc7_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[0],
+            f'{self.study_name}.{scatter_scenario}.{uc7_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[1],
+            f'{self.study_name}.{scatter_scenario}.{uc7_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[2],
         })
+
+        values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)
 
         return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

@@ -775,9 +775,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             varname_in_input_dicts = f'{self.name}.{self.energy_name}.{checked_input}'
             inputs_dict.update({varname_in_input_dicts: var_value})
 
-
-            a = 1
-
         inputs_dict.update({
             f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),
         })
@@ -874,8 +871,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             varname_in_input_dicts = f'{self.name}.{self.energy_name}.{checked_input}'
             inputs_dict.update({varname_in_input_dicts: var_value})
 
-
-            a = 1
 
         inputs_dict.update({
             f'{self.name}.{GlossaryCore.YearEnd}': find_var_in_dict(GlossaryCore.YearEnd),
