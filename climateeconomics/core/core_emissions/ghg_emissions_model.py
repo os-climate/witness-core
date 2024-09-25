@@ -31,6 +31,7 @@ class GHGEmissions:
         """
         Constructor
         """
+        self.constraint_nze_2050_ref = None
         self.emissions_after_2050_df = None
         self.energy_emission_households_df = None
         self.residential_energy_consumption = None
@@ -62,6 +63,7 @@ class GHGEmissions:
         self.CH4_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)]
         self.N2O_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)]
         self.GHG_total_energy_emissions = self.param['GHG_total_energy_emissions']
+        self.constraint_nze_2050_ref = self.param['constraint_nze_2050_ref']
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
         self.gtco2_to_gtc = 44 / 12
@@ -444,8 +446,8 @@ class GHGEmissions:
 
     def compute_net_zero_2050_constraint_df(self):
 
-        self.emissions_after_2050_df = self.ghg_emissions_df.loc[self.years_range >= 2050][
-            [GlossaryCore.Years, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)]]
+        self.emissions_after_2050_df = self.ghg_emissions_df.loc[self.years_range >= 2050][[GlossaryCore.Years, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)]]
+        self.emissions_after_2050_df[GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)] = self.emissions_after_2050_df[GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)].values / self.constraint_nze_2050_ref
 
     def d_2050_carbon_negative_constraint(self, d_total_co2_emissions):
-        return d_total_co2_emissions[self.years_range >= 2050]
+        return d_total_co2_emissions[self.years_range >= 2050] / self.constraint_nze_2050_ref

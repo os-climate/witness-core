@@ -20,7 +20,6 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
     Study as uc_ms_mda,
 )
@@ -40,11 +39,11 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_opt
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault,filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
+    def __init__(self, year_start=2023, filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
-        self.test_post_procs = False
+        self.test_post_procs = True
         self.year_start = year_start
 
         self.scatter_scenario = 'optimization scenarios'
@@ -76,6 +75,8 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update(
             {f"{self.study_name}.{self.scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
              self.scenario_dict.keys()})
+
+        values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)
 
         return values_dict
 

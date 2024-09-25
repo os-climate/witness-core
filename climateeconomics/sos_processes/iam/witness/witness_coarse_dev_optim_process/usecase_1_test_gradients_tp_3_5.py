@@ -16,6 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import (
     Study as StudyOptimInvestDistrib,
@@ -114,7 +115,7 @@ class Study(StudyOptimInvestDistrib):
         data_witness.update({
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.ccs_price_percentage": 0.0,
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.co2_damage_price_percentage": 0.0,
-            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([27.0] * (GlossaryCore.NB_POLES_COARSE-1)),
+            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([DatabaseWitnessCore.ShareInvestNonEnergy.value] * (GlossaryCore.NB_POLES_COARSE - 1)),
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.Damage.tp_a3': 3.5,
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.tolerance': 1.e-12,
             f'{self.study_name}.{self.optim_name}.max_iter': 1,

@@ -110,15 +110,14 @@ class Study(ClimateEconomicsStudyManager):
         self.design_var_descriptor = design_var_descriptor
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-        len_var = 4
-
         # design space
+        initial_pole_value = self.get_share_invest_in_eneryg_relative_to_gdp(selected_year=self.year_start)
         dspace_dict = {'variable': ['percentage_gdp_invest_in_energy_array'],
-                       'value': [[1.] * len_var],
-                       'lower_bnd': [[2e-1] * len_var],
-                       'upper_bnd': [[5.] * len_var],
+                       'value': [[initial_pole_value] + [1.] * (GlossaryCore.NB_POLES_OPTIM_KU - 1)],
+                       'lower_bnd': [[2e-1] * GlossaryCore.NB_POLES_OPTIM_KU],
+                       'upper_bnd': [[5.] * GlossaryCore.NB_POLES_OPTIM_KU],
                        'enable_variable': [True],
-                       'activated_elem': [[True] * len_var]
+                       'activated_elem': [[False] + [True] * (GlossaryCore.NB_POLES_OPTIM_KU - 1)]
                        }
 
         self.dspace = pd.DataFrame(dspace_dict)
@@ -141,8 +140,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
         values_dict[
-            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.percentage_gdp_invest_in_energy_array'] = np.ones(
-            len_var)
+            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.percentage_gdp_invest_in_energy_array'] = np.ones(GlossaryCore.NB_POLES_OPTIM_KU - 1)
 
         setup_data_list.append(values_dict)
         setup_data_list.append(dv_arrays_dict)

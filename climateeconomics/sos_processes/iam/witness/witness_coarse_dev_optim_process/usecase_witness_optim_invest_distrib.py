@@ -137,13 +137,13 @@ class Study(ClimateEconomicsStudyManager):
         out = pd.DataFrame(out)
         return out
 
-    def make_dspace_Ine(self):
+    def make_dspace_Ine(self, enable_variable: bool = True):
         return pd.DataFrame({
             "variable": ["share_non_energy_invest_ctrl"],
             "value": [[25.5] * GlossaryCore.NB_POLES_COARSE],
             "lower_bnd": [[24.5] * GlossaryCore.NB_POLES_COARSE],
             "upper_bnd": [[35.0] * GlossaryCore.NB_POLES_COARSE],
-            "enable_variable": [True],
+            "enable_variable": [enable_variable],
             "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
         })
 
@@ -152,7 +152,7 @@ class Study(ClimateEconomicsStudyManager):
             'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
             'out_type': "dataframe",
             'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
-            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index': np.arange(self.year_start, self.year_end + 1),
             'index_name': GlossaryCore.Years,
             'namespace_in': GlossaryCore.NS_WITNESS,
             'namespace_out': GlossaryCore.NS_WITNESS,
@@ -271,7 +271,7 @@ class Study(ClimateEconomicsStudyManager):
           'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
             'out_type': "dataframe",
             'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
-            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index': np.arange(self.year_start, self.year_end + 1),
             'index_name': GlossaryCore.Years,
             'namespace_in': "",
             'namespace_out': GlossaryCore.NS_WITNESS,
