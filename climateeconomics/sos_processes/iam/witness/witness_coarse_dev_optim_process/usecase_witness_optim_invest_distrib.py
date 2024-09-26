@@ -140,9 +140,9 @@ class Study(ClimateEconomicsStudyManager):
     def make_dspace_Ine(self, enable_variable: bool = True):
         return pd.DataFrame({
             "variable": ["share_non_energy_invest_ctrl"],
-            "value": [[25.5] * GlossaryCore.NB_POLES_COARSE],
-            "lower_bnd": [[24.5] * GlossaryCore.NB_POLES_COARSE],
-            "upper_bnd": [[35.0] * GlossaryCore.NB_POLES_COARSE],
+            "value": [[DatabaseWitnessCore.ShareInvestNonEnergy.value] * GlossaryCore.NB_POLES_COARSE],
+            "lower_bnd": [[19.] * GlossaryCore.NB_POLES_COARSE],
+            "upper_bnd": [[28.] * GlossaryCore.NB_POLES_COARSE],
             "enable_variable": [enable_variable],
             "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
         })
