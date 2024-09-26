@@ -121,7 +121,7 @@ class Study(ClimateEconomicsStudyManager):
 
         data_witness.append({
             f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.ccs_price_percentage": 0.0,
-            f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.co2_damage_price_percentage": 0.0,
+            f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.co2_damage_price_percentage": 100.,
         })
 
         return [values_dict] + [optim_values_dict] + data_witness

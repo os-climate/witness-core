@@ -49,7 +49,7 @@ class Study(ClimateEconomicsStudyManager):
         self.scatter_scenario = 'optimization scenarios'
 
         self.scenario_dict = {
-            uc_ms_mda.USECASE2: Study1,
+            #uc_ms_mda.USECASE2: Study1,
             uc_ms_mda.USECASE2B: Study2,
             uc_ms_mda.USECASE4: Study3,
             uc_ms_mda.USECASE7: Study4,
