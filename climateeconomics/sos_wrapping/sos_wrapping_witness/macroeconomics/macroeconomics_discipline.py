@@ -316,7 +316,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     years = np.arange(year_start, year_end + 1)
                     share_non_energy_investment = pd.DataFrame(
                         {GlossaryCore.Years: years,
-                         GlossaryCore.ShareNonEnergyInvestmentsValue: [27.0 - 2.6] * len(years)})
+                         GlossaryCore.ShareNonEnergyInvestmentsValue: [DatabaseWitnessCore.ShareInvestNonEnergy.value] * len(years)})
 
                     self.set_dynamic_default_values(
                         {GlossaryCore.ShareNonEnergyInvestmentsValue: share_non_energy_investment, })
