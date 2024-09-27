@@ -34,7 +34,6 @@ class Forest():
     """
     YEAR_START = GlossaryCore.YearStart
     YEAR_END = GlossaryCore.YearEnd
-    TIME_STEP = GlossaryCore.TimeStep
     CO2_PER_HA = 'CO2_per_ha'
     INITIAL_CO2_EMISSIONS = 'initial_emissions'
     REFORESTATION_INVESTMENT = 'forest_investment'
@@ -77,11 +76,9 @@ class Forest():
         """
         self.year_start = self.param[self.YEAR_START]
         self.year_end = self.param[self.YEAR_END]
-        self.time_step = self.param[self.TIME_STEP]
         years = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years = years
         self.CO2_per_ha = self.param[self.CO2_PER_HA]
         # initial CO2 emissions
@@ -122,8 +119,7 @@ class Forest():
         """
         years = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years = years
         self.forest_surface_df = pd.DataFrame({GlossaryCore.Years: self.years})
         self.CO2_emitted_df = pd.DataFrame({GlossaryCore.Years: self.years})
@@ -152,13 +148,12 @@ class Forest():
             'high_calorific_value']
         self.year_start = in_dict[self.YEAR_START]
         self.year_end = in_dict[self.YEAR_END]
-        self.time_step = in_dict[self.TIME_STEP]
         self.forest_investment = in_dict[self.REFORESTATION_INVESTMENT]
         self.deforest_invest = in_dict[self.DEFORESTATION_INVESTMENT]
         self.cost_per_ha = in_dict[self.REFORESTATION_COST_PER_HA]
         self.initial_emissions = self.param[self.INITIAL_CO2_EMISSIONS]
         self.years = np.arange(
-            self.year_start, self.year_end + 1, self.time_step)
+            self.year_start, self.year_end + 1)
         self.managed_wood_investment = in_dict[self.MW_INVESTMENT]
 
         self.forest_surface_df['unmanaged_forest'] = self.initial_unmanaged_forest_surface

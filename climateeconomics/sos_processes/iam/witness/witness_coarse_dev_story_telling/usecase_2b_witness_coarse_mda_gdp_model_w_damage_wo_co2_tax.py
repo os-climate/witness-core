@@ -43,11 +43,10 @@ class Study(ClimateEconomicsStudyManager):
     - invest: fossil
     '''
 
-    def __init__(self, run_usecase=False, execution_engine=None, year_start=2020, year_end=2100, time_step=1):
+    def __init__(self, run_usecase=False, execution_engine=None, year_start=2020, year_end=2100):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):

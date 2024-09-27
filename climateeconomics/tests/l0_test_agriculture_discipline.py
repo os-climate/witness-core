@@ -32,7 +32,6 @@ class AgricultureTestCase(unittest.TestCase):
         '''
         self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2055
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
@@ -84,7 +83,6 @@ class AgricultureTestCase(unittest.TestCase):
 
         self.param = {GlossaryCore.YearStart: self.year_start,
                       GlossaryCore.YearEnd: self.year_end,
-                      GlossaryCore.TimeStep: self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
                       GlossaryCore.PopulationDfValue: self.population_df,
@@ -132,7 +130,6 @@ class AgricultureTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Agriculture.DIET_DF}': self.diet_df,
                        f'{name}.{model_name}.{Agriculture.KG_TO_KCAL_DICT}': self.default_kg_to_kcal,
                        f'{name}.{model_name}.{Agriculture.KG_TO_M2_DICT}': self.default_kg_to_m2,

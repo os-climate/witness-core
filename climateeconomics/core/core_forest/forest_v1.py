@@ -29,7 +29,6 @@ class Forest():
     """
     YEAR_START = GlossaryCore.YearStart
     YEAR_END = GlossaryCore.YearEnd
-    TIME_STEP = GlossaryCore.TimeStep
     LIMIT_DEFORESTATION_SURFACE = 'limit_deforestation_surface'
     DEFORESTATION_SURFACE = 'deforestation_surface'
     CO2_PER_HA = 'CO2_per_ha'
@@ -53,7 +52,6 @@ class Forest():
     def set_data(self):
         self.year_start = self.param[self.YEAR_START]
         self.year_end = self.param[self.YEAR_END]
-        self.time_step = self.param[self.TIME_STEP]
         # deforestation limite
         self.limit_deforestation_surface = self.param[self.LIMIT_DEFORESTATION_SURFACE]
         # percentage of deforestation
@@ -72,8 +70,7 @@ class Forest():
         """
         years = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years = years
         self.forest_surface_df = pd.DataFrame()
         self.CO2_emitted_df = pd.DataFrame()
@@ -85,11 +82,10 @@ class Forest():
         self.deforestation_surface = in_dict[self.DEFORESTATION_SURFACE]
         self.year_start = in_dict[self.YEAR_START]
         self.year_end = in_dict[self.YEAR_END]
-        self.time_step = in_dict[self.TIME_STEP]
         self.forest_investment = in_dict[self.REFORESTATION_INVESTMENT]
         self.cost_per_ha = in_dict[self.REFORESTATION_COST_PER_HA]
         self.initial_emissions = self.param[self.INITIAL_CO2_EMISSIONS]
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        years = np.arange(self.year_start, self.year_end + 1)
         self.limit_deforestation_surface = self.param[self.LIMIT_DEFORESTATION_SURFACE]
 
         self.forest_surface_df[GlossaryCore.Years] = years

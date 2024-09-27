@@ -39,7 +39,6 @@ class MacroEconomics:
         self.consommation_objective_ref = None
         self.year_start: int = 0
         self.year_end = None
-        self.time_step = None
         self.productivity_start = None
         self.init_gross_output = None
         self.capital_start_ne = None
@@ -112,7 +111,6 @@ class MacroEconomics:
 
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.activate_pandemic_effects = self.param['assumptions_dict']['activate_pandemic_effects']
         self.productivity_start = self.param['productivity_start']
         self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
@@ -125,13 +123,11 @@ class MacroEconomics:
         self.conso_elasticity = self.param['conso_elasticity']
         self.nb_per = round(
             (self.param[GlossaryCore.YearEnd] -
-             self.param[GlossaryCore.YearStart]) /
-            self.param[GlossaryCore.TimeStep] +
+             self.param[GlossaryCore.YearStart]) +
             1)
         self.years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.nb_years = len(self.years_range)
         self.frac_damage_prod = self.param[GlossaryCore.FractionDamageToProductivityValue]
         self.damage_to_productivity = self.param[GlossaryCore.DamageToProductivity]
@@ -273,7 +269,7 @@ class MacroEconomics:
         productivity_growth = self.economics_df[GlossaryCore.ProductivityGrowthRate].values
 
         for prod_growth, damage_frac_year in zip(productivity_growth[:-1], damage_fraction_output[1:]):
-            prod_wo_d = prod_wo_d / (1 - prod_growth / (5 / self.time_step))
+            prod_wo_d = prod_wo_d / (1 - prod_growth / 5)
             productivity_wo_damage_list.append(prod_wo_d)
 
         productivity_w_damage_list = np.array(productivity_wo_damage_list) * (1 - damage_fraction_output)

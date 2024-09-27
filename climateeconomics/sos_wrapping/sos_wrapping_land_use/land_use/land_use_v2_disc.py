@@ -326,7 +326,7 @@ class LandUseV2Discipline(SoSWrapp):
 
                 sliders = [dict(
                     active=0,  # by default activates the first slider_value available
-                    currentvalue={"prefix": "Year "},  # assumes slider_value label='year' to be adapted accordingly
+                    currentvalue={"prefix": "Year "},  # assumes slider_value label=GlossaryCore.Years to be adapted accordingly
                     pad={"t": 50},
                     steps=steps
                 )]

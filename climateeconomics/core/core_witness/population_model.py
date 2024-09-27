@@ -56,7 +56,6 @@ class Population:
 
         self.year_start = inputs[GlossaryCore.YearStart]
         self.year_end = inputs[GlossaryCore.YearEnd]
-        self.time_step = inputs[GlossaryCore.TimeStep]
         self.pop_init_df = self.format_popu_init_df(inputs[GlossaryCore.PopulationStart])
         self.br_upper = inputs['birth_rate_upper']
         self.br_lower = inputs['birth_rate_lower']
@@ -95,8 +94,7 @@ class Population:
         '''
         years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years_range = years_range
         # Prepare columns of population df
         pop_column = [str(x) for x in np.arange(0, 100)]

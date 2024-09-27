@@ -39,7 +39,6 @@ class CarbonEmissions():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_gr_sigma = self.param['init_gr_sigma']
         self.decline_rate_decarbo = self.param['decline_rate_decarbo']
         self.init_indus_emissions = self.param['init_indus_emissions']
@@ -67,8 +66,7 @@ class CarbonEmissions():
         init_indus_emissions = self.init_indus_emissions
         init_cum_indus_emissions = self.init_cum_indus_emissions
 
-        years_range = np.arange(
-            year_start, year_end + 1, self.time_step)
+        years_range = np.arange(year_start, year_end + 1)
         self.years_range = years_range
         CO2_emissions_df = pd.DataFrame(index=years_range, columns=[GlossaryCore.Years,
                                                                     'gr_sigma', 'sigma', 'land_emissions',
@@ -125,7 +123,6 @@ class CarbonEmissions():
         '''
         # declare class variable as local ones
         year_start = self.year_start
-        time_step = self.time_step
         init_indus_emissions = self.init_indus_emissions
         init_gross_output = self.init_gross_output
 
@@ -137,10 +134,9 @@ class CarbonEmissions():
 #                 (self.init_gross_output *
 #                  (1 - self.emissions_control_rate[self.year_start]))
         else:
-            p_gr_sigma = self.CO2_emissions_df.at[year -
-                                                  time_step, 'gr_sigma']
-            p_sigma = self.CO2_emissions_df.at[year - time_step, 'sigma']
-            sigma = p_sigma * np.exp(p_gr_sigma * time_step)
+            p_gr_sigma = self.CO2_emissions_df.at[year - 1, 'gr_sigma']
+            p_sigma = self.CO2_emissions_df.at[year - 1, 'sigma']
+            sigma = p_sigma * np.exp(p_gr_sigma)
         self.CO2_emissions_df.loc[year, 'sigma'] = sigma
         return sigma
 
@@ -151,16 +147,13 @@ class CarbonEmissions():
         """
         # declare class variable as local ones
         year_start = self.year_start
-        time_step = self.time_step
         decline_rate_decarbo = self.decline_rate_decarbo
 
         if year == year_start:
             pass
         else:
-            p_gr_sigma = self.CO2_emissions_df.at[year -
-                                                  time_step, 'gr_sigma']
-            gr_sigma = p_gr_sigma * \
-                ((1.0 + decline_rate_decarbo) ** time_step)
+            p_gr_sigma = self.CO2_emissions_df.at[year - 1, 'gr_sigma']
+            gr_sigma = p_gr_sigma * (1.0 + decline_rate_decarbo)
             self.CO2_emissions_df.loc[year, 'gr_sigma'] = gr_sigma
             return gr_sigma
 
@@ -183,17 +176,15 @@ class CarbonEmissions():
         '''
         # declare class variable as local ones
         year_start = self.year_start
-        time_step = self.time_step
-
+        
         if year == year_start:
             cum_land_emissions = self.CO2_emissions_df.at[year_start,
                                                           'land_emissions'] / self.gtco2_to_gtc
         else:
-            p_cum_land_emissions = self.CO2_emissions_df.at[year -
-                                                            time_step, 'cum_land_emissions']
+            p_cum_land_emissions = self.CO2_emissions_df.at[year - 1, 'cum_land_emissions']
             p_land_emissions = self.CO2_emissions_df.at[year, 'land_emissions']
             cum_land_emissions = p_cum_land_emissions + \
-                p_land_emissions * float(time_step) / self.gtco2_to_gtc
+                p_land_emissions / self.gtco2_to_gtc
         self.CO2_emissions_df.loc[year,
                                   'cum_land_emissions'] = cum_land_emissions
         return cum_land_emissions
@@ -227,16 +218,14 @@ class CarbonEmissions():
         """
         # declare class variable as local ones
         year_start = self.year_start
-        time_step = self.time_step
-
+        
         if year == year_start:
             pass
         else:
-            p_cum_indus_emissions = self.CO2_emissions_df.at[year -
-                                                             time_step, 'cum_indus_emissions']
+            p_cum_indus_emissions = self.CO2_emissions_df.at[year - 1, 'cum_indus_emissions']
             indus_emissions = self.CO2_emissions_df.at[year, 'indus_emissions']
             cum_indus_emissions = p_cum_indus_emissions + \
-                indus_emissions * float(time_step) / self.gtco2_to_gtc
+                indus_emissions / self.gtco2_to_gtc
             self.CO2_emissions_df.loc[year,
                                       'cum_indus_emissions'] = cum_indus_emissions
             return cum_indus_emissions
@@ -274,7 +263,7 @@ class CarbonEmissions():
         d_cum_indus_emissions/d_total_CO2_emitted
         """
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
         nb_years = len(years)
 
         # derivative matrix initialization
@@ -287,10 +276,9 @@ class CarbonEmissions():
         for i in range(nb_years):
             for line in range(nb_years):
                 if i > 0 and i <= line:  # fill triangular descendant
-                    d_cum_indus_emissions_d_total_CO2_emitted[line, i] = float(
-                        self.time_step) / self.gtco2_to_gtc
+                    d_cum_indus_emissions_d_total_CO2_emitted[line, i] = 1 / self.gtco2_to_gtc
 
-                    d_cum_indus_emissions_d_gross_output[line, i] = float(self.time_step) / self.gtco2_to_gtc *\
+                    d_cum_indus_emissions_d_gross_output[line, i] = 1 / self.gtco2_to_gtc *\
                         self.CO2_emissions_df.at[years[i], 'sigma'] *\
                         (1.0 - self.energy_emis_share - self.land_emis_share)
                 if i == line:  # fill diagonal
@@ -302,7 +290,7 @@ class CarbonEmissions():
     def compute_d_land_emissions(self):
 
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
         nb_years = len(years)
 
         # derivative matrix initialization

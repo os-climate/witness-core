@@ -47,14 +47,13 @@ WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=False, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV,
                  process_level='dev'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.optim_name = OPTIM_NAME
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
@@ -63,7 +62,7 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
         self.process_level = process_level
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            self.year_start, self.year_end, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
         self.test_post_procs = False

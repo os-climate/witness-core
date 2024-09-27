@@ -58,7 +58,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 
 class Study(StudyManager):
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, execution_engine=None,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, execution_engine=None,
                  agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  model_list=AGRI_MIX_MODEL_LIST):
         super().__init__(__file__, execution_engine=execution_engine)

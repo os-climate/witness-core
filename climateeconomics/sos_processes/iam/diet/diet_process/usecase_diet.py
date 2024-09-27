@@ -52,22 +52,20 @@ AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 class Study(ClimateEconomicsStudyManager):
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, execution_engine=None):
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
 
         #self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.study_name_wo_extra_name = self.study_name
         self.dspace = {}
         self.dspace['dspace_size'] = 0
 
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
-        nb_per = round(
-            (self.year_end - self.year_start) / self.time_step + 1)
-        years = arange(self.year_start, self.year_end + 1, self.time_step)
+        nb_per = self.year_end - self.year_start + 1
+        years = arange(self.year_start, self.year_end + 1)
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -77,7 +75,7 @@ class Study(ClimateEconomicsStudyManager):
         witness_input = {}
         witness_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         witness_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
+        
 
         # Relax constraint for 15 first years
         witness_input[f"{self.study_name}.{'InvestmentDistribution'}.forest_investment"] = self.forest_invest_df
@@ -101,7 +99,7 @@ class Study(ClimateEconomicsStudyManager):
                             GlossaryCore.GrossOutput: gdp,
                             GlossaryCore.PerCapitaConsumption: 0.,
                             },
-                           index=arange(self.year_start, self.year_end + 1, self.time_step))
+                           index=arange(self.year_start, self.year_end + 1))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = df_eco
 
@@ -133,12 +131,12 @@ class Study(ClimateEconomicsStudyManager):
 
         # -- load data from land use
         dc_landuse = datacase_landuse(
-            self.year_start, self.year_end, self.time_step, name='.Land_Use_V2', extra_name='.EnergyMix')
+            self.year_start, self.year_end, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
         # -- load data from agriculture
         dc_agriculture_mix = datacase_agriculture_mix(
-            self.year_start, self.year_end, self.time_step)
+            self.year_start, self.year_end)
         dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
         dc_agriculture_mix.study_name = self.study_name
 

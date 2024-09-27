@@ -32,7 +32,6 @@ class ForestTestCase(unittest.TestCase):
         '''
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         self.CO2_per_ha = 4000
@@ -93,7 +92,6 @@ class ForestTestCase(unittest.TestCase):
     #
     #     self.year_start = GlossaryCore.YearStartDefault
     #     self.year_end = 2100
-    #     self.time_step = 1
     #     years = np.arange(self.year_start, self.year_end + 1, 1)
     #     year_range = self.year_end - self.year_start + 1
     #
@@ -125,7 +123,6 @@ class ForestTestCase(unittest.TestCase):
     #         {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
     #     inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
     #                    f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-    #                    f'{name}.{GlossaryCore.TimeStep}': 1,
     #                    f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
     #                    f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
     #                    f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -181,7 +178,6 @@ class ForestTestCase(unittest.TestCase):
 
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         forest_invest = np.linspace(2, 10, year_range)
@@ -198,7 +194,6 @@ class ForestTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -253,7 +248,6 @@ class ForestTestCase(unittest.TestCase):
 
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         forest_invest = np.linspace(2, 10, year_range)
@@ -267,7 +261,6 @@ class ForestTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.linspace(2000., 1., len(years))})
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -322,7 +315,6 @@ class ForestTestCase(unittest.TestCase):
 
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2080
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         construction_delay = 3
@@ -350,7 +342,6 @@ class ForestTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: 40.})
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -405,7 +396,6 @@ class ForestTestCase(unittest.TestCase):
 
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2080
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         construction_delay = 3
@@ -433,7 +423,6 @@ class ForestTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: 40.})
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -488,7 +477,6 @@ class ForestTestCase(unittest.TestCase):
 
         self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2080
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         construction_delay = 3
@@ -520,7 +508,6 @@ class ForestTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

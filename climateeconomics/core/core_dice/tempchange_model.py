@@ -34,7 +34,6 @@ class TempChange(object):
     def set_data(self, inputs):
         self.year_start = inputs[GlossaryCore.YearStart]
         self.year_end = inputs[GlossaryCore.YearEnd]
-        self.time_step = inputs[GlossaryCore.TimeStep]
         self.init_temp_ocean = inputs['init_temp_ocean']
         self.init_temp_atmo = inputs['init_temp_atmo']
         self.eq_temp_impact = inputs['eq_temp_impact']
@@ -54,13 +53,12 @@ class TempChange(object):
         '''
         years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years_range = years_range
         temperature_df = DataFrame(
             index=years_range,
             columns=[
-                'year',
+                GlossaryCore.Years,
                 GlossaryCore.ExoGForcing,
                 GlossaryCore.Forcing,
                 GlossaryCore.TempAtmo,
@@ -68,7 +66,7 @@ class TempChange(object):
         temperature_df.loc[self.year_start,
                            GlossaryCore.TempOcean] = self.init_temp_ocean
         temperature_df.loc[self.year_start, GlossaryCore.TempAtmo] = self.init_temp_atmo
-        temperature_df['year'] = self.years_range
+        temperature_df[GlossaryCore.Years] = self.years_range
         self.temperature_df = temperature_df
         return temperature_df
 
@@ -76,7 +74,7 @@ class TempChange(object):
         """
         Compute exogenous forcing for other greenhouse gases
         """
-        t = ((year - self.year_start) / self.time_step) + 1
+        t = (year - self.year_start) + 1
         exog_forcing = None  # initialize exog_forcing variable defined in either if or else statement
         if t < 18:
             exog_forcing = self.init_forcing_nonco + \
@@ -105,10 +103,8 @@ class TempChange(object):
         Compute temperature of atmosphere (t) using t-1 values
 
         """
-        p_temp_atmo = self.temperature_df.loc[year -
-                                              self.time_step, GlossaryCore.TempAtmo]
-        p_temp_ocean = self.temperature_df.loc[year -
-                                               self.time_step, GlossaryCore.TempOcean]
+        p_temp_atmo = self.temperature_df.loc[year - 1, GlossaryCore.TempAtmo]
+        p_temp_ocean = self.temperature_df.loc[year - 1, GlossaryCore.TempOcean]
         forcing = self.temperature_df.loc[year, GlossaryCore.Forcing]
         temp_atmo = p_temp_atmo + self.climate_upper * \
             ((forcing - (self.forcing_eq_co2 / self.eq_temp_impact) *
@@ -122,10 +118,8 @@ class TempChange(object):
         """
         Compute temperature of lower ocean  at t using t-1 values
         """
-        p_temp_ocean = self.temperature_df.loc[year -
-                                               self.time_step, GlossaryCore.TempOcean]
-        p_temp_atmo = self.temperature_df.loc[year -
-                                              self.time_step, GlossaryCore.TempAtmo]
+        p_temp_ocean = self.temperature_df.loc[year - 1, GlossaryCore.TempOcean]
+        p_temp_atmo = self.temperature_df.loc[year - 1, GlossaryCore.TempAtmo]
         temp_ocean = p_temp_ocean + self.transfer_lower * \
             (p_temp_atmo - p_temp_ocean)
         # Bounds

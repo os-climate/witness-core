@@ -49,7 +49,7 @@ class CopperDisc(SoSWrapp):
     _maturity = 'Fake'
 
     DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                 'dataframe_descriptor': {'Year': ('float', None, False),
+                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Demand': ('float', None, False),
                                                           'unit': ('string', None, False),}
                                  },

@@ -35,18 +35,17 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=False, run_usecase=False,
                  execution_engine=None):
         # initialize usecase and set default values
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.optim_name = OPTIM_NAME
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step, execution_engine=execution_engine,  sub_usecase='uc4')
+            self.year_start, self.year_end, execution_engine=execution_engine,  sub_usecase='uc4')
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):

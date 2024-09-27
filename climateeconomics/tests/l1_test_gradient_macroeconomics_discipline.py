@@ -57,10 +57,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
-        self.time_step = 1
-        self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
-        self.nb_per = round(
-            (self.year_end - self.year_start) / self.time_step + 1)
+        self.years = np.arange(self.year_start, self.year_end + 1)
+        self.nb_per = self.year_end - self.year_start + 1
 
         self.energy_supply_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -153,7 +151,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.inputs_dict = {
             f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-            f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
             f'{self.name}.init_rate_time_pref': 0.015,
             f'{self.name}.conso_elasticity': 1.45,
             f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': False,

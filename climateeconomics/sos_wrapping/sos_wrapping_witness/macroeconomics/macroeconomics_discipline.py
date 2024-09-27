@@ -60,7 +60,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'user_level': 2, 'unit': '-'},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'capital_start_non_energy': {'type': 'float', 'unit': 'G$', 'user_level': 2},
@@ -375,10 +374,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         """
 
         inputs_dict = deepcopy(self.get_sosdisc_inputs())
-
-        year_start = inputs_dict[GlossaryCore.YearStart]
-        year_end = inputs_dict[GlossaryCore.YearEnd]
-        time_step = inputs_dict[GlossaryCore.TimeStep]
 
         # Compute gradient for coupling variable Total production
         d_gross_output_d_energy, d_net_output_d_energy, d_usable_capital_d_energy, d_consumption_pc_d_energy, d_estimated_damages_d_energy,\
