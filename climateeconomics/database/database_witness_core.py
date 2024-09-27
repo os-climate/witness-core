@@ -29,6 +29,15 @@ data_folder = join(dirname(dirname(__file__)), "data")
 class DatabaseWitnessCore:
     '''Stocke les valeurs utilisées dans witness core'''
 
+    ShareInvestNonEnergy = ColectedData(
+        value=21.5,
+        unit="%",
+        description="Share of the GDP that is invest in other sectors than energy sector",
+        link="https://data.imf.org/?sk=1ce8a55f-cfa7-4bc0-bce2-256ee65ac0e4",
+        source="International Monetary Fund",
+        last_update_date=date(2024, 9, 25)
+    )
+
     FoodWastePercentage = ColectedData(
         value=30,
         unit="%",

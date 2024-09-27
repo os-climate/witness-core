@@ -36,7 +36,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         WITNESSSubProcessBuilder.__init__(self, ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
 
-    def get_builders(self):
+    def get_builders(self, techno_dict: dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT):
 
         chain_builders = []
         # retrieve energy process
@@ -46,11 +46,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
-
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=techno_dict, invest_discipline=self.invest_discipline)
+            techno_dict=techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=False)
 
         chain_builders.extend(chain_builders_energy)
 
