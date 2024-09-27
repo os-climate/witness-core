@@ -43,7 +43,6 @@ class Study(StudyManager):
         # setup_data_list[0].update(public_values)
         year_start = 2015
         year_end = GlossaryCore.YearEndDefault
-        time_step = 5
         years = np.arange(year_start, year_end + 1)
         nb_per = len(years)
 

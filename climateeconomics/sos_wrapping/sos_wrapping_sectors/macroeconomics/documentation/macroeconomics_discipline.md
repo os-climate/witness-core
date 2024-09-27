@@ -17,8 +17,6 @@ The goal of the macroeconomics model is to gather and sum the outputs from the e
 - Sectors investment df: Dataframe with investment per sector per year in T\$.
 - Economics detail df: Dataframe with capital, usable capital, output and net output per year in T\$. 
            
-### Time Step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
 
 ### Output
 The total output and output net of damage are the sum of the sectors output and output net of damage: 
