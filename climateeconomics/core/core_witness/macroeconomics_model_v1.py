@@ -40,7 +40,6 @@ class MacroEconomics:
         self.year_start: int = 0
         self.year_end = None
         self.productivity_start = None
-        self.init_gross_output = None
         self.capital_start_ne = None
         self.population_df = None
         self.productivity_gr_start: float = 0
@@ -113,7 +112,6 @@ class MacroEconomics:
         self.year_end = self.param[GlossaryCore.YearEnd]
         self.activate_pandemic_effects = self.param['assumptions_dict']['activate_pandemic_effects']
         self.productivity_start = self.param['productivity_start']
-        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start_ne = self.param['capital_start_non_energy']
         self.population_df = self.param[GlossaryCore.PopulationDfValue]
         self.productivity_gr_start = self.param['productivity_gr_start']
@@ -341,7 +339,6 @@ class MacroEconomics:
         working_pop = self.workforce_df[GlossaryCore.Workforce].values
         capital_u = self.capital_df[GlossaryCore.UsableCapital].values
         gross_output = productivity * (alpha * capital_u**gamma + (1 - alpha) * working_pop**gamma) ** (1 / gamma)
-        gross_output[0] = self.init_gross_output
         self.economics_df[GlossaryCore.GrossOutput] = gross_output
 
 
@@ -738,7 +735,6 @@ class MacroEconomics:
             productivity * alpha * usable_capital ** (gamma - 1) * np.diag(d_usable_capital_d_energy) *
             (alpha * usable_capital ** gamma + (1 - alpha) * working_pop ** gamma) ** (1. / gamma - 1.)
         ) if self.compute_gdp else self._null_derivative()
-        d_gross_output_d_energy[0, 0] = 0.
 
         d_net_output_d_energy = self._d_net_output_d_user_input(d_gross_output_d_energy)
         d_energy_investment_d_energy, d_invest_d_energy, d_non_energy_investment_d_energy = self.d_investment_d_user_input(d_net_output_d_energy)
@@ -784,7 +780,6 @@ class MacroEconomics:
                 alpha * usable_capital ** gamma + (1 - alpha) * working_pop ** gamma
             ) ** (1/gamma - 1)
         ) if self.compute_gdp else self._null_derivative()
-        d_gross_output_d_wap[0, 0] = 0.
 
         damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
@@ -906,7 +901,6 @@ class MacroEconomics:
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
 
         d_gross_output_d_dfo =  np.diag(gross_output / productivity) @ self.d_productivity_d_damage_frac_output()
-        d_gross_output_d_dfo[0,:] = 0.
 
         if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             factor = (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
