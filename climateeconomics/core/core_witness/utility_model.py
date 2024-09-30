@@ -48,8 +48,7 @@ class UtilityModel():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
-
+        
         self.shift_scurve = self.param['shift_scurve']
         self.strech_scurve = self.param['strech_scurve']
 
@@ -64,8 +63,7 @@ class UtilityModel():
         '''
         years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years_range = years_range
         self.n_years = len(self.years_range)
         utility_df = pd.DataFrame(
@@ -83,9 +81,9 @@ class UtilityModel():
         Compute Average utility social discount rate
          rr(t) = 1/((1+prstp)**(tstep*(t.val-1)));
         """
-        t = ((self.years_range - self.year_start) / self.time_step) + 1
+        t = (self.years_range - self.year_start) + 1
         u_discount_rate = 1 / ((1 + self.init_rate_time_pref)
-                               ** (self.time_step * (t - 1)))
+                               ** (t - 1))
         self.utility_df[GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
 

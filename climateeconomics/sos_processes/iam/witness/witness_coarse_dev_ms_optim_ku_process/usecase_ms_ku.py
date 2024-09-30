@@ -23,9 +23,6 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
     Study as uc_ms_mda,
 )
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2_optim_story_telling import (
-    Study as Study1,
-)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2b_optim_story_telling import (
     Study as Study2,
 )

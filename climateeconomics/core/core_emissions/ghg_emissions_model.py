@@ -56,7 +56,6 @@ class GHGEmissions:
     def configure_parameters(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.new_sector_list = self.param[GlossaryCore.SectorListValue]
         self.economic_sectors_except_agriculture = [sector for sector in self.new_sector_list if sector != GlossaryCore.SectorAgriculture]
         self.CO2_land_emissions = self.param[GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)]
@@ -95,7 +94,7 @@ class GHGEmissions:
         year_end = self.year_end
 
         self.years_range = np.arange(
-            year_start, year_end + 1, self.time_step)
+            year_start, year_end + 1)
 
         self.ghg_emissions_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
         self.gwp_emissions = pd.DataFrame({GlossaryCore.Years: self.years_range})
@@ -265,7 +264,7 @@ class GHGEmissions:
         --------
         pandas.DataFrame
             A DataFrame containing two columns:
-            - 'Year': The year of the emissions
+            - GlossaryCore.Years: The year of the emissions
             - 'Total_GWP100': The total GWP100 value for all three gases combined for each year
         """
         # List of greenhouse gases

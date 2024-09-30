@@ -39,7 +39,6 @@ class CarbonCycle():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.conc_lower_strata = self.param['conc_lower_strata']
         self.conc_upper_strata = self.param['conc_upper_strata']
         self.conc_atmo = self.param['conc_atmo']
@@ -77,7 +76,7 @@ class CarbonCycle():
         Create the dataframe and fill it with values at year_start
         '''
         years_range = np.arange(
-            self.year_start, self.year_end + 1, self.time_step)
+            self.year_start, self.year_end + 1)
         self.years_range = years_range
         carboncycle_df = pd.DataFrame(index=years_range, columns=[GlossaryCore.Years,
                                                                   'atmo_conc', 'lower_ocean_conc', 'shallow_ocean_conc', 'ppm', 'atmo_share_since1850', 'atmo_share_sinceystart'])
@@ -98,14 +97,11 @@ class CarbonCycle():
         """
         compute atmo conc for t using value at t-1 (MAT in DICE)
         """
-        p_atmo_conc = self.carboncycle_df.at[year - 
-                                             self.time_step, 'atmo_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.at[year - 
-                                                      self.time_step, 'shallow_ocean_conc']
-        p_emissions = self.CO2_emissions_df.at[year - 
-                                               self.time_step, 'total_emissions']
+        p_atmo_conc = self.carboncycle_df.at[year - 1, 'atmo_conc']
+        p_shallow_ocean_conc = self.carboncycle_df.at[year - 1, 'shallow_ocean_conc']
+        p_emissions = self.CO2_emissions_df.at[year - 1, 'total_emissions']
         atmo_conc = p_atmo_conc * self.b_eleven + p_shallow_ocean_conc * \
-            self.b_twentyone + p_emissions * self.time_step / self.gtco2_to_gtc
+            self.b_twentyone + p_emissions / self.gtco2_to_gtc
         # Lower bound
         self.carboncycle_df.loc[year, 'atmo_conc'] = max(
             atmo_conc, self.lo_mat)
@@ -115,10 +111,8 @@ class CarbonCycle():
         """
         Compute lower ocean conc at t using values at t-1
         """
-        p_lower_ocean_conc = self.carboncycle_df.at[year - 
-                                                    self.time_step, 'lower_ocean_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.at[year - 
-                                                      self.time_step, 'shallow_ocean_conc']
+        p_lower_ocean_conc = self.carboncycle_df.at[year - 1, 'lower_ocean_conc']
+        p_shallow_ocean_conc = self.carboncycle_df.at[year - 1, 'shallow_ocean_conc']
         lower_ocean_conc = p_lower_ocean_conc * self.b_thirtythree + \
             p_shallow_ocean_conc * self.b_twentythree
         # Lower bound
@@ -130,12 +124,9 @@ class CarbonCycle():
         """
         Compute upper ocean conc at t using values at t-1
         """
-        p_lower_ocean_conc = self.carboncycle_df.at[year - 
-                                                    self.time_step, 'lower_ocean_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.at[year - 
-                                                      self.time_step, 'shallow_ocean_conc']
-        p_atmo_conc = self.carboncycle_df.at[year - 
-                                             self.time_step, 'atmo_conc']
+        p_lower_ocean_conc = self.carboncycle_df.at[year - 1, 'lower_ocean_conc']
+        p_shallow_ocean_conc = self.carboncycle_df.at[year - 1, 'shallow_ocean_conc']
+        p_atmo_conc = self.carboncycle_df.at[year - 1, 'atmo_conc']
         shallow_ocean_conc = p_atmo_conc * self.b_twelve + p_shallow_ocean_conc * \
             self.b_twentytwo + p_lower_ocean_conc * self.b_thirtytwo
         # Lower Bound
@@ -179,11 +170,10 @@ class CarbonCycle():
         """
         Compute d_y / d_total_emissions, with y is a column of carboncycle_detail_df
         """
-        time_step = self.time_step
         gtco2_to_gtc = self.gtco2_to_gtc
         lo_mat = self.lo_mat
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
 
         b_eleven = 1.0 - self.b_twelve
         b_twentyone = self.b_twelve * self.conc_atmo / self.conc_upper_strata
@@ -199,16 +189,16 @@ class CarbonCycle():
             self.scale_factor_carbon_cycle
         #---- initialisation
         if atmo_conc.values[1] > lo_mat:
-            d_atmoconc_d_totalemissions[1, 0] = time_step / gtco2_to_gtc
+            d_atmoconc_d_totalemissions[1, 0] = 1 / gtco2_to_gtc
 
         if atmo_conc.values[2] > lo_mat:
-            d_atmoconc_d_totalemissions[2, 1] = time_step / gtco2_to_gtc
+            d_atmoconc_d_totalemissions[2, 1] = 1 / gtco2_to_gtc
 
         if self.carboncycle_df['shallow_ocean_conc'].values[2] > self.lo_mu:
             d_swallow_d_totalemissions[2,
-                                       0] = time_step / gtco2_to_gtc * self.b_twelve
+                                       0] = 1 / gtco2_to_gtc * self.b_twelve
             d_atmoconc_d_totalemissions[2,
-                                        0] = time_step / gtco2_to_gtc * b_eleven
+                                        0] = 1 / gtco2_to_gtc * b_eleven
 
         for i in range(3, len(years)):
             for j in range(0, i):
@@ -230,7 +220,7 @@ class CarbonCycle():
                     if j == i - 1:
                         d_atmoconc_d_totalemissions[i, j] = d_atmoconc_d_totalemissions[i - 1, j] * b_eleven + \
                             d_swallow_d_totalemissions[i - 1, j] * \
-                            b_twentyone + time_step / gtco2_to_gtc
+                            b_twentyone + 1 / gtco2_to_gtc
                     else:
                         d_atmoconc_d_totalemissions[i, j] = d_atmoconc_d_totalemissions[i - 1, j] * b_eleven + \
                             d_swallow_d_totalemissions[i - 1, j] * b_twentyone
@@ -246,7 +236,7 @@ class CarbonCycle():
             for j in range(0, len(years)):
 
                 Cte = (
-                    cum_total_emissions[self.year_start + time_step * j] + .000001)
+                    cum_total_emissions[self.year_start + j] + .000001)
                 d_atmo1850_dtotalemission[j,
                                           i] = d_atmoconc_d_totalemissions[j, i] / Cte
 
@@ -259,7 +249,7 @@ class CarbonCycle():
             for j in range(1, len(years)):
 
                 Cte = (cum_total_emissions[self.year_start + 
-                                           time_step * j] - init_cum_total_emissions)
+                                           j] - init_cum_total_emissions)
                 d_atmotoday_dtotalemission[j,
                                            i] = d_atmoconc_d_totalemissions[j, i] / Cte
 
@@ -270,7 +260,7 @@ class CarbonCycle():
     def compute_d_cum_total_emissions(self):
 
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
 
         init_atmo_conc = self.init_conc_atmo
         init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
@@ -287,8 +277,8 @@ class CarbonCycle():
         #-----------
         d_atmotoday_dcumtotalemission = np.zeros((len(years), len(years)))
         for i in range(1, len(years)):
-            d_atmotoday_dcumtotalemission[i, i] = -(self.carboncycle_df['atmo_conc'][self.year_start + self.time_step * i] - init_atmo_conc) / (
-                cum_total_emissions[self.year_start + self.time_step * i] - init_cum_total_emissions) ** 2
+            d_atmotoday_dcumtotalemission[i, i] = -(self.carboncycle_df['atmo_conc'][self.year_start + i] - init_atmo_conc) / (
+                cum_total_emissions[self.year_start + i] - init_cum_total_emissions) ** 2
 
             d_atmotoday_dcumtotalemission[i, 0] = -\
                 d_atmotoday_dcumtotalemission[i, i]

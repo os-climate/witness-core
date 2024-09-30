@@ -46,9 +46,8 @@ class MacroeconomicsDiscipline(SoSWrapp):
     _maturity = 'Research'
     DESC_IN = {
         GlossaryCore.DamageDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'unit': GlossaryCore.Years, 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'unit': GlossaryCore.Years, 'namespace': 'ns_dice'},
         'productivity_start': {'type': 'float', 'default': 5.115},
         GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice', 'unit': 'trillions $'},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 223},

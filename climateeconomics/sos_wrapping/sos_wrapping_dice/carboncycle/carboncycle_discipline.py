@@ -47,9 +47,8 @@ class CarbonCycleDiscipline(SoSWrapp):
 
     DESC_IN = {
 
-        GlossaryCore.YearStart: {'type': 'int', 'default': 2015, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'default': GlossaryCore.YearEndDefault, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'default': 5, 'unit': 'year per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'default': 2015, 'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'default': GlossaryCore.YearEndDefault, 'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc'},
         'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc'},
         'conc_atmo': {'type': 'int', 'default': 588, 'unit': 'Gtc'},

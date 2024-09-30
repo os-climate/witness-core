@@ -45,7 +45,6 @@ class TempChange(object):
     def set_data(self, inputs):
         self.year_start = inputs[GlossaryCore.YearStart]
         self.year_end = inputs[GlossaryCore.YearEnd]
-        self.time_step = inputs[GlossaryCore.TimeStep]
         self.init_temp_ocean = inputs['init_temp_ocean']
         self.init_temp_atmo = inputs['init_temp_atmo']
         self.eq_temp_impact = inputs['eq_temp_impact']
@@ -87,8 +86,7 @@ class TempChange(object):
         '''
         years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years_range = years_range
         self.temperature_df = DataFrame({GlossaryCore.Years: self.years_range})
         self.forcing_df = DataFrame({GlossaryCore.Years: self.years_range})
@@ -255,10 +253,10 @@ class TempChange(object):
         temp_ocean_list = [temp_ocean]
 
         for year, forcing in zip(self.years_range[1:], self.temperature_df[GlossaryCore.Forcing].values[1:]) :
-            new_temp_ocean = temp_ocean + (self.transfer_lower / (5.0 / self.time_step)) * (temp_atmo - temp_ocean)
-            new_temp_atmo = temp_atmo + (self.climate_upper / (5.0 / self.time_step)) * \
+            new_temp_ocean = temp_ocean + (self.transfer_lower / 5.) * (temp_atmo - temp_ocean)
+            new_temp_atmo = temp_atmo + (self.climate_upper / 5.) * \
                 ((forcing - (self.forcing_eq_co2 / self.eq_temp_impact) *
-                  temp_atmo) - ((self.transfer_upper / (5.0 / self.time_step)) * (temp_atmo - temp_ocean)))
+                  temp_atmo) - ((self.transfer_upper / 5.) * (temp_atmo - temp_ocean)))
 
             temp_atmo = new_temp_atmo
             temp_ocean = new_temp_ocean
@@ -508,7 +506,7 @@ class TempChange(object):
         # second line is only equal to the derivative of forcing effect
         dforcing_datmo_conc = self.compute_d_forcing()
 
-        d_tempatmo_d_atmoconc = np.identity(nb_years) * self.climate_upper * self.time_step / 5.0 \
+        d_tempatmo_d_atmoconc = np.identity(nb_years) * self.climate_upper / 5.0 \
             * dforcing_datmo_conc
 
         d_tempatmo_d_atmoconc[0, 0] = 0.0
@@ -526,8 +524,8 @@ class TempChange(object):
             while j < i:
                 #-------atmo temp derivative------------
                 d_tempatmo_d_atmoconc[i, j] = d_tempatmo_d_atmoconc[i - 1, j] \
-                    - self.climate_upper * self.time_step / 5.0 * self.forcing_eq_co2 / self.eq_temp_impact * d_tempatmo_d_atmoconc[i - 1, j] \
-                    - self.climate_upper * self.time_step / 5.0 * self.transfer_upper * self.time_step / \
+                    - self.climate_upper / 5.0 * self.forcing_eq_co2 / self.eq_temp_impact * d_tempatmo_d_atmoconc[i - 1, j] \
+                    - self.climate_upper / 5.0 * self.transfer_upper / \
                     5.0 * \
                     (d_tempatmo_d_atmoconc[i - 1, j] -
                      d_tempocean_d_atmoconc[i - 1, j])
@@ -537,7 +535,7 @@ class TempChange(object):
                     d_tempatmo_d_atmoconc[i, j] = 0
 
                 d_tempocean_d_atmoconc[i, j] = d_tempocean_d_atmoconc[i - 1, j] \
-                    + self.transfer_lower * self.time_step / 5.0 * \
+                    + self.transfer_lower / 5.0 * \
                     (d_tempatmo_d_atmoconc[i - 1, j] -
                      d_tempocean_d_atmoconc[i - 1, j])
                 j = j + 1

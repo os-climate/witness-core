@@ -75,10 +75,9 @@ class DICEMDAPrerunTest(unittest.TestCase):
         values_dict.pop(usecase.study_name + f'.{GlossaryCore.EconomicsDfValue}')
 
         dice_input = {}
-        years = np.arange(usecase.year_start,
-                          usecase.year_end + 1, usecase.time_step)
+        years = np.arange(usecase.year_start, usecase.year_end + 1)
         data = np.zeros(len(years))
-        df = DataFrame({'year': years,
+        df = DataFrame({GlossaryCore.Years: years,
                         GlossaryCore.Damages: data,
                         GlossaryCore.DamageFractionOutput: data,
                         'backstop_price': data,
@@ -86,7 +85,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
                         'abatecost': data,
                         'marg_abatecost': data,
                         'carbon_price': data,},
-                       index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+                       index=np.arange(usecase.year_start, usecase.year_end + 1))
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
 
         values_dict.update(dice_input)
@@ -101,7 +100,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
         # print(residual_history_2)
 
         CO2_emissions_df = DataFrame({
-            'year': years,
+            GlossaryCore.Years: years,
             'gr_sigma': data,
             'sigma': data,
             'land_emissions': data,
@@ -111,24 +110,24 @@ class DICEMDAPrerunTest(unittest.TestCase):
             'total_emissions': data,
             'cum_total_emissions': data,
             'emissions_control_rate': data},
-            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+            index=np.arange(usecase.year_start, usecase.year_end + 1))
 
         carboncycle_df = DataFrame({
-            'year': years,
+            GlossaryCore.Years: years,
             'atmo_conc': data,
             'lower_ocean_conc': data,
             'shallow_ocean_conc': data,
             'ppm': data,
             'atmo_share_since1850': data,
             'atmo_share_sinceystart': data},
-            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+            index=np.arange(usecase.year_start, usecase.year_end + 1))
 
-        temperature_df = DataFrame({'year': years,
+        temperature_df = DataFrame({GlossaryCore.Years: years,
                                     GlossaryCore.ExoGForcing: data,
                                     GlossaryCore.Forcing: data,
                                     GlossaryCore.TempAtmo: data,
                                     GlossaryCore.TempOcean: data},
-                                   index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+                                   index=np.arange(usecase.year_start, usecase.year_end + 1))
         ee2 = ExecutionEngine(self.name)
         builder = ee2.factory.get_builder_from_process(
             repo, 'dice_model')

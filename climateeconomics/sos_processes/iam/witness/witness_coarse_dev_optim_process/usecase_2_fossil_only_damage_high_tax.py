@@ -23,10 +23,9 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
 
 
 class Study(StudyOptimInvestDistrib):
-    def __init__(self, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1):
+    def __init__(self, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault):
         super().__init__(year_start=year_start,
                          year_end=year_end,
-                         time_step=time_step,
                          file_path=__file__,
                          run_usecase=run_usecase,
                          execution_engine=execution_engine)
