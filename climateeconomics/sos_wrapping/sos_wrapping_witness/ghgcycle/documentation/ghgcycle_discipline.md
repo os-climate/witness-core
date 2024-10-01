@@ -30,7 +30,6 @@ You can find an implementation (and parameters) of this model on GitHub.[^3]
 The inputs are:
 * year start, the starting year of the study. Default is 2020.
 * year end, the last year of the study. Default is 2100.
-* time step, the number of year between each step of computation. Default is 1.
 * GHG emissions, the quantity of GHG released in the atmosphere in Gt. This data comes from ghg_emission model. 
 * Alpha is the trade variable between utility and CO2 emission, used to compute the output ppm objective. The weight of utility is Alpha, the weight of climate is (1 - Alpha). The default value is 0.5.
 * Beta is the trade variable between CO2 emission and temperature, used to compute the output ppm objective. The weight of CO2 emission is Beta, the weight of temperature is (1 - Beta).

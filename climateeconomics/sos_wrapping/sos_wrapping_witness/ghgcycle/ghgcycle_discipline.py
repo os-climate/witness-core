@@ -58,7 +58,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.GHGEmissionsDfValue: GlossaryCore.GHGEmissionsDf,
         'co2_emissions_fractions': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': '-', 'default': [0.13, 0.20, 0.32, 0.25, 0.10], 'user_level': 2},
         'co2_boxes_decays': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': GlossaryCore.Years,
@@ -68,10 +67,10 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'co2_pre_indus_conc': {'type': 'float', 'unit': 'ppm', 'default': DatabaseWitnessCore.CO2PreIndustrialConcentration.value, 'user_level': 2},
         'ch4_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default': 1/12, 'user_level': 2},
         'ch4_pre_indus_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.CH4PreIndustrialConcentration.value, 'user_level': 2},
-        'ch4_init_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.HistoricCH4Concentration.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2},
+        'ch4_init_conc': {'type': 'float', 'unit': 'ppb', 'user_level': 2},
         'n2o_decay_rate': {'type': 'float', 'unit': 'ppb/year', 'default':  1/114, 'user_level': 2},
         'n2o_pre_indus_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.N2OPreIndustrialConcentration.value, 'user_level': 2},
-        'n2o_init_conc': {'type': 'float', 'unit': 'ppb', 'default': DatabaseWitnessCore.HistoricN2OConcentration.get_value_at_year(GlossaryCore.YearStartDefault), 'user_level': 2},
+        'n2o_init_conc': {'type': 'float', 'unit': 'ppb', 'user_level': 2},
         'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         'minimum_ppm_limit': {'type': 'float', 'unit': 'ppm', 'default': 250, 'user_level': 2},
         'minimum_ppm_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
@@ -102,6 +101,17 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'pre_indus_gwp_20': {'type': 'float', 'unit': 'GtCO2Eq'},
         'pre_indus_gwp_100': {'type': 'float', 'unit': 'GtCO2Eq'},
     }
+
+    def setup_sos_disciplines(self):
+        self.update_default_values()
+
+    def update_default_values(self):
+        disc_in = self.get_data_in()
+        if disc_in is not None and GlossaryCore.YearStart in disc_in:
+            year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+            if year_start is not None:
+                self.update_default_value("n2o_init_conc", 'in', DatabaseWitnessCore.HistoricN2OConcentration.get_value_at_year(year_start))
+                self.update_default_value("ch4_init_conc", 'in', DatabaseWitnessCore.HistoricCH4Concentration.get_value_at_year(year_start))
 
     def init_execution(self):
         param_in = self.get_sosdisc_inputs()
@@ -253,12 +263,12 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
         ghg_cycle_df = deepcopy(self.get_sosdisc_outputs('ghg_cycle_df_detailed'))
+        years = list(ghg_cycle_df[GlossaryCore.Years].values)
         global_warming_potential_df = self.get_sosdisc_outputs(GlossaryCore.GlobalWarmingPotentialdDfValue)
 
         if 'Atmospheric concentrations' in chart_list:
 
             ppm = ghg_cycle_df[GlossaryCore.CO2Concentration]
-            years = list(ppm.index)
             chart_name = 'CO2 atmospheric concentrations [ppm]'
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -298,7 +308,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             ppm = ghg_cycle_df[GlossaryCore.CH4Concentration]
-            years = list(ppm.index)
             chart_name = 'CH4 atmospheric concentrations [ppb]'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'parts per billion',
                                                  chart_name=chart_name)
@@ -318,7 +327,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             ppm = ghg_cycle_df[GlossaryCore.N2OConcentration]
-            years = list(ppm.index)
             chart_name = 'N2O atmospheric concentrations [ppb]'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'parts per billion',
                                                  chart_name=chart_name)
@@ -338,7 +346,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.ExtraCO2EqSincePreIndustrialValue in chart_list:
-            years = list(ghg_cycle_df[GlossaryCore.Years].values)
             chart_name = GlossaryCore.ExtraCO2EqSincePreIndustrialValue
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ExtraCO2EqSincePreIndustrialDf['unit'],
@@ -360,7 +367,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.GlobalWarmingPotentialdDfValue in chart_list:
-            years = list(global_warming_potential_df[GlossaryCore.Years].values)
             gwp_pre_indus = self.get_sosdisc_outputs('pre_indus_gwp_20')
             chart_name = f"{GlossaryCore.GlobalWarmingPotentialdDfValue} {GlossaryCore.YearBasis20}"
 
@@ -386,7 +392,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.GlobalWarmingPotentialdDfValue in chart_list:
-            years = list(global_warming_potential_df[GlossaryCore.Years].values)
             gwp_pre_indus = self.get_sosdisc_outputs('pre_indus_gwp_100')
             chart_name = f"{GlossaryCore.GlobalWarmingPotentialdDfValue} {GlossaryCore.YearBasis100}"
 

@@ -61,8 +61,6 @@ class ServicesDiscTest(unittest.TestCase):
         self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
-        self.time_step = 1
-
 
         # input
         self.workforce_df = pd.DataFrame({
@@ -88,8 +86,7 @@ class ServicesDiscTest(unittest.TestCase):
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
-                       f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
+                                  f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
@@ -112,8 +109,7 @@ class ServicesDiscTest(unittest.TestCase):
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       },
+                           },
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -133,8 +129,7 @@ class ServicesDiscTest(unittest.TestCase):
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
-                       f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
+                                  f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest, #To check if not used
                        f'{self.name}.{SectorDiscipline.sector_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
@@ -159,8 +154,7 @@ class ServicesDiscTest(unittest.TestCase):
                            'compute_climate_impact_on_gdp': False,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       }
+                           }
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

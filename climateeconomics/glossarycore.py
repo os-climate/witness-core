@@ -53,6 +53,7 @@ class GlossaryCore:
 
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
+    NB_POLES_OPTIM_KU = 14  # number of poles for bspline design variables utilization ratio
     Years = "years"
     YearStart = "year_start"
     YearStartDefault = 2020
@@ -67,7 +68,6 @@ class GlossaryCore:
         "namespace": "ns_public",
         "range": [2000, 2300],
     }
-    TimeStep = "time_step"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
@@ -97,8 +97,11 @@ class GlossaryCore:
     ChartPercentagePerGroup = "Percentage per group [%]"
     ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
-    EnergyWasted = "energy wasted [TWh]"
-    EnergyWastedObjective = "energy_wasted_objective"
+    ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
+    ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
+    ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
+    CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
+    clean_energy = "clean_energy"
     ConsumptionObjective = "consumption_objective"
 
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
@@ -121,9 +124,7 @@ class GlossaryCore:
     UtilityDfValue = "utility_df"
     EnergyInvestmentsValue = "energy_investment"
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
-    EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
     NonEnergyInvestmentsValue = "non_energy_investment"
-    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
     WelfareObjective = "welfare_objective"
     NegativeWelfareObjective = "negative_welfare_objective"
     energy_list = "energy_list"
@@ -164,6 +165,9 @@ class GlossaryCore:
     TechnoCapitalValue = "techno_capital"
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
     ConstructionDelay = "construction_delay"
+    LifetimeName = "lifetime"
+    IsTechnoMainstream = "is_mainstream"
+    InitialPlantsAgeDistribFactor = "initial_plants_age_distrib_factor"
 
     # namespaces
     NS_MACRO = "ns_macro"
@@ -289,7 +293,6 @@ class GlossaryCore:
         "unit": "%",
         "description": "Percentage of the energy consumption for each sector",
         "dynamic_dataframe_columns": True,
-        "default": DatabaseWitnessCore.EnergyConsumptionPercentageSectorDict.value,
     }
 
     SectionNonEnergyEmissionGdpDf = {
@@ -610,7 +613,6 @@ class GlossaryCore:
         "type": "float",
         "unit": "G$",
         "visibility": "Shared",
-        "default": DatabaseWitnessCore.MacroInitGrossOutput.value,
         "namespace": NS_WITNESS,
         "user_level": 2,
     }
@@ -733,7 +735,6 @@ class GlossaryCore:
         },
     }
 
-
     EconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
@@ -754,10 +755,6 @@ class GlossaryCore:
     ProductivityWithoutDamage = "Productivity without damages"
     ProductivityGrowthRate = "productivity_gr"
     OutputGrowth = "output_growth"
-    OptimalEnergyProduction = "Optimal Energy Production [TWh]"
-    UsedEnergy = "Used Energy [TWh]"
-    UnusedEnergy = "Unused Energy [TWh]"
-    EnergyUsage = "Energy Usage"
     EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -774,14 +771,8 @@ class GlossaryCore:
             PerCapitaConsumption: ("float", [0, 1e30], False),
             InvestmentsValue: ("float", [0, 1e30], False),  # G$
             EnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
-            EnergyInvestmentsWoTaxValue: ("float", [0, 1e30], False),  # G$
             NonEnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
-            EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
-            UsedEnergy: ("float", [0, 1e30], False),
-            UnusedEnergy: ("float", [0, 1e30], False),
-            OptimalEnergyProduction: ("float", [0, 1e30], False),
-            EnergyWasted: ("float", [0, 1e30], False),
         },
     }
     PopulationValue = "population"
@@ -796,6 +787,34 @@ class GlossaryCore:
             PopulationValue: ("float", None, False),
         },
     }
+
+    PopulationStart = "population_start"
+    PopulationStartDf = {
+        "var_name": PopulationStart,
+        'type': 'dataframe',
+                    'unit': 'millions of people',
+                    'dataframe_descriptor': {"0-4": ("float", [0, 1e30], True),
+                                             "5-9": ("float", [0, 1e30], True),
+                                             "10-14": ("float", [0, 1e30], True),
+                                             "15-19": ("float", [0, 1e30], True),
+                                             "20-24": ("float", [0, 1e30], True),
+                                             "25-29": ("float", [0, 1e30], True),
+                                             "30-34": ("float", [0, 1e30], True),
+                                             "35-39": ("float", [0, 1e30], True),
+                                             "40-44": ("float", [0, 1e30], True),
+                                             "45-49": ("float", [0, 1e30], True),
+                                             "50-54": ("float", [0, 1e30], True),
+                                             "55-59": ("float", [0, 1e30], True),
+                                             "60-64": ("float", [0, 1e30], True),
+                                             "65-69": ("float", [0, 1e30], True),
+                                             "70-74": ("float", [0, 1e30], True),
+                                             "75-79": ("float", [0, 1e30], True),
+                                             "80-84": ("float", [0, 1e30], True),
+                                             "85-89": ("float", [0, 1e30], True),
+                                             "90-94": ("float", [0, 1e30], True),
+                                             "95-99": ("float", [0, 1e30], True),
+                                             "100_over": ("float", [0, 1e30], True), }
+                    }
 
     EnergyMeanPriceValue = "energy_mean_price"
 
@@ -824,7 +843,6 @@ class GlossaryCore:
         "namespace": "ns_resource",
     }
 
-
     ResourcesCO2Emissions = {
         "type": "dataframe",
         "unit": "kgCO2/kg",
@@ -846,11 +864,12 @@ class GlossaryCore:
     }
 
     EnergyProductionValue = "energy_production"
-    EnergyProductionDetailedValue = "energy_production_detailed"
-    EnergyProcductionWithoutRatioValue = "energy_production_woratio"
-    EnergyConsumptionValue = "energy_consumption"
-    EnergyConsumptionWithoutRatioValue = "energy_consumption_woratio"
+    StreamProductionDetailedValue = "energy_production_detailed"
+    StreamProductionWithoutRatioValue = "energy_production_woratio"
+    StreamConsumptionValue = "energy_consumption"
+    StreamConsumptionWithoutRatioValue = "energy_consumption_woratio"
     LandUseRequiredValue = "land_use_required"
+    NonUseCapital = "non_use_capital"
 
     TotalProductionValue = "Total production"
     EnergyProductionDf = {
@@ -1002,24 +1021,14 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
     }
 
-    RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
-    RenewablesEnergyInvestments = {
-        "var_name": RenewablesEnergyInvestmentsValue,
+    CleanEnergyInvestmentsValue = "Clean energy investments [100G$]"
+    CleanEnergyInvestments = {
+        "var_name": CleanEnergyInvestmentsValue,
         "namespace": NS_WITNESS,
         "type": "dataframe",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             InvestmentsValue: ("float", [0.0, 1e30], True),
-        },
-        "unit": "100G$",
-    }
-
-    EnergyInvestmentsWoRenewable = {
-        "var_name": EnergyInvestmentsWoRenewableValue,
-        "type": "dataframe",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            EnergyInvestmentsWoRenewableValue: ("float", [0.0, 1e30], True),
         },
         "unit": "100G$",
     }
@@ -1067,6 +1076,7 @@ class GlossaryCore:
         },
     }
 
+    UtilityQuantity = "utility_quantity"
     UtilityDiscountRate = "u_discount_rate"
     DiscountedQuantityUtilityPopulation = "Discounted quantity utility population"
     PerCapitaUtilityQuantity = "Utility quantity per capita"
@@ -1087,6 +1097,13 @@ class GlossaryCore:
             DiscountedQuantityUtilityPopulation: ("float", None, False),
         },
         "unit": "-",
+    }
+    UtilityObjectiveName = "utility_obj"
+    UtilityObjective = {
+        "type": "array",
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
     }
 
     QuantityObjectiveValue = "Quantity_objective"
@@ -1150,7 +1167,6 @@ class GlossaryCore:
     CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
-    UsableCapitalUnbounded = "Unbounded usable capital [G$]"
     NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
@@ -1174,6 +1190,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
+            NonUseCapital: ("float", [0, 1e30], False),
         },
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -1271,10 +1288,6 @@ class GlossaryCore:
             ProductivityGrowthRate: ("float", None, False),
             ProductivityWithoutDamage: ("float", [0, 1e30], False),
             ProductivityWithDamage: ("float", [0, 1e30], False),
-            OptimalEnergyProduction: ("float", [0, 1e30], False),
-            UsedEnergy: ("float", [0, 1e30], False),
-            UnusedEnergy: ("float", [0, 1e30], False),
-            EnergyWasted: ("float", [0, 1e30], False),
         },
     }
 
@@ -1641,7 +1654,7 @@ class GlossaryCore:
     StreamsCO2Emissions = {
         "var_name": StreamsCO2EmissionsValue,
         "type": "dataframe",
-        "unit": "kg/kWh ... to be checked for CCUS streams", # fixme todo
+        "unit": "kg/kWh ... to be checked for CCUS streams",  # fixme todo
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dynamic_dataframe_columns": True,
@@ -1678,10 +1691,19 @@ class GlossaryCore:
     TempOutputDf = {
         "var_name": TempOutput,
         "type": "dataframe",
+        "namespace": NS_WITNESS,
+        "visibility": "Shared",
         "description": "used to debug some gradients",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            NonEnergyCapital: ("int", [1900, YearEndDefault], False),
+            # UsableCapital: ("float", None, False),
+            # Capital: ("float", None, False),
+            # Damages: ("float", None, False),
+            # EstimatedDamages: ("float", None, False),
+            # DamagesFromClimate: ("float", None, False),
+            # GrossOutput: ("float", None, False),
+            # OutputNetOfDamage: ("float", None, False),
+            PerCapitaConsumption: ("float", None, False),
         },
     }
 

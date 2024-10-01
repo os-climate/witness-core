@@ -36,11 +36,12 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_opt
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
-        super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
+    def __init__(self, year_start=2023, filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
+        super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
         self.test_post_procs = False
+        self.year_start = year_start
 
     def setup_usecase(self, study_folder_path=None):
 
@@ -48,21 +49,21 @@ class Study(ClimateEconomicsStudyManager):
 
         #scenarios name:
         uc2 = uc_ms_mda.USECASE2
-        uc4_tp_ref = uc_ms_mda.USECASE4_TP_REF
         uc4_tp1 = uc_ms_mda.USECASE4_TP1
         uc4_tp2 = uc_ms_mda.USECASE4_TP2
-        uc7_tp_ref = uc_ms_mda.USECASE7_TP_REF
+        uc4_tp3 = uc_ms_mda.USECASE4_TP3
         uc7_tp1 = uc_ms_mda.USECASE7_TP1
         uc7_tp2 = uc_ms_mda.USECASE7_TP2
+        uc7_tp3 = uc_ms_mda.USECASE7_TP3
 
         scenario_dict = {
             uc2: Study1,
-            uc4_tp_ref: Study3,
             uc4_tp1: Study3,
             uc4_tp2: Study3,
-            uc7_tp_ref: Study4,
+            uc4_tp3: Study3,
             uc7_tp1: Study4,
             uc7_tp2: Study4,
+            uc7_tp3: Study4,
         }
         # changing the tipping point
 
@@ -73,7 +74,7 @@ class Study(ClimateEconomicsStudyManager):
         }
 
         for scenario_name, studyClass in scenario_dict.items():
-            scenarioUseCase = studyClass(execution_engine=self.execution_engine)
+            scenarioUseCase = studyClass(execution_engine=self.execution_engine, year_start=self.year_start)
             scenarioUseCase.study_name = f'{self.study_name}.{scatter_scenario}.{scenario_name}'
             scenarioData = scenarioUseCase.setup_usecase()
             scenarioDatadict = {}
@@ -85,20 +86,21 @@ class Study(ClimateEconomicsStudyManager):
         values_dict.update(
             {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
              scenario_dict.keys()})
-
-        # update values dict with tipping point value of the damage model
-        tipping_point_variable = 'Damage.tp_a3'
+        # update the tipping point value
         values_dict.update({
-            f'{self.study_name}.{scatter_scenario}.{uc4_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 4.,
-            f'{self.study_name}.{scatter_scenario}.{uc4_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 3.,
-            f'{self.study_name}.{scatter_scenario}.{uc7_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 4.,
-            f'{self.study_name}.{scatter_scenario}.{uc7_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.{tipping_point_variable}': 3.,
-            })
+            f'{self.study_name}.{scatter_scenario}.{uc4_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[0],
+            f'{self.study_name}.{scatter_scenario}.{uc4_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[1],
+            f'{self.study_name}.{scatter_scenario}.{uc4_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[2],
+            f'{self.study_name}.{scatter_scenario}.{uc7_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[0],
+            f'{self.study_name}.{scatter_scenario}.{uc7_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[1],
+            f'{self.study_name}.{scatter_scenario}.{uc7_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3':uc_ms_mda.TIPPING_POINT_LIST[2],
+        })
+
+        values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)
 
         return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

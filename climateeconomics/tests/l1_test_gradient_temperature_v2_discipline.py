@@ -76,7 +76,6 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
-                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
@@ -135,7 +134,6 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
-                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
@@ -195,7 +193,6 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
-                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
@@ -255,7 +252,6 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
-                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
@@ -314,7 +310,6 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
-                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
@@ -367,7 +362,6 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
-                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.forcing_model': 'Etminan',

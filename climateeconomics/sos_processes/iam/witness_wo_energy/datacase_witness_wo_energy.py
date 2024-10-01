@@ -53,12 +53,11 @@ AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 
 class DataStudy():
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault,
                  agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
         self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.techno_dict = agri_techno_list
         self.study_name_wo_extra_name = self.study_name
         self.dspace = {}
@@ -66,9 +65,8 @@ class DataStudy():
 
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
-        nb_per = round(
-            (self.year_end - self.year_start) / self.time_step + 1)
-        years = arange(self.year_start, self.year_end + 1, self.time_step)
+        nb_per = self.year_end - self.year_start + 1
+        years = arange(self.year_start, self.year_end + 1)
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -78,7 +76,7 @@ class DataStudy():
         witness_input = {}
         witness_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         witness_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
+        
 
         witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
         witness_input[f"{self.study_name}.{'Macroeconomics'}.{GlossaryCore.DamageToProductivity}"] = True
@@ -126,7 +124,7 @@ class DataStudy():
                                GlossaryCore.GrossOutput: data,
                                GlossaryCore.PerCapitaConsumption: data,
                                GlossaryCore.OutputNetOfDamage: data},
-                              index=arange(self.year_start, self.year_end + 1, self.time_step))
+                              index=arange(self.year_start, self.year_end + 1))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = df_eco
 
@@ -134,7 +132,7 @@ class DataStudy():
 
         df_energy_investment = pd.DataFrame({GlossaryCore.Years: years,
                                              GlossaryCore.EnergyInvestmentsValue: nrj_invest},
-                                            index=arange(self.year_start, self.year_end + 1, self.time_step))
+                                            index=arange(self.year_start, self.year_end + 1))
         df_energy_investment_before_year_start = pd.DataFrame({'past_years': [2017, 2018, 2019],
                                                                'energy_investment_before_year_start': [1924, 1927,
                                                                                                        1935]},
@@ -171,12 +169,12 @@ class DataStudy():
 
         # -- load data from land use
         dc_landuse = datacase_landuse(
-            self.year_start, self.year_end, self.time_step, name='.Land_Use_V2', extra_name='.EnergyMix')
+            self.year_start, self.year_end, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
         # -- load data from agriculture
         dc_agriculture_mix = datacase_agriculture_mix(
-            self.year_start, self.year_end, self.time_step, agri_techno_list=self.techno_dict)
+            self.year_start, self.year_end, agri_techno_list=self.techno_dict)
         dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
         dc_agriculture_mix.study_name = self.study_name
 

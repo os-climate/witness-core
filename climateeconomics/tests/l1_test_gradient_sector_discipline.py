@@ -18,7 +18,6 @@ from os.path import dirname, join
 
 import numpy as np
 import pandas as pd
-from pandas import read_csv
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
@@ -34,21 +33,14 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
-        self.time_step = 1
-        self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
-        self.nb_per = round((self.year_end - self.year_start) / self.time_step + 1)
+        self.years = np.arange(self.year_start, self.year_end + 1)
+        self.nb_per = self.year_end - self.year_start + 1
         # -------------------------
-        # input
-        data_dir = join(dirname(__file__), 'data')
-
-        total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
-        total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
         # multiply ageworking pop by employment rate and by % in services
-        workforce = total_workforce_df[GlossaryCore.Population1570] * 0.659 * 0.509
         self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                          GlossaryCore.SectorIndustry: workforce,
-                                          GlossaryCore.SectorServices: workforce,
-                                          GlossaryCore.SectorAgriculture: workforce})
+                                          GlossaryCore.SectorIndustry: np.linspace(1800., 2200., len(self.years)),
+                                          GlossaryCore.SectorServices: np.linspace(1800., 2200., len(self.years)),
+                                          GlossaryCore.SectorAgriculture: np.linspace(1800., 2200., len(self.years))})
 
         self.energy_supply_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -76,8 +68,22 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.te,
-            self.test_gradient_withotudamagetoproductivity
+        ]
+
+    def generate_checked_inputs(self):
+        return [
+            f'{self.name}.{GlossaryCore.WorkforceDfValue}',
+            f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
+            f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
+            f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentDfValue}',
+        ]
+
+    def generate_checked_outputs(self):
+        return [
+            f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
+            f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
+            f'{self.name}.{self.model_name}.{GlossaryCore.ProductionDfValue}',
+            f'{self.name}.{self.model_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}',
         ]
 
     def test_analytic_grad_industry(self):
@@ -117,8 +123,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       }
+                           }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -135,17 +140,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename='jacobian_sector_discipline_industry.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyWastedObjective}',
-                                ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_gradient_withotudamagetoproductivity_industry(self):
         self.model_name = GlossaryCore.SectorIndustry
@@ -189,17 +185,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sector_discipline_withoutdamage_industry.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyWastedObjective}',
-                            ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_gradient_without_climate_impact_on_gdp_industry(self):
         self.model_name = GlossaryCore.SectorIndustry
@@ -240,8 +227,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_climate_impact_on_gdp': False,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       }
+                           }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -250,17 +236,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sector_discipline_withoutdamage_on_gdp_industry.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyWastedObjective}',
-                            ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_analytic_grad_services(self):
         self.model_name = GlossaryCore.SectorServices
@@ -299,8 +276,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       }
+                           }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -317,17 +293,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename='jacobian_sector_discipline_services.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyWastedObjective}',
-                                ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_gradient_withotudamagetoproductivity_services(self):
         self.model_name = GlossaryCore.SectorServices
@@ -371,17 +338,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sector_discipline_withoutdamage_services.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyWastedObjective}',
-                            ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_gradient_without_climate_impact_on_gdp_services(self):
         self.model_name = GlossaryCore.SectorServices
@@ -422,8 +380,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_climate_impact_on_gdp': False,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       }
+                           }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -432,17 +389,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sector_discipline_withoutdamage_on_gdp_services.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyWastedObjective}',
-                            ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_analytic_grad_agriculture(self):
         self.model_name = GlossaryCore.SectorAgriculture
@@ -481,8 +429,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       }
+                           }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -499,17 +446,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename='jacobian_sector_discipline_agriculture.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyWastedObjective}',
-                                ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_gradient_withotudamagetoproductivity_agriculture(self):
         self.model_name = GlossaryCore.SectorAgriculture
@@ -553,17 +491,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sector_discipline_withoutdamage_agriculture.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyWastedObjective}',
-                            ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())
 
     def test_gradient_without_climate_impact_on_gdp_agriculture(self):
         self.model_name = GlossaryCore.SectorAgriculture
@@ -604,8 +533,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                            'compute_climate_impact_on_gdp': False,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
-                       }
+                           }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -614,14 +542,5 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sector_discipline_withoutdamage_on_gdp_agriculture.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}',
-                                    ],
-                            outputs=[
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyWastedObjective}',
-                            ])
+                            inputs=self.generate_checked_inputs(),
+                            outputs=self.generate_checked_outputs())

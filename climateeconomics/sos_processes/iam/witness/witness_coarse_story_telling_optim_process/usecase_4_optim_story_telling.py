@@ -35,18 +35,17 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=False, run_usecase=False,
                  execution_engine=None):
         # initialize usecase and set default values
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.optim_name = OPTIM_NAME
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step, execution_engine=execution_engine,  sub_usecase='uc4')
+            self.year_start, self.year_end, execution_engine=execution_engine,  sub_usecase='uc4')
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
@@ -117,13 +116,12 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'compute_climate_impact_on_gdp': True,
                                                                 'activate_climate_effect_population': True,
                                                                 'activate_pandemic_effects': True,
-                                                                'invest_co2_tax_in_renewables': False
-                                                               }}
+                                                                                                                       }}
         data_witness.append(updated_data)
 
         data_witness.append({
             f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.ccs_price_percentage": 0.0,
-            f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.co2_damage_price_percentage": 0.0,
+            f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.co2_damage_price_percentage": 100.,
         })
 
         return [values_dict] + [optim_values_dict] + data_witness

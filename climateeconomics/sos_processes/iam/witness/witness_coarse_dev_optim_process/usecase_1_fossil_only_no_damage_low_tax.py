@@ -16,6 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import (
     Study as StudyOptimInvestDistrib,
@@ -23,10 +24,9 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
 
 
 class Study(StudyOptimInvestDistrib):
-    def __init__(self, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1):
+    def __init__(self, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault):
         super().__init__(year_start=year_start,
                          year_end=year_end,
-                         time_step=time_step,
                          file_path=__file__,
                          run_usecase=run_usecase,
                          execution_engine=execution_engine)
@@ -39,10 +39,10 @@ class Study(StudyOptimInvestDistrib):
 
         # update fossil invest & utilization ratio lower bound to not be too low
         min_invest = 1.
-        max_invest = 3000.
+        max_invest = 8000.
         dspace_invests = {
-            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [300., 300., 5000., True],
-            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': [min_invest, min_invest, max_invest, True],
+            'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': [300., 300., max_invest, True],
+            f"{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix": [min_invest, min_invest, max_invest, True],
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [min_invest, min_invest, max_invest, False],
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, False],
@@ -51,7 +51,7 @@ class Study(StudyOptimInvestDistrib):
         min_UR = 50.
         dspace_UR = {
             'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
-            'renewable_RenewableSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
+            f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array": [min_UR, min_UR, 100., True],
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
             'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
             'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [min_UR, min_UR, 100., False],
@@ -77,7 +77,6 @@ class Study(StudyOptimInvestDistrib):
                 'compute_gdp': True,
                 'compute_climate_impact_on_gdp': False,
                 'activate_climate_effect_population': False,
-                'invest_co2_tax_in_renewables': False,
                 'activate_pandemic_effects': False
             },
             f'{self.study_name}.{self.optim_name}.design_space': dspace,
@@ -88,7 +87,7 @@ class Study(StudyOptimInvestDistrib):
         data_witness.update({
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.ccs_price_percentage": 0.0,
             f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.co2_damage_price_percentage": 0.0,
-            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([27.0] * (GlossaryCore.NB_POLES_COARSE-1)),
+            f"{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.share_non_energy_invest_ctrl": np.array([DatabaseWitnessCore.ShareInvestNonEnergy.value] * (GlossaryCore.NB_POLES_COARSE - 1)),
         })
 
         return data_witness
@@ -96,5 +95,6 @@ class Study(StudyOptimInvestDistrib):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
 

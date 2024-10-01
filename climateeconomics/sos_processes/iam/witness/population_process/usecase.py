@@ -40,26 +40,23 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, execution_engine=None):
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.landuse_name = '.Population'
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
-        nb_per = round(
-            (self.year_end - self.year_start) / self.time_step + 1)
-        years = arange(self.year_start, self.year_end + 1, self.time_step)
+        nb_per = self.year_end - self.year_start + 1
+        years = arange(self.year_start, self.year_end + 1)
         global_data_dir = join(Path(__file__).parents[4], 'data')
         # private values economics operator pyworld3
         population_input = {}
         population_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         population_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        population_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
         gdp_year_start = 130.187
         gdp_serie = []

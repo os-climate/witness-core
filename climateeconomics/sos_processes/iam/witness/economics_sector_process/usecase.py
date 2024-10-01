@@ -54,13 +54,12 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2000, year_end=GlossaryCore.YearStartDefault, time_step=1, name='', execution_engine=None):
+    def __init__(self, year_start=2000, year_end=GlossaryCore.YearStartDefault, name='', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = 'Macroeconomics'
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.nb_poles = 8
         self.test_post_procs = False
 
@@ -92,10 +91,10 @@ class Study(StudyManager):
             # Energy
             brut_net = 1 / 1.45
             energy_outlook = pd.DataFrame({
-                'year': [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
+                GlossaryCore.Years: [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
                 'energy': [118.112, 134.122, 149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084,
                            197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
-            f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
+            f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy'])
             # Find values for 2020, 2050 and concat dfs
             energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
             energy_supply_values = energy_supply * brut_net

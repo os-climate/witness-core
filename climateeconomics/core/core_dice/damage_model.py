@@ -36,7 +36,6 @@ class DamageModel():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_damag_int = self.param["init_damag_int"]
         self.damag_int = self.param['damag_int']
         self.damag_quad = self.param['damag_quad']
@@ -61,12 +60,11 @@ class DamageModel():
         '''
         years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years_range = years_range
         damage_df = pd.DataFrame(
             index=years_range,
-            columns=['year',
+            columns=[GlossaryCore.Years,
                      GlossaryCore.Damages,
                      GlossaryCore.DamageFractionOutput,
                      'backstop_price',
@@ -75,7 +73,7 @@ class DamageModel():
                      'marg_abatecost',
                      'carbon_price',
                      GlossaryCore.BaseCarbonPrice])
-        damage_df['year'] = years_range
+        damage_df[GlossaryCore.Years] = years_range
         self.damage_df = damage_df
         return damage_df
 
@@ -83,9 +81,9 @@ class DamageModel():
         """
         Compute base case carbon price
         """
-        t = ((year - self.year_start) / self.time_step) + 1
+        t = (year - self.year_start) + 1
         base_carbon_price = self.init_base_carbonprice * \
-            (1 + self.gr_base_carbonprice)**(self.time_step * (t - 1))
+            (1 + self.gr_base_carbonprice)**(t - 1)
         self.damage_df.loc[year, GlossaryCore.BaseCarbonPrice] = base_carbon_price
         return base_carbon_price
 
@@ -93,7 +91,7 @@ class DamageModel():
         """
         Compute backstop_price(t)
         """
-        t = ((year - self.year_start) / self.time_step) + 1
+        t = (year - self.year_start) + 1
         backstop_price = self.cost_backtsop * \
             (1 - self.init_cost_bacsktop)**(t - 1)
         self.damage_df.loc[year, 'backstop_price'] = backstop_price

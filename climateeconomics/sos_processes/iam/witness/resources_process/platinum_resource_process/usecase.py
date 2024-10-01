@@ -27,12 +27,11 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, execution_engine=None):
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):

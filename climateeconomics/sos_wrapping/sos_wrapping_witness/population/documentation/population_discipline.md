@@ -57,7 +57,7 @@ $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 Finally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
 $$DR\_i = \widetilde{DR}\_i + \overline{DR}\_i$$
 with $\widetilde{DR}\_i$ death rate related to economy and temperature, $\overline{DR}\_i$ related to calorie intake.
-$$\(\overline{DR}\_i = \alpha\_{i,j} \left| \frac{kcal - kcal\_{\text{ref}}}{\theta \cdot kcal\_{\text{ref}}} \right|\)$$
+$$\overline{DR}_i = \alpha_{i,j} \left| \frac{\text{kcal} - \text{kcal}_{\text{ref}}}{\theta \cdot \text{kcal}_{\text{ref}}} \right|$$
 with $kcal$ average food intake per capita per day, $kcal\_{ref}$ food intake recommended per capita per day, $\alpha$ relative increase in the probability of dying due to risk j for age-group i, $\theta$ fitting value.
 
 The following table shows the relative increase in mortality $\alpha$:

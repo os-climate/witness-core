@@ -37,13 +37,13 @@ class Study(StudyManager):
 
         year, year_end = GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault
 
-        copper_demand = pd.DataFrame(columns=['Year', 'Demand', 'unit'])
+        copper_demand = pd.DataFrame(columns=[GlossaryCore.Years, 'Demand', 'unit'])
 
         period_of_exploitation = np.arange(year, year_end + 1, 1)
 
-        copper_demand['Year'] = period_of_exploitation
+        copper_demand[GlossaryCore.Years] = period_of_exploitation
         copper_demand['unit'] = 'set-unit'
-        copper_demand.index = copper_demand['Year'].values
+        copper_demand.index = copper_demand[GlossaryCore.Years].values
         copper_demand['Demand'] = [0] * len(period_of_exploitation)
         annual_extraction = []
 

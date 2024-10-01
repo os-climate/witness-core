@@ -57,12 +57,11 @@ AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 
 class DataStudy():
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault,
                  agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
         self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.techno_dict = agri_techno_list
         self.study_name_wo_extra_name = self.study_name
         self.dspace = {}
@@ -70,9 +69,8 @@ class DataStudy():
 
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
-        nb_per = round(
-            (self.year_end - self.year_start) / self.time_step + 1)
-        years = arange(self.year_start, self.year_end + 1, self.time_step)
+        nb_per = self.year_end - self.year_start + 1
+        years = arange(self.year_start, self.year_end + 1)
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -82,7 +80,7 @@ class DataStudy():
         witness_input = {}
         witness_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         witness_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
+        
 
         witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
         witness_input[f"{self.study_name}.{'Macroeconomics'}.{GlossaryCore.DamageToProductivity}"] = True
@@ -148,7 +146,7 @@ class DataStudy():
                             GlossaryCore.GrossOutput: data,
                             GlossaryCore.PerCapitaConsumption: data,
                             GlossaryCore.OutputNetOfDamage: data},
-                           index=arange(self.year_start, self.year_end + 1, self.time_step))
+                           index=arange(self.year_start, self.year_end + 1))
 
         witness_input[self.study_name + f'.{GlossaryCore.EconomicsDfValue}'] = df_eco
 
@@ -156,7 +154,7 @@ class DataStudy():
 
         df_energy_investment = DataFrame({GlossaryCore.Years: years,
                                           GlossaryCore.EnergyInvestmentsValue: nrj_invest},
-                                         index=arange(self.year_start, self.year_end + 1, self.time_step))
+                                         index=arange(self.year_start, self.year_end + 1))
         df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},
                                                            index=[2017, 2018, 2019])
@@ -194,12 +192,12 @@ class DataStudy():
 
         # -- load data from land use
         dc_landuse = datacase_landuse(
-            self.year_start, self.year_end, self.time_step, name='.Land_Use_V2', extra_name='.EnergyMix')
+            self.year_start, self.year_end, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
         # -- load data from agriculture
         dc_agriculture_mix = datacase_agriculture_mix(
-            self.year_start, self.year_end, self.time_step, agri_techno_list=self.techno_dict)
+            self.year_start, self.year_end, agri_techno_list=self.techno_dict)
         dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
         dc_agriculture_mix.study_name = self.study_name
 
@@ -284,25 +282,27 @@ class DataStudy():
 
         data = {
             'variable': [
-                GlossaryCore.EnergyWastedObjective,
+                GlossaryCore.ConstraintUpperBoundUsableCapital,
                 GlossaryCore.QuantityObjectiveValue,
                 GlossaryCore.UsableCapitalObjectiveName,
                 GlossaryCore.NetGdpGrowthRateObjectiveValue,
                 GlossaryCore.EnergyMeanPriceObjectiveValue,
                 GlossaryCore.DecreasingGdpIncrementsObjectiveValue,
+                GlossaryCore.ConstraintEnergyNonUseCapital
             ],
             'parent': [
-                'invest_objective',
+                'constraint_usable_capital',
                 'utility_objective',
                 'invest_objective',
                 'invest_objective',
                 'invest_objective',
                 'utility_objective',
+                'constraint_energy_non_use_capital'
             ],
-            'ftype': [OBJECTIVE] * 6,
-            'weight': [0.1, -1., 0., 0., 0., 1.],
-            AGGR_TYPE: [AGGR_TYPE_SUM] * 6,
-            'namespace': [GlossaryCore.NS_FUNCTIONS] * 6
+            'ftype': [INEQ_CONSTRAINT] + [OBJECTIVE] * 5 + [INEQ_CONSTRAINT],
+            'weight': [1., -1., 0., 0., 0., 5., 1],
+            AGGR_TYPE: [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT] + [AGGR_TYPE_SUM] * 5 + [FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT],
+            'namespace': [GlossaryCore.NS_FUNCTIONS] * 7
         }
 
         func_df = DataFrame(data)

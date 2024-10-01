@@ -1,8 +1,6 @@
 # Temperature model
 The temperature model computes the evolution of atmospheric and ocean temperature following change in green house gases (C02, CH4, N2O) concentrations. In contains three equations, one for the radiative forcing and two equation for the climate system, all extracted from DICE[^1]  model with no modification (Nordhaus, 2017). 
 
-## Time step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialise the data with 2020 information. The user can choose the year end and the duration of the period (in years) by changing the parameters $year\, end$ and $time \,step$. For example, for a year start at 2020, year end in 2100 and a duration of time step of 5 years we have $t \, \epsilon \,[0, 16]$.
 
 ## Radiative forcing
 
@@ -40,8 +38,8 @@ $$RF_{CH4,N2O,t} = 0.036 (\sqrt{C_{CH4}^t}-\sqrt{C_{CH4}^{1750}}) - MN(C_{CH4}^t
 
 with $MN$ a function defined as : 
 
-$$ MN(c1,c2) =0.47 \log(1 + 2.01.10^{-5}  (c_1  c_2)^{0.75} +
-                                 5.31.10^{-15}  c_1  (c_1 c_2)^{1.52}) $$
+$$MN(c1,c2) =0.47 \log(1 + 2.01.10^{-5}  (c_1  c_2)^{0.75} +
+5.31.10^{-15} c_1  (c_1 c_2)^{1.52})$$
 
 
 The Myhre equation is mainly used in climate change models such as in MAGICC [^4], FUND [^5] or FAIR [^6] models.
@@ -53,8 +51,8 @@ The model of Etminan [^7] is an improved version of the Myhre model especially f
 $$RF_{CO2,t} = \eta_{CO2,Etminan}(\ln(C_{CO2}^t) - ln(C_{CO2}^{1750}))$$
 
 with :
- 
-$$ \eta_{CO2,Etminan} = -2.4.10^{-7} (C_{CO2}^t - C_{CO2}^{1750})^2 + 7.2.10^{-4} abs(C_{CO2}^t - C_{CO2}^{1750}) \\ -2.1.10^{-4} * n2o_{mean} + \frac{\eta}{np.log(2)} $$
+
+$$\eta_{CO2,Etminan} = -2.4.10^{-7} (C_{CO2}^t - C_{CO2}^{1750})^2 + 7.2.10^{-4} abs(C_{CO2}^t - C_{CO2}^{1750}) \\ -2.1.10^{-4} * n2o_{mean} + \frac{\eta}{np.log(2)}$$
 
 $$n2o_{mean}= \frac{1}{2}(C_{N2O}^t + C_{N2O}^{1750})$$
 

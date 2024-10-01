@@ -58,13 +58,12 @@ in fossil, renewable and CCUS and their utilization ratios)
 '''
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=False, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
         self.bspline = bspline
@@ -72,7 +71,7 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
 
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            self.year_start, self.year_end, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
         self.test_post_procs = False
@@ -122,7 +121,7 @@ class Study(ClimateEconomicsStudyManager):
         ns = self.study_name
         self.witness_uc.study_name = f'{ns}'
         self.coupling_name = self.witness_uc.coupling_name
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        years = np.arange(self.year_start, self.year_end + 1)
         values_dict = {}
 
         # remove the invests from the initial witness coarse design space
@@ -136,10 +135,10 @@ class Study(ClimateEconomicsStudyManager):
 
         # define the missing inputs:
         # InvestmentsProfileBuilderDisc inputs
-        columns_names = [f'{GlossaryEnergy.renewable}.RenewableSimpleTechno',
-                         f'{GlossaryEnergy.fossil}.FossilSimpleTechno',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno',
+        columns_names = [f'{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}',
+                         f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}',
+                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
+                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}',
                          f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno']
 
         n_profiles = 2 #* len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile
@@ -166,7 +165,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.nb_poles': GlossaryCore.NB_POLES_COARSE,
         })
 
-        years_dfi = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        years_dfi = np.arange(self.year_start, self.year_end + 1)
         #values_dict.update({
         #    f"{ns}.{self.witness_uc.coupling_name}.{self.witness_uc.extra_name}.InvestmentsProfileBuilderDisc.df_{i}":
         #        self.df_generator(i, columns_names, n_profiles, years_dfi) for i in range(n_profiles)
@@ -187,7 +186,7 @@ class Study(ClimateEconomicsStudyManager):
         })
         # impose values to the utilization ratios that are not design variables anymore
         list_utilization_ratio_var = ['fossil_FossilSimpleTechno_utilization_ratio_array',
-                                      'renewable_RenewableSimpleTechno_utilization_ratio_array',
+                                      f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array",
                                       'carbon_capture.direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array',
                                       'carbon_capture.flue_gas_capture.FlueGasTechno_utilization_ratio_array',
                                       'carbon_storage.CarbonStorageTechno_utilization_ratio_array']

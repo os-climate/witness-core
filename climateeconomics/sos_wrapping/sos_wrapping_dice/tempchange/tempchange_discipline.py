@@ -46,7 +46,6 @@ class TempChangeDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_temp_ocean': {'type': 'float', 'default': 0.00687},
         'init_temp_atmo': {'type': 'float', 'default': 0.85},
         'eq_temp_impact': {'type': 'float', 'default': 3.1},

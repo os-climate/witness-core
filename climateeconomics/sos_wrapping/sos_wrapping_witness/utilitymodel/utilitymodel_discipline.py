@@ -49,7 +49,6 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'strech_scurve': {'type': 'float', 'default': 1.7},
         'shift_scurve': {'type': 'float', 'default': -0.2},
@@ -188,6 +187,11 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.DecreasingGdpIncrementsObjectiveValue,),
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
             d_decreasing_obj_d_economic)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.NetGdpGrowthRateObjectiveValue,),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            self.utility_m.d_net_gdp_growth_rate_obj())
 
 
     def get_chart_filter_list(self):

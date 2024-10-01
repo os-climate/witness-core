@@ -19,9 +19,6 @@ from os.path import dirname, join
 import numpy as np
 import pandas as pd
 from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.dice.dice_model.usecase import (
@@ -46,43 +43,51 @@ class Study(StudyManager):
         # setup_data_list[0].update(public_values)
         year_start = 2015
         year_end = GlossaryCore.YearEndDefault
-        time_step = 5
-        nb_per = round(
-            (year_end - year_start) / time_step + 1)
-        years = np.arange(year_start, year_end + 1, time_step)
+        years = np.arange(year_start, year_end + 1)
+        nb_per = len(years)
 
+        years_interpolation = np.arange(year_start, year_end + 1, 5)
         # scenario A
         scenario_A = 'Base case scenario'
         rate_A = [0.03, 0.0323, 0.0349, 0.0377, 0.0408, 0.0441, 0.0476, 0.0515,
                   0.0556, 0.0601, 0.0650, 0.0702, 0.0759, 0.0821, 0.0887, 0.0959, 0.1036, 0.1120]
-        control_rate_A = pd.DataFrame({'year': years, 'value': rate_A})
-
-        # scenario C
-        scenario_C = 'Nordhaus optimal scenario'
-        rate_C = [0.039, 0.195300068397082, 0.218457488964647, 0.243203228631712, 0.2694976095, 0.297314850299999, 0.3266363445,
-                  0.3574480742, 0.389738332999999, 0.4234959626, 0.458708928, 0.495363113, 0.5334412573, 0.5729219824, 0.6137788811, 0.655979684399999, 0.699485574799999, 0.744250816099999]
-        control_rate_C = pd.DataFrame({'year': years, 'value': rate_C})
-
         # scenario B
         scenario_B = 'Zero emission from 2030 scenario'
         rate_B = [0.03, 0.0323, 0.5, 1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        control_rate_B = pd.DataFrame({'year': years, 'value': rate_B})
+        # scenario C
+        scenario_C = 'Nordhaus optimal scenario'
+        rate_C = [0.039, 0.195300068397082, 0.218457488964647, 0.243203228631712, 0.2694976095, 0.297314850299999, 0.3266363445,
+                  0.3574480742, 0.389738332999999, 0.4234959626, 0.458708928, 0.495363113, 0.5334412573, 0.5729219824, 0.6137788811, 0.655979684399999, 0.699485574799999, 0.744250816099999]
 
         # scenario D
         scenario_D = 'Zero emission from 2020 scenario'
         rate_D = [0.03, 1, 1, 1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        control_rate_D = pd.DataFrame({'year': years, 'value': rate_D})
-
         scenario_E = 'Zero emission from 2050 scenario'
         rate_E = [0.03, 0.05, 0.1, 0.15, 0.2, 0.30, 0.50, 1,
                   1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        control_rate_E = pd.DataFrame({'year': years, 'value': rate_E})
+        from scipy.interpolate import interp1d
+        f = interp1d(x=years_interpolation, y=rate_A)
+        result = f(years)
+        control_rate_A = pd.DataFrame({GlossaryCore.Years: years, 'value': result})
+        f = interp1d(x=years_interpolation, y=rate_B)
+        result = f(years)
+        control_rate_B = pd.DataFrame({GlossaryCore.Years: years, 'value': result})
+        f = interp1d(x=years_interpolation, y=rate_C)
+        result = f(years)
+        control_rate_C = pd.DataFrame({GlossaryCore.Years: years, 'value': result})
+        f = interp1d(x=years_interpolation, y=rate_D)
+        result = f(years)
+        control_rate_D = pd.DataFrame({GlossaryCore.Years: years, 'value': result})
+        f = interp1d(x=years_interpolation, y=rate_E)
+        result = f(years)
+        control_rate_E = pd.DataFrame({GlossaryCore.Years: years, 'value': result})
+
 
         # MDA initialization values
         data = np.zeros(nb_per)
-        economics_df = pd.DataFrame({'year': years,
+        economics_df = pd.DataFrame({GlossaryCore.Years: years,
                                      'saving_rate': data,
                                      GlossaryCore.GrossOutput: data,
                                      GlossaryCore.OutputNetOfDamage: data,
@@ -95,7 +100,7 @@ class Study(StudyManager):
                                      GlossaryCore.Capital: data,
                                      GlossaryCore.InvestmentsValue: data,
                                      'interest_rate': data},
-                                    index=np.arange(year_start, year_end + 1, time_step))
+                                    index=np.arange(year_start, year_end + 1, 1))
 
         values_dict = {}
         scenario_list = [scenario_A, scenario_C,
@@ -118,14 +123,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
-
-    post_processing_factory = PostProcessingFactory()
-
-    # all_post_processings = post_processing_factory.get_all_post_processings(
-    # execution_engine=uc_cls.execution_engine, filters_only=False,
-    # as_json=False, for_test=False)
-
-    charts = post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', None)
+    uc_cls.test()
