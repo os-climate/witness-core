@@ -68,7 +68,6 @@ class GlossaryCore:
         "namespace": "ns_public",
         "range": [2000, 2300],
     }
-    TimeStep = "time_step"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
     InvestLevelValue = "invest_level"

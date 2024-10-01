@@ -36,7 +36,6 @@ class IndusEmissions():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_gr_sigma = self.param['init_gr_sigma']
         self.decline_rate_decarbo = self.param['decline_rate_decarbo']
         self.init_indus_emissions = self.param['init_indus_emissions']
@@ -60,7 +59,7 @@ class IndusEmissions():
         init_cum_indus_emissions = self.init_cum_indus_emissions
 
         years_range = np.arange(
-            year_start, year_end + 1, self.time_step)
+            year_start, year_end + 1)
         self.years_range = years_range
         indus_emissions_df = pd.DataFrame(index=years_range, columns=[GlossaryCore.Years,
                                                                       'gr_sigma', 'sigma', 'indus_emissions',
@@ -86,11 +85,9 @@ class IndusEmissions():
             sigma = self.init_indus_emissions / \
                 self.init_gross_output
         else:
-            p_gr_sigma = self.indus_emissions_df.at[year -
-                                                    self.time_step, 'gr_sigma']
-            p_sigma = self.indus_emissions_df.at[year -
-                                                 self.time_step, 'sigma']
-            sigma = p_sigma * np.exp(p_gr_sigma * self.time_step)
+            p_gr_sigma = self.indus_emissions_df.at[year - 1, 'gr_sigma']
+            p_sigma = self.indus_emissions_df.at[year - 1, 'sigma']
+            sigma = p_sigma * np.exp(p_gr_sigma)
         self.indus_emissions_df.loc[year, 'sigma'] = sigma
         return sigma
 
@@ -103,10 +100,9 @@ class IndusEmissions():
         if year == self.year_start:
             pass
         else:
-            p_gr_sigma = self.indus_emissions_df.at[year -
-                                                    self.time_step, 'gr_sigma']
+            p_gr_sigma = self.indus_emissions_df.at[year - 1, 'gr_sigma']
             gr_sigma = p_gr_sigma * \
-                ((1.0 + self.decline_rate_decarbo) ** self.time_step)
+                ((1.0 + self.decline_rate_decarbo))
             self.indus_emissions_df.loc[year, 'gr_sigma'] = gr_sigma
             return gr_sigma
 
@@ -135,12 +131,10 @@ class IndusEmissions():
         if year == self.year_start:
             pass
         else:
-            p_cum_indus_emissions = self.indus_emissions_df.at[year -
-                                                               self.time_step, 'cum_indus_emissions']
-            indus_emissions = self.indus_emissions_df.at[year,
-                                                         'indus_emissions']
+            p_cum_indus_emissions = self.indus_emissions_df.at[year - 1, 'cum_indus_emissions']
+            indus_emissions = self.indus_emissions_df.at[year, 'indus_emissions']
             cum_indus_emissions = p_cum_indus_emissions + \
-                indus_emissions * float(self.time_step) / self.gtco2_to_gtc
+                indus_emissions / self.gtco2_to_gtc
             self.indus_emissions_df.loc[year,
                                         'cum_indus_emissions'] = cum_indus_emissions
             return cum_indus_emissions
@@ -154,7 +148,7 @@ class IndusEmissions():
         d_cum_indus_emissions/d_total_CO2_emitted
         """
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
         nb_years = len(years)
 
         # derivative matrix initialization
@@ -167,10 +161,9 @@ class IndusEmissions():
         for i in range(nb_years):
             for line in range(nb_years):
                 if i > 0 and i <= line:  # fill triangular descendant
-                    d_cum_indus_emissions_d_total_CO2_emitted[line, i] = float(
-                        self.time_step) / self.gtco2_to_gtc
+                    d_cum_indus_emissions_d_total_CO2_emitted[line, i] = 1 / self.gtco2_to_gtc
 
-                    d_cum_indus_emissions_d_gross_output[line, i] = float(self.time_step) / self.gtco2_to_gtc *\
+                    d_cum_indus_emissions_d_gross_output[line, i] = 1 / self.gtco2_to_gtc *\
                         self.indus_emissions_df.at[years[i], 'sigma'] *\
                         (1.0 - self.energy_emis_share - self.land_emis_share)
                 if i == line:  # fill diagonal

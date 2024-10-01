@@ -34,8 +34,7 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.time_step = 1
-        self.nb_per = round((self.year_end - self.year_start) / self.time_step + 1)
+        self.nb_per = self.year_end - self.year_start + 1
 
         self.sector_list = GlossaryCore.SectorsPossibleValues
 

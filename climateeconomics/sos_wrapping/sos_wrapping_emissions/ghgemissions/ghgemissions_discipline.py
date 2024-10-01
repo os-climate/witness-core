@@ -70,7 +70,6 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                                        'user_level': 3},
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'GHG_global_warming_potential20':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
         'GHG_global_warming_potential100':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
         GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2): {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
@@ -92,7 +91,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
         'affine_co2_objective': {'type': 'bool','default': True, 'user_level': 2, 'namespace': GlossaryCore.NS_WITNESS},
-        'constraint_nze_2050_ref': {'type': 'float', 'default': 70, 'user_level': 2},
+        'constraint_nze_2050_ref': {'type': 'float', 'default': 15, 'user_level': 2},
         GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         GlossaryCore.SectorListValue: sector_list_variable,
         GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf
@@ -220,8 +219,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         """
         inputs_dict = self.get_sosdisc_inputs()
-        years = np.arange(
-            inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1, inputs_dict[GlossaryCore.TimeStep])
+        years = np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1,)
 
         # land emissions
         d_energy_carbon_intensity_d_ghg_total_emissions = {}

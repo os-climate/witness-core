@@ -36,8 +36,6 @@ class ConsumptionModel:
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
-
         self.conso_elasticity = self.param['conso_elasticity']  # elasmu
         self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
         self.alpha = self.param['alpha']
@@ -58,8 +56,7 @@ class ConsumptionModel:
         '''
         years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years_range = years_range
         utility_df = pd.DataFrame(
             index=years_range,
@@ -124,9 +121,9 @@ class ConsumptionModel:
         Compute Average utility social discount rate
          rr(t) = 1/((1+prstp)**(tstep*(t.val-1)));
         """
-        t = ((year - self.year_start) / self.time_step) + 1
+        t = (year - self.year_start) + 1
         u_discount_rate = 1 / ((1 + self.init_rate_time_pref)
-                               ** (self.time_step * (t - 1)))
+                               ** (t - 1))
         self.utility_df.loc[year, GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
 
@@ -252,7 +249,7 @@ class ConsumptionModel:
     def compute_gradient(self):
 
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
         nb_years = len(years)
         population = self.population_df[GlossaryCore.PopulationValue].values
         consumption = self.utility_df[GlossaryCore.Consumption].values
@@ -322,7 +319,7 @@ class ConsumptionModel:
 
     def compute_gradient_energy_mean_price(self):
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
         nb_years = len(years)
         d_period_utility_d_energy_price = np.zeros((nb_years, nb_years))
         d_discounted_utility_d_energy_price = np.zeros((nb_years, nb_years))
@@ -346,7 +343,7 @@ class ConsumptionModel:
 
     def compute_gradient_residential_energy(self):
         years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+                          self.year_end + 1)
         nb_years = len(years)
         d_period_utility_d_residential_energy = np.zeros((nb_years, nb_years))
         d_discounted_utility_d_residential_energy = np.zeros((nb_years, nb_years))

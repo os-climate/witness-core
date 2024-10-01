@@ -18,14 +18,10 @@ from copy import deepcopy
 
 import numpy as np
 import pandas as pd
-import plotly.graph_objects as go
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
-)
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
 )
 
 from climateeconomics.core.core_witness.climateeco_discipline import (
@@ -101,7 +97,6 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         "alpha": {
             "type": "float",
             "range": [0.0, 1.0],
@@ -328,11 +323,12 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
 
             utility_df = pd.DataFrame({GlossaryCore.Years: years} | utility_quantities)
             dict_values[f"{sector}.{GlossaryCore.UtilityDfValue}"] = utility_df
-            dict_values[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = [compute_utility_objective(years, consumption, energy_price,
-                                                                              population,
-                                                                              energy_price_ref, init_rate_time_pref,
-                                                                              scurve_shift,
-                                                                              scurve_stretch)]
+            dict_values[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = [
+                compute_utility_objective(years, consumption, energy_price,
+                                          population,
+                                          energy_price_ref, init_rate_time_pref,
+                                          scurve_shift,
+                                          scurve_stretch)]
 
         self.store_sos_outputs_values(dict_values)
 
@@ -977,16 +973,18 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+            # Variation of consumption
+            new_chart = TwoAxesInstanciatedChart(
+                GlossaryCore.Years,
+                'Variation [%]', chart_name="Variation of consumption by sector")
             for sector in sector_list:
-                # Consumption variation from year start
                 consumption = sectors_consumption_df[sector].to_numpy()
                 variation = (consumption - consumption[0]) / consumption[0] * 100.0
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(x=years, y=list(variation)))
-                fig.update_layout(
-                    yaxis_title='Variaton in percentage',
-                )
-                new_chart = InstantiatedPlotlyNativeChart(fig, f"Variation of consumption in {sector} sector")
-                instanciated_charts.append(new_chart)
+                new_series = InstanciatedSeries(years,
+                                                variation,
+                                                f'{sector}', 'lines', True)
+                new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
 
         return instanciated_charts

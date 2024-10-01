@@ -47,7 +47,6 @@ class UtilityModelDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'scaleone': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},

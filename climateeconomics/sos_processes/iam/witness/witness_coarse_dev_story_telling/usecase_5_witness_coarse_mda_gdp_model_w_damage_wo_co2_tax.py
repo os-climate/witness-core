@@ -40,11 +40,10 @@ class Study(ClimateEconomicsStudyManager):
     - invest: mix fossil renewable, with CCS = CCS_2020
     '''
 
-    def __init__(self, run_usecase=True, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1):
+    def __init__(self, run_usecase=True, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):

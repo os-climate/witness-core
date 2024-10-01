@@ -136,7 +136,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         Forest.DEFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                    GlossaryCore.InvestmentsValue: (

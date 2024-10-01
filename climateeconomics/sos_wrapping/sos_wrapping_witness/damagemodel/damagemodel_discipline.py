@@ -85,7 +85,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
         **cheat_variables_dict,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_quad': {'type': 'float', 'default': 0.0022, 'unit': '-', 'user_level': 3},
         'damag_expo': {'type': 'float', 'default': 2.0, 'unit': '-', 'user_level': 3},

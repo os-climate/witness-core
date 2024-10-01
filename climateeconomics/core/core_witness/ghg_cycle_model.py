@@ -43,8 +43,7 @@ class GHGCycle():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
-
+        
         self.gwp100_obj = 0.
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
@@ -98,7 +97,7 @@ class GHGCycle():
         """
         Create the dataframe and fill it with values at year_start
         """
-        self.years_range = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        self.years_range = np.arange(self.year_start, self.year_end + 1)
         self.ghg_cycle_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
 
     def compute_dco2_ppm_d_emissions(self):

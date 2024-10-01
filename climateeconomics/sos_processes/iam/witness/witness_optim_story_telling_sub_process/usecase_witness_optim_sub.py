@@ -51,13 +51,12 @@ EXTRA_NAME = "WITNESS"
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, run_usecase=False,
                  execution_engine=None, sub_usecase='uc2'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
-
+        
         self.coupling_name = COUPLING_NAME
         self.designvariable_name = "DesignVariables"
         self.func_manager_name = "FunctionsManager"
@@ -66,13 +65,13 @@ class Study(ClimateEconomicsStudyManager):
         GlossaryCore.ccus_type = 'CCUS'
         if sub_usecase == 'uc2':
             self.witness_uc = witness_usecase2_story_telling(
-                self.year_start, self.year_end, self.time_step)
+                self.year_start, self.year_end)
         elif sub_usecase == 'uc7':
-            self.witness_uc = witness_usecase7_story_telling(self.year_start, self.year_end, self.time_step)
+            self.witness_uc = witness_usecase7_story_telling(self.year_start, self.year_end)
         elif sub_usecase == 'uc2b':
-            self.witness_uc = usecase2b(self.year_start, self.year_end, self.time_step)
+            self.witness_uc = usecase2b(self.year_start, self.year_end)
         elif sub_usecase == 'uc4':
-            self.witness_uc = usecase4(self.year_start, self.year_end, self.time_step)
+            self.witness_uc = usecase4(self.year_start, self.year_end)
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
@@ -94,7 +93,7 @@ class Study(ClimateEconomicsStudyManager):
         dv_arrays_dict = {}
 
         design_var_descriptor = {}
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        years = np.arange(self.year_start, self.year_end + 1)
 
         # create design variables and design space descriptor for variable percentage_of_gdp_energy_invest
         design_var_descriptor['percentage_gdp_invest_in_energy_array'] = {
