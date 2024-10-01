@@ -39,9 +39,7 @@ class MacroEconomics:
         self.consommation_objective_ref = None
         self.year_start: int = 0
         self.year_end = None
-        self.time_step = None
         self.productivity_start = None
-        self.init_gross_output = None
         self.capital_start_ne = None
         self.population_df = None
         self.productivity_gr_start: float = 0
@@ -112,10 +110,8 @@ class MacroEconomics:
 
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.activate_pandemic_effects = self.param['assumptions_dict']['activate_pandemic_effects']
         self.productivity_start = self.param['productivity_start']
-        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start_ne = self.param['capital_start_non_energy']
         self.population_df = self.param[GlossaryCore.PopulationDfValue]
         self.productivity_gr_start = self.param['productivity_gr_start']
@@ -125,13 +121,11 @@ class MacroEconomics:
         self.conso_elasticity = self.param['conso_elasticity']
         self.nb_per = round(
             (self.param[GlossaryCore.YearEnd] -
-             self.param[GlossaryCore.YearStart]) /
-            self.param[GlossaryCore.TimeStep] +
+             self.param[GlossaryCore.YearStart]) +
             1)
         self.years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.nb_years = len(self.years_range)
         self.frac_damage_prod = self.param[GlossaryCore.FractionDamageToProductivityValue]
         self.damage_to_productivity = self.param[GlossaryCore.DamageToProductivity]
@@ -273,7 +267,7 @@ class MacroEconomics:
         productivity_growth = self.economics_df[GlossaryCore.ProductivityGrowthRate].values
 
         for prod_growth, damage_frac_year in zip(productivity_growth[:-1], damage_fraction_output[1:]):
-            prod_wo_d = prod_wo_d / (1 - prod_growth / (5 / self.time_step))
+            prod_wo_d = prod_wo_d / (1 - prod_growth / 5)
             productivity_wo_damage_list.append(prod_wo_d)
 
         productivity_w_damage_list = np.array(productivity_wo_damage_list) * (1 - damage_fraction_output)
@@ -345,7 +339,6 @@ class MacroEconomics:
         working_pop = self.workforce_df[GlossaryCore.Workforce].values
         capital_u = self.capital_df[GlossaryCore.UsableCapital].values
         gross_output = productivity * (alpha * capital_u**gamma + (1 - alpha) * working_pop**gamma) ** (1 / gamma)
-        gross_output[0] = self.init_gross_output
         self.economics_df[GlossaryCore.GrossOutput] = gross_output
 
 
@@ -742,7 +735,6 @@ class MacroEconomics:
             productivity * alpha * usable_capital ** (gamma - 1) * np.diag(d_usable_capital_d_energy) *
             (alpha * usable_capital ** gamma + (1 - alpha) * working_pop ** gamma) ** (1. / gamma - 1.)
         ) if self.compute_gdp else self._null_derivative()
-        d_gross_output_d_energy[0, 0] = 0.
 
         d_net_output_d_energy = self._d_net_output_d_user_input(d_gross_output_d_energy)
         d_energy_investment_d_energy, d_invest_d_energy, d_non_energy_investment_d_energy = self.d_investment_d_user_input(d_net_output_d_energy)
@@ -788,7 +780,6 @@ class MacroEconomics:
                 alpha * usable_capital ** gamma + (1 - alpha) * working_pop ** gamma
             ) ** (1/gamma - 1)
         ) if self.compute_gdp else self._null_derivative()
-        d_gross_output_d_wap[0, 0] = 0.
 
         damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
@@ -910,7 +901,6 @@ class MacroEconomics:
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
 
         d_gross_output_d_dfo =  np.diag(gross_output / productivity) @ self.d_productivity_d_damage_frac_output()
-        d_gross_output_d_dfo[0,:] = 0.
 
         if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             factor = (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)

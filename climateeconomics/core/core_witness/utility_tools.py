@@ -41,22 +41,20 @@ def get_inputs_for_utility_per_sector(inputs_dict: dict, sector: str):
     return consumption, energy_price_ref, init_rate_time_pref, scurve_shift, scurve_stretch
 
 
-def compute_utility_discount_rate(years_range: np.ndarray, year_start: int, time_step: int,
-                                  init_rate_time_pref: float) -> np.ndarray:
+def compute_utility_discount_rate(years_range: np.ndarray, year_start: int, init_rate_time_pref: float) -> np.ndarray:
     """
     Compute utility discount rate.
 
     :param years_range: Array of years
     :param year_start: Starting year
-    :param time_step: Time step between years
     :param init_rate_time_pref: Initial rate of time preference
     :return: Array of utility discount rates
 
     The discount rate is calculated as:
     rr(t) = 1/((1+prstp)**(tstep*(t.val-1)))
     """
-    t = ((years_range - year_start) / time_step) + 1
-    u_discount_rate = 1 / ((1 + init_rate_time_pref) ** (time_step * (t - 1)))
+    t = ((years_range - year_start)) + 1
+    u_discount_rate = 1 / ((1 + init_rate_time_pref) ** ((t - 1)))
     return u_discount_rate
 
 
@@ -128,12 +126,11 @@ def compute_utility_quantities(years: np.ndarray, consumption: np.ndarray, energ
                                scurve_shift: float, scurve_stretch: float):
     year_start = int(years[0])
     year_end = int(years[-1])
-    time_step = int(years[1]) - int(years[0])
-    years_range = np.arange(year_start, year_end + 1, time_step)
+    years_range = np.arange(year_start, year_end + 1)
 
     utility_quantity = compute_utility_quantity(consumption, energy_price, energy_price_ref)
     utility_pc = compute_utility_per_capita(utility_quantity, population, scurve_shift, scurve_stretch)
-    discount_rate = compute_utility_discount_rate(years_range, year_start, time_step, init_rate_time_pref)
+    discount_rate = compute_utility_discount_rate(years_range, year_start, init_rate_time_pref)
     discounted_utility_pc = compute_discounted_utility(utility_pc, discount_rate)
     discounted_utility_pop = compute_utility_population(discounted_utility_pc, population)
     utility_obj = np.mean(discounted_utility_pop)

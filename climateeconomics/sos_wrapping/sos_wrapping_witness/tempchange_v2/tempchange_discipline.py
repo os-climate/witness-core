@@ -55,7 +55,6 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},

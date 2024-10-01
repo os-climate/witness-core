@@ -23,9 +23,6 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
     Study as uc_ms_mda,
 )
-from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2_optim_story_telling import (
-    Study as Study1,
-)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_optim_process.usecase_2b_optim_story_telling import (
     Study as Study2,
 )
@@ -49,7 +46,7 @@ class Study(ClimateEconomicsStudyManager):
         self.scatter_scenario = 'optimization scenarios'
 
         self.scenario_dict = {
-            uc_ms_mda.USECASE2: Study1,
+            #uc_ms_mda.USECASE2: Study1,
             uc_ms_mda.USECASE2B: Study2,
             uc_ms_mda.USECASE4: Study3,
             uc_ms_mda.USECASE7: Study4,

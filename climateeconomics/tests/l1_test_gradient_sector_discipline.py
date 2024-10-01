@@ -33,9 +33,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
-        self.time_step = 1
-        self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
-        self.nb_per = round((self.year_end - self.year_start) / self.time_step + 1)
+        self.years = np.arange(self.year_start, self.year_end + 1)
+        self.nb_per = self.year_end - self.year_start + 1
         # -------------------------
         # multiply ageworking pop by employment rate and by % in services
         self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years,

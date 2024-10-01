@@ -67,8 +67,7 @@ class SectorModel():
         
         self.year_start = inputs_dict[GlossaryCore.YearStart]  # year start
         self.year_end = inputs_dict[GlossaryCore.YearEnd]  # year end
-        self.time_step = inputs_dict[GlossaryCore.TimeStep]
-        self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
+        self.years_range = np.arange(self.year_start,self.year_end + 1)
         self.nb_years = len(self.years_range)
         self.sector_name = sector_name
         self.section_list = GlossaryCore.SectionDictSectors[self.sector_name]
@@ -167,7 +166,7 @@ class SectorModel():
         productivity_growth = self.productivity_df[GlossaryCore.ProductivityGrowthRate].values
 
         for prod_growth, damage_frac_year in zip(productivity_growth[:-1], damage_fraction_output[1:]):
-            prod_wo_d = prod_wo_d / (1 - prod_growth / (5 / self.time_step))
+            prod_wo_d = prod_wo_d / (1 - prod_growth / 5)
             productivity_wo_damage_list.append(prod_wo_d)
 
         productivity_w_damage_list = np.array(productivity_wo_damage_list) * (1 - damage_fraction_output)

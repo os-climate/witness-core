@@ -49,7 +49,6 @@ class Crop():
 
     YEAR_START = GlossaryCore.YearStart
     YEAR_END = GlossaryCore.YearEnd
-    TIME_STEP = GlossaryCore.TimeStep
     POPULATION_DF = GlossaryCore.PopulationDfValue
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
@@ -69,7 +68,6 @@ class Crop():
         self.techno_production = None
         self.year_start = None
         self.year_end = None
-        self.time_step = None
         self.years = None
         self.diet_df = None
         self.kcal_diet_df = None
@@ -153,11 +151,9 @@ class Crop():
     def set_data(self):
         self.year_start = self.param[Crop.YEAR_START]
         self.year_end = self.param[Crop.YEAR_END]
-        self.time_step = self.param[Crop.TIME_STEP]
         years = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years = years
         self.diet_df = self.param[Crop.DIET_DF]
         self.kcal_diet_df = {}

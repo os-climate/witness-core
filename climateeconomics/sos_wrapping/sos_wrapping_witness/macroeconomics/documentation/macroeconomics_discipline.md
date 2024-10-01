@@ -24,8 +24,6 @@
 - Usable capital df ($usable\_capital\_df$): dataframe with the usable capital in trillion dollars and the intermediate parameters (e_max, energy_efficiency).
 - Section gdp ($detailed\_section\_gdp$): dictionary with the gdp value of each sub-sector in T\$.
                     
-### Time Step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
 
 ### Global output
 #### Usable capital 
@@ -123,7 +121,7 @@ The part of the net output not invested is used for consumption.
 To obtain the value of the production function parameters we fitted our calculated production to historical data from IMF[^5] of GDP PPP (Purchasing Power Parity) in current US dollars that we calibrated to be in constant 2020 US dollars using the GDP deflator. We also used data from the IMF[^6] for the capital stock value, for population we took data from the World Bank databank[^7] and lastly for energy we used Total Final Consumption from International Energy Agency[^10].
 
 ### Other inputs 
--  Year start, year end and time step 
+-  Year start and year end 
 - Parameters for production function: $output\_alpha$,  $output\_gamma$
 - parameters for productivity function: $productivity\_start$, $productivity\_gr\_start$, $decline\_rate\_tfp$
 - Non Energy capital at year start in trillion dollars ($capital\_start\_non\_energy$)

@@ -321,7 +321,6 @@ class CropDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.get_dynamic_variable(GlossaryCore.YearEndVar),
-        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
                     'dataframe_descriptor': {  # GlossaryCore.Years: ('float', None, False),

@@ -1,8 +1,6 @@
 # Temperature model
 The temperature model computes the evolution of atmospheric and ocean temperature following change in $CO_2$ concentration. It contains three equations, onet for the radiative forcing and two equations for the climate system, all extracted from DICE[^1]  model with no modification (Nordhaus, 2017). 
 
-## Time step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialise the data with 2020 information. The user can choose the year end and the duration of the period (in years) by changing the parameters $year\, end$ and $time \,step$. For example, for a year start at 2020, year end in 2100 and a duration of time step of 5 years we have $t \, \epsilon \,[0, 16]$.
 
 ## Radiative forcing
 

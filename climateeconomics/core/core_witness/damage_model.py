@@ -35,7 +35,6 @@ class DamageModel:
         self.param = param
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.damag_int = self.param['damag_int']
         self.damag_quad = self.param['damag_quad']
         self.damag_expo = self.param['damag_expo']
@@ -48,8 +47,7 @@ class DamageModel:
         self.damage_constraint_factor = self.param['damage_constraint_factor']
         self.years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
 
         self.co2_damage_price_df = None
         self.CO2_TAX_MINUS_CO2_DAMAGE_CONSTRAINT_DF = None
@@ -119,7 +117,7 @@ class DamageModel:
         '''
         Compute gradient of constraint wrt temp_atmo and economics
         '''
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        years = np.arange(self.year_start, self.year_end + 1)
         nb_years = len(years)
         d_co2_damage_price_d_damages = np.zeros((nb_years, nb_years))
 

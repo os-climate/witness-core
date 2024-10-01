@@ -48,7 +48,6 @@ class DamageDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_damag_int': {'type': 'float', 'default': 0},
         'damag_int': {'type': 'float', 'default': 0},
         'damag_quad': {'type': 'float', 'default': 0.00236},
@@ -76,7 +75,7 @@ class DamageDiscipline(SoSWrapp):
                          },
         GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
-                                   'dataframe_descriptor': {'year': ('float', None, False),
+                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                             'value': ('float', None, True)},
                                    'dataframe_edition_locked': False},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,

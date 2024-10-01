@@ -51,7 +51,6 @@ class Agriculture():
 
     YEAR_START = GlossaryCore.YearStart
     YEAR_END = GlossaryCore.YearEnd
-    TIME_STEP = GlossaryCore.TimeStep
     POPULATION_DF = GlossaryCore.PopulationDfValue
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
@@ -76,7 +75,6 @@ class Agriculture():
     def set_data(self):
         self.year_start = self.param[Agriculture.YEAR_START]
         self.year_end = self.param[Agriculture.YEAR_END]
-        self.time_step = self.param[Agriculture.TIME_STEP]
         self.diet_df = self.param[Agriculture.DIET_DF]
         self.kg_to_kcal_dict = self.param[Agriculture.KG_TO_KCAL_DICT]
         self.kg_to_m2_dict = self.param[Agriculture.KG_TO_M2_DICT]
@@ -97,8 +95,7 @@ class Agriculture():
         '''
         years = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years = years
         self.food_land_surface_df = pd.DataFrame()
         self.total_food_land_surface = pd.DataFrame()

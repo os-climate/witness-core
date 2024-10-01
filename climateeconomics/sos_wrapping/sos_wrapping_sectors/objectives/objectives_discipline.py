@@ -58,7 +58,6 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-               GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                GlossaryCore.SectorListValue: GlossaryCore.SectorList,
                 'historical_gdp': {'type': 'dataframe', 'unit': 'T$',
                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),

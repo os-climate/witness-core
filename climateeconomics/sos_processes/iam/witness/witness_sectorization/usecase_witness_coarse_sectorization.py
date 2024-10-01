@@ -48,19 +48,18 @@ DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=True, run_usecase=True,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=True, run_usecase=True,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.bspline = bspline
         self.invest_discipline = invest_discipline
         self.energy_list = DEFAULT_ENERGY_LIST
         self.ccs_list = DEFAULT_CCS_LIST
         self.dc_energy = datacase_energy(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            self.year_start, self.year_end, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
@@ -78,7 +77,7 @@ class Study(StudyManager):
 
         # -- load data from witness
         dc_witness = datacase_witness(
-            self.year_start, self.year_end, self.time_step)
+            self.year_start, self.year_end)
         dc_witness.study_name = self.study_name
 
         witness_input_list = dc_witness.setup_usecase()

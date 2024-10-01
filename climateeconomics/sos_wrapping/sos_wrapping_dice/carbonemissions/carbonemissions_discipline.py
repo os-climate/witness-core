@@ -45,9 +45,8 @@ class CarbonemissionsDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
     DESC_IN = {
-        GlossaryCore.YearStart: {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'unit': 'years per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_land_emissions': {'type': 'float', 'unit': 'GtCO2 per year', 'default': 2.6},
         'decline_rate_land_emissions': {'type': 'float', 'default': .115},
         'init_cum_land_emisisons': {'type': 'float', 'unit': 'GtCO2', 'default': 100},
@@ -58,7 +57,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
         'init_cum_indus_emissions': {'type': 'float', 'unit': 'GtCO2', 'default': 400},
         GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
-                                   'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
+                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), 'value': ('float', None, True)},
                                    'dataframe_edition_locked': False}
     }
     DESC_OUT = {
