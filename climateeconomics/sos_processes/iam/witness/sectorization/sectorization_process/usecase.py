@@ -20,9 +20,6 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import (
-    PostProcessingFactory,
-)
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
@@ -229,7 +226,7 @@ class Study(StudyManager):
             })
 
             for sector in GlossaryCore.SectorsPossibleValues:
-                global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
+                global_data_dir = join(dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'data')
                 section_non_energy_emission_gdp_df = pd.read_csv(
                     join(global_data_dir, f'non_energy_emission_gdp_{sector.lower()}_sections.csv'))
                 subsector_share_dict = {
@@ -289,17 +286,4 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    uc_cls.execution_engine.display_treeview_nodes(True)
     uc_cls.run()
-    ppf = PostProcessingFactory()
-    all_post_processings = ppf.get_all_post_processings(
-        uc_cls.execution_engine, False, as_json=False, for_test=False
-    )
-
-    graphs = [
-        fig.to_plotly().show()
-        for k, post_proc_list in all_post_processings.items()
-        if "Utility" in k
-        for chart in post_proc_list
-        for fig in chart.post_processings
-    ]

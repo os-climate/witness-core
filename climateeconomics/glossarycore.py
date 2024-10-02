@@ -52,6 +52,7 @@ class GlossaryCore:
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
+    NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
     NB_POLES_OPTIM_KU = 14  # number of poles for bspline design variables utilization ratio
     Years = "years"
@@ -347,6 +348,8 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
+
+    SectorsValueOptim = [SectorServices, SectorAgriculture]
 
     CaloriesPerCapitaValue = "calories_pc_df"
     CaloriesPerCapita = {
@@ -1747,3 +1750,7 @@ class GlossaryCore:
         for key in columns:
             out[key] = np.random.uniform(min_val, max_val)
         return pd.DataFrame(out)
+
+    @classmethod
+    def get_deduced_sector(cls)-> str:
+        return list(set(cls.SectorsPossibleValues).difference(set(cls.SectorsValueOptim)))[0]

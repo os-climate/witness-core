@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import dirname, join
+from os.path import join
 from pathlib import Path
 
 import numpy as np
@@ -40,7 +40,7 @@ from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase impo
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
-from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
+from climateeconomics.sos_processes.iam.witness.sectorization.sectorization_process.usecase import (
     Study as usecase_sectorization,
 )
 
@@ -93,7 +93,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{'InvestmentDistribution'}.forest_investment"] = self.forest_invest_df
         # get population from csv file
         # get file from the data folder 3 folder up.
-        global_data_dir = join(Path(__file__).parents[3], 'data')
+        global_data_dir = join(Path(__file__).parents[5], 'data')
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
         population_df.index = years
@@ -125,7 +125,7 @@ class DataStudy():
 
         witness_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = df_eco
         for sector in GlossaryCore.SectorsPossibleValues:
-            global_data_dir = join((dirname(dirname(dirname(dirname(__file__))))), 'data')
+            global_data_dir = join(Path(__file__).parents[5], 'data')
             section_non_energy_emission_gdp_df = pd.read_csv(
                 join(global_data_dir, f'non_energy_emission_gdp_{sector.lower()}_sections.csv'))
             subsector_share_dict = {
@@ -205,9 +205,6 @@ class DataStudy():
 
         agriculture_list = dc_agriculture_mix.setup_usecase()
         setup_data_list = setup_data_list + agriculture_list
-        self.dspace_size = dc_agriculture_mix.dspace.pop('dspace_size')
-        self.dspace.update(dc_agriculture_mix.dspace)
-        nb_poles = 8
 
         # WITNESS
         # setup objectives
@@ -237,93 +234,8 @@ class DataStudy():
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4,
-                                                                                               len(years)),
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
         setup_data_list.append(witness_input)
-
         return setup_data_list
-
-    def setup_objectives(self):
-        data = {
-            'variable': [
-                GlossaryCore.NegativeWelfareObjective,
-                GlossaryCore.LastYearDiscountedUtilityObjective,
-                'gwp100_objective',
-                'non_use_capital_objective'
-            ],
-            'parent': [
-                'utility_objective',
-                'utility_objective',
-                'GWP_long_term_obj',
-                'non_use_capital_objective'
-            ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [1.0, 1.0, 0.0, 0.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS,
-                          GlossaryCore.NS_WITNESS]
-        }
-
-        func_df = DataFrame(data)
-
-        return func_df
-
-    def setup_constraints(self):
-        data = [
-            {
-                'variable': 'rockstrom_limit_constraint',
-                'parent': 'CO2 ppm',
-                'ftype': INEQ_CONSTRAINT,
-                'weight': 0.0,
-                AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
-            {
-                'variable': 'minimum_ppm_constraint',
-                'parent': 'CO2 ppm',
-                'ftype': INEQ_CONSTRAINT,
-                'weight': -1.0,
-                AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
-            {
-                'variable': 'calories_per_day_constraint',
-                'parent': 'agriculture_constraints',
-                'ftype': INEQ_CONSTRAINT,
-                'weight': -1.0,
-                AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
-            {
-                'variable': GlossaryCore.ConstraintLowerBoundUsableCapital,
-                'parent': 'invests_constraints',
-                'ftype': INEQ_CONSTRAINT,
-                'weight': -1.0,
-                AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
-            {
-                'variable': 'non_use_capital_cons',
-                'parent': 'invests_constraints',
-                'ftype': INEQ_CONSTRAINT,
-                'weight': -1.0,
-                AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
-            {
-                'variable': 'forest_lost_capital_cons',
-                'parent': 'agriculture_constraint',
-                'ftype': INEQ_CONSTRAINT,
-                'weight': -1.0,
-                AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': GlossaryCore.NS_FUNCTIONS,
-            },
-        ]
-
-        # Append the data to the DataFrame
-        df_list = [pd.DataFrame(df) for df in data]
-        func_df = pd.concat(df_list, ignore_index=True)
-
-        return func_df

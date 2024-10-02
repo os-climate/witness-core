@@ -65,7 +65,7 @@ class ProcessBuilder(BaseProcessBuilder):
         builder_list.extend(chain_builders_agriculture)
 
         chain_builders_sect = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'sectorization_process')
+            'climateeconomics.sos_processes.iam.witness.sectorization', 'sectorization_process')
         builder_list.extend(chain_builders_sect)
 
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',

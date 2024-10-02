@@ -49,7 +49,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         # economics sector process called here before create_builder_list to avoid process overwriting namespace
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'economics_sector_process')
+            'climateeconomics.sos_processes.iam.witness.sectorization', 'economics_sector_process')
 
         mods_dict = {'Population':'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline',
                      'LaborMarket': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.labor_market.labor_market_discipline.LaborMarketDiscipline',
@@ -61,6 +61,6 @@ class ProcessBuilder(BaseProcessBuilder):
                            
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
-        chain_builders.append(builder_list)
+        chain_builders.extend(builder_list)
 
         return chain_builders

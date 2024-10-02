@@ -41,7 +41,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         chain_builders = []
         # retrieve energy process
         chain_builders_witness = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam', 'witness_sect_wo_energy')
+            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sect_wo_energy')
         chain_builders.extend(chain_builders_witness)
 
         # if one invest discipline then we need to setup all subprocesses

@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
+from collections import defaultdict
+from typing import Any
+
 import numpy as np
 import pandas as pd
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
@@ -101,3 +104,135 @@ class ClimateEconomicsStudyManager(StudyManager):
         percent_of_gdp = total_energy_invest_selected_year / 1000 / world_gdp * 100
 
         return np.round(percent_of_gdp, 2)
+
+    def get_dvar_descriptor_energy_mix(self, dspace: dict) -> tuple[dict, dict]:
+        """returns design var array dict and design var descriptor"""
+        years = np.arange(self.year_start, self.year_end + 1)
+        dv_arrays_dict = {}
+        design_var_descriptor = {}
+
+        for energy in self.witness_uc.energy_list:
+            energy_wo_dot = energy.replace('.', '_')
+            for technology in self.witness_uc.dict_technos[energy]:
+                technology_wo_dot = technology.replace('.', '_')
+
+                dvar_value = dspace[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                activated_dvar = dspace[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
+                activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
+
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = activated_value
+
+                design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
+                    'out_name': GlossaryCore.invest_mix,
+                    'out_type': 'dataframe',
+                    'key': f'{energy}.{technology}',
+                    'index': years,
+                    'index_name': GlossaryCore.Years,
+                    'namespace_in': GlossaryCore.NS_ENERGY_MIX,
+                    'namespace_out': 'ns_invest'
+                }
+
+                design_var_utilization_ratio_value = dspace[f'{energy}_{technology}_utilization_ratio_array'][
+                    'value']
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
+                    data={GlossaryCore.Years: years,
+                          GlossaryCore.UtilisationRatioValue: 100.})
+                # add design variable for utilization ratio per technology
+                design_var_descriptor[f'{energy}_{technology}_utilization_ratio_array'] = {
+                    'out_name': f'{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}',
+                    'out_type': 'dataframe',
+                    'key': GlossaryCore.UtilisationRatioValue,
+                    'index': years,
+                    'index_name': GlossaryCore.Years,
+                    'namespace_in': GlossaryCore.NS_ENERGY_MIX,
+                    'namespace_out': GlossaryCore.NS_ENERGY_MIX
+                }
+
+        for ccs in self.witness_uc.ccs_list:
+            ccs_wo_dot = ccs.replace('.', '_')
+            for technology in self.witness_uc.dict_technos[ccs]:
+                technology_wo_dot = technology.replace('.', '_')
+                dvar_value = dspace[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                activated_dvar = dspace[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
+                activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
+
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
+                    activated_value
+                design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
+                    'out_name': GlossaryCore.invest_mix,
+                    'out_type': 'dataframe',
+                    'key': f'{ccs}.{technology}',
+                    'index': years,
+                    'index_name': GlossaryCore.Years,
+                    'namespace_in': GlossaryCore.NS_CCS,
+                    'namespace_out': 'ns_invest'
+                }
+
+                design_var_utilization_ratio_value = dspace[f'{ccs}.{technology}_utilization_ratio_array']['value']
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
+                    data={GlossaryCore.Years: years,
+                          GlossaryCore.UtilisationRatioValue: 100.})
+                # add design variable for utilization ratio per technology
+                design_var_descriptor[f'{ccs}.{technology}_utilization_ratio_array'] = {
+                    'out_name': f'{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}',
+                    'out_type': 'dataframe',
+                    'key': GlossaryCore.UtilisationRatioValue,
+                    'index': years,
+                    'index_name': GlossaryCore.Years,
+                    'namespace_in': GlossaryCore.NS_CCS,
+                    'namespace_out': GlossaryCore.NS_CCS
+                }
+
+        return dv_arrays_dict, design_var_descriptor
+
+    def get_var_in_values_dict(self, values_dict: dict, varname: str) -> list:
+        return [values_dict[x] for x in list(filter(lambda key: varname in key, values_dict.keys()))]
+
+    def get_fullname_in_values_dict(self, values_dict: dict, varname: str) -> list[str]:
+        return list(filter(lambda key: varname in key, values_dict.keys()))
+
+    def remove_all_variables_in_values_dict(self, values_dict: dict, shortvarname: str) -> dict:
+        variables_to_remove = self.get_fullname_in_values_dict(values_dict=values_dict, varname=shortvarname)
+        for var in variables_to_remove:
+            del values_dict[var]
+
+    def dspace_dict_to_dataframe(self, dspace: dict) -> tuple[int, pd.DataFrame]:
+        dspace_size = dspace.pop("dspace_size")
+        dspace_dict = defaultdict(list)
+        for key, elem in dspace.items():
+            dspace_dict['variable'].append(key)
+            for column, value in elem.items():
+                dspace_dict[column].append(value)
+
+        dspace_df = pd.DataFrame(dspace_dict)
+        return dspace_size, dspace_df
+
+    def merge_design_spaces_dict(self, dspace_list: list[dict[str, Any]]) -> dict:
+        """Update the design space from a list of other design spaces.
+
+        It is necessary to use a set difference here, instead of dictionary update,
+        to correctly update the design space size.
+
+        Args:
+            dspace_list: The list of design spaces to add.
+
+        Raises:
+            ValueError: If some variables are duplicated in several design spaces.
+        """
+        dspace_out = {}
+        dspace_size_out = 0
+        for dspace in dspace_list:
+            dspace_size = dspace.pop("dspace_size")
+            duplicated_variables = set(dspace.keys()).intersection(self.dspace.keys())
+            if duplicated_variables:
+                msg = (
+                    "Failed to merge the design spaces; "
+                    f"the following variables are present multiple times: {' '.join(duplicated_variables)}"
+                )
+                raise ValueError(msg)
+            dspace_size_out += dspace_size
+            dspace_out.update(dspace)
+        dspace_out["dspace_size"] = dspace_size_out
+        return dspace_out

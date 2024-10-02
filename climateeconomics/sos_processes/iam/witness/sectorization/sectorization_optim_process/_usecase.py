@@ -29,7 +29,7 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 )
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
+from climateeconomics.sos_processes.iam.witness.sectorization.sectorization_process.usecase import (
     Study as witness_sect_usecase,
 )
 

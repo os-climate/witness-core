@@ -82,7 +82,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
-        'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
+        #'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
     }
 
     def set_default_values(self):
@@ -211,7 +211,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
         # Store output data
         dict_values = {
             GlossaryCore.ProductivityDfValue: self.model.productivity_df,
-            f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": self.model.capital_df,'growth_rate_df': self.model.growth_rate_df,
+            f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": self.model.capital_df,
+            #'growth_rate_df': self.model.growth_rate_df,
             f"{self.sector_name}.{GlossaryCore.DamageDfValue}": self.model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": self.model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": self.model.production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
@@ -391,7 +392,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         production_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProductionDfValue}")
         detailed_capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}")
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
-        growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
+        #growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
@@ -548,6 +549,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+        """
         if 'output growth' in chart_list:
 
             to_plot = ['net_output_growth_rate']
@@ -561,6 +563,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
+        """
 
         if 'long term energy efficiency' in chart_list:
             if prod_func_fit:

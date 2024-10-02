@@ -30,7 +30,7 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 )
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import (
+from climateeconomics.sos_processes.iam.witness.sectorization.sectorization_process.usecase import (
     Study as witness_sect_usecase,
 )
 
@@ -246,7 +246,7 @@ class Study(StudyManager):
 
         # Inputs for objective 
         data_dir = join(
-            dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
+            dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data/sectorization_fitting')
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
