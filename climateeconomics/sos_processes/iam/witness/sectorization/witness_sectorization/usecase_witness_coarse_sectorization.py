@@ -27,7 +27,7 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 )
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness_sect_wo_energy.datacase_witness_wo_energy import (
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sect_wo_energy.datacase_witness_wo_energy import (
     DataStudy as datacase_witness,
 )
 
@@ -86,6 +86,11 @@ class Study(StudyManager):
         energy_input_list = self.dc_energy.setup_usecase()
         setup_data_list = setup_data_list + energy_input_list
 
+        self.dict_technos = self.dc_energy.dict_technos
+        dspace_energy = self.dc_energy.dspace
+
+        self.merge_design_spaces([dspace_energy, dc_witness.dspace])
+
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
@@ -103,19 +108,6 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-
-
-    # ppf = PostProcessingFactory()
-    # ll = ['Macroeconomics']
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-    #     for l in ll:
-    #         if l in disc.sos_name:
-    #             filters = ppf.get_post_processing_filters_by_discipline(
-    #                 disc)
-    #             graph_list = ppf.get_post_processing_by_discipline(
-    #                 disc, filters, as_json=False)
-    #
+    uc_cls.test()
     #             for graph in graph_list:
     #                 graph.to_plotly().show()

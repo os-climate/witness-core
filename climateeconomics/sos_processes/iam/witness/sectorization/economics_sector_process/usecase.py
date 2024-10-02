@@ -76,7 +76,7 @@ class Study(StudyManager):
 
         if self.year_start == 2000 and self.year_end == 2020:
             data_dir = join(
-                dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
+                dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data/sectorization_fitting')
             # Energy
             hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
             agri_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy[GlossaryCore.SectorAgriculture]})
@@ -155,7 +155,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"] = energy_emission_df
 
         for sector in GlossaryCore.SectorsPossibleValues:
-            global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
+            global_data_dir = join(dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'data')
             weighted_average_percentage_per_sector_df = pd.read_csv(
                 join(global_data_dir, f'weighted_average_percentage_{sector.lower()}_sections.csv'))
             subsector_share_dict = {

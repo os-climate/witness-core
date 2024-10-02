@@ -247,7 +247,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 utility_df = GlossaryCore.get_dynamic_variable(GlossaryCore.UtilityDf)
                 utility_df.update({self.NAMESPACE: GlossaryCore.NS_FUNCTIONS})
                 dynamic_outputs[f"{sector}.{GlossaryCore.UtilityDfValue}"] = utility_df
-                dynamic_outputs[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = GlossaryCore.UtilityObjective
+                dynamic_outputs[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.UtilityObjective)
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -323,12 +323,12 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
 
             utility_df = pd.DataFrame({GlossaryCore.Years: years} | utility_quantities)
             dict_values[f"{sector}.{GlossaryCore.UtilityDfValue}"] = utility_df
-            dict_values[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = [
+            dict_values[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = np.array([
                 compute_utility_objective(years, consumption, energy_price,
                                           population,
                                           energy_price_ref, init_rate_time_pref,
                                           scurve_shift,
-                                          scurve_stretch)]
+                                          scurve_stretch)])
 
         self.store_sos_outputs_values(dict_values)
 

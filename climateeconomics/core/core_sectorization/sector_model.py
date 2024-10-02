@@ -21,7 +21,7 @@ import pandas as pd
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class SectorModel():
+class SectorModel:
     """
     Sector pyworld3
     General implementation of sector pyworld3
@@ -74,7 +74,6 @@ class SectorModel():
         self.gdp_percentage_per_section_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionGdpPercentageDfValue}"]
         self.energy_consumption_percentage_per_section_df = inputs_dict[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"]
         def correct_years(df):
-
             input_dict = {GlossaryCore.Years: self.years_range}
             input_dict.update({section: df[section].values[0] for section in self.section_list})
             return pd.DataFrame(input_dict)
@@ -181,11 +180,6 @@ class SectorModel():
     def compute_capital(self):
         """
         K(t), Capital for time period, trillions $USD
-        Args:
-            :param capital: capital
-            :param depreciation: depreciation rate
-            :param investment: investment
-            K(t) = K(t-1)*(1-depre_rate) + investment(t-1)
         """
         capital = self.capital_start
         capital_list = [capital]
@@ -455,16 +449,7 @@ class SectorModel():
         d_k_d_energy = self._null_derivative()
         d_ku_ub_contraint = self.d_ku_upper_bound_constraint_d_user_input(d_usable_capital_d_energy, d_k_d_energy)
         d_damages_from_climate = self.__d_damages_from_climate_d_user_input(d_gross_output_d_energy, d_net_output_d_energy)
-        a = {
-            GlossaryCore.Capital: d_k_d_energy,
-            GlossaryCore.Damages: d_damages_d_energy,
-            GlossaryCore.EstimatedDamages: d_estimated_damages_d_energy,
-            GlossaryCore.ConstraintUpperBoundUsableCapital: d_ku_ub_contraint,
-            GlossaryCore.UsableCapital: d_usable_capital_d_energy,
-            GlossaryCore.GrossOutput: d_gross_output_d_energy,
-            GlossaryCore.OutputNetOfDamage: d_net_output_d_energy,
-            GlossaryCore.DamagesFromClimate: d_damages_from_climate,
-        }
+
         return d_gross_output_d_energy, d_net_output_d_energy, d_estimated_damages_d_energy, d_damages_d_energy, d_ku_ub_contraint, d_usable_capital_d_energy
 
     def d_working_pop(self):
@@ -487,7 +472,6 @@ class SectorModel():
         g_prime = (1 - alpha) * gamma * working_pop ** (gamma - 1)
         f_prime = productivity * (1 / gamma) * g * g_prime
         d_gross_output_d_wap = doutput @ np.diag(f_prime)
-        d_usable_capital_d_wap = self._null_derivative()
         damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
         if not self.compute_climate_impact_on_gdp:
@@ -498,15 +482,7 @@ class SectorModel():
 
         d_k_d_wap = self._null_derivative()
         d_ku_constraint_d_wap = self.d_ku_upper_bound_constraint_d_user_input(self._null_derivative(), d_k_d_wap)
-        a = {
-            GlossaryCore.Capital: d_k_d_wap,
-            GlossaryCore.Damages: d_damages_d_wap,
-            GlossaryCore.EstimatedDamages: d_estimated_damages_d_wap,
-            GlossaryCore.ConstraintUpperBoundUsableCapital: d_ku_constraint_d_wap,
-            GlossaryCore.UsableCapital: d_usable_capital_d_wap,
-            GlossaryCore.GrossOutput: d_gross_output_d_wap,
-            GlossaryCore.OutputNetOfDamage: d_net_output_d_wap,
-        }
+
         return d_gross_output_d_wap, d_net_output_d_wap, d_damages_d_wap, d_estimated_damages_d_wap, d_ku_constraint_d_wap
 
     def d_damage_frac_output(self):
@@ -538,15 +514,7 @@ class SectorModel():
 
         d_k_d_dfo = self._null_derivative()
         dku_ub_constraint_d_dfo = self.d_ku_upper_bound_constraint_d_user_input(self._null_derivative(), d_k_d_dfo)
-        a = {
-            GlossaryCore.Capital: d_k_d_dfo,
-            GlossaryCore.Damages: d_damages_d_dfo,
-            GlossaryCore.EstimatedDamages: d_estimated_damages_d_dfo,
-            GlossaryCore.ConstraintUpperBoundUsableCapital: dku_ub_constraint_d_dfo,
-            GlossaryCore.UsableCapital: self._null_derivative(),
-            GlossaryCore.GrossOutput: d_gross_output_d_dfo,
-            GlossaryCore.OutputNetOfDamage: d_net_output_d_dfo,
-        }
+
         return d_gross_output_d_dfo, d_net_output_d_dfo, d_estimated_damages_d_dfo, d_damages_d_dfo, dku_ub_constraint_d_dfo
 
     def d_invests(self):
