@@ -61,4 +61,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_dashboard', 'climateeconomics.sos_wrapping.post_procs.dashboard')
+
         return chain_builders

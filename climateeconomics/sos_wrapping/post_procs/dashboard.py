@@ -59,6 +59,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     ENERGYMIX_DISC = 'EnergyMix'
     DAMAGE_DISC = 'Damage'
 
+    sectorization: bool = len(execution_engine.dm.get_all_namespaces_from_var_name(f"{GlossaryEnergy.SectorServices}.{GlossaryEnergy.DamageDetailedDfValue}")) > 0
     # execution_engine.dm.get_all_namespaces_from_var_name('temperature_df')[0]
 
     instanciated_charts = []
@@ -145,9 +146,17 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
     if 'gdp breakdown' in chart_list:
         economics_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
-        damage_df = get_scenario_value(execution_engine, GlossaryCore.DamageDetailedDfValue, scenario_name)
+        damage_df = get_scenario_value(execution_engine, f"Macroeconomics.{GlossaryCore.DamageDetailedDfValue}", scenario_name)
+
+        execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name("utility_detail_df")[0])
+
         compute_climate_impact_on_gdp = get_scenario_value(execution_engine, 'assumptions_dict', scenario_name)['compute_climate_impact_on_gdp']
         damages_to_productivity = get_scenario_value(execution_engine, GlossaryCore.DamageToProductivity, scenario_name) and compute_climate_impact_on_gdp
+        if sectorization:
+            df_non_energy_invest = get_scenario_value(execution_engine, GlossaryCore.RedistributionInvestmentsDfValue, scenario_name)
+            df_energy_invest = get_scenario_value(execution_engine, GlossaryCore.EnergyInvestmentsWoTaxValue, scenario_name)
+            df_utility = get_scenario_value(execution_engine, "utility_detail_df", scenario_name)
+            economics_df = complete_economics_df_for_sectorization(economics_df, df_non_energy_invest, df_energy_invest, df_utility)
         new_chart = MacroEconomics.breakdown_gdp(economics_df, damage_df, compute_climate_impact_on_gdp, damages_to_productivity)
         instanciated_charts.append(new_chart)
 
@@ -541,6 +550,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     if 'KPI5' in chart_list:
         # KPI5 is the return on investment, ie GDPVariation/Investment
         economics_detailed_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
+        if sectorization:
+            df_non_energy_invest = get_scenario_value(execution_engine, GlossaryCore.RedistributionInvestmentsDfValue, scenario_name)
+            df_energy_invest = get_scenario_value(execution_engine, GlossaryCore.EnergyInvestmentsWoTaxValue, scenario_name)
+            df_utility = get_scenario_value(execution_engine, "utility_detail_df", scenario_name)
+            economics_detailed_df = complete_economics_df_for_sectorization(economics_detailed_df, df_non_energy_invest, df_energy_invest, df_utility)
         economics_detailed_df = economics_detailed_df.reset_index(drop=True)
         years = economics_detailed_df[GlossaryCore.Years].values.tolist()
         roi = pd.DataFrame()
@@ -643,3 +657,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     return instanciated_charts
 
 
+def complete_economics_df_for_sectorization(economics_detail_df, df_non_energy_invest, df_energy_invest, df_utility):
+    economics_detail_df_completed = economics_detail_df.copy()
+    economics_detail_df_completed[GlossaryCore.Consumption] = df_utility[GlossaryCore.Consumption].values
+    economics_detail_df_completed[GlossaryCore.NonEnergyInvestmentsValue] = df_non_energy_invest[GlossaryCore.InvestmentsValue].values
+    economics_detail_df_completed[GlossaryCore.EnergyInvestmentsValue] = df_energy_invest[GlossaryCore.EnergyInvestmentsWoTaxValue].values
+    economics_detail_df_completed[GlossaryCore.InvestmentsValue] = economics_detail_df_completed[GlossaryCore.EnergyInvestmentsValue] + economics_detail_df_completed[GlossaryCore.NonEnergyInvestmentsValue]
+
+    return economics_detail_df_completed

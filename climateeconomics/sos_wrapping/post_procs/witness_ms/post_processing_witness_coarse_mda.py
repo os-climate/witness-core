@@ -119,7 +119,7 @@ def post_processings(execution_engine, namespace, filters):
     scenario_list = samples_df['scenario_name'].tolist()
 
     selected_scenarios = scenario_list
-
+    sectorization: bool = len(execution_engine.dm.get_all_namespaces_from_var_name(f"{GlossaryEnergy.SectorServices}.{GlossaryEnergy.DamageDetailedDfValue}")) > 0
     year_start, _ = get_shared_value(execution_engine, GlossaryCore.YearStart)
     year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
 
@@ -440,7 +440,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'Utility' in graphs_list:
+    if 'Utility' in graphs_list and not sectorization:
 
         chart_name = 'Utility'
         x_axis_name = 'Years'
@@ -597,7 +597,7 @@ def post_processings(execution_engine, namespace, filters):
             new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
 
-        if 'Consumption' in graphs_list:
+        if 'Consumption' in graphs_list and not sectorization:
 
             chart_name = 'Consumption'
             x_axis_name = 'Years'
@@ -641,7 +641,7 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
     (ccs_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
     df_paths = ['co2_damage_price_percentage', ]
     (co2_damage_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
-    df_paths = ['Macroeconomics.damage_to_productivity', ]
+    df_paths = ['damage_to_productivity', ]
     (damage_to_productivity_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
     status_dict = {}
     for scenario in scenario_list:

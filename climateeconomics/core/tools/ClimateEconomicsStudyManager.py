@@ -190,6 +190,9 @@ class ClimateEconomicsStudyManager(StudyManager):
     def get_var_in_values_dict(self, values_dict: dict, varname: str) -> list:
         return [values_dict[x] for x in list(filter(lambda key: varname in key, values_dict.keys()))]
 
+    def get_dict_values(self, values_dict: dict, varname: str) -> dict:
+        return {x : values_dict[x] for x in list(filter(lambda key: varname in key, values_dict.keys()))}
+
     def get_fullname_in_values_dict(self, values_dict: dict, varname: str) -> list[str]:
         return list(filter(lambda key: varname in key, values_dict.keys()))
 

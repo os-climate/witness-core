@@ -172,6 +172,7 @@ class ConsumptionModel:
         population = self.population_df.at[year, GlossaryCore.PopulationValue]
         discounted_utility = period_utility * u_discount_rate * population
         self.utility_df.loc[year, GlossaryCore.DiscountedUtility] = discounted_utility
+        self.utility_df.loc[year, GlossaryCore.DiscountedUtilityQuantityPerCapita] = discounted_utility
         return discounted_utility
 
     def compute_welfare(self):  # rescalenose
