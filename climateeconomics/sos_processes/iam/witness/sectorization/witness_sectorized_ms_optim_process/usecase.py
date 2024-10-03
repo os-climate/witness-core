@@ -20,7 +20,9 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim.usecase_witness_sectorization_optim import Study as StudyMonoOptim
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim.usecase_witness_sectorization_optim import (
+    Study as StudyMonoOptim,
+)
 
 
 class Study(ClimateEconomicsStudyManager):
