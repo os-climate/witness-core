@@ -35,7 +35,6 @@ class CarbonEmissions():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_land_emissions = self.param['init_land_emissions']
         self.decline_rate_land_emissions = self.param['decline_rate_land_emissions']
         self.init_cum_land_emisisons = self.param['init_cum_land_emisisons']
@@ -50,10 +49,10 @@ class CarbonEmissions():
         Create the dataframe and fill it with values at year_start
         '''
         years_range = np.arange(
-            self.year_start, self.year_end + 1, self.time_step)
+            self.year_start, self.year_end + 1)
         self.years_range = years_range
         emissions_df = pd.DataFrame(index=years_range, columns=[
-                                    'year', 'gr_sigma', 'sigma', 'land_emissions', 'cum_land_emissions', 'indus_emissions', 'cum_indus_emissions', 'total_emissions', 'cum_total_emissions'])
+                                    GlossaryCore.Years, 'gr_sigma', 'sigma', 'land_emissions', 'cum_land_emissions', 'indus_emissions', 'cum_indus_emissions', 'total_emissions', 'cum_total_emissions'])
         emissions_df.loc[self.year_start,
                          'cum_land_emissions'] = self.init_cum_land_emisisons
         emissions_df.loc[self.year_start, 'gr_sigma'] = self.init_gr_sigma
@@ -63,7 +62,7 @@ class CarbonEmissions():
                          'land_emissions'] = self.init_land_emissions
         emissions_df.loc[self.year_start,
                          'cum_indus_emissions'] = self.init_cum_indus_emissions
-        emissions_df['year'] = years_range
+        emissions_df[GlossaryCore.Years] = years_range
         self.emissions_df = emissions_df
         return emissions_df
 
@@ -77,10 +76,9 @@ class CarbonEmissions():
                 (self.init_gross_output *
                  (1 - self.emissions_control_rate[self.year_start]))
         else:
-            p_gr_sigma = self.emissions_df.loc[year -
-                                               self.time_step, 'gr_sigma']
-            p_sigma = self.emissions_df.loc[year - self.time_step, 'sigma']
-            sigma = p_sigma * np.exp(p_gr_sigma * self.time_step)
+            p_gr_sigma = self.emissions_df.loc[year - 1, 'gr_sigma']
+            p_sigma = self.emissions_df.loc[year - 1, 'sigma']
+            sigma = p_sigma * np.exp(p_gr_sigma)
         self.emissions_df.loc[year, 'sigma'] = sigma
         return sigma
 
@@ -92,10 +90,9 @@ class CarbonEmissions():
         if year == self.year_start:
             pass
         else:
-            p_gr_sigma = self.emissions_df.loc[year -
-                                               self.time_step, 'gr_sigma']
+            p_gr_sigma = self.emissions_df.loc[year - 1, 'gr_sigma']
             gr_sigma = p_gr_sigma * \
-                ((1.0 + self.decline_rate_decarbo)**self.time_step)
+                (1.0 + self.decline_rate_decarbo)
             self.emissions_df.loc[year, 'gr_sigma'] = gr_sigma
             return gr_sigma
 
@@ -106,7 +103,7 @@ class CarbonEmissions():
         if year == self.year_start:
             pass
         else:
-            t = ((year - self.year_start) / self.time_step) + 1
+            t = (year - self.year_start) + 1
             land_emissions = self.init_land_emissions * \
                 (1.0 - self.decline_rate_land_emissions)**(t - 1)
             self.emissions_df.loc[year, 'land_emissions'] = land_emissions
@@ -119,10 +116,8 @@ class CarbonEmissions():
         if year == self.year_start:
             pass
         else:
-            p_cum_land_emissions = self.emissions_df.loc[year -
-                                                         self.time_step, 'cum_land_emissions']
-            p_land_emissions = self.emissions_df.loc[year -
-                                                     self.time_step, 'land_emissions']
+            p_cum_land_emissions = self.emissions_df.loc[year - 1, 'cum_land_emissions']
+            p_land_emissions = self.emissions_df.loc[year - 1, 'land_emissions']
             cum_land_emissions = p_cum_land_emissions + \
                 p_land_emissions * (5.0 / 3.666)
             self.emissions_df.loc[year,
@@ -151,11 +146,10 @@ class CarbonEmissions():
         if year == self.year_start:
             pass
         else:
-            p_cum_indus_emissions = self.emissions_df.loc[year -
-                                                          self.time_step, 'cum_indus_emissions']
+            p_cum_indus_emissions = self.emissions_df.loc[year - 1, 'cum_indus_emissions']
             indus_emissions = self.emissions_df.loc[year, 'indus_emissions']
             cum_indus_emissions = p_cum_indus_emissions + \
-                indus_emissions * float(self.time_step) / 3.666
+                indus_emissions / 3.666
             self.emissions_df.loc[year,
                                   'cum_indus_emissions'] = cum_indus_emissions
             return cum_indus_emissions
@@ -192,9 +186,6 @@ class CarbonEmissions():
         emissions_control_rate = emissions_control_rate.set_index(
             self.years_range)
         self.emissions_control_rate = emissions_control_rate['value']
-#         self.emissions_control_rate = pd.Series(emissions_control_rate, index=(np.arange(
-# self.param[GlossaryCore.YearStart], self.param[GlossaryCore.YearEnd] + 1,
-# self.param[GlossaryCore.TimeStep])))
         self.emissions_df['emissions_control_rate'] = self.emissions_control_rate
         # Iterate over years
         for year in self.years_range:
@@ -224,7 +215,6 @@ class CarbonCycle():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.conc_lower_strata = self.param['conc_lower_strata']
         self.conc_upper_strata = self.param['conc_upper_strata']
         self.conc_atmo = self.param['conc_atmo']
@@ -248,16 +238,16 @@ class CarbonCycle():
         Create the dataframe and fill it with values at year_start
         '''
         years_range = np.arange(
-            self.year_start, self.year_end + 1, self.time_step)
+            self.year_start, self.year_end + 1)
         self.years_range = years_range
         carboncycle_df = pd.DataFrame(index=years_range, columns=[
-                                      'year', 'atmo_conc', 'lower_ocean_conc', 'shallow_ocean_conc', 'ppm', 'atmo_share_since1850', 'atmo_share_sinceystart'])
+                                      GlossaryCore.Years, 'atmo_conc', 'lower_ocean_conc', 'shallow_ocean_conc', 'ppm', 'atmo_share_since1850', 'atmo_share_sinceystart'])
         carboncycle_df.loc[self.year_start, 'atmo_conc'] = self.init_conc_atmo
         carboncycle_df.loc[self.year_start,
                            'lower_ocean_conc'] = self.init_lower_strata
         carboncycle_df.loc[self.year_start,
                            'shallow_ocean_conc'] = self.init_upper_strata
-        carboncycle_df['year'] = years_range
+        carboncycle_df[GlossaryCore.Years] = years_range
         self.carboncycle_df = carboncycle_df
 
         return carboncycle_df
@@ -266,12 +256,9 @@ class CarbonCycle():
         """
         compute atmo conc for t using value at t-1 (MAT in DICE)
         """
-        p_atmo_conc = self.carboncycle_df.loc[year -
-                                              self.time_step, 'atmo_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.loc[year -
-                                                       self.time_step, 'shallow_ocean_conc']
-        p_emissions = self.emissions_df.loc[year -
-                                            self.time_step, 'total_emissions']
+        p_atmo_conc = self.carboncycle_df.loc[year - 1, 'atmo_conc']
+        p_shallow_ocean_conc = self.carboncycle_df.loc[year - 1, 'shallow_ocean_conc']
+        p_emissions = self.emissions_df.loc[year - 1, 'total_emissions']
         atmo_conc = p_atmo_conc * self.b_eleven + p_shallow_ocean_conc * \
             self.b_twentyone + p_emissions * 5.0 / 3.666
         # Lower bound
@@ -283,10 +270,8 @@ class CarbonCycle():
         """
         Compute lower ocean conc at t using values at t-1
         """
-        p_lower_ocean_conc = self.carboncycle_df.loc[year -
-                                                     self.time_step, 'lower_ocean_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.loc[year -
-                                                       self.time_step, 'shallow_ocean_conc']
+        p_lower_ocean_conc = self.carboncycle_df.loc[year - 1, 'lower_ocean_conc']
+        p_shallow_ocean_conc = self.carboncycle_df.loc[year - 1, 'shallow_ocean_conc']
         lower_ocean_conc = p_lower_ocean_conc * self.b_thirtythree + \
             p_shallow_ocean_conc * self.b_twentythree
         # Lower bound
@@ -298,12 +283,9 @@ class CarbonCycle():
         """
         Compute upper ocean conc at t using values at t-1
         """
-        p_lower_ocean_conc = self.carboncycle_df.loc[year -
-                                                     self.time_step, 'lower_ocean_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.loc[year -
-                                                       self.time_step, 'shallow_ocean_conc']
-        p_atmo_conc = self.carboncycle_df.loc[year -
-                                              self.time_step, 'atmo_conc']
+        p_lower_ocean_conc = self.carboncycle_df.loc[year - 1, 'lower_ocean_conc']
+        p_shallow_ocean_conc = self.carboncycle_df.loc[year - 1, 'shallow_ocean_conc']
+        p_atmo_conc = self.carboncycle_df.loc[year - 1, 'atmo_conc']
         shallow_ocean_conc = p_atmo_conc * self.b_twelve + p_shallow_ocean_conc * \
             self.b_twentytwo + p_lower_ocean_conc * self.b_thirtytwo
         # Lower Bound
@@ -374,7 +356,6 @@ class TempChange():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_temp_ocean = self.param['tocean0']
         self.init_temp_atmo = self.param['tatm0']
         self.eq_temp_impact = self.param['t2xco2']
@@ -393,14 +374,14 @@ class TempChange():
         Create the dataframe and fill it with values at year_start
         '''
         years_range = np.arange(
-            self.year_start, self.year_end + 1, self.time_step)
+            self.year_start, self.year_end + 1)
         self.years_range = years_range
         temperature_df = pd.DataFrame(index=years_range, columns=[
-                                      'year', GlossaryCore.ExoGForcing, GlossaryCore.Forcing, GlossaryCore.TempAtmo, GlossaryCore.TempOcean])
+                                      GlossaryCore.Years, GlossaryCore.ExoGForcing, GlossaryCore.Forcing, GlossaryCore.TempAtmo, GlossaryCore.TempOcean])
         temperature_df.loc[self.year_start,
                            GlossaryCore.TempOcean] = self.init_temp_ocean
         temperature_df.loc[self.year_start, GlossaryCore.TempAtmo] = self.init_temp_atmo
-        temperature_df['year'] = years_range
+        temperature_df[GlossaryCore.Years] = years_range
         self.temperature_df = temperature_df
         return temperature_df
 
@@ -408,7 +389,7 @@ class TempChange():
         """
         Compute exogenous forcing for other greenhouse gases
         """
-        t = ((year - self.year_start) / self.time_step) + 1
+        t = (year - self.year_start) + 1
         exog_forcing = None  # initialize exog_forcing variable defined in either if or else statement
         if t < 18:
             exog_forcing = self.init_forcing_nonco + \
@@ -437,10 +418,8 @@ class TempChange():
         Compute temperature of atmosphere (t) using t-1 values
 
         """
-        p_temp_atmo = self.temperature_df.loc[year -
-                                              self.time_step, GlossaryCore.TempAtmo]
-        p_temp_ocean = self.temperature_df.loc[year -
-                                               self.time_step, GlossaryCore.TempOcean]
+        p_temp_atmo = self.temperature_df.loc[year - 1, GlossaryCore.TempAtmo]
+        p_temp_ocean = self.temperature_df.loc[year - 1, GlossaryCore.TempOcean]
         forcing = self.temperature_df.loc[year, GlossaryCore.Forcing]
         temp_atmo = p_temp_atmo + self.climate_upper * \
             ((forcing - (self.forcing_eq_co2 / self.eq_temp_impact) *
@@ -454,10 +433,8 @@ class TempChange():
         """
         Compute temperature of lower ocean  at t using t-1 values
         """
-        p_temp_ocean = self.temperature_df.loc[year -
-                                               self.time_step, GlossaryCore.TempOcean]
-        p_temp_atmo = self.temperature_df.loc[year -
-                                              self.time_step, GlossaryCore.TempAtmo]
+        p_temp_ocean = self.temperature_df.loc[year - 1, GlossaryCore.TempOcean]
+        p_temp_atmo = self.temperature_df.loc[year - 1, GlossaryCore.TempAtmo]
         temp_ocean = p_temp_ocean + self.transfer_lower * \
             (p_temp_atmo - p_temp_ocean)
         # Bounds

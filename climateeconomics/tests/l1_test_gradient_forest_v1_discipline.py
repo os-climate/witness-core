@@ -58,7 +58,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         self.year_start =GlossaryCore.YearStartDefault
         self.year_end = 2050
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         deforestation_surface = np.array(np.linspace(10, 100, year_range))
@@ -75,7 +74,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{self.name}.{Forest.DEFORESTATION_SURFACE}': self.deforestation_surface_df,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

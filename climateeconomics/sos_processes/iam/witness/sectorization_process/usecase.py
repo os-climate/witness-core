@@ -20,6 +20,9 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
@@ -59,8 +62,8 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, name='', execution_engine=None,
-                 main_study: bool=True):
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, name='', execution_engine=None,
+                 main_study: bool = True):
         super().__init__(__file__, execution_engine=execution_engine)
         self.main_study = main_study
         self.study_name = 'usecase'
@@ -69,7 +72,6 @@ class Study(StudyManager):
         self.redistrib_energy_name = 'SectorsEnergyDistribution'
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.nb_poles = 8
         self.test_post_procs = False
 
@@ -78,7 +80,6 @@ class Study(StudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
-
 
         # Damage
         damage_fraction_df = pd.DataFrame(
@@ -92,12 +93,11 @@ class Study(StudyManager):
              GlossaryCore.EstimatedDamages: np.zeros(self.nb_per)}
         )
 
-
         # economisc df to init mda
         gdp = [130.187] * len(years)
         economics_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp})
 
-        #Investment
+        # Investment
         invest_indus_start = DatabaseWitnessCore.InvestInduspercofgdp2020.value
         invest_agri_start = DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value
         invest_services_start = DatabaseWitnessCore.InvestServicespercofgdpYearStart.value
@@ -108,9 +108,7 @@ class Study(StudyManager):
             {GlossaryCore.Years: years,
              GlossaryCore.InvestmentsValue: total_invest_start})
 
-
-
-       #Energy
+        # Energy
         energy_investment_wo_tax = pd.DataFrame({GlossaryCore.Years: years,
                                                  GlossaryCore.EnergyInvestmentsWoTaxValue: 1000.
                                                  })
@@ -119,7 +117,6 @@ class Study(StudyManager):
             GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
-
 
         cons_input = {
             f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
@@ -185,11 +182,11 @@ class Study(StudyManager):
 
             brut_net = 1 / 1.45
             energy_outlook = pd.DataFrame({
-                'year': [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
+                GlossaryCore.Years: [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
                 'energy': [118.112, 134.122, 149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084,
                            197.8418842,
                            206.1201182, 220.000, 250.0, 300.0]})
-            f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
+            f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy'])
             # Find values for 2020, 2050 and concat dfs
             energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
             energy_supply_values = energy_supply * brut_net
@@ -263,11 +260,16 @@ class Study(StudyManager):
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": CO2_emitted_land,
                 f"{self.study_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
                 f"{self.study_name}.GHG_total_energy_emissions": GHG_total_energy_emissions,
-                f'{self.study_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': damage_df,
-                f'{self.study_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': damage_df,
-                f'{self.study_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': damage_df,
+                f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': damage_df,
+                f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': damage_df,
+                f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': damage_df,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorAgriculture}.strech_scurve': 3.7,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorServices}.strech_scurve': 1.7,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}.strech_scurve': 1.7,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorAgriculture}.shift_scurve': -0.4,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorServices}.shift_scurve': -0.2,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}.shift_scurve': -0.2,
             })
-
 
         setup_data_list.append(cons_input)
 
@@ -286,5 +288,18 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.execution_engine.display_treeview_nodes(True)
+    uc_cls.run()
+    ppf = PostProcessingFactory()
+    all_post_processings = ppf.get_all_post_processings(
+        uc_cls.execution_engine, False, as_json=False, for_test=False
+    )
 
+    graphs = [
+        fig.to_plotly().show()
+        for k, post_proc_list in all_post_processings.items()
+        if "Utility" in k
+        for chart in post_proc_list
+        for fig in chart.post_processings
+    ]

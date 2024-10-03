@@ -32,7 +32,6 @@ class ForestTestCase(unittest.TestCase):
         '''
         self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2055
-        self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         deforestation_surface = np.array(np.linspace(10, 100, year_range))
@@ -50,7 +49,6 @@ class ForestTestCase(unittest.TestCase):
 
         self.param = {GlossaryCore.YearStart: self.year_start,
                       GlossaryCore.YearEnd: self.year_end,
-                      GlossaryCore.TimeStep: self.time_step,
                       Forest.DEFORESTATION_SURFACE: self.deforestation_surface_df,
                       Forest.LIMIT_DEFORESTATION_SURFACE: self.limit_deforestation_surface,
                       Forest.CO2_PER_HA: self.CO2_per_ha,
@@ -95,7 +93,6 @@ class ForestTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_SURFACE}': self.deforestation_surface_df,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

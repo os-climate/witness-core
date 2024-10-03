@@ -42,9 +42,7 @@ class DemandModel:
             ][GlossaryCore.SectorDemandPerCapitaDfValue].values
 
             # $ /person x million person -> million $ -> 1e-6 T$
-            sectors_demand_values = (
-                sector_demand_per_person_values * self.population * 1e-6
-            )
+            sectors_demand_values = sector_demand_per_person_values * self.population * 1e-6
 
             sector_demand_df = pd.DataFrame(
                 {

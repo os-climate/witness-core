@@ -216,13 +216,11 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             y_approx = list(v_approx[0])
             # add the variable name when scrolling on the data
             var_name = k.split('.')[-1]
-            #TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
             new_series = InstanciatedSeries(
-                x_analytical, y_analytical, var_name, 'lines', visible_line, line=color_code) #, text=[var_name] * len(y_approx))
+                x_analytical, y_analytical, var_name, 'lines', visible_line, line=color_code, text=[var_name] * len(y_approx))
             new_chart.add_series(new_series)
-            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
             new_series = InstanciatedSeries(
-                x_approx, y_approx, var_name, 'dash_lines', visible_line, line=color_code) #, text=[var_name] * len(y_approx))
+                x_approx, y_approx, var_name, 'dash_lines', visible_line, line=color_code, text=[var_name] * len(y_approx))
             new_chart.add_series(new_series)
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
@@ -269,11 +267,9 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             v_approx = grad_approx_dict[k]
             val_list_analytical += [np.linalg.norm(v_analytical[0])]
             val_list_approx += [np.linalg.norm(v_approx[0])]
-            # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
-        new_series = InstanciatedSeries(x, val_list_analytical, 'Adjoint', 'lines', visible_line) #, text=var_list)
+        new_series = InstanciatedSeries(x, val_list_analytical, 'Adjoint', 'lines', visible_line, text=var_list)
         new_chart.add_series(new_series)
-        # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
-        new_series = InstanciatedSeries(x, val_list_approx, 'Finite Differences', 'dash_lines', visible_line) #, text=var_list)
+        new_series = InstanciatedSeries(x, val_list_approx, 'Finite Differences', 'dash_lines', visible_line, text=var_list)
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
 
@@ -286,8 +282,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         for k, v_approx in grad_approx_dict.items():
             v_analytical = grad_analytical_dict[k]
             val_list += [np.linalg.norm(v_analytical[0] - v_approx[0])]
-        # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
-        new_series = InstanciatedSeries(x, val_list, '', 'lines+markers', visible_line) #, text=var_list)
+        new_series = InstanciatedSeries(x, val_list, '', 'lines+markers', visible_line, text=var_list)
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
 
@@ -300,8 +295,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         for k, v_approx in grad_approx_dict.items():
             v_analytical = grad_analytical_dict[k]
             val_list += [np.linalg.norm((v_analytical[0] - v_approx[0]) / v_approx[0] * 100.)]
-        # TODO: when sostrades-core version 4.1.1 is released, uncomment the "text" argument below:
-        new_series = InstanciatedSeries(x, val_list, '', 'lines+markers', visible_line) #, text=var_list)
+        new_series = InstanciatedSeries(x, val_list, '', 'lines+markers', visible_line, text=var_list)
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
 

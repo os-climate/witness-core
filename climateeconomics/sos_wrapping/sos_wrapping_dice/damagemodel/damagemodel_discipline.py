@@ -48,7 +48,6 @@ class DamageDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_damag_int': {'type': 'float', 'default': 0},
         'damag_int': {'type': 'float', 'default': 0},
         'damag_quad': {'type': 'float', 'default': 0.00236},
@@ -76,7 +75,7 @@ class DamageDiscipline(SoSWrapp):
                          },
         GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
-                                   'dataframe_descriptor': {'year': ('float', None, False),
+                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                             'value': ('float', None, True)},
                                    'dataframe_edition_locked': False},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
@@ -131,14 +130,13 @@ class DamageDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
+        damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
+        years = list(damage_df[GlossaryCore.Years].values)
         if GlossaryCore.Damages in chart_list:
             to_plot = [GlossaryCore.Damages]
-            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
             damage_df = resize_df(damage_df)
 
             damage = damage_df[GlossaryCore.Damages]
-
-            years = list(damage_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -168,8 +166,6 @@ class DamageDiscipline(SoSWrapp):
             abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
 
             abatecost = damage_df['abatecost']
-
-            years = list(abate_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

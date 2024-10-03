@@ -32,6 +32,7 @@ class GHGCycle():
         """
         Constructor
         """
+        self.ghg_cycle_df = None
         self.param = param
         self.set_data()
         self.create_dataframe()
@@ -42,8 +43,7 @@ class GHGCycle():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]
-
+        
         self.gwp100_obj = 0.
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
@@ -97,29 +97,8 @@ class GHGCycle():
         """
         Create the dataframe and fill it with values at year_start
         """
-        years_range = np.arange(
-            self.year_start, self.year_end + 1, self.time_step)
-        self.years_range = years_range
-
+        self.years_range = np.arange(self.year_start, self.year_end + 1)
         self.ghg_cycle_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
-
-        for i in [1, 2, 3, 4, 5]:
-            self.ghg_cycle_df[f'co2_ppm_b{i}'] = self.boxes_conc[i-1]
-        self.ghg_cycle_df[GlossaryCore.CO2Concentration] = self.boxes_conc[0]
-        self.ghg_cycle_df[GlossaryCore.CH4Concentration] = self.init_conc_ch4
-        self.ghg_cycle_df[GlossaryCore.N2OConcentration] = self.init_conc_n2o
-
-    def compute_co2_atm_conc(self, year, boxes):
-        """
-        computes CO2 concentrations in atmosphere in ppm at t following FUND pyworld3
-        """
-        emissions = self.ghg_emissions_df.loc[self.ghg_emissions_df[GlossaryCore.Years] == year, GlossaryCore.TotalCO2Emissions].values[0] * 1e3     # in MtCO2
-        boxes_tmp = [decay*box_conc + 0.000471*em_ratio*emissions for (decay, box_conc, em_ratio) in zip(self.decays, boxes, self.em_ratios)]
-        boxes = boxes_tmp
-        for i in [1, 2, 3, 4, 5]:
-            self.ghg_cycle_df.loc[self.ghg_cycle_df[GlossaryCore.Years] == year, f'co2_ppm_b{i}'] = boxes[i-1]
-
-        return boxes
 
     def compute_dco2_ppm_d_emissions(self):
         """
@@ -284,12 +263,21 @@ class GHGCycle():
 
     def compute_concentration_co2(self):
         conc_boxes = self.boxes_conc
-        for year in self.years_range[1:]:
-            conc_boxes = self.compute_co2_atm_conc(year, conc_boxes)
+        boxes_list = [conc_boxes]
+        for emission_year_Gt in self.ghg_emissions_df[GlossaryCore.TotalCO2Emissions].values[1:]:
+            emission_year_Mt = emission_year_Gt * 1e3
+            conc_boxes = [decay * box_conc + 0.000471 * em_ratio * emission_year_Mt for (decay, box_conc, em_ratio) in zip(self.decays, conc_boxes, self.em_ratios)]
+            boxes_list.append(conc_boxes)
+
+        boxes_array = np.array(boxes_list)
+
+        for i in [1, 2, 3, 4, 5]:
+            self.ghg_cycle_df[f'co2_ppm_b{i}'] = boxes_array[:, i - 1]
+
         # clip value to 0 if negative
         self.ppm_co2_negative_indexes = self.ghg_cycle_df.index[self.ghg_cycle_df['co2_ppm_b1'] < 0].tolist()
         self.ghg_cycle_df.loc[self.ppm_co2_negative_indexes, 'co2_ppm_b1'] = 1e-10
-        self.ghg_cycle_df[GlossaryCore.CO2Concentration] = self.ghg_cycle_df['co2_ppm_b1']
+        self.ghg_cycle_df[GlossaryCore.CO2Concentration] = self.ghg_cycle_df['co2_ppm_b1'].values
 
     def compute_concentration_ch4(self):
         ch4_concentrations = self._forecast_concentration(conc_init=self.init_conc_ch4,

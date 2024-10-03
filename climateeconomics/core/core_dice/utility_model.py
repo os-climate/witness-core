@@ -35,7 +35,6 @@ class UtilityModel():
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
-        self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
         self.conso_elasticity = self.param['conso_elasticity']  # elasmu
         self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
         self.scaleone = self.param['scaleone']  # scaleone
@@ -47,17 +46,16 @@ class UtilityModel():
         '''
         years_range = np.arange(
             self.year_start,
-            self.year_end + 1,
-            self.time_step)
+            self.year_end + 1)
         self.years_range = years_range
         utility_df = pd.DataFrame(
             index=years_range,
             columns=[
-                'year', GlossaryCore.UtilityDiscountRate,
+                GlossaryCore.Years, GlossaryCore.UtilityDiscountRate,
                 'period_utility',
                 GlossaryCore.DiscountedUtility,
                 GlossaryCore.Welfare])
-        utility_df['year'] = self.years_range
+        utility_df[GlossaryCore.Years] = self.years_range
         self.utility_df = utility_df
         return utility_df
 
@@ -66,9 +64,9 @@ class UtilityModel():
         Compute Average utility social discount rate
          rr(t) = 1/((1+prstp)**(tstep*(t.val-1)));
         """
-        t = ((year - self.year_start) / self.time_step) + 1
+        t = (year - self.year_start) + 1
         u_discount_rate = 1 / ((1 + self.init_rate_time_pref)
-                               ** (self.time_step * (t - 1)))
+                               ** ((t - 1)))
         self.utility_df.loc[year, GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
 
@@ -104,11 +102,6 @@ class UtilityModel():
         tstep * scale1 * sum(t,  CEMUTOTPER(t)) + scale2
         """
         sum_u = sum(self.utility_df[GlossaryCore.DiscountedUtility])
-#         if rescale:
-#             welfare = self.time_step * self.scaleone * sum_u + self.scaletwo
-#         else:
-#             welfare = self.time_step * self.scaleone * sum_u
-#        return welfare
         self.utility_df.loc[self.year_end, GlossaryCore.Welfare] = sum_u
         return sum_u
 

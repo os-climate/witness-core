@@ -1,4 +1,4 @@
-years,renewable.RenewableSimpleTechno,fossil.FossilSimpleTechno,carbon_capture.direct_air_capture.DirectAirCaptureTechno,carbon_capture.flue_gas_capture.FlueGasTechno,carbon_storage.CarbonStorageTechno
+years,renewable.CleanEnergySimpleTechno,fossil.FossilSimpleTechno,carbon_capture.direct_air_capture.DirectAirCaptureTechno,carbon_capture.flue_gas_capture.FlueGasTechno,carbon_storage.CarbonStorageTechno
 2020,4.571794104920141,575.6908906503577,1e-06,961.6028772778068,770.9325213033427
 2021,9.705028480149025,549.2746342543558,0.0020476105449787883,949.5741599279797,775.5543845486893
 2022,22.955531882342907,525.0143962776745,0.016373884359830306,938.7802048256675,779.5888540456527

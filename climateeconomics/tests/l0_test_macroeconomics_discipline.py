@@ -76,9 +76,8 @@ class MacroDiscTest(unittest.TestCase):
 
         year_start = GlossaryCore.YearStartDefault
         year_end = GlossaryCore.YearEndDefault
-        time_step = 1
         nb_per = round(
-            (year_end - year_start) / time_step + 1)
+            (year_end - year_start) + 1)
         self.nb_per = nb_per
 
         energy_investment_wo_tax = DataFrame(
@@ -156,7 +155,6 @@ class MacroDiscTest(unittest.TestCase):
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
-                       f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': True,
@@ -179,7 +177,6 @@ class MacroDiscTest(unittest.TestCase):
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
                            'activate_pandemic_effects': True,
-                           'invest_co2_tax_in_renewables': True
                            },
                        f'{self.name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_energy
                        }

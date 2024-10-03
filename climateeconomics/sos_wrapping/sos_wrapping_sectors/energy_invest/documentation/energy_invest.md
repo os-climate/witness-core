@@ -15,8 +15,6 @@ The industry sector represents one of the identified main economic sectors. In t
 - Production dataframe ($production\_df$): Dataframe with sector output per year in 1e12\$
 - Productivity df ($productivity\_df$): Dataframe with productivity and productivity growth rate (in case of no climate damage) per year. 
                     
-### Time Step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
 
 ### Global output
 #### Usable capital 
@@ -64,7 +62,7 @@ with $I_t$ the investment in trillions dollars, and $\delta$ the depreciation ra
 To obtain the value of the production function parameters we fitted our calculated production to historical data from IMF[^5] of GDP PPP (Purchasing Power Parity) in current US dollars that we calibrated to be in constant 2020 US dollars using the GDP deflator. We also used data from the IMF[^6] for the capital stock value, for population we took data from the World Bank databank[^7] and lastly for energy we used Total Final Consumption from International Energy Agency[^10].
 
 ### Other inputs 
--  Year start, year end and time step 
+-  Year start and year end 
 - Parameters for production function: output_alpha,  output_gamma
 - parameters for productivity function: productivity_start, productivity_gr_start, decline_rate_tfp
 - Usable capital parameters: capital_utilisation_ratio, $energy\_eff\_k$, $energy\_eff\_cst$, $energy\_eff\_xzero$, $energy\_eff\_max$

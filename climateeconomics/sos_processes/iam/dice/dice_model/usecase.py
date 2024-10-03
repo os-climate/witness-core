@@ -24,7 +24,6 @@ from climateeconomics.glossarycore import GlossaryCore
 class Study(StudyManager):
     year_start = 2015
     year_end = GlossaryCore.YearEndDefault
-    time_step = 5
 
     def __init__(self, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
@@ -36,7 +35,6 @@ class Study(StudyManager):
 
         dice_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         dice_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        dice_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
         dice_input[f"{self.study_name}.{'Carbon_emissions'}.{'init_land_emissions'}"] = 2.6
         dice_input[f"{self.study_name}.{'Carbon_emissions'}.{'decline_rate_land_emissions'}"] = .115
@@ -96,9 +94,8 @@ class Study(StudyManager):
         dice_input[f"{self.study_name}.{'Utility.scaleone'}"] = 0.0302455265681763
         dice_input[f"{self.study_name}.{'Utility.scaletwo'}"] = -10993.704
 
-        nb_per = round(
-            (self.year_end - self.year_start) / self.time_step + 1)
-        years = arange(self.year_start, self.year_end + 1, self.time_step)
+        nb_per = self.year_end - self.year_start + 1
+        years = arange(self.year_start, self.year_end + 1)
         miu0 = 0.03
         dice_emissions = [0.0323, 0.0349, 0.0377, 0.0408, 0.0441, 0.0476, 0.0515,
                           0.0556, 0.0601, 0.0650, 0.0702, 0.0759, 0.0821, 0.0887, 0.0959, 0.1036, 0.1120]
@@ -106,13 +103,13 @@ class Study(StudyManager):
         emissions_control_rate = append(
             dice_emissions, zeros(nb_per - len(dice_emissions)))
         emissions_control_rate = DataFrame(
-            {'year': years, 'value': emissions_control_rate})
+            {GlossaryCore.Years: years, 'value': emissions_control_rate})
         dice_input[f"{self.study_name}.{'emissions_control_rate'}"] = emissions_control_rate
 
         # Only need to initialize one dataframe , apre run will compute the
         # other ones
         data = zeros(len(emissions_control_rate))
-        df_eco = DataFrame({'year': years,
+        df_eco = DataFrame({GlossaryCore.Years: years,
                             'saving_rate': data,
                             GlossaryCore.GrossOutput: data,
                             GlossaryCore.OutputNetOfDamage: data,
@@ -125,7 +122,7 @@ class Study(StudyManager):
                             GlossaryCore.Capital: data,
                             GlossaryCore.InvestmentsValue: data,
                             'interest_rate': data},
-                           index=arange(self.year_start, self.year_end + 1, self.time_step))
+                           index=arange(self.year_start, self.year_end + 1))
 
         dice_input[self.study_name + f'.{GlossaryCore.EconomicsDfValue}'] = df_eco
 

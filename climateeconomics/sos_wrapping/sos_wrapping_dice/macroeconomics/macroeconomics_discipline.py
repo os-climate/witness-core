@@ -46,9 +46,8 @@ class MacroeconomicsDiscipline(SoSWrapp):
     _maturity = 'Research'
     DESC_IN = {
         GlossaryCore.DamageDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'unit': GlossaryCore.Years, 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'unit': GlossaryCore.Years, 'namespace': 'ns_dice'},
         'productivity_start': {'type': 'float', 'default': 5.115},
         GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice', 'unit': 'trillions $'},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 223},
@@ -122,6 +121,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
         economics_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDfValue)
         economics_df = resize_df(economics_df)
+        years = list(economics_df[GlossaryCore.Years].values)
 
         if 'economic output' in chart_list:
 
@@ -130,7 +130,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
             legend = {GlossaryCore.GrossOutput: 'world gross output',
                       GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -165,7 +164,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             to_plot = [GlossaryCore.PopulationValue]
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -200,7 +198,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             to_plot = [GlossaryCore.Productivity]
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -235,7 +232,6 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             to_plot = [GlossaryCore.Consumption]
 
-            years = list(economics_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

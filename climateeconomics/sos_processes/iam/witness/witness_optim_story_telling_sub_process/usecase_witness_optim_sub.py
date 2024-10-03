@@ -51,13 +51,12 @@ EXTRA_NAME = "WITNESS"
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, run_usecase=False,
                  execution_engine=None, sub_usecase='uc2'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
-
+        
         self.coupling_name = COUPLING_NAME
         self.designvariable_name = "DesignVariables"
         self.func_manager_name = "FunctionsManager"
@@ -66,13 +65,13 @@ class Study(ClimateEconomicsStudyManager):
         GlossaryCore.ccus_type = 'CCUS'
         if sub_usecase == 'uc2':
             self.witness_uc = witness_usecase2_story_telling(
-                self.year_start, self.year_end, self.time_step)
+                self.year_start, self.year_end)
         elif sub_usecase == 'uc7':
-            self.witness_uc = witness_usecase7_story_telling(self.year_start, self.year_end, self.time_step)
+            self.witness_uc = witness_usecase7_story_telling(self.year_start, self.year_end)
         elif sub_usecase == 'uc2b':
-            self.witness_uc = usecase2b(self.year_start, self.year_end, self.time_step)
+            self.witness_uc = usecase2b(self.year_start, self.year_end)
         elif sub_usecase == 'uc4':
-            self.witness_uc = usecase4(self.year_start, self.year_end, self.time_step)
+            self.witness_uc = usecase4(self.year_start, self.year_end)
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
@@ -94,7 +93,7 @@ class Study(ClimateEconomicsStudyManager):
         dv_arrays_dict = {}
 
         design_var_descriptor = {}
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        years = np.arange(self.year_start, self.year_end + 1)
 
         # create design variables and design space descriptor for variable percentage_of_gdp_energy_invest
         design_var_descriptor['percentage_gdp_invest_in_energy_array'] = {
@@ -110,15 +109,14 @@ class Study(ClimateEconomicsStudyManager):
         self.design_var_descriptor = design_var_descriptor
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-        len_var = 4
-
         # design space
+        initial_pole_value = self.get_share_invest_in_eneryg_relative_to_gdp(selected_year=self.year_start)
         dspace_dict = {'variable': ['percentage_gdp_invest_in_energy_array'],
-                       'value': [[1.] * len_var],
-                       'lower_bnd': [[2e-1] * len_var],
-                       'upper_bnd': [[5.] * len_var],
+                       'value': [[initial_pole_value] + [1.] * (GlossaryCore.NB_POLES_OPTIM_KU - 1)],
+                       'lower_bnd': [[2e-1] * GlossaryCore.NB_POLES_OPTIM_KU],
+                       'upper_bnd': [[5.] * GlossaryCore.NB_POLES_OPTIM_KU],
                        'enable_variable': [True],
-                       'activated_elem': [[True] * len_var]
+                       'activated_elem': [[False] + [True] * (GlossaryCore.NB_POLES_OPTIM_KU - 1)]
                        }
 
         self.dspace = pd.DataFrame(dspace_dict)
@@ -141,8 +139,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
         values_dict[
-            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.percentage_gdp_invest_in_energy_array'] = np.ones(
-            len_var)
+            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.percentage_gdp_invest_in_energy_array'] = np.ones(GlossaryCore.NB_POLES_OPTIM_KU - 1)
 
         setup_data_list.append(values_dict)
         setup_data_list.append(dv_arrays_dict)

@@ -144,8 +144,7 @@ class MacroeconomicsTestCase(unittest.TestCase):
                 'compute_climate_impact_on_gdp': True,
                 'activate_climate_effect_population': True,
                 'activate_pandemic_effects': True,
-                'invest_co2_tax_in_renewables': True
-            },
+                },
         }
 
         ee.load_study_from_input_dict(inputs_dict)

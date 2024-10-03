@@ -84,7 +84,7 @@ class HeavyCollectedData(ColectedData):
         source: str,
         last_update_date: date,
         critical_at_year_start: bool = False,
-        column_to_pick: str = None,
+        column_to_pick: Union[str, list[str]] = None,
 
     ):
         """
@@ -120,20 +120,31 @@ class HeavyCollectedData(ColectedData):
             raise ValueError(f"{val} must be a file")
         self.__value = val
 
-    def get_value_at_year(self, year: int) -> float:
+    def get_value_at_year(self, year: int, column: str = None) -> float:
         """Returns the dataframe value at the selected year. Interpolate data if needed when possible"""
+        if column is None:
+            column = self.column_to_pick
         year = int(year)
         df = self.value
         years_int = df['years'].values.astype(int)
         if year in years_int:
-            return float(df.loc[df["years"] == year, self.column_to_pick].values)
+            return float(df.loc[df["years"] == year, column].values)
 
         if years_int.min() <= year <= years_int.max():
             # we will interpolate missing year data
-            f = interp1d(x=years_int, y=df[self.column_to_pick].values)
+            f = interp1d(x=years_int, y=df[column].values)
             return float(f(year))
         else:
             raise Exception("Donnée indisponible pour cette année")
+
+    def get_df_at_year(self, year: int):
+        """Returns a dataframe at the selected year, interpolation is applied if necessary"""
+        if not isinstance(self.column_to_pick, list):
+            raise TypeError('column_to_pick must be a list of string when calling this method')
+        out = pd.DataFrame({
+            col: self.get_value_at_year(year, col) for col in self.column_to_pick
+        }, index=[0])
+        return out
 
     def is_available_at_year(self, year: int) -> bool:
         """Indicate if data is available or can be interpolated at specified year"""
@@ -143,16 +154,28 @@ class HeavyCollectedData(ColectedData):
 
         return years_int.min() <= year <= years_int.max()
 
-    def get_between_years(self, year_start: int, year_end: int) -> pd.DataFrame:
+    def get_between_years(self, year_start: int, year_end: int, column: str = None) -> pd.DataFrame:
         """Returns the dataframe between selected years. Interpolate data if needed when possible"""
+        if column is None:
+            column = self.column_to_pick
         df = self.value
         sub_df = df.loc[(df["years"] >= year_start) & (df["years"] <= year_end)]
         years = sub_df["years"].values
-        values = sub_df[self.column_to_pick]
+        values = sub_df[column]
         f_interp = interp1d(x=years, y=values)
         all_years = np.arange(year_start, year_end + 1)
         out = pd.DataFrame({
             "years": all_years,
-            self.column_to_pick: f_interp(all_years) if len(all_years) > 1 else float(sub_df[self.column_to_pick].values[0])
+            column: f_interp(all_years) if len(all_years) > 1 else float(sub_df[column].values[0])
+        })
+        return out
+
+    def get_all_cols_between_years(self, year_start: int, year_end: int) -> pd.DataFrame:
+        df = self.value
+        columns = list(df.columns)
+        columns.remove("years")
+        dfs = [self.get_between_years(year_start, year_end, column=col) for col in columns]
+        out = pd.DataFrame({"years": dfs[0]["years"],
+                            **{col: df[col] for col, df in zip(columns, dfs)}
         })
         return out

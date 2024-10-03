@@ -14,8 +14,6 @@ The goal of the labor market model is to compute the workforce available for eac
 - Workforce df ($workforce\_df$): Dataframe with workforce per sector and total workforce in million of people.
 - Employment df ($employment\_df$): Dataframe with employment rate per year.
            
-### Time Step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
 
 ### Labor force 
 To obtain the labor force we use the population in working age and the employment rate. We defined the population in working age as the population in the 15-70 age range. 
