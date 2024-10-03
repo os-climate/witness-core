@@ -70,7 +70,7 @@ class Study(ClimateEconomicsStudyManager):
              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
              # optimization parameters:
-             f'{ns}.{self.optim_name}.max_iter': 1,
+             f'{ns}.{self.optim_name}.max_iter': 1500,
              f'{ns}.warm_start': True,
              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
              # SLSQP, NLOPT_SLSQP
