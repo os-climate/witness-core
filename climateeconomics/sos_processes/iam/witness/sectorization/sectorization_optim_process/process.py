@@ -22,7 +22,7 @@ from climateeconomics.glossarycore import GlossaryCore
 class ProcessBuilder(BaseProcessBuilder):
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Sectorization Opt process',
+        'label': 'Economics Sectors Optimization process',
         'description': '',
         'category': '',
         'version': '',
