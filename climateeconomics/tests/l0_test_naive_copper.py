@@ -50,13 +50,13 @@ class TestSoSDiscipline(unittest.TestCase):
         year_end = GlossaryCore.YearEndDefault + 1
 
         copper_demand = pd.DataFrame(
-            [(year, rd.gauss(26, 0.5), 'million_tonnes')], columns=['Year', 'Demand', 'unit'])
+            [(year, rd.gauss(26, 0.5), 'million_tonnes')], columns=[GlossaryCore.Years, 'Demand', 'unit'])
         extraction = [26]
 
         year += 1
 
         while year < year_end:
-            ref_series = pd.Series({'Year': year,
+            ref_series = pd.Series({GlossaryCore.Years: year,
                                     'Demand': rd.gauss(26, 0.5) * (1.056467) ** (year - GlossaryCore.YearStartDefault),
                                     'unit': 'million_tonnes'})
             copper_demand = pd.concat([copper_demand, pd.DataFrame([ref_series])], ignore_index=True)

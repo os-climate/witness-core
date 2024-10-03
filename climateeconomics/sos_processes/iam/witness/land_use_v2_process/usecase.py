@@ -40,14 +40,13 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, name='.Land_Use_V2', execution_engine=None,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, name='.Land_Use_V2', execution_engine=None,
                  extra_name=''):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.landuse_name = name
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.extra_name = extra_name
         self.test_post_procs = False
 

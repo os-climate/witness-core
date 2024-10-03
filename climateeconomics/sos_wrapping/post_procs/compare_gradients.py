@@ -17,12 +17,16 @@ import logging
 import os
 import pickle
 from copy import deepcopy
+from math import floor
 from os.path import dirname, join
 
 import numpy as np
+from sostrades_core.execution_engine.sos_mda_chain import (
+    SoSMDAChain,
+)
 from energy_models.glossaryenergy import GlossaryEnergy
-from gemseo.utils.derivatives_approx import DisciplineJacApprox
-from gemseo.utils.pkl_tools import dump_compressed_pickle, load_compressed_pickle
+from gemseo.utils.derivatives.derivatives_approx import DisciplineJacApprox
+from sostrades_core.tools.pkl_converter.pkl_tools import dump_compressed_pickle, load_compressed_pickle
 from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -33,14 +37,52 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
     FunctionManagerDisc,
 )
 
-from climateeconomics.core.tools.post_proc import get_scenario_value
-
 '''
-Post-processing designe to compare the analytical vs the approximated gradient of the objective function wrt the design 
-variables
+Post-processing that compares the analytical vs the approximated gradient of the objective lagrangian function wrt the design 
+variables defined in the design_space. Therefore, this post-processing only works on processes that inherit from 
+an optim process, namely optimization and multi-scenario optimization processes
+The gradient is computed at the last iteration of the optimization problem
+Does not work for optim sub-processes, since mdo_disc._differentiated_inputs=[] 
+NB: the mdo_discipline is set to None in the execution engine when the graphs are updated => the gradients must be computed 
+at the end of a computation
 '''
 
 TEMP_PKL_PATH = 'temp_pkl'
+
+
+def find_mdo_disc(execution_engine, scenario_name, class_to_check):
+    '''
+    recover for the scenario name the mdo_discipline at the lowest level that respects the class_to_check
+    ex:
+    for an optim process:
+        mdo_disc = execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+    for a ms_optim_process:
+            mdo_disc = execution_engine.root_process.proxy_disciplines[1].proxy_disciplines[0].proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+    this post-processing is assumed to be linked to the namespace ns_witness which value ends by .WITNESS. Therefore,
+    the scenario name value = namespace value is something.WITNESS
+    The mdo_discipline should be in WITNESS_EVAL which is one step above witness
+    '''
+    scenario_name_trimmed = scenario_name[:scenario_name.rfind('.')] # remove the .WITNESS of the namespace value
+    levels = [execution_engine.root_process]
+    while levels:
+        current_level = levels.pop(0)
+        # Check if current level has the required attribute
+        if hasattr(current_level, 'mdo_discipline_wrapp'):
+            if hasattr(current_level.mdo_discipline_wrapp, 'mdo_discipline'):
+                mdo_disc = current_level.mdo_discipline_wrapp.mdo_discipline
+                if isinstance(mdo_disc, class_to_check) and scenario_name_trimmed == mdo_disc.name:
+                    logging.debug(f"The object at {current_level} is an instance of {class_to_check.__name__}")
+                    return mdo_disc
+
+        # Check if current level has proxy_disciplines and add them to the list
+        if hasattr(current_level, 'proxy_disciplines'):
+            levels.extend(current_level.proxy_disciplines)
+
+    logging.debug(f"No instance of {class_to_check.__name__} found for mdo_discipline")
+    return None
+
+
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -78,31 +120,18 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
         Therefore, data in the datamanager change and the l1s_test would fail. To prevent that, the data manager is recovered 
         at the end of post-processing  
         '''
-        # add the invest profile to understand what could make the gradients go wrong
-        invest_profile = get_scenario_value(execution_engine, GlossaryEnergy.invest_mix, scenario_name)
-        years = list(invest_profile[GlossaryEnergy.Years])
-        graph_years = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Invest {GlossaryEnergy.invest_mix} [G$]',
-                                               chart_name="Output profile invest")
-        for column in [col for col in invest_profile.keys() if col != GlossaryEnergy.Years]:
-            series_values = list(invest_profile[column].values)
-            serie_obj = InstanciatedSeries(years, series_values, column, "lines")
-            graph_years.add_series(serie_obj)
-        instanciated_charts.append(graph_years)
-
+        # The hierarchical level of the mdo discipline depends on the process used (sub-optim, optim, ms_optim, etc.)
+        # the mdo discipline used to compute the gradients is a SoSMDAChain instance, not a SoSMDOScenario isntance
+        # in case of multi-scenario, the proxy_disciplines contains as many elements as there are scenarios
+        mdo_disc = find_mdo_disc(execution_engine, scenario_name, SoSMDAChain)
+        inputs = mdo_disc._differentiated_inputs
+        outputs = mdo_disc._differentiated_outputs
         dm_data_dict_before = deepcopy(execution_engine.dm.get_data_dict_values())
-        n_profiles = get_scenario_value(execution_engine, 'n_profiles', scenario_name)
-        mdo_disc = execution_engine.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        inputs = [f'{scenario_name}.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
-        outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"] # the objective lagrangian is one level above the scenario level
-        # compute analytical gradient first at the converged point of the MDA
-        mdo_disc.add_differentiated_inputs(inputs)
-        mdo_disc.add_differentiated_outputs(outputs)
         logging.info('Post-processing: Computing analytical gradient')
-        grad_analytical = mdo_disc.linearize(force_no_exec=True) #can add data of the converged point (see sos_mdo_discipline.py)
+        grad_analytical = mdo_disc.linearize(input_data=mdo_disc.local_data, force_no_exec=True)
 
         # computed approximated gradient in 2nd step so that the analytical gradient is not computed in X0 + h
         # warm start must have been removed so that mda and convergence criteria are the same for analytical and approximated gradients
-
         # to avoid unnecessary computation of the approx gradient in case the of updated post-processing, the inputs are
         # compared to values in pkl file. If they are different, approx jac is recomputed, otherwise the pkl values are considered
         # Checking inputs
@@ -128,6 +157,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
             with open(input_pkl, 'wb') as f:
                 pickle.dump(dm_data_dict_before, f)
             f.close()
+        grad_approx = None
         try:
             grad_approx = load_compressed_pickle(output_pkl)
         except:
@@ -143,50 +173,139 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
 
 
         logging.info('Post-processing: generating gradient charts')
-        coeff_i = [i for i in range(n_profiles)]
-        output = outputs[0]
-        # data type: grad_approx = {output:{coeff_i:array([[X]])}}
-        grad_analytical_list = [grad_analytical[output][inputs[i]][0][0] for i in range(n_profiles)]
-        grad_approx_list = [grad_approx[output][inputs[i]][0][0] for i in range(n_profiles)]
+        # extract the gradient values for the objective lagrangian only
+        output = None
+        for key in outputs:
+            if key.split('.')[-1] == OBJECTIVE_LAGR:
+                output = key
+        grad_analytical_dict = grad_analytical[output]
+        grad_approx_dict = grad_approx[output]
 
-        # plot the gradients in abs value
-        chart_name = f'Gradient validation of {OBJECTIVE_LAGR}. Finite diff step={finite_differences_step}'
+        # Plot values from adjoint and finite differences gradient vs poles
+        # keep same color for adjoint and finite difference for a given variable
+        color_dict = {
+            "Blue": dict(color='blue'),
+            "Green": dict(color='green'),
+            "Orange": dict(color='orange'),
+            "Red": dict(color='red'),
+            "Black": dict(color='black'),
+            "Purple": dict(color='purple'),
+            "Magenta": dict(color='magenta'),
+            "Yellow": dict(color='yellow'),
+            "Cyan": dict(color='cyan'),
+        }
+        # put in a box the symbols used for adjoint and finite difference gradients
+        note = {'______': 'Adjoint',
+                '- - - - - - ': 'Finite differences',
+                }
+        chart_name = f'Gradient of {OBJECTIVE_LAGR} vs years. Finite diff step={finite_differences_step}'
 
-        new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient [-]',
-                                         chart_name=chart_name, y_min_zero=False)
+        new_chart = TwoAxesInstanciatedChart('Design variables pole number (corresponding to years) [-]', 'Gradient [with unit]',
+                                         chart_name=chart_name, y_min_zero=False, show_legend=False)
 
         visible_line = True
-        new_series = InstanciatedSeries(
-            coeff_i, grad_analytical_list, 'Adjoint Gradient', 'lines', visible_line)
+        for index, k in enumerate(inputs):
+            color_dict_index = index - floor(index / len(color_dict.keys())) * len(color_dict.keys()) # when reach last color, start again with first color
+            color_name = list(color_dict.keys())[color_dict_index]
+            color_code = color_dict[color_name]
+            v_analytical = grad_analytical_dict[k]
+            v_approx = grad_approx_dict[k]
+            x_analytical = list(range(len(v_analytical[0])))
+            y_analytical = list(v_analytical[0])
+            x_approx = list(range(len(v_approx[0])))
+            y_approx = list(v_approx[0])
+            # add the variable name when scrolling on the data
+            var_name = k.split('.')[-1]
+            new_series = InstanciatedSeries(
+                x_analytical, y_analytical, var_name, 'lines', visible_line, line=color_code, text=[var_name] * len(y_approx))
+            new_chart.add_series(new_series)
+            new_series = InstanciatedSeries(
+                x_approx, y_approx, var_name, 'dash_lines', visible_line, line=color_code, text=[var_name] * len(y_approx))
+            new_chart.add_series(new_series)
+        new_chart.annotation_upper_left = note
+        instanciated_charts.append(new_chart)
+
+        # Plot adjoint absolute grad error vs poles
+        chart_name = f'Adjoint error (of {OBJECTIVE_LAGR}) vs years. Finite diff step={finite_differences_step}'
+
+        new_chart = TwoAxesInstanciatedChart('Design variables pole number (corresponding to years) [-]', 'Gradient error [with unit] ',
+                                         chart_name=chart_name, y_min_zero=False)
+        for k, v_approx in grad_approx_dict.items():
+            v_analytical = grad_analytical_dict[k]
+            x = list(range(len(v_analytical[0])))
+            y = list(v_analytical[0] - v_approx[0])
+            new_series = InstanciatedSeries(x, y, f"{k.split('.')[-1]}", 'lines', visible_line)
+            new_chart.add_series(new_series)
+        instanciated_charts.append(new_chart)
+
+        # Plot adjoint relative grad error vs poles
+        chart_name = f'Adjoint relative error (of {OBJECTIVE_LAGR}) vs years. Finite diff step={finite_differences_step}'
+
+        new_chart = TwoAxesInstanciatedChart('Design variables pole number (corresponding to years) [-]', 'Gradient relative error [%]',
+                                         chart_name=chart_name, y_min_zero=False)
+        for k, v_approx in grad_approx_dict.items():
+            v_analytical = grad_analytical_dict[k]
+            x = list(range(len(v_analytical[0])))
+            y = list((v_analytical[0] - v_approx[0]) / v_approx[0] * 100.)
+            new_series = InstanciatedSeries(x, y, f"{k.split('.')[-1]}", 'lines', visible_line)
+            new_chart.add_series(new_series)
+        instanciated_charts.append(new_chart)
+
+        var_list_with_ns_val = list(grad_approx_dict.keys())
+        var_list = [var.split('.')[-1] for var in var_list_with_ns_val] #only keep var name without full namespace value in front
+        x = list(range(len(var_list)))
+
+        # Plot gradient norm vs each var
+        chart_name = f'Gradient of {OBJECTIVE_LAGR} vs design variables. Finite diff step={finite_differences_step}'
+
+        new_chart = TwoAxesInstanciatedChart('Design variables index [-]', 'Gradient (L2 norm on years) [with unit]',
+                                         chart_name=chart_name, y_min_zero=False)
+        val_list_analytical = []
+        val_list_approx = []
+        for k in inputs:
+            v_analytical = grad_analytical_dict[k]
+            v_approx = grad_approx_dict[k]
+            val_list_analytical += [np.linalg.norm(v_analytical[0])]
+            val_list_approx += [np.linalg.norm(v_approx[0])]
+        new_series = InstanciatedSeries(x, val_list_analytical, 'Adjoint', 'lines', visible_line, text=var_list)
         new_chart.add_series(new_series)
-        new_series = InstanciatedSeries(
-            coeff_i, grad_approx_list, 'Finite Differences', 'lines', visible_line)
+        new_series = InstanciatedSeries(x, val_list_approx, 'Finite Differences', 'dash_lines', visible_line, text=var_list)
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
 
-        # plot the relative error
-        chart_name = f'Gradient relative error of {OBJECTIVE_LAGR}. Finite diff step={finite_differences_step}'
+        # Plot gradient error  norm vs each var
+        chart_name = f'Adjoint error (of {OBJECTIVE_LAGR}) vs design variables. Finite diff step={finite_differences_step}'
 
-        new_chart = TwoAxesInstanciatedChart('Design variables (coeff_i)', 'Gradient relative error [%]',
+        new_chart = TwoAxesInstanciatedChart('Design variables index [-]', 'Error of the gradient (L2 norm on years) [with unit]',
                                          chart_name=chart_name, y_min_zero=False)
+        val_list = []
+        for k, v_approx in grad_approx_dict.items():
+            v_analytical = grad_analytical_dict[k]
+            val_list += [np.linalg.norm(v_analytical[0] - v_approx[0])]
+        new_series = InstanciatedSeries(x, val_list, '', 'lines+markers', visible_line, text=var_list)
+        new_chart.add_series(new_series)
+        instanciated_charts.append(new_chart)
 
-        new_chart.primary_ordinate_axis_range = [-100., 100]
-        visible_line = True
-        # unless the optimum is reached, a non-zero gradient is expected
-        error = (np.array(grad_analytical_list) - np.array(grad_approx_list))/np.array(grad_approx_list) * 100.
-        new_series = InstanciatedSeries(
-            coeff_i, list(error), '', 'lines', visible_line)
+        # Plot gradient relative error of the norm vs each var
+        chart_name = f'Relative error of the adjoint (of {OBJECTIVE_LAGR}) vs design variables. Finite diff step={finite_differences_step}'
+
+        new_chart = TwoAxesInstanciatedChart('Design variable index [-]', 'Relative error of the Gradient (L2 norm on years) [%]',
+                                         chart_name=chart_name, y_min_zero=False)
+        val_list = []
+        for k, v_approx in grad_approx_dict.items():
+            v_analytical = grad_analytical_dict[k]
+            val_list += [np.linalg.norm((v_analytical[0] - v_approx[0]) / v_approx[0] * 100.)]
+        new_series = InstanciatedSeries(x, val_list, '', 'lines+markers', visible_line, text=var_list)
         new_chart.add_series(new_series)
         instanciated_charts.append(new_chart)
 
         # reset the data manager to initial value to pass the l1s tests
         execution_engine.dm.set_values_from_dict(dm_data_dict_before)
         execution_engine.dm.create_reduced_dm()
+
         '''
-        NB: on the GUI, to visualize the gradients graph once the computation has run, it is necessary first to 
+        NB: on the GUI, to visualize the gradients graph once the computation has run, it is necessary first to
         close the study and reopen it
         '''
 
     return instanciated_charts
-
-

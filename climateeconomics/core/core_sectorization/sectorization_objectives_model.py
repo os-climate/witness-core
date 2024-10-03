@@ -55,8 +55,7 @@ class ObjectivesModel():
 
         self.year_start = inputs_dict[GlossaryCore.YearStart]  # year start
         self.year_end = inputs_dict[GlossaryCore.YearEnd]  # year end
-        self.time_step = inputs_dict[GlossaryCore.TimeStep]
-        self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
+        self.years_range = np.arange(self.year_start,self.year_end + 1)
         self.nb_years = len(self.years_range)
         self.historical_gdp = inputs_dict['historical_gdp']
         self.historical_capital = inputs_dict['historical_capital']
@@ -172,8 +171,8 @@ class ObjectivesModel():
             self.sim_energy_eff = lt_ene_eff_df[GlossaryCore.EnergyEfficiency][(lt_ene_eff_df[GlossaryCore.Years]<=self.year_end) & (lt_ene_eff_df[GlossaryCore.Years]>=year_min)].values
             #get weight for fitting 
             extra_weight = extra_hist_data['weight'][(extra_hist_data[GlossaryCore.Years]>=year_min) & (extra_hist_data[GlossaryCore.Years]< self.year_start)].values
-            year_range = np.arange(year_min, self.year_end+1, self.time_step)
-        else: 
+            year_range = np.arange(year_min, self.year_end+1)
+        else:
             #if extra data not coherent use original data: eg not same year start for capital and energy
             print('Using ' + f'{self.year_start}' + '-' + f'{self.year_end}' + ' data only for ' + f'{sector}')
             hist_energy = self.historical_energy[sector].values

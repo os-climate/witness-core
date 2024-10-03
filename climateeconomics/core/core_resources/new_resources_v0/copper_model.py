@@ -49,10 +49,10 @@ class CopperModel :
 
         data_dir = join(dirname(dirname(__file__)), 'sos_wrapping', 'data')
 
-        self.copper_stock =  pd.DataFrame(columns = ['Year', 'Stock']) #pd.read_csv(join(data_dir, 'copper_previous_stock.csv'))  
-        self.copper_reserve = pd.DataFrame(columns = ['Year', 'Reserve']) #DataFrame with the wolrd's reserve updated each year
-        self.copper_prod_price = pd.DataFrame(columns = ['Year','Price/t', 'Total Price'])#DataFrame with prod price updated each year
-        self.copper_prod = pd.DataFrame(columns = ['Year', 'Extraction', 'World Production', 'Cumulated World Production', 'Ratio'])
+        self.copper_stock =  pd.DataFrame(columns = [GlossaryCore.Years, 'Stock']) #pd.read_csv(join(data_dir, 'copper_previous_stock.csv'))  
+        self.copper_reserve = pd.DataFrame(columns = [GlossaryCore.Years, 'Reserve']) #DataFrame with the wolrd's reserve updated each year
+        self.copper_prod_price = pd.DataFrame(columns = [GlossaryCore.Years,'Price/t', 'Total Price'])#DataFrame with prod price updated each year
+        self.copper_prod = pd.DataFrame(columns = [GlossaryCore.Years, 'Extraction', 'World Production', 'Cumulated World Production', 'Ratio'])
 
 
     def set_data(self):
@@ -90,18 +90,18 @@ class CopperModel :
         years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
 
         # filling the column Year
-        self.copper_demand['Year'] = years
-        self.copper_prod_price['Year'] = years
-        self.copper_reserve['Year'] = years
-        self.copper_prod['Year'] = years
-        self.copper_stock['Year'] = years
+        self.copper_demand[GlossaryCore.Years] = years
+        self.copper_prod_price[GlossaryCore.Years] = years
+        self.copper_reserve[GlossaryCore.Years] = years
+        self.copper_prod[GlossaryCore.Years] = years
+        self.copper_stock[GlossaryCore.Years] = years
 
         # put the years as index
-        self.copper_demand.index = self.copper_demand['Year'].values
-        self.copper_prod_price.index = self.copper_prod_price['Year'].values
-        self.copper_stock.index = self.copper_stock['Year'].values
-        self.copper_reserve.index = self.copper_reserve['Year'].values
-        self.copper_prod.index = self.copper_prod['Year'].values
+        self.copper_demand.index = self.copper_demand[GlossaryCore.Years].values
+        self.copper_prod_price.index = self.copper_prod_price[GlossaryCore.Years].values
+        self.copper_stock.index = self.copper_stock[GlossaryCore.Years].values
+        self.copper_reserve.index = self.copper_reserve[GlossaryCore.Years].values
+        self.copper_prod.index = self.copper_prod[GlossaryCore.Years].values
 
         # initializing every column
         self.copper_prod['Extraction'] = self.annual_extraction

@@ -1,5 +1,5 @@
-"""
-Copyright 2023 Capgemini
+'''
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 
 import pandas as pd
 
@@ -42,9 +42,7 @@ class DemandModel:
             ][GlossaryCore.SectorDemandPerCapitaDfValue].values
 
             # $ /person x million person -> million $ -> 1e-6 T$
-            sectors_demand_values = (
-                sector_demand_per_person_values * self.population * 1e-6
-            )
+            sectors_demand_values = sector_demand_per_person_values * self.population * 1e-6
 
             sector_demand_df = pd.DataFrame(
                 {

@@ -53,7 +53,7 @@ WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=False, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                  agri_techno_list=COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
@@ -62,7 +62,6 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(file_path=file_path, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.optim_name = OPTIM_NAME
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
@@ -71,7 +70,7 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
         self.process_level = process_level
         self.witness_uc = witness_optim_sub_usecase(
-            year_start=self.year_start, year_end=self.year_end, time_step=self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            year_start=self.year_start, year_end=self.year_end, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
@@ -94,7 +93,7 @@ class Study(ClimateEconomicsStudyManager):
         }
         initial_values_first_pole = {
             'fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix': DatabaseWitnessCore.InvestFossilYearStart.get_value_at_year(self.year_start),
-            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix': DatabaseWitnessCore.InvestCleanEnergyYearStart.get_value_at_year(self.year_start),
+            f"{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_array_mix": DatabaseWitnessCore.InvestCleanEnergyYearStart.get_value_at_year(self.year_start),
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix': DatabaseWitnessCore.InvestCCUSYearStart.get_value_at_year(self.year_start) / 3,
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': DatabaseWitnessCore.InvestCCUSYearStart.get_value_at_year(self.year_start) / 3,
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': DatabaseWitnessCore.InvestCCUSYearStart.get_value_at_year(self.year_start) / 3,
@@ -137,13 +136,13 @@ class Study(ClimateEconomicsStudyManager):
         out = pd.DataFrame(out)
         return out
 
-    def make_dspace_Ine(self):
+    def make_dspace_Ine(self, enable_variable: bool = True):
         return pd.DataFrame({
             "variable": ["share_non_energy_invest_ctrl"],
-            "value": [[25.5] * GlossaryCore.NB_POLES_COARSE],
-            "lower_bnd": [[24.5] * GlossaryCore.NB_POLES_COARSE],
-            "upper_bnd": [[35.0] * GlossaryCore.NB_POLES_COARSE],
-            "enable_variable": [True],
+            "value": [[DatabaseWitnessCore.ShareInvestNonEnergy.value] * GlossaryCore.NB_POLES_COARSE],
+            "lower_bnd": [[19.] * GlossaryCore.NB_POLES_COARSE],
+            "upper_bnd": [[28.] * GlossaryCore.NB_POLES_COARSE],
+            "enable_variable": [enable_variable],
             "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
         })
 
@@ -152,7 +151,7 @@ class Study(ClimateEconomicsStudyManager):
             'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
             'out_type': "dataframe",
             'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
-            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index': np.arange(self.year_start, self.year_end + 1),
             'index_name': GlossaryCore.Years,
             'namespace_in': GlossaryCore.NS_WITNESS,
             'namespace_out': GlossaryCore.NS_WITNESS,
@@ -187,7 +186,7 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
                              # optimization parameters:
-                             f'{ns}.{self.optim_name}.max_iter': 400,
+                             f'{ns}.{self.optim_name}.max_iter': 1500,
                              f'{ns}.warm_start': True,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
                              # SLSQP, NLOPT_SLSQP
@@ -271,7 +270,7 @@ class Study(ClimateEconomicsStudyManager):
           'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
             'out_type': "dataframe",
             'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
-            'index': np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1),
+            'index': np.arange(self.year_start, self.year_end + 1),
             'index_name': GlossaryCore.Years,
             'namespace_in': "",
             'namespace_out': GlossaryCore.NS_WITNESS,

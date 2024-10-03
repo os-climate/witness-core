@@ -47,9 +47,8 @@ class CarbonCycleDiscipline(SoSWrapp):
 
     DESC_IN = {
 
-        GlossaryCore.YearStart: {'type': 'int', 'default': 2015, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.YearEnd: {'type': 'int', 'default': GlossaryCore.YearEndDefault, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.TimeStep: {'type': 'int', 'default': 5, 'unit': 'year per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'default': 2015, 'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'default': GlossaryCore.YearEndDefault, 'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc'},
         'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc'},
         'conc_atmo': {'type': 'int', 'default': 588, 'unit': 'Gtc'},
@@ -107,13 +106,11 @@ class CarbonCycleDiscipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
         carboncycle_df = self.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
         carboncycle_df = resize_df(carboncycle_df)
-
+        years = list(carboncycle_df[GlossaryCore.Years].values)
         if 'atmosphere concentration' in chart_list:
 
             #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             atmo_conc = carboncycle_df['atmo_conc']
-
-            years = list(atmo_conc.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -142,8 +139,6 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             ppm = carboncycle_df['ppm']
-
-            years = list(ppm.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]

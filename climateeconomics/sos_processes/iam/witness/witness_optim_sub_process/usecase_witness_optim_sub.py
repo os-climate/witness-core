@@ -49,7 +49,7 @@ EXTRA_NAME = "WITNESS"
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault,
                  bspline=False, run_usecase=False,
 
                  execution_engine=None,
@@ -59,8 +59,7 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
-
+        
         self.coupling_name = COUPLING_NAME
         self.designvariable_name = "DesignVariables"
         self.func_manager_name = "FunctionsManager"
@@ -72,7 +71,7 @@ class Study(ClimateEconomicsStudyManager):
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.witness_uc = witness_usecase(
-            year_start=self.year_start, year_end=self.year_end, time_step=self.time_step, bspline=self.bspline,
+            year_start=self.year_start, year_end=self.year_end, bspline=self.bspline,
             execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
             agri_techno_list=agri_techno_list)
@@ -100,7 +99,7 @@ class Study(ClimateEconomicsStudyManager):
         dv_arrays_dict = {}
 
         design_var_descriptor = {}
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
+        years = np.arange(self.year_start, self.year_end + 1)
 
         for energy in self.witness_uc.energy_list:
             energy_wo_dot = energy.replace('.', '_')

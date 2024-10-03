@@ -24,8 +24,6 @@
 - Usable capital df ($usable\_capital\_df$): dataframe with the usable capital in trillion dollars and the intermediate parameters (e_max, energy_efficiency).
 - Section gdp ($detailed\_section\_gdp$): dictionary with the gdp value of each sub-sector in T\$.
                     
-### Time Step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
 
 ### Global output
 #### Usable capital 
@@ -52,17 +50,17 @@ with $\Omega$ is the damage fraction of output explained in the documentation of
 
 ### Productivity
 The Total Factor Productivity (TFP) measures the efficiency of the inputs in the production process. The initial values of the productivity and productivity growth rate are obtained during the fitting of the production function. For the TFP we have 2 options: 
-* The standard DICE ($damage\,to\,productivity$ = $False$) where $A_t$ evolves according to:
-$$A_t = \frac{A_{t-1}}{1-A_{gt-1}}$$ with $A_g$ the productivity growth rate.
+
+The standard DICE ($damage\,to\,productivity$ = $False$) where $A_t$ evolves according to:
+$A_t = \frac{A_{t-1}}{1-A_{gt-1}}$ with $A_g$ the productivity growth rate.
 The initial level $A_0$ can ben changed in the inputs ($productivity\_start$),
-$$A_{gt}=A_{g0} \cdot exp(-\Delta_a \cdot (t-1) \cdot time\_step)$$
+$A_{gt}=A_{g0} \cdot exp(-\Delta_a \cdot (t-1) \cdot time\_step)$
 and $\Delta_a$ is the percentage growth rate of $A_g$.
-* The “Damage to productivity growth” one ($damage\,to\,productivity$ = $True$) comes from Moyer et al. (2014) [^4]. It applies a fraction of damage $f$ ($frac\_damage\_prod$) to the productivity instead of all damage being applied to output:
-$$A^*_t=(1-f\Omega_t) \cdot \frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$,  
-and then damage to output $\Omega_{yt}$ becomes: 
-$$\Omega_{yt} = 1- \frac{1- \Omega_t}{1-f\Omega_t}$$
-such that the output net of climate damage is 
-$$Q^*_t = (1-\Omega_{yt}) \cdot Y_t (Ku_t, L_t)$$
+
+The productivity with damage (when $damage\,to\,productivity = True$) is 
+$$A^*_t = (1 - \Omega_t) A_t$$ 
+where $\Omega$ is the damage percentage.
+
 
 ## Damages
 Damages are computed as the sum of immediate climate damages + damage from loss of productivity
@@ -123,7 +121,7 @@ The part of the net output not invested is used for consumption.
 To obtain the value of the production function parameters we fitted our calculated production to historical data from IMF[^5] of GDP PPP (Purchasing Power Parity) in current US dollars that we calibrated to be in constant 2020 US dollars using the GDP deflator. We also used data from the IMF[^6] for the capital stock value, for population we took data from the World Bank databank[^7] and lastly for energy we used Total Final Consumption from International Energy Agency[^10].
 
 ### Other inputs 
--  Year start, year end and time step 
+-  Year start and year end 
 - Parameters for production function: $output\_alpha$,  $output\_gamma$
 - parameters for productivity function: $productivity\_start$, $productivity\_gr\_start$, $decline\_rate\_tfp$
 - Non Energy capital at year start in trillion dollars ($capital\_start\_non\_energy$)

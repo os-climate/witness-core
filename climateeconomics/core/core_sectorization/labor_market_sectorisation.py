@@ -56,8 +56,7 @@ class LaborMarketModel():
 
         self.year_start = inputs_dict[GlossaryCore.YearStart]  # year start
         self.year_end = inputs_dict[GlossaryCore.YearEnd]  # year end
-        self.time_step = inputs_dict[GlossaryCore.TimeStep]
-        self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
+        self.years_range = np.arange(self.year_start,self.year_end + 1)
         self.nb_years = len(self.years_range)
         self.employment_a_param = inputs_dict['employment_a_param']
         self.employment_power_param = inputs_dict['employment_power_param']

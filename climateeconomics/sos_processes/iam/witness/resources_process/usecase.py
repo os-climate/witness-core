@@ -65,7 +65,6 @@ class Study(ClimateEconomicsStudyManager):
     def __init__(self,
                  year_start=GlossaryCore.YearStartDefault,
                  year_end=GlossaryCore.YearEndDefault,
-                 time_step=1,
                  execution_engine=None,
                  main_study: bool = True,
                  ):
@@ -77,7 +76,6 @@ class Study(ClimateEconomicsStudyManager):
 
         self.year_start = year_start
         self.year_end = year_end
-        self.time_step = time_step
         self.nb_poles = 5
 
     def setup_usecase(self, study_folder_path=None):

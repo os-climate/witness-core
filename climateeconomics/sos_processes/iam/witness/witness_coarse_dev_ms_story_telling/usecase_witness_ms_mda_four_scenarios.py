@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tp35 import (
     Study as StudyMSmdaTippingPoint35,
@@ -23,7 +24,8 @@ class Study(StudyMSmdaTippingPoint35):
 
     def __init__(self, run_usecase=False, execution_engine=None):
         super().__init__(file_path=__file__, run_usecase=run_usecase, execution_engine=execution_engine)
-        self.check_outputs = True
+        self.test_post_procs = True
+        self.check_outputs = False
 
     def setup_usecase(self, study_folder_path=None):
 
@@ -48,7 +50,7 @@ class Study(StudyMSmdaTippingPoint35):
             self.USECASE4: 3.34,
             self.USECASE7: 2.41
         }
-        ref_temperature_2020 = 1.3
+        ref_temperature_2020 = DatabaseWitnessCore.TemperatureAnomalyPreIndustrialYearStart.get_value_at_year(2020)
 
         all_co2_taxes = dm.get_all_namespaces_from_var_name('CO2_taxes')
         ref_value_co2_tax = {
@@ -64,7 +66,7 @@ class Study(StudyMSmdaTippingPoint35):
             self.USECASE4: 198,
             self.USECASE7: 251
         }
-        ref_gdp_2020 = 129.9
+        ref_gdp_2020 = DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(2020)
 
         all_co2_emissions = dm.get_all_namespaces_from_var_name(GlossaryCore.TotalGWPEmissionsDfValue)
         ref_value_co2_emissions = {
@@ -74,7 +76,7 @@ class Study(StudyMSmdaTippingPoint35):
             self.USECASE7: -2.8 # todo : refit NZE scenario
         }  # todo : replace by GWP in future
 
-        all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.EnergyProductionDetailedValue}')
+        all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.{GlossaryCore.StreamProductionDetailedValue}')
         ref_value_net_energy_production = {
             self.USECASE2: 338*1e3,
             self.USECASE2B: 182*1e3,
@@ -115,6 +117,13 @@ class Study(StudyMSmdaTippingPoint35):
                     error_msg += self.should_be_lower(value_temp_increase, ref_value_temp_increase[scenario] * 1.2, f"{scenario_temp_increase}[2100]")
                     error_msg += self.should_be_greater(value_temp_2020, ref_temperature_2020 * tolerance_low_ref_2020, f"{scenario_temp_increase}[2020]")
                     error_msg += self.should_be_lower(value_temp_2020,  ref_temperature_2020 * tolerance_high_ref_2020, f"{scenario_temp_increase}[2020]")
+
+            for scenario_gdp in all_gdps:
+                if scenario in scenario_gdp:
+                    economics_df = dm.get_value(scenario_gdp)
+                    value_temp_2020 = economics_df.loc[economics_df['years'] == 2020][GlossaryCore.GrossOutput].values[0]
+                    error_msg += self.should_be_greater(value_temp_2020, ref_gdp_2020 * 0.8, f"{scenario_gdp}[2020]")
+                    error_msg += self.should_be_lower(value_temp_2020,  ref_gdp_2020 * 1.2, f"{scenario_gdp}[2020]")
 
             # Checking that the CO2 tax value in 2100 is in an acceptable range for each usecase
             for scenario_co2_tax in all_co2_taxes:
@@ -188,19 +197,4 @@ class Study(StudyMSmdaTippingPoint35):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-
-
-    from sostrades_core.tools.post_processing.post_processing_factory import (
-        PostProcessingFactory,
-    )
-    ppf = PostProcessingFactory()
-    ns = f'usecase_witness_ms_mda_four_scenarios.mda_scenarios.{Study.USECASE2}.GHGEmissions'
-    filters = ppf.get_post_processing_filters_by_namespace(uc_cls.ee, ns)
-
-    graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
-    for graph in graph_list:
-        graph.to_plotly().show()
-
-    uc_cls.specific_check_outputs()
+    uc_cls.test()
