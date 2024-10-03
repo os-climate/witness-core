@@ -19,7 +19,7 @@ from copy import deepcopy
 from tempfile import gettempdir
 
 import numpy as np
-from gemseo.utils.compare_data_manager_tooling import (
+from sostrades_core.tools.compare_data_manager_tooling import (
     compare_dict,
     delete_keys_from_dict,
 )

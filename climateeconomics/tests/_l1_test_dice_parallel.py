@@ -23,7 +23,7 @@ import pandas as pd
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
-from gemseo.utils.compare_data_manager_tooling import (
+from sostrades_core.tools.compare_data_manager_tooling import (
     compare_dict,
     delete_keys_from_dict,
 )
