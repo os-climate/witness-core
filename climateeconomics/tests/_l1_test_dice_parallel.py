@@ -23,11 +23,11 @@ import pandas as pd
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
-from gemseo.utils.compare_data_manager_tooling import (
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.compare_data_manager_tooling import (
     compare_dict,
     delete_keys_from_dict,
 )
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import (

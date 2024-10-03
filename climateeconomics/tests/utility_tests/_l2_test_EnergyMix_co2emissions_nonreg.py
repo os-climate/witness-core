@@ -24,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     Study as EnergyMDA,
 )
-from gemseo.utils.compare_data_manager_tooling import compare_dict
+from sostrades_core.tools.compare_data_manager_tooling import compare_dict
 
 from climateeconomics.glossarycore import GlossaryCore
 
