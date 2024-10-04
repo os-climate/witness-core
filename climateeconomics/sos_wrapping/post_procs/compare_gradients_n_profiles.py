@@ -22,8 +22,11 @@ from os.path import dirname, join
 import numpy as np
 from energy_models.glossaryenergy import GlossaryEnergy
 from gemseo.utils.derivatives.derivatives_approx import DisciplineJacApprox
-from sostrades_core.tools.pkl_converter.pkl_tools import dump_compressed_pickle, load_compressed_pickle
 from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
+from sostrades_core.tools.pkl_converter.pkl_tools import (
+    dump_compressed_pickle,
+    load_compressed_pickle,
+)
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
