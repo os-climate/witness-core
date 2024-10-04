@@ -120,7 +120,7 @@ class LandUseV1Discipline(SoSWrapp):
                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                         'forest_surface_evol': ('float', None, False),}},
                LandUseV1.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE}
+                   'type': 'float', 'default': 0.1, 'unit': 'Gha'}
                }
 
     DESC_OUT = {

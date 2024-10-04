@@ -37,7 +37,6 @@ class EnergyInvestDiscTest(unittest.TestCase):
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    'ns_energy_study': f'{self.name}',}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

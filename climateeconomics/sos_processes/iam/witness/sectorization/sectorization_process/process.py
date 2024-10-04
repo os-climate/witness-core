@@ -40,7 +40,6 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_public': ns_scatter,
                    GlossaryCore.NS_FUNCTIONS: ns_scatter,
-                   GlossaryCore.NS_REFERENCE: ns_scatter,
                    GlossaryCore.NS_SECTORS: ns_macro,
                    GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}",
 

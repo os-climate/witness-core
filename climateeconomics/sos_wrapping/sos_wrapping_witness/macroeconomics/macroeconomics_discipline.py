@@ -53,7 +53,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-industry fa-fw',
+        'icon': "fa-solid fa-money-bill-trend-up",
         'version': '',
     }
     _maturity = 'Research'
@@ -112,9 +112,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
         'usable_capital_ref': {'type': 'float', 'unit': 'G$', 'default': 5., 'user_level': 3,
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                               "description": "After an excess of 5 G$ of usable capital, the upper bound constraint will explode.",
-                               'namespace': GlossaryCore.NS_REFERENCE},
+                               "description": "After an excess of 5 G$ of usable capital, the upper bound constraint will explode."},
         GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared',
                                             'namespace': GlossaryCore.NS_WITNESS,
                                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -219,7 +217,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     dynamic_outputs.update({f"{sector}.{GlossaryCore.SectionGdpDfValue}": section_gdp_df_variable})
 
                 # make sure the namespaces references are good in case shared namespaces were reassociated
-                sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
                 dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,})
 
                 # all sections gdp df

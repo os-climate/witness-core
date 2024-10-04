@@ -74,7 +74,6 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
 
     def analytic_grad_entry(self):

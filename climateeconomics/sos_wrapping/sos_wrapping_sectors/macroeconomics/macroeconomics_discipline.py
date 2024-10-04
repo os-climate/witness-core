@@ -45,7 +45,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fa-solid fa-city',
+        'icon': "fa-solid fa-money-bill-trend-up",
         'version': '',
     }
 

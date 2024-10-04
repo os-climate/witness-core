@@ -72,7 +72,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{extra_name}',
                    #'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{extra_name}.{INVEST_DISC_NAME}', }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

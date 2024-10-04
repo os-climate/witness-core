@@ -30,6 +30,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'description': '',
         'category': '',
         'version': '',
+        'icon': "fa-solid fa-earth-europe",
     }
 
     def __init__(self, ee, process_level='dev'):
@@ -59,7 +60,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_dashboard': f'{self.ee.study_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

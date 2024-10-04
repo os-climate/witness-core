@@ -94,8 +94,7 @@ class LandUseV2TestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
-                   'ns_land_use': f'{name}.{model_name}',
-                   GlossaryCore.NS_REFERENCE: f'{name}.{model_name}'}
+                   'ns_land_use': f'{name}.{model_name}',}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v2_disc.LandUseV2Discipline'

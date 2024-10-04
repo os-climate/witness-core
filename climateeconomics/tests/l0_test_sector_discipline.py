@@ -46,7 +46,6 @@ class ServicesDiscTest(unittest.TestCase):
                    GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

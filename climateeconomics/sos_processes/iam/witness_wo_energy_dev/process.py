@@ -41,7 +41,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {GlossaryCore.NS_WITNESS: self.ee.study_name,
                    GlossaryCore.NS_ENERGY_MIX: self.ee.study_name,
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    GlossaryCore.NS_MACRO: self.ee.study_name,
                    f'ns_{GlossaryCore.Households.lower()}_emissions':f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}",
                    'ns_agriculture': self.ee.study_name,
@@ -51,7 +50,7 @@ class ProcessBuilder(BaseProcessBuilder):
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'GHGCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.ghgcycle.ghgcycle_discipline.GHGCycleDiscipline',
                      'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline',
-                     'Temperature_change': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline.TempChangeDiscipline',
+                     'Temperature change': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline.TempChangeDiscipline',
                      'Utility': 'climateeconomics.sos_wrapping.sos_wrapping_witness.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline',
                      'Policy': 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'}
 
@@ -72,7 +71,6 @@ class ProcessBuilder(BaseProcessBuilder):
             'ns_land_use': f'{self.ee.study_name}.EnergyMix',
             GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
             'ns_resource': f'{self.ee.study_name}.EnergyMix',
-            GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
             GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}",
         }
 
