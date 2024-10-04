@@ -1166,6 +1166,16 @@ class GlossaryCore:
             OutputNetOfDamage: ("float", [0, 1e30], False),
         },
     }
+    ConsumptionSectorBreakdown = {
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            "Output net of damage": ("int", [1900, YearEndDefault], False),
+            "Investment in sector": ("float", [0, 1e30], False),
+            "Attributed investment in energy": ("float", [0, 1e30], False),
+            "Consumption": ("float", [0, 1e30], False),
+        },
+    }
 
     CapitalDfValue = "capital_df"
     Capital = "capital"
@@ -1232,19 +1242,6 @@ class GlossaryCore:
         },
     }
 
-    ConsumptionDfValue = "consumption_df"
-    ConsumptionDf = {
-        "var_name": ConsumptionDfValue,
-        "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
-        "unit": "",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            Consumption: ("float", [0, 1e30], False),
-        },
-    }
-
     AllSectorsShareEnergyDfValue = "all_sectors_share_df"
     AllSectorsShareEnergyDf = {
         "type": "dataframe",
@@ -1294,12 +1291,12 @@ class GlossaryCore:
         },
     }
 
-    AllSectorsDemandDfValue = "sectorized_consumption_df"
-    AllSectorsDemandDf = {
-        "var_name": AllSectorsDemandDfValue,
+    SectorizedConsumptionDfValue = "sectorized_consumption_df"
+    SectorizedConsumptionDf = {
+        "var_name": SectorizedConsumptionDfValue,
         "type": "dataframe",
         "unit": "T$",
-        "description": "all sectors demands aggregated",
+        "description": "all sectors consumptions aggregated",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
         "visibility": "Shared",
@@ -1463,33 +1460,6 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             InvestmentsValue: ("float", [0, 1e30], False),
-        },
-    }
-
-    SectorDemandPerCapitaDfValue = "sector_demand_per_capita"
-    SectorDemandPerCapitaDf = {
-        "var_name": SectorDemandPerCapitaDfValue,
-        "type": "dataframe",
-        "unit": "$/person",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
-        "description": "Sector demand per person per year [$/year]",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            SectorDemandPerCapitaDfValue: ("float", [0, 1e30], False),
-        },
-    }
-
-    SectorGDPDemandDfValue = "GDP sector demand [G$]"
-    SectorGDPDemandDf = {
-        "var_name": SectorGDPDemandDfValue,
-        "type": "dataframe",
-        "unit": "T$",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            SectorGDPDemandDfValue: ("float", [0, 1e30], False),
         },
     }
 

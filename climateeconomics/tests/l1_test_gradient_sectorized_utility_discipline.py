@@ -26,7 +26,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
+class SectorizedUtilityJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
         self.name = 'Test'
@@ -47,7 +47,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.sectorized_utility.sectorized_utility_discipline.SectorizedUtilityDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.utility.sectorized_utility_discipline.SectorizedUtilityDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -57,12 +57,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
-        self.economics_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
-            GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),
-            GlossaryCore.PerCapitaConsumption: 0.,
-        })
+
         self.population_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.PopulationValue: np.linspace(7886, 9550, len(self.years))
@@ -73,16 +68,6 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.EnergyPriceValue: np.linspace(200, 10, len(self.years))
         })
 
-        self.residential_energy_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: np.linspace(200, 10, len(self.years))
-        })
-
-        self.investment_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.InvestmentsValue: np.full(len(self.years), 10.0)
-        })
-
         # Sectorized Consumption
         self.sector_list = GlossaryCore.SectorsPossibleValues
         self.sectorized_consumption_df = pd.DataFrame({GlossaryCore.Years: self.years})
@@ -91,110 +76,26 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
         self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
-                            f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}': self.residential_energy_df,
-                            f'{self.name}.{GlossaryCore.InvestmentDfValue}': self.investment_df,
-                            f'{self.name}.{GlossaryCore.AllSectorsDemandDfValue}': self.sectorized_consumption_df}
+                            f'{self.name}.{GlossaryCore.SectorizedConsumptionDfValue}': self.sectorized_consumption_df}
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
     def analytic_grad_entry(self):
-        return [
-            self.test_01_consumption_analytic_grad_welfare,
-            self.test_02_consumption_analytic_grad_last_utility,
-            self.test_03_consumption_with_low_economy
-        ]
+        return []
 
-    def test_01_consumption_analytic_grad_welfare(self):
-        np.set_printoptions(threshold=np.inf)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_consumption_discipline_welfare.pkl',
-                            discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
-                                    f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}',
-                                    f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
-                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.WelfareObjective}',
-                                     f'{self.name}.min_utility_objective',
-                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}'],
-                            derr_approx='complex_step')
-
-    def test_02_consumption_analytic_grad_last_utility(self):
-        """
-        Test the second option of the objective function
-        """
-
-        self.values_dict[f'{self.name}.welfare_obj_option'] = 'last_utility'
-
-        self.ee.load_study_from_input_dict(self.values_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_consumption_discipline_last_utility.pkl',
-                            discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
-                                    f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}',
-                                    f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
-                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.WelfareObjective}',
-                                     f'{self.name}.min_utility_objective',
-                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}'],
-                            derr_approx='complex_step')
-
-    def test_03_consumption_with_low_economy(self):
-        economics_df = self.economics_df
-        economics_df[GlossaryCore.OutputNetOfDamage] = self.economics_df[GlossaryCore.OutputNetOfDamage] / 2
-        np.set_printoptions(threshold=np.inf)
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
-                       f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                       f'{self.name}.{GlossaryCore.EnergyPriceValue}': self.energy_mean_price,
-                       f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}': self.residential_energy_df,
-                       f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.investment_df}
-
-        self.ee.load_study_from_input_dict(values_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_consumption_low_economy.pkl',
-                            discipline=disc_techno,
-                            step=1e-15, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
-                                    f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}',
-                                    f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
-                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.WelfareObjective}',
-                                     f'{self.name}.min_utility_objective',
-                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}'],
-                            derr_approx='complex_step')
-
-    def test_04_sectorization_gradients(self):
+    def test_01_sectorization_gradients(self):
         """
         Test the gradients of the sectorized outputs
         """
         self.ee.execute()
 
-        # self.override_dump_jacobian = True
-
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sectorized_utility_discipline_sectors_obj.pkl',
                             discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
-                                    f'{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.{GlossaryCore.AllSectorsDemandDfValue}',
-                                    f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
+                                    f'{self.name}.{GlossaryCore.SectorizedConsumptionDfValue}'],
                             outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjectiveName}' for sector in self.sector_list],
                             derr_approx='complex_step')

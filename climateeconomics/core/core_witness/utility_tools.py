@@ -24,7 +24,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 def get_inputs_for_utility_all_sectors(inputs_dict: dict):
-    years = inputs_dict[GlossaryCore.EconomicsDfValue][GlossaryCore.Years].to_numpy()
+    years = inputs_dict[GlossaryCore.PopulationDfValue][GlossaryCore.Years].to_numpy()
     population = inputs_dict[GlossaryCore.PopulationDfValue][GlossaryCore.PopulationValue].to_numpy()
     energy_price = inputs_dict[GlossaryCore.EnergyMeanPriceValue][GlossaryCore.EnergyPriceValue].to_numpy()
 
@@ -32,7 +32,7 @@ def get_inputs_for_utility_all_sectors(inputs_dict: dict):
 
 
 def get_inputs_for_utility_per_sector(inputs_dict: dict, sector: str):
-    consumption = inputs_dict[GlossaryCore.AllSectorsDemandDfValue][sector].to_numpy()
+    consumption = inputs_dict[GlossaryCore.SectorizedConsumptionDfValue][sector].to_numpy()
     energy_price_ref = inputs_dict[f"{sector}.initial_raw_energy_price"]
     init_rate_time_pref = inputs_dict[f"{sector}.init_rate_time_pref"]
     scurve_stretch = inputs_dict[f"{sector}.strech_scurve"]

@@ -19,80 +19,43 @@ import numpy as np
 import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
-class SectorDemandDisciplineTest(unittest.TestCase):
+class SectorConsumptionDisciplineTest(unittest.TestCase):
 
     def setUp(self):
         """Initialize third data needed for testing"""
-        self.year_start =GlossaryCore.YearStartDefault
-        self.year_end = GlossaryCore.YearEndDefault
+        self.year_start = GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.nb_per = self.year_end - self.year_start + 1
-
+        self.nb_per = len(self.years)
+        
         self.sector_list = GlossaryCore.SectorsPossibleValues
-
-        self.population_df = DatabaseWitnessCore.WorldPopulationForecast.get_all_cols_between_years(self.year_start, self.year_end)
-
-        gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values
-        population_2021 = DatabaseWitnessCore.WorldPopulationForecast.value[GlossaryCore.PopulationValue].values[1]
-
-        share_gdp_agriculture_2021 = DatabaseWitnessCore.ShareGlobalGDPAgriculture2021.value / 100.
-        share_gdp_industry_2021 = DatabaseWitnessCore.ShareGlobalGDPIndustry2021.value / 100.
-        share_gdp_services_2021 = DatabaseWitnessCore.ShareGlobalGDPServices2021.value / 100.
-
-        # has to be in $/person : T$ x constant  / (Mperson) = M$/person = 1 000 000 $/person
-        demand_agriculture_per_person_population_2021 = gdp_forecast[1] * share_gdp_agriculture_2021 / population_2021 * 1e6
-        demand_industry_per_person_population_2021 = gdp_forecast[1] * share_gdp_industry_2021 / population_2021 * 1e6
-        demand_services_per_person_population_2021 = gdp_forecast[1] * share_gdp_services_2021 / population_2021 * 1e6
-
-        # todo: put real data when found :
-        self.demand_per_capita_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                           GlossaryCore.SectorDemandPerCapitaDfValue: demand_agriculture_per_person_population_2021})
-
-        self.demand_per_capita_industry = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                        GlossaryCore.SectorDemandPerCapitaDfValue: demand_industry_per_person_population_2021})
-
-        self.demand_per_capita_services = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                        GlossaryCore.SectorDemandPerCapitaDfValue: demand_services_per_person_population_2021})
-
+        self.all_sectors_energy_supply = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.SectorServices: 15.,
+            GlossaryCore.SectorAgriculture: 3.,
+            GlossaryCore.SectorIndustry: 20.,
+        })
         self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
-                                          GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(len(self.years))})
+                                          GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(self.nb_per)})
 
         self.energy_investment_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.EnergyInvestmentsWoTaxValue: [3.5] * self.nb_per})
-
-        self.energy_supply_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
-        })
-
-        self.all_sectors_energy_supply = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-        })
-        for sector in self.sector_list:
-            self.all_sectors_energy_supply[sector] = self.energy_supply_df[GlossaryCore.TotalProductionValue].values
-
-        self.damage_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years,
-             GlossaryCore.Damages: [1.5] * self.nb_per,
-             GlossaryCore.EstimatedDamages: [1.5] * self.nb_per}
-        )
+             GlossaryCore.EnergyInvestmentsWoTaxValue: 3.5})
 
         self.invest_indus = pd.DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years)) * 1 / 3})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, self.nb_per) * 1 / 3})
 
         self.invest_services = pd.DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years)) * 1 / 6})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, self.nb_per) * 1 / 6})
 
         self.invest_agriculture = pd.DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years)) * 1 / 2})
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, self.nb_per) * 1 / 2})
 
         # Test With a GDP and capital that grows at 2%
         gdp_year_start = 130.187
@@ -118,7 +81,6 @@ class SectorDemandDisciplineTest(unittest.TestCase):
                                        GlossaryCore.GrossOutput: gdp_service,
                                        GlossaryCore.OutputNetOfDamage: gdp_service * 0.995})
 
-
     def test(self):
         """Check discipline setup and run"""
         name = 'Test'
@@ -133,7 +95,7 @@ class SectorDemandDisciplineTest(unittest.TestCase):
                    GlossaryCore.NS_SECTORS: f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.consumption_discipline.ConsumptionDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.consumption.consumption_discipline.ConsumptionDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
@@ -142,17 +104,8 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         ee.display_treeview_nodes()
 
         inputs_dict = {f'{name}.{model_name}.{GlossaryCore.SectorListValue}': self.sector_list,
-                       f'{name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                        f'{name}.{GlossaryCore.AllSectorsShareEnergyDfValue}': self.all_sectors_energy_supply,
                        f'{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
-
-                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': self.damage_df,
-
-                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_agriculture,
-                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_industry,
-                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_services,
 
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invest_agriculture,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invest_indus,

@@ -1,6 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -128,28 +127,6 @@ class Study(StudyManager):
             cons_input[f'{self.study_name}.GHGemissions.{GlossaryCore.EconomicSectors}.{sector}.{GlossaryCore.SectionNonEnergyEmissionGdpDfValue}'] = DatabaseWitnessCore.SectionsNonEnergyEmissionsDict.value[sector]
 
         if self.main_study:
-            gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values
-            population_2021 = DatabaseWitnessCore.WorldPopulationForecast.value[GlossaryCore.PopulationValue].values[1]
-
-            share_gdp_agriculture_2021 = DatabaseWitnessCore.ShareGlobalGDPAgriculture2021.value / 100.
-            share_gdp_industry_2021 = DatabaseWitnessCore.ShareGlobalGDPIndustry2021.value / 100.
-            share_gdp_services_2021 = DatabaseWitnessCore.ShareGlobalGDPServices2021.value / 100.
-
-            # has to be in $/person : T$ x constant  / (Mperson) = M$/person = 1 000 000 $/person
-            demand_agriculture_per_person_population_2021 = gdp_forecast[
-                                                                1] * share_gdp_agriculture_2021 / population_2021 * 1e6
-            demand_industry_per_person_population_2021 = gdp_forecast[
-                                                             1] * share_gdp_industry_2021 / population_2021 * 1e6
-            demand_services_per_person_population_2021 = gdp_forecast[
-                                                             1] * share_gdp_services_2021 / population_2021 * 1e6
-            demand_per_capita_agriculture = pd.DataFrame({GlossaryCore.Years: years,
-                                                          GlossaryCore.SectorDemandPerCapitaDfValue: demand_agriculture_per_person_population_2021})
-
-            demand_per_capita_industry = pd.DataFrame({GlossaryCore.Years: years,
-                                                       GlossaryCore.SectorDemandPerCapitaDfValue: demand_industry_per_person_population_2021})
-
-            demand_per_capita_services = pd.DataFrame({GlossaryCore.Years: years,
-                                                       GlossaryCore.SectorDemandPerCapitaDfValue: demand_services_per_person_population_2021})
 
             invest_indus = pd.DataFrame(
                 {GlossaryCore.Years: years,
@@ -241,10 +218,7 @@ class Study(StudyManager):
                 f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}": workforce_share,
                 f"{self.study_name}.{GlossaryCore.TemperatureDfValue}": temperature_df,
                 f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}": energy_mean_price,
-                f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_agriculture,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_agriculture,
-                f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_industry,
-                f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_services,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_services,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_indus,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_services,
