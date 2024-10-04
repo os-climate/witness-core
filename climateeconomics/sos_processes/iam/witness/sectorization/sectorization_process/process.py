@@ -1,6 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/09/21-2024/06/24 Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -53,8 +52,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
         mods_dict = {'Population':'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline',
                      'LaborMarket': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.labor_market.labor_market_discipline.LaborMarketDiscipline',
-                     'Utility':'climateeconomics.sos_wrapping.sos_wrapping_witness.sectorized_utility.sectorized_utility_discipline.SectorizedUtilityDiscipline',
-                     'Consumption':'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.consumption_discipline.ConsumptionDiscipline',
+                     'Utility':'climateeconomics.sos_wrapping.sos_wrapping_sectors.utility.sectorized_utility_discipline.SectorizedUtilityDiscipline',
+                     'Consumption':'climateeconomics.sos_wrapping.sos_wrapping_sectors.consumption.consumption_discipline.ConsumptionDiscipline',
                      'SectorsInvestDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invest_discipline.SectorsRedistributionInvestsDiscipline',
                      'SectorsEnergyDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_energy.sectors_redistribution_energy_discipline.SectorsRedistributionEnergyDiscipline',
                      GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline'}
