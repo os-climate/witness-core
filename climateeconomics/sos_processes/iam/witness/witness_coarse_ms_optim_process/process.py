@@ -25,6 +25,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'description': '',
         'category': '',
         'version': '',
+        'icon': "fa-solid fa-list",
     }
 
     def get_builders(self):
@@ -52,7 +53,6 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_fossil',
                                          GlossaryCore.NS_CCS,
                                          'ns_resource',
-                                         #GlossaryCore.NS_REFERENCE,
                                          'ns_agriculture',
                                          'ns_invest',
                                          ]}

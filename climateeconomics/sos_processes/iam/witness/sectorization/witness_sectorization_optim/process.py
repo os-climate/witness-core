@@ -33,6 +33,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'description': '',
         'category': '',
         'version': '',
+        'icon': "fa-solid fa-square-root-variable",
     }
 
     def get_builders(self):

@@ -30,7 +30,6 @@ def get_ref_variable(var_name: str, unit: str, default_value=None) -> dict:
     variable_description = {
         "var_name": var_name,
         "description": f"Normalisation reference for {var_name}",
-        "namespace": "ns_ref",
         "type": "float",
         "unit": unit,
     }
@@ -175,7 +174,6 @@ class GlossaryCore:
     NS_SECTORS = "ns_sectors"
     NS_WITNESS = "ns_witness"
     NS_ENERGY_MIX = "ns_energy_mix"
-    NS_REFERENCE = "ns_ref"
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
@@ -1560,8 +1558,6 @@ class GlossaryCore:
         "unit": "T$",
         "default": 100.0,
         "user_level": 3,
-        "visibility": "Shared",
-        "namespace": NS_REFERENCE,
         "description": "reference to normalize usable capital objective",
     }
 
@@ -1618,8 +1614,6 @@ class GlossaryCore:
         "type": "float",
         "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.0),
         "unit": "Gt",
-        "visibility": "Shared",
-        "namespace": NS_REFERENCE,
         "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
     }
 

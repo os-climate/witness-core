@@ -40,7 +40,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
-                   GlossaryCore.NS_REFERENCE: f'{ns_scatter}.NormalizationReferences',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: ns_scatter,
                    GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: ns_scatter,
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: ns_scatter,
@@ -50,7 +49,7 @@ class ProcessBuilder(BaseProcessBuilder):
         mods_dict = {
             'GHGCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.ghgcycle.ghgcycle_discipline.GHGCycleDiscipline',
             'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline',
-            'Temperature_change': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline.TempChangeDiscipline',
+            'Temperature change': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline.TempChangeDiscipline',
             'Policy': 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'}
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
@@ -71,7 +70,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
                    'ns_resource': f'{self.ee.study_name}.EnergyMix',
                    GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}",
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences'}
+                   }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

@@ -39,7 +39,6 @@ class SectorizedUtilityDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    GlossaryCore.NS_GHGEMISSIONS: f'{self.name}'}
@@ -85,5 +84,5 @@ class SectorizedUtilityDiscTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-           graph.to_plotly().show()
+           #graph.to_plotly().show()
            pass
