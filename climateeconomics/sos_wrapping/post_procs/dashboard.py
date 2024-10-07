@@ -55,7 +55,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
     CROP_DISC = 'Crop'
-    LANDUSE_DISC = 'Land_Use'
+    LANDUSE_DISC = 'Land Use'
     ENERGYMIX_DISC = 'EnergyMix'
     DAMAGE_DISC = 'Damage'
 

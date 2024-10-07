@@ -257,7 +257,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
 
         self.ee2.load_study_from_input_dict(self.values_dict_ee)
 
-        disc_macro = self.ee2.dm.get_disciplines_with_name(f'{self.name}.Temperature_change')[
+        disc_macro = self.ee2.dm.get_disciplines_with_name(f'{self.name}.Temperature change')[
             0]
 
         input_full_names = [f'{self.name}.{GlossaryCore.CarbonCycleDfValue}']

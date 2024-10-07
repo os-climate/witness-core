@@ -37,7 +37,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_FUNCTIONS: ns_scatter,
                    }
 
-        mods_dict = {'Land_Use': 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v2_disc.LandUseV2Discipline'
+        mods_dict = {'Land Use': 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v2_disc.LandUseV2Discipline'
                      }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 

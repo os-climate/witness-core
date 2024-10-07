@@ -66,14 +66,8 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         "shift_scurve": {"type": "float", "default": -0.2},
         "init_rate_time_pref": {
             "type": "float",
-            "default": 0.015,
+            "default": 0.,
             "unit": "-",
-        },
-        "initial_raw_energy_price": {
-            "type": "float",
-            "unit": "$/MWh",
-            "default": 110,
-            "user_level": 2,
         },
     }
 
@@ -100,7 +94,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
             for sector in sector_list:
                 # Add saturation effect parameters to each sector
                 for k, v in self.SATURATION_PARAMETERS.items():
-                    dynamic_inputs[f"{sector}.{k}"] = v
+                    dynamic_inputs[f"{sector}_{k}"] = v
 
                 # Add utility per sector as output
                 utility_df = deepcopy(GlossaryCore.UtilityDf)
@@ -116,11 +110,11 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
         years, population, energy_price = get_inputs_for_utility_all_sectors(self.get_sosdisc_inputs())
         for sector in sector_list:
-            consumption, energy_price_ref, init_rate_time_pref, scurve_shift, scurve_stretch = get_inputs_for_utility_per_sector(
+            consumption, init_rate_time_pref, scurve_shift, scurve_stretch = get_inputs_for_utility_per_sector(
                 self.get_sosdisc_inputs(), sector)
 
             utility_quantities = compute_utility_quantities(years, consumption, energy_price, population,
-                                                            energy_price_ref, init_rate_time_pref, scurve_shift,
+                                                            init_rate_time_pref, scurve_shift,
                                                             scurve_stretch)
 
             utility_df = pd.DataFrame({GlossaryCore.Years: years} | utility_quantities)
@@ -128,10 +122,9 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
             outputs_dict[f"{sector}.{GlossaryCore.UtilityObjectiveName}"] = np.array([
                 compute_utility_objective(years, consumption, energy_price,
                                           population,
-                                          energy_price_ref, init_rate_time_pref,
+                                          init_rate_time_pref,
                                           scurve_shift,
                                           scurve_stretch)])
-
 
         self.store_sos_outputs_values(outputs_dict)
 
@@ -140,11 +133,10 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
 
         years, population, energy_price = get_inputs_for_utility_all_sectors(self.get_sosdisc_inputs())
         for sector in inputs_dict[GlossaryCore.SectorListValue]:
-            consumption, energy_price_ref, init_rate_time_pref, scurve_shift, scurve_stretch = get_inputs_for_utility_per_sector(
+            consumption, init_rate_time_pref, scurve_shift, scurve_stretch = get_inputs_for_utility_per_sector(
                 self.get_sosdisc_inputs(), sector)
 
             obj_derivatives = compute_utility_objective_der(years, consumption, energy_price, population,
-                                                            energy_price_ref,
                                                             init_rate_time_pref,
                                                             scurve_shift, scurve_stretch)
 
@@ -181,7 +173,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == "charts":
                     chart_list = chart_filter.selected_values
 
-        if "Sectorization" in chart_list:
+        if "Sectorization" in chart_list or True:
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             sectors_consumption_df = self.get_sosdisc_inputs(GlossaryCore.SectorizedConsumptionDfValue)
             years = sectors_consumption_df[GlossaryCore.Years]
@@ -191,8 +183,8 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 f'Variation of quantity of things consumed per capita since {years[0]} [%]',
                 'Utility gain per capita', chart_name='Model visualisation : Quantity utility per capita function')
             for sector in sector_list:
-                scurve_stretch = self.get_sosdisc_inputs(f"{sector}.strech_scurve")
-                scurve_shift = self.get_sosdisc_inputs(f"{sector}.shift_scurve")
+                scurve_stretch = self.get_sosdisc_inputs(f"{sector}_strech_scurve")
+                scurve_shift = self.get_sosdisc_inputs(f"{sector}_shift_scurve")
                 n = 200
                 ratios = np.linspace(-0.2, 4, n)
                 new_series = InstanciatedSeries((ratios - 1) * 100,

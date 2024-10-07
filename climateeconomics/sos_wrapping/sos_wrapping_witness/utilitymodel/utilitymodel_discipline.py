@@ -52,7 +52,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'strech_scurve': {'type': 'float', 'default': 1.7},
         'shift_scurve': {'type': 'float', 'default': -0.2},
-        'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'init_rate_time_pref': {'type': 'float', 'default': 0., 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX, 'unit': '$/MWh',

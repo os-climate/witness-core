@@ -179,7 +179,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            f'Temperature_change.{GlossaryCore.TemperatureDetailedDfValue}','tp_a3' ]
+            f'Temperature change.{GlossaryCore.TemperatureDetailedDfValue}','tp_a3' ]
         (temperature_detail_df_dict, tipping_points_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         chart_name = f'Atmosphere temperature evolution (tipping point {list(tipping_points_dict.values())[0]}°C)'
