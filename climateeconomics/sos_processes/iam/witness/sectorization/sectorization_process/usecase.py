@@ -234,12 +234,12 @@ class Study(StudyManager):
                 f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': damage_df,
                 f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': damage_df,
                 f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': damage_df,
-                f'{self.study_name}.Utility.{GlossaryCore.SectorAgriculture}.strech_scurve': 3.7,
-                f'{self.study_name}.Utility.{GlossaryCore.SectorServices}.strech_scurve': 1.7,
-                f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}.strech_scurve': 1.7,
-                f'{self.study_name}.Utility.{GlossaryCore.SectorAgriculture}.shift_scurve': -0.4,
-                f'{self.study_name}.Utility.{GlossaryCore.SectorServices}.shift_scurve': -0.2,
-                f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}.shift_scurve': -0.2,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorAgriculture}_strech_scurve': 3.7,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorAgriculture}_shift_scurve': -0.4,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorServices}_strech_scurve': 1.8,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorServices}_shift_scurve': -0.2,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}_strech_scurve': 1.7,
+                f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}_shift_scurve': -0.25,
             })
 
         setup_data_list.append(cons_input)
@@ -259,5 +259,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()
