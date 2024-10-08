@@ -209,13 +209,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        economics_detail_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue))
+        economics_detail_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue)
         inputs_dict = self.get_sosdisc_inputs()
         sector_list = inputs_dict[GlossaryCore.SectorListValue]
         years = list(economics_detail_df[GlossaryCore.Years].values)
         compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
         damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
+        investment_df = self.get_sosdisc_outputs(GlossaryCore.InvestmentDfValue)
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
@@ -231,6 +232,23 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                    economics_detail_df=economics_detail_df,
                                                    damage_detailed_df=damage_detailed_df)
 
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.GrossOutput in chart_list:
+            chart_name = 'Consumption breakdown'
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'T$', stacked_bar=True, chart_name=chart_name)
+
+
+            new_series = InstanciatedSeries(years, economics_detail_df[GlossaryCore.GrossOutput], 'Gross output', 'bar', True)
+            new_chart.add_series(new_series)
+            new_series = InstanciatedSeries(years, - damage_detailed_df[GlossaryCore.DamagesFromClimate], 'Immediate damages from climate', 'bar', True)
+            new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(years, - investment_df[GlossaryCore.InvestmentsValue], 'Investments', 'bar', True)
+            new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(years, economics_detail_df[GlossaryCore.OutputNetOfDamage].values - investment_df[GlossaryCore.InvestmentsValue].values, 'Consumption', 'lines', True)
+            new_chart.add_series(new_series)
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.OutputNetOfDamage in chart_list:

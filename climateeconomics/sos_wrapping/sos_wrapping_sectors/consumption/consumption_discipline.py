@@ -137,6 +137,12 @@ class ConsumptionDiscipline(SoSWrapp):
                 if sector != GlossaryCore.Years:
                     new_series = InstanciatedSeries(years, sectorized_consumption_df[sector], sector, 'bar', True)
                     new_chart.add_series(new_series)
+
+            columns_to_sum = list(sectorized_consumption_df.columns)
+            columns_to_sum.remove(GlossaryCore.Years)
+            new_series = InstanciatedSeries(years, sectorized_consumption_df[columns_to_sum].sum(axis=1), "Total", 'lines', True)
+            new_chart.add_series(new_series)
+
             instanciated_charts.append(new_chart)
 
         if "Sectorized Consumption" in charts:
