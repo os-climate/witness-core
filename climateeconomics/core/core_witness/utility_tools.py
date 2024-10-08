@@ -118,13 +118,11 @@ def compute_utility_quantities(years: np.ndarray, consumption: np.ndarray, energ
     discounted_utility_pc = utility_pc * discount_rate
     pop_ratio = population / population[0]
     discounted_utility_pop = pop_ratio * discounted_utility_pc
-    utility_obj = np.mean(discounted_utility_pop)
 
     return {GlossaryCore.UtilityDiscountRate: discount_rate, GlossaryCore.UtilityQuantity: quantity_pc,
             GlossaryCore.PerCapitaUtilityQuantity: utility_pc,
             GlossaryCore.DiscountedUtilityQuantityPerCapita: discounted_utility_pc,
-            GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,
-            GlossaryCore.UtilityObjectiveName: utility_obj}
+            GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,}
 
 
 def compute_utility_quantities_der(quantity_name: str, years: np.ndarray, consumption: np.ndarray,
@@ -142,31 +140,18 @@ def compute_utility_quantities_der(quantity_name: str, years: np.ndarray, consum
     return jac_consumption(*args), jac_energy_price(*args), jac_population(*args)
 
 
-def compute_utility_objective(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
+def compute_utility_objective(years_range: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
                               population: np.ndarray, init_rate_time_pref: float,
                               scurve_shift: float, scurve_stretch: float) -> float:
-    """
-    Compute the utility objective function.
+    consumption_pc = consumption / population
+    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
+    utility_pc = 1 - s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
+    discount_rate = compute_utility_discount_rate(years_range, years_range[0], init_rate_time_pref)
+    discounted_utility_pc = utility_pc * discount_rate
+    pop_ratio = population[0] / population
+    discounted_utility_pop = pop_ratio * discounted_utility_pc
 
-    :param years: Array of years
-    :param consumption: Array of consumption values
-    :param energy_price: Array of energy prices
-    :param population: Array of population values
-    :param init_rate_time_pref: Initial rate of time preference
-    :param scurve_shift: S-curve shift parameter
-    :param scurve_stretch: S-curve stretch parameter
-    :return: 1.0 - Utility objective value
-    """
-
-    utility_quantities = compute_utility_quantities(years,
-                                                    consumption,
-                                                    energy_price,
-                                                    population,
-                                                    init_rate_time_pref,
-                                                    scurve_shift,
-                                                    scurve_stretch)
-
-    return 1.0 - utility_quantities[GlossaryCore.UtilityObjectiveName]
+    return discounted_utility_pop.mean()
 
 
 def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,

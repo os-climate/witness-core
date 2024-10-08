@@ -71,8 +71,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     }
 
     def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
-        self.macro_model = MacroeconomicsModel(inputs_dict)
+        self.macro_model = MacroeconomicsModel()
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
@@ -309,7 +308,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_series = InstanciatedSeries(
                     years, ordonate_data, legend[key], 'lines', True)
                 new_chart.add_series(new_series)
-
+            new_series = InstanciatedSeries(
+                years, economics_detail_df[GlossaryCore.Capital] * 0.85, '85% of capital stock', 'lines', True)
+            new_chart.add_series(new_series)
             instanciated_charts.append(new_chart)
 
         if 'share capital' in chart_list:
@@ -412,6 +413,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 years, list(applied_damages), 'Total', 'lines', True)
 
             new_chart.add_series(new_series)
+            new_chart.post_processing_section_name = "Damages"
 
             instanciated_charts.append(new_chart)
 
@@ -440,6 +442,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             new_series = InstanciatedSeries(years, list(applied_damages), 'Total applied', 'lines', True)
             new_chart.add_series(new_series)
+            new_chart.post_processing_section_name = "Damages"
 
             instanciated_charts.append(new_chart)
 
@@ -466,6 +469,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 years, list(damages_from_climate), 'Total', 'lines', True)
 
             new_chart.add_series(new_series)
+            new_chart.post_processing_section_name = "Damages"
 
             instanciated_charts.append(new_chart)
 
@@ -492,6 +496,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 years, list(damages_from_productivity_loss), 'Total', 'lines', True)
 
             new_chart.add_series(new_series)
+            new_chart.post_processing_section_name = "Damages"
 
             instanciated_charts.append(new_chart)
 
