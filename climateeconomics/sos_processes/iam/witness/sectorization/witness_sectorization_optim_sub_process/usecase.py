@@ -234,10 +234,11 @@ class Study(ClimateEconomicsStudyManager):
 
         self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.ShareSectorInvestmentDfValue)
         self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.ShareSectorEnergyDfValue)
+        self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.EnergyInvestmentsWoTaxValue)
         return values_dict_out
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
-
+    uc_cls.load_data()
+    uc_cls.run()
