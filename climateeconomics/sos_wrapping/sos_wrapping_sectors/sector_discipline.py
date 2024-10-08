@@ -391,7 +391,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         detailed_capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}")
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         #growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
-        capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
+        max_capital_utilisation_ratio = self.get_sosdisc_inputs('max_capital_utilisation_ratio')
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
@@ -423,7 +423,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             visible_line = True
             ordonate_data = list(first_serie)
             percentage_productive_capital_stock = list(
-                first_serie * capital_utilisation_ratio)
+                first_serie * max_capital_utilisation_ratio)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Productive Capital Stock', 'lines', visible_line)
             new_chart.add_series(new_series)
@@ -435,7 +435,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(new_series)
             new_series = InstanciatedSeries(
                 years, percentage_productive_capital_stock,
-                f'{capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
+                f'{max_capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
             new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
