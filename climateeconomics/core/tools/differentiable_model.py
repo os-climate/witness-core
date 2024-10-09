@@ -385,6 +385,8 @@ class DifferentiableModel:
         Returns:
             Dictionary mapping input names to their gradients/jacobians
         """
+        # pylint: disable=E1120
+
         result = {}
 
         # Check if output is scalar or array
@@ -563,6 +565,7 @@ class DifferentiableModel:
             Union[npt.NDArray[np.float64], Dict[str, Union[npt.NDArray[np.float64], Dict[str, npt.NDArray[np.float64]]]]]:
                 The computed partial derivative(s).
         """
+        # pylint: disable=E1120
 
         # go to compute_partial_2 if given a list of input_names
         # if isinstance(input_names, list):
@@ -611,7 +614,7 @@ class DifferentiableModel:
             Union[npt.NDArray[np.float64], Dict[str, Union[npt.NDArray[np.float64], Dict[str, npt.NDArray[np.float64]]]]]:
                 The computed partial derivative(s).
         """
-
+        # pylint: disable=E1120
 
         wrapped_compute = self._create_wrapped_compute_array(output_name, input_names)
 
