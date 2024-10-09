@@ -159,6 +159,15 @@ class Study(ClimateEconomicsStudyManager):
             'namespace': [GlossaryCore.NS_FUNCTIONS]
         }
 
+        anti_decreasing_net_gdp_obj = {
+            'variable': [GlossaryCore.DecreasingGdpIncrementsObjectiveValue],
+            'parent': [GlossaryCore.DecreasingGdpIncrementsObjectiveValue],
+            'ftype': [FunctionManagerDisc.OBJECTIVE],
+            'weight': [3],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM],
+            'namespace': [GlossaryCore.NS_FUNCTIONS]
+        }
+
         welfare_secto = {
             'variable': [f"{sector}.{GlossaryCore.UtilityObjectiveName}" for sector in GlossaryCore.SectorsPossibleValues],
             'parent': ["sectorized welfare"] * 3,
@@ -178,7 +187,7 @@ class Study(ClimateEconomicsStudyManager):
         }
 
         func_df = pd.concat([pd.DataFrame(var) for var in [
-            welfare_secto, constraints_secto, constraints_energy_mix
+            welfare_secto, constraints_secto, constraints_energy_mix, anti_decreasing_net_gdp_obj
         ]])
 
         return func_df

@@ -180,6 +180,47 @@ def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, en
     return d_consumption(*args), d_energy_price(*args), d_population(*args)
 
 
+def compute_decreasing_gdp_obj(output_net_of_damage: np.ndarray):
+    """
+    decreasing net gdp obj =   Sum_i [min(Qi+1/Qi, 1) - 1] / nb_years
+
+    Note: this objective is self normalized to [0,1], no need for reference.
+    It should be minimized and not maximized !
+    :return:
+    :rtype:
+    """
+    increments = list(output_net_of_damage[1:]/output_net_of_damage[:-1])
+    increments.append(0)
+    increments = np.array(increments)
+
+    increments[increments >= 1] = 1.
+    increments -= 1
+    increments[-1] = 0
+
+    decreasing_gpd_obj = - np.array([np.mean(increments)])
+    return decreasing_gpd_obj
+
+
+def d_decreasing_gdp_obj(output_net_of_damage: np.ndarray):
+    output_shift = list(output_net_of_damage[1:])
+    output_shift.append(0)
+    output_shift = np.array(output_shift)
+
+    increments = list(output_net_of_damage[1:] / output_net_of_damage[:-1])
+    increments.append(0)
+    increments = np.array(increments)
+
+    a = list(- output_shift / output_net_of_damage**2)
+    derivative = np.diag(a) + np.diag(1/output_net_of_damage[:-1], k=1)
+
+    derivative[increments > 1] = 0.
+    for i, incr in enumerate(increments):
+        if incr == 1:
+            derivative[i, i+1] = 0.
+    derivative = -np.mean(derivative, axis=0)
+
+    return derivative
+
 def s_curve_function(x: np.ndarray, shift: float, stretch: float) -> np.ndarray:
     """
     Compute the S-curve function.
