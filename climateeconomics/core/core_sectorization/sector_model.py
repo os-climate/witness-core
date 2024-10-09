@@ -422,6 +422,9 @@ class SectorModel:
         doutput = doutput @ np.diag(f_prime)
         return doutput
 
+    def d_section_energy_consumption_d_energy_prod(self):
+        return {section: np.diag(self.energy_consumption_percentage_per_section_df[section].values / 100.) for section in self.section_list}
+
     def d_energy_production(self):
         """
         Derivative of :
@@ -444,13 +447,15 @@ class SectorModel:
 
         d_net_output_d_energy = self._d_net_output_d_user_input(d_gross_output_d_energy)
 
-        d_damages_d_energy, d_estimated_damages_d_energy = self.d_damages_d_user_input(d_gross_output_d_energy, d_net_output_d_energy)
+        d_damages_d_user_input, d_estimated_damages_d_user_input, d_damages_from_climate, d_estimated_damages_from_climate, d_damages_from_prod_loss, d_estimated_damages_from_prod_loss = self.d_damages_d_user_input(d_gross_output_d_energy, d_net_output_d_energy)
 
         d_k_d_energy = self._null_derivative()
         d_ku_ub_contraint = self.d_ku_upper_bound_constraint_d_user_input(d_usable_capital_d_energy, d_k_d_energy)
         d_damages_from_climate = self.__d_damages_from_climate_d_user_input(d_gross_output_d_energy, d_net_output_d_energy)
+        d_section_energy_cons_d_energy_prod_dict = self.d_section_energy_consumption_d_energy_prod()
+        d_section_gdp = self.d_section_gdp_d_user_input(d_net_output_d_energy)
 
-        return d_gross_output_d_energy, d_net_output_d_energy, d_estimated_damages_d_energy, d_damages_d_energy, d_ku_ub_contraint, d_usable_capital_d_energy
+        return d_gross_output_d_energy, d_net_output_d_energy, d_damages_d_user_input, d_estimated_damages_d_user_input, d_damages_from_climate, d_estimated_damages_from_climate, d_damages_from_prod_loss, d_estimated_damages_from_prod_loss, d_ku_ub_contraint, d_usable_capital_d_energy, d_section_energy_cons_d_energy_prod_dict, d_section_gdp
 
     def d_working_pop(self):
         """
@@ -478,12 +483,14 @@ class SectorModel:
             dQ_dY = np.ones_like(self.years_range)
         d_net_output_d_wap = np.diag(dQ_dY) @ d_gross_output_d_wap
 
-        d_damages_d_wap, d_estimated_damages_d_wap = self.d_damages_d_user_input(d_gross_output_d_wap, d_net_output_d_wap)
+        d_damages_d_wap, d_estimated_damages_d_wap, d_damages_from_climate, d_estimated_damages_from_climate, d_damages_from_prod_loss, d_estimated_damages_from_prod_loss = self.d_damages_d_user_input(d_gross_output_d_wap, d_net_output_d_wap)
 
         d_k_d_wap = self._null_derivative()
         d_ku_constraint_d_wap = self.d_ku_upper_bound_constraint_d_user_input(self._null_derivative(), d_k_d_wap)
 
-        return d_gross_output_d_wap, d_net_output_d_wap, d_damages_d_wap, d_estimated_damages_d_wap, d_ku_constraint_d_wap
+        d_section_gdp = self.d_section_gdp_d_user_input(d_net_output_d_wap)
+
+        return d_gross_output_d_wap, d_net_output_d_wap, d_damages_d_wap, d_estimated_damages_d_wap, d_damages_from_climate, d_estimated_damages_from_climate, d_damages_from_prod_loss, d_estimated_damages_from_prod_loss, d_ku_constraint_d_wap, d_section_gdp
 
     def d_damage_frac_output(self):
         """derivative of net output wrt damage frac output"""
@@ -515,7 +522,9 @@ class SectorModel:
         d_k_d_dfo = self._null_derivative()
         dku_ub_constraint_d_dfo = self.d_ku_upper_bound_constraint_d_user_input(self._null_derivative(), d_k_d_dfo)
 
-        return d_gross_output_d_dfo, d_net_output_d_dfo, d_estimated_damages_d_dfo, d_damages_d_dfo, dku_ub_constraint_d_dfo
+        d_section_gdp = self.d_section_gdp_d_user_input(d_net_output_d_dfo)
+
+        return d_gross_output_d_dfo, d_net_output_d_dfo, d_estimated_damages_d_dfo, d_damages_d_dfo, d_damages_from_productivity_loss_d_dfo , d_estimated_damages_from_productivity_loss_d_dfo, d_estimated_damages_from_climate_d_dfo, d_damages_from_climate_d_dfo, dku_ub_constraint_d_dfo, d_section_gdp
 
     def d_invests(self):
         """ Compute derivative of capital wrt investments.
@@ -642,7 +651,7 @@ class SectorModel:
         d_damages_d_user_input = d_damages_from_prod_loss + d_damages_from_climate
         d_estimated_damages_d_user_input = d_estimated_damages_from_climate + d_estimated_damages_from_prod_loss
 
-        return d_damages_d_user_input, d_estimated_damages_d_user_input
+        return d_damages_d_user_input, d_estimated_damages_d_user_input, d_damages_from_climate, d_estimated_damages_from_climate, d_damages_from_prod_loss, d_estimated_damages_from_prod_loss
 
     def output_types_to_float(self):
         """make sure these dataframes columns have type float instead of object to avoid errors during
@@ -660,3 +669,9 @@ class SectorModel:
 
     def d_ku_upper_bound_constraint_d_user_input(self, d_ku_d_user_input, d_kne_d_user_input):
         return - (d_ku_d_user_input - self.max_capital_utilisation_ratio * d_kne_d_user_input) / self.usable_capital_ref
+
+    def d_section_gdp_d_user_input(self, d_net_output_d_user_input: np.ndarray):
+        """
+        Splitting output net of damages between sections of the sector
+        """
+        return {section: np.diag(self.gdp_percentage_per_section_df[section] /100.) @ d_net_output_d_user_input for section in self.section_list}

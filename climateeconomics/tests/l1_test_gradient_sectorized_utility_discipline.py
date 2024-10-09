@@ -72,10 +72,17 @@ class SectorizedUtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.sectorized_consumption_df = pd.DataFrame({GlossaryCore.Years: self.years})
         for sector in self.sector_list:
             self.sectorized_consumption_df[sector] = 1.0
-
+        np.random.seed(42)
+        economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: 0,
+            GlossaryCore.OutputNetOfDamage: np.random.uniform(0, 150, len(self.years)),
+            GlossaryCore.Capital: 0,
+        })
         self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
+                            f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
                             f'{self.name}.{GlossaryCore.SectorizedConsumptionDfValue}': self.sectorized_consumption_df}
 
@@ -95,6 +102,7 @@ class SectorizedUtilityJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
+                                    f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorizedConsumptionDfValue}'],
-                            outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjectiveName}' for sector in self.sector_list],
+                            outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjectiveName}' for sector in self.sector_list] + [f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',],
                             derr_approx='complex_step')

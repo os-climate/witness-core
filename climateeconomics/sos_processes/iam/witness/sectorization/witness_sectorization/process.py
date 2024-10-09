@@ -49,7 +49,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # before get them
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=False)
+            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], use_resources_bool=False)
 
         chain_builders.extend(chain_builders_energy)
 

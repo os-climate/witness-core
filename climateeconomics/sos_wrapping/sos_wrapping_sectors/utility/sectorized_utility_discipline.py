@@ -28,9 +28,11 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.utility_tools import (
+    compute_decreasing_gdp_obj,
     compute_utility_objective,
     compute_utility_objective_der,
     compute_utility_quantities,
+    d_decreasing_gdp_obj,
     get_inputs_for_utility_all_sectors,
     get_inputs_for_utility_per_sector,
     s_curve_function,
@@ -81,8 +83,11 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
         GlossaryCore.SectorizedConsumptionDfValue: GlossaryCore.SectorizedConsumptionDf,
+        GlossaryCore.EconomicsDfValue: GlossaryCore.SectorizedEconomicsDf,
     }
-    DESC_OUT = {}
+    DESC_OUT = {
+        GlossaryCore.DecreasingGdpIncrementsObjectiveValue: GlossaryCore.DecreasingGdpIncrementsObjective,
+    }
 
     def setup_sos_disciplines(self):
         """setup dynamic inputs and outputs"""
@@ -126,12 +131,22 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                                           scurve_shift,
                                           scurve_stretch)])
 
+        outputs_dict[GlossaryCore.DecreasingGdpIncrementsObjectiveValue] = compute_decreasing_gdp_obj(
+            self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)[GlossaryCore.OutputNetOfDamage].values
+        )
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
         inputs_dict = self.get_sosdisc_inputs()
 
         years, population, energy_price = get_inputs_for_utility_all_sectors(self.get_sosdisc_inputs())
+
+        d_decreasing_obj = d_decreasing_gdp_obj(self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)[GlossaryCore.OutputNetOfDamage].values)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.DecreasingGdpIncrementsObjectiveValue,),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            d_decreasing_obj)
+
         for sector in inputs_dict[GlossaryCore.SectorListValue]:
             consumption, init_rate_time_pref, scurve_shift, scurve_stretch = get_inputs_for_utility_per_sector(
                 self.get_sosdisc_inputs(), sector)

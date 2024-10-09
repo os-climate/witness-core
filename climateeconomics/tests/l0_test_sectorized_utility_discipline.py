@@ -63,6 +63,12 @@ class SectorizedUtilityDiscTest(unittest.TestCase):
             GlossaryCore.Years: self.years,
             GlossaryCore.EnergyPriceValue: np.arange(200, 200 + len(self.years))
         })
+        economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.OutputNetOfDamage: 0.,
+            GlossaryCore.PerCapitaConsumption: 0.,
+        })
 
         sectorized_consumption_df = pd.DataFrame({GlossaryCore.Years: self.years})
         for sector in self.sector_list:
@@ -71,6 +77,7 @@ class SectorizedUtilityDiscTest(unittest.TestCase):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
+                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                        f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
                        f'{self.name}.{GlossaryCore.SectorizedConsumptionDfValue}': sectorized_consumption_df,
                        }
