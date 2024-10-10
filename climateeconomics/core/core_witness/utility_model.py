@@ -17,8 +17,10 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_witness.utility_tools import compute_utility_quantities_bis, \
-    compute_utility_objective_bis
+from climateeconomics.core.core_witness.utility_tools import (
+    compute_utility_objective_bis,
+    compute_utility_quantities_bis,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 

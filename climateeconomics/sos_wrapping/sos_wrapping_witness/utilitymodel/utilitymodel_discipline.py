@@ -26,7 +26,10 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.utility_model import UtilityModel
-from climateeconomics.core.core_witness.utility_tools import compute_utility_objective_bis_der, s_curve_function
+from climateeconomics.core.core_witness.utility_tools import (
+    compute_utility_objective_bis_der,
+    s_curve_function,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 
