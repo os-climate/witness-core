@@ -100,6 +100,7 @@ class GlossaryCore:
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
     ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
+    ConstraintEnergyCarbonNegative2050 = "constraint_energy_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
     clean_energy = "clean_energy"
     ConsumptionObjective = "consumption_objective"
@@ -1108,7 +1109,6 @@ class GlossaryCore:
     }
 
     QuantityObjectiveValue = "Quantity_objective"
-    LastYearUtilityObjectiveValue = "last_year_utility_obj"
 
     QuantityObjective = {
         "var_name": QuantityObjectiveValue,
@@ -1116,15 +1116,6 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
         "description": "objective of quantity of things consumed. Quantity  = Consumption / Price",
-        "unit": "-",
-    }
-
-    LastYearUtilityObjective = {
-        "var_name": LastYearUtilityObjectiveValue,
-        "type": "array",
-        "visibility": "Shared",
-        "namespace": NS_FUNCTIONS,
-        "description": "utility of last year",
         "unit": "-",
     }
 

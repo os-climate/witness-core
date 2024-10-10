@@ -75,8 +75,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         })
 
         self.values_dict = {f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-
+                            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
@@ -97,10 +96,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'
                             ],
-                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
-                                     f'{self.name}.{GlossaryCore.LastYearUtilityObjectiveValue}',
-                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
-                                     #f'{self.name}.{GlossaryCore.NetGdpGrowthRateObjectiveValue}',
-                            ],
+                            outputs=[f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
+                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',],
                             derr_approx='complex_step')

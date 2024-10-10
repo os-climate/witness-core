@@ -108,7 +108,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EconomicsEmissionDfValue: GlossaryCore.EmissionDf,
         GlossaryCore.ResidentialEmissionsDfValue: GlossaryCore.ResidentialEmissionsDf,
         GlossaryCore.AllSectionsEmissionsDfValue: GlossaryCore.AllSectionsEmissionsDf,
-        GlossaryCore.ConstraintCarbonNegative2050: {'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_FUNCTIONS}
+        GlossaryCore.ConstraintCarbonNegative2050: {'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_FUNCTIONS, 'description': 'constraint for being carbon negative (all sectors, all sources)'},
+        GlossaryCore.ConstraintEnergyCarbonNegative2050: {'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_FUNCTIONS, 'description': 'constraint for being carbon negative (only energy sector)'}
     }
 
     def setup_sos_disciplines(self):
@@ -180,7 +181,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         inputs_dict = self.get_sosdisc_inputs()
-        
+
         self.emissions_model.configure_parameters_update(inputs_dict)
         # Compute de emissions_model
         self.emissions_model.compute(inputs_dict)
@@ -196,7 +197,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.EnergyCarbonIntensityDfValue: self.emissions_model.carbon_intensity_of_energy_mix,
             GlossaryCore.EconomicsEmissionDfValue: self.emissions_model.total_economics_emisssions[GlossaryCore.EmissionDf['dataframe_descriptor'].keys()],
             GlossaryCore.ResidentialEmissionsDfValue: self.emissions_model.energy_emission_households_df,
-            GlossaryCore.ConstraintCarbonNegative2050: self.emissions_model.emissions_after_2050_df
+            GlossaryCore.ConstraintCarbonNegative2050: self.emissions_model.emissions_after_2050_df,
+            GlossaryCore.ConstraintEnergyCarbonNegative2050: self.emissions_model.energy_emissions_after_2050_df
         }
 
         for sector in self.emissions_model.new_sector_list:
@@ -212,9 +214,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """ 
-        Compute jacobian for each coupling variable 
-        gradient of coupling variable to compute: 
+        """
+        Compute jacobian for each coupling variable
+        gradient of coupling variable to compute:
         co2_emissions_Gt
 
         """
@@ -249,6 +251,12 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
                     ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
                     d_constraint_2050)
+
+            d_constraint_2050 = self.emissions_model.d_2050_energy_carbon_negative_constraint(np.identity(len(years)))
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.ConstraintEnergyCarbonNegative2050, GlossaryCore.TotalEnergyEmissions),
+                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                d_constraint_2050 * self.emissions_model.gwp_100[ghg])
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.TotalEnergyEmissions, GlossaryCore.TotalEnergyEmissions),
