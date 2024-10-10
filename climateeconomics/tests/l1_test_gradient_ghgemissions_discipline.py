@@ -98,7 +98,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}",
             f"{self.name}.{self.model_name}.{GlossaryCore.EconomicsEmissionDfValue}",
             f"{self.name}.{self.model_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}",
-            f"{self.name}.{GlossaryCore.ConstraintCarbonNegative2050}"
+            f"{self.name}.{GlossaryCore.ConstraintCarbonNegative2050}",
+            f"{self.name}.{GlossaryCore.ConstraintEnergyCarbonNegative2050}"
         ]
 
         #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
