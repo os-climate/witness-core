@@ -110,7 +110,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.DamageDfValue: self.macro_model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             GlossaryCore.DamageDetailedDfValue: self.macro_model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
         }
-        
 
         self.store_sos_outputs_values(outputs_dict)
 

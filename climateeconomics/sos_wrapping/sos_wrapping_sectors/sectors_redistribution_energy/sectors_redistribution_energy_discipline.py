@@ -107,6 +107,18 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         for sector in GlossaryCore.SectorsValueOptim:
             sector_share_energy = inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
 
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.AllSectorsShareEnergyDfValue, sector),
+                (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
+                np.identity(len(total_energy_production))
+            )
+
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.AllSectorsShareEnergyDfValue, deduced_sector),
+                (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
+                - np.identity(len(total_energy_production))
+            )
+
             sum_share_other_sectors.append(sector_share_energy)
             self.set_partial_derivative_for_other_types(
                 (f'{sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),

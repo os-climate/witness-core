@@ -125,9 +125,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
                 resource_consumed[f'{energy} {techno}'] = consumption_techno[
                                                               f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})'] * techno_disc.get_sosdisc_inputs(
                     'scaling_factor_techno_consumption')
-    CCUS = execution_engine.dm.get_disciplines_with_name(
-        f'{WITNESS_ns}.CCUS')[0]
-    ccs_list = CCUS.get_sosdisc_inputs(GlossaryCore.ccs_list)
+    ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_capture]
     for stream in ccs_list:
         stream_disc = execution_engine.dm.get_disciplines_with_name(
             f'{WITNESS_ns}.CCUS.{stream}')[0]
