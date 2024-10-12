@@ -65,8 +65,8 @@ class SectorizedUtilityDiscTest(unittest.TestCase):
         })
         economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.GrossOutput: 10.,
-            GlossaryCore.OutputNetOfDamage: 0.,
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.OutputNetOfDamage: 10.,
             GlossaryCore.PerCapitaConsumption: 0.,
             GlossaryCore.Capital: 0.,
         })

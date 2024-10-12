@@ -73,23 +73,24 @@ class UtilityModel():
 
         self.economics_df = economics_df
         energy_price = energy_mean_price[GlossaryCore.EnergyPriceValue].values
-        self.population_df = population_df
-        consumption_pc = economics_df[GlossaryCore.PerCapitaConsumption].values
+
         population = population_df[GlossaryCore.PopulationValue].values
+        consumption_pc = economics_df[GlossaryCore.PerCapitaConsumption].values
 
         utility_quantities = compute_utility_quantities_bis(self.years_range, consumption_pc, energy_price, population,
-                                                            self.init_rate_time_pref, self.shift_scurve, self.strech_scurve)
+                                                        self.init_rate_time_pref, self.shift_scurve,
+                                                        self.strech_scurve)
 
         self.utility_df = pd.DataFrame({GlossaryCore.Years: self.years_range} | utility_quantities)
-        self.discounted_utility_quantity_objective = np.array([compute_utility_objective_bis(self.years_range, consumption_pc, energy_price,
-                                      population,
-                                      self.init_rate_time_pref,
-                                      self.shift_scurve,
-                                      self.strech_scurve)])
+        self.discounted_utility_quantity_objective = np.array([compute_utility_objective_bis(self.years_range, consumption_pc, energy_price, population,
+                                                        self.init_rate_time_pref, self.shift_scurve,
+                                                        self.strech_scurve)])
 
         self.compute_decreasing_gdp_obj()
         self.compute_net_gdp_growth_rate_obj()
 
+
+    ######### GRADIENTS ########
     def compute_decreasing_gdp_obj(self):
         """
         decreasing net gdp obj =   Sum_i [min(Qi+1/Qi, 1) - 1] / nb_years
