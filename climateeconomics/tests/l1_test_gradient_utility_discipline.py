@@ -41,7 +41,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -76,8 +75,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         })
 
         self.values_dict = {f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-
+                            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
@@ -98,10 +96,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'
                             ],
-                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
-                                     f'{self.name}.{GlossaryCore.LastYearUtilityObjectiveValue}',
-                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
-                                     #f'{self.name}.{GlossaryCore.NetGdpGrowthRateObjectiveValue}',
-                            ],
+                            outputs=[f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
+                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',],
                             derr_approx='complex_step')

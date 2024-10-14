@@ -247,7 +247,6 @@ class CropTestCase(unittest.TestCase):
         model_name = 'crop'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   GlossaryCore.NS_REFERENCE: f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',

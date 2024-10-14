@@ -77,8 +77,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                                        TempChange.INTEGRAL_OBJECTIVE],
                                    'default': TempChange.INTEGRAL_OBJECTIVE,
                                    'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
-        'temperature_change_ref': {'type': 'float', 'default': 0.2, 'unit': '°C', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                   'namespace': GlossaryCore.NS_REFERENCE, 'user_level': 2},
+        'temperature_change_ref': {'type': 'float', 'default': 0.2, 'unit': '°C', 'user_level': 2},
 
         'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
                                    'namespace': GlossaryCore.NS_WITNESS},

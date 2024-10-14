@@ -41,7 +41,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
-                   GlossaryCore.NS_REFERENCE: f'{ns_scatter}.NormalizationReferences',
                    'ns_agriculture': ns_scatter,
                    GlossaryCore.NS_MACRO: ns_scatter,
                    'ns_forest': ns_scatter}
@@ -50,7 +49,7 @@ class ProcessBuilder(BaseProcessBuilder):
             'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
             'GHGCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.ghgcycle.ghgcycle_discipline.GHGCycleDiscipline',
             'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline',
-            'Temperature_change': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline.TempChangeDiscipline',
+            'Temperature change': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline.TempChangeDiscipline',
             'Utility': 'climateeconomics.sos_wrapping.sos_wrapping_witness.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline',
             'Policy': 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'}
 
@@ -72,7 +71,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
                    'ns_resource': f'{self.ee.study_name}.EnergyMix',
                    GlossaryCore.NS_GHGEMISSIONS: f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}",
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences'}
+                   }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

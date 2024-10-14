@@ -81,7 +81,7 @@ class WitnessCoarseDesynchro(unittest.TestCase):
             df_coupled = self.ee.dm.get_value(
                 f'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryCore.TemperatureDfValue}')
             df_ncoupled = self.ee.dm.get_value(
-                'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.Temperature_change.temperature_detailed_df')
+                'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.Temperature change.temperature_detailed_df')
 
             # test synchronisation of coupled variable temperature_df and
             # non-coupled output temperature_detailed_df

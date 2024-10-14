@@ -74,8 +74,8 @@ class LandUseV2Discipline(SoSWrapp):
                                             'forest_constraint_evolution': ('float', None, False),
                                             'global_forest_surface': ('float', None, False), }
                },
-               LandUseV2.LAND_DEMAND_CONSTRAINT_REF: {
-                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},}
+               LandUseV2.LAND_DEMAND_CONSTRAINT_REF: {'type': 'float', 'unit': 'GHa', 'default': 0.1,},
+    }
 
     DESC_OUT = {
         LandUseV2.LAND_DEMAND_CONSTRAINT: {

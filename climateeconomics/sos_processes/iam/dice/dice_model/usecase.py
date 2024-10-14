@@ -78,18 +78,18 @@ class Study(StudyManager):
         dice_input[f"{self.study_name}.{'Macroeconomics'}.{'lo_per_capita_conso'}"] = 0.01
         dice_input[f"{self.study_name}.{'Macroeconomics'}.{'saving_rate'}"] = 0.2
 
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'init_temp_ocean'}"] = .00687
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'init_temp_atmo'}"] = 0.85
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'eq_temp_impact'}"] = 3.1
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'init_forcing_nonco'}"] = 0.5
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'hundred_forcing_nonco'}"] = 1.0
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'climate_upper'}"] = 0.1005
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'transfer_upper'}"] = 0.088
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'transfer_lower'}"] = 0.025
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'forcing_eq_co2'}"] = 3.6813
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'lo_tocean'}"] = -1.0
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'up_tatmo'}"] = 12.0
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'up_tocean'}"] = 20.0
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'init_temp_ocean'}"] = .00687
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'init_temp_atmo'}"] = 0.85
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'eq_temp_impact'}"] = 3.1
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'init_forcing_nonco'}"] = 0.5
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'hundred_forcing_nonco'}"] = 1.0
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'climate_upper'}"] = 0.1005
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'transfer_upper'}"] = 0.088
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'transfer_lower'}"] = 0.025
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'forcing_eq_co2'}"] = 3.6813
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'lo_tocean'}"] = -1.0
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'up_tatmo'}"] = 12.0
+        dice_input[f"{self.study_name}.{'Temperature change'}.{'up_tocean'}"] = 20.0
 
         dice_input[f"{self.study_name}.{'Utility.scaleone'}"] = 0.0302455265681763
         dice_input[f"{self.study_name}.{'Utility.scaletwo'}"] = -10993.704

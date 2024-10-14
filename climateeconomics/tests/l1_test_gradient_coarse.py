@@ -648,7 +648,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}.{self.energy_name}',
                    'ns_resource': f'{self.name}.{self.energy_name}.resource',
                    GlossaryCore.NS_CCS: f'{self.name}.{self.energy_name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}.{self.energy_name}',
                    'ns_energy': f'{self.name}.{self.energy_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -719,7 +718,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    'ns_resource': f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}.{self.energy_name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    'ns_energy': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -813,7 +811,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    'ns_resource': f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}.{self.energy_name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    'ns_energy': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -910,7 +907,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    'ns_resource': f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}.{self.energy_name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    'ns_energy': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

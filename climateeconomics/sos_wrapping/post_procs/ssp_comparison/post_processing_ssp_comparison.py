@@ -82,7 +82,7 @@ _mean_temperature = {FILE_NAME: 'mean_temperature_global.csv',
 
 FORCING = 'Forcing'
 _forcing = {FILE_NAME: 'forcing_global.csv',
-            VAR_NAME: 'Temperature_change.temperature_detail_df',
+            VAR_NAME: 'Temperature change.temperature_detail_df',
             COLUMN: GlossaryCore.Forcing,
             CHART_TITLE: 'Total radiative forcing: WITNESS vs. SSP scenarios (IPCC)',
             UNIT_CONV_FACTOR: 1.0,

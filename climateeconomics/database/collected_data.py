@@ -159,15 +159,22 @@ class HeavyCollectedData(ColectedData):
         if column is None:
             column = self.column_to_pick
         df = self.value
-        sub_df = df.loc[(df["years"] >= year_start) & (df["years"] <= year_end)]
-        years = sub_df["years"].values
-        values = sub_df[column]
+        years = df["years"].values
+        values = df[column].values
         f_interp = interp1d(x=years, y=values)
         all_years = np.arange(year_start, year_end + 1)
-        out = pd.DataFrame({
-            "years": all_years,
-            column: f_interp(all_years) if len(all_years) > 1 else float(sub_df[column].values[0])
-        })
+        if year_start < years.min() or year_end > years.max():
+            raise ValueError("Données indisponible pour ces années")
+        if year_start == year_end:
+            out = pd.DataFrame({
+                "years": all_years,
+                column: values[0]
+            })
+        else:
+            out = pd.DataFrame({
+                "years": all_years,
+                column: f_interp(all_years)
+            })
         return out
 
     def get_all_cols_between_years(self, year_start: int, year_end: int) -> pd.DataFrame:

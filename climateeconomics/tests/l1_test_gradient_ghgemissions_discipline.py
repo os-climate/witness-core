@@ -98,7 +98,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}",
             f"{self.name}.{self.model_name}.{GlossaryCore.EconomicsEmissionDfValue}",
             f"{self.name}.{self.model_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}",
-            f"{self.name}.{GlossaryCore.ConstraintCarbonNegative2050}"
+            f"{self.name}.{GlossaryCore.ConstraintCarbonNegative2050}",
+            f"{self.name}.{GlossaryCore.ConstraintEnergyCarbonNegative2050}"
         ]
 
         #self.outputs_checked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}" for sector in GlossaryCore.SectorsPossibleValues]
@@ -116,7 +117,6 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_agriculture': f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',
@@ -162,7 +162,6 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_agriculture': f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',

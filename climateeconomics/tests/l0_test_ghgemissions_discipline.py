@@ -36,7 +36,6 @@ class GHGEmissionDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',

@@ -40,7 +40,7 @@ class MacroeconomicsModel():
     SECTORS_LIST = GlossaryCore.SectorsPossibleValues
     SECTORS_OUT_UNIT = {disc.sector_name: disc.prod_cap_unit for disc in SECTORS_DISC_LIST}
 
-    def __init__(self, inputs_dict):
+    def __init__(self):
         """Constructor"""
         self.inputs = None
         self.economics_df = None
@@ -55,7 +55,6 @@ class MacroeconomicsModel():
         self.max_invest_constraint = None
         self.share_max_invest = None
         self.max_invest_constraint_ref = None
-        self.configure_parameters(inputs_dict)
 
     def configure_parameters(self, inputs_dict):
         """Configure with inputs_dict from the discipline"""

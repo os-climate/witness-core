@@ -58,7 +58,7 @@ class Study(ClimateEconomicsStudyManager):
                 f"{self.USECASE7}.FossilTechnoInfo.Energy_costs",
                 f"{self.USECASE7}.FossilTechnoInfo.CO2_from_production",
                 f"{self.USECASE7}.Damage.tp_a3",
-                f"{self.USECASE7}.Temperature_change.init_temp_atmo",
+                f"{self.USECASE7}.Temperature change.init_temp_atmo",
                           ],
         }
         input_selection = pd.DataFrame(input_selection)
