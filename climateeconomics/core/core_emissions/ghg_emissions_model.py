@@ -33,6 +33,7 @@ class GHGEmissions:
         """
         self.constraint_nze_2050_ref = None
         self.emissions_after_2050_df = None
+        self.energy_emissions_after_2050_df = None
         self.energy_emission_households_df = None
         self.residential_energy_consumption = None
         self.dict_sector_sections_energy_emissions = {}
@@ -114,7 +115,7 @@ class GHGEmissions:
     def compute_total_emissions(self):
         """
         Total emissions is defined as : land use emissions + energy mix emissions + non energy emissions from economy
-        
+
         Note : Non energy emissions from economy are only in CO2 Equivalent
         """
         for ghg in self.GHG_TYPE_LIST:
@@ -364,11 +365,10 @@ class GHGEmissions:
         self.compute_gwp_per_sector()
         self.compute_CO2_emissions_objective()
         self.compute_net_zero_2050_constraint_df()
-
+        self.compute_energy_net_zero_2050_constraint_df()
 
         # compute emission households
         self.compute_energy_emission_households()
-
 
     def compute_carbon_intensity_of_energy_mix(self):
         """
@@ -444,9 +444,15 @@ class GHGEmissions:
         })
 
     def compute_net_zero_2050_constraint_df(self):
-
         self.emissions_after_2050_df = self.ghg_emissions_df.loc[self.years_range >= 2050][[GlossaryCore.Years, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)]]
         self.emissions_after_2050_df[GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)] = self.emissions_after_2050_df[GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)].values / self.constraint_nze_2050_ref
 
     def d_2050_carbon_negative_constraint(self, d_total_co2_emissions):
+        return d_total_co2_emissions[self.years_range >= 2050] / self.constraint_nze_2050_ref
+
+    def compute_energy_net_zero_2050_constraint_df(self):
+        self.energy_emissions_after_2050_df = self.total_energy_co2eq_emissions.loc[self.years_range >= 2050][[GlossaryCore.Years, GlossaryCore.TotalEnergyEmissions]]
+        self.energy_emissions_after_2050_df[GlossaryCore.TotalEnergyEmissions] = self.energy_emissions_after_2050_df[GlossaryCore.TotalEnergyEmissions].values / self.constraint_nze_2050_ref
+
+    def d_2050_energy_carbon_negative_constraint(self, d_total_co2_emissions):
         return d_total_co2_emissions[self.years_range >= 2050] / self.constraint_nze_2050_ref

@@ -37,7 +37,7 @@ class ProcessBuilder(BaseProcessBuilder):
             'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_dice.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
             'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_dice.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
 
-            'Temperature_change': 'climateeconomics.sos_wrapping.sos_wrapping_dice.tempchange.tempchange_discipline.TempChangeDiscipline',
+            'Temperature change': 'climateeconomics.sos_wrapping.sos_wrapping_dice.tempchange.tempchange_discipline.TempChangeDiscipline',
             'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_dice.damagemodel.damagemodel_discipline.DamageDiscipline',
             'Carbon_emissions': 'climateeconomics.sos_wrapping.sos_wrapping_dice.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline',
             'Utility': 'climateeconomics.sos_wrapping.sos_wrapping_dice.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline'}

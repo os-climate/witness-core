@@ -26,6 +26,10 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.core.core_witness.utility_model import UtilityModel
+from climateeconomics.core.core_witness.utility_tools import (
+    compute_utility_objective_bis_der,
+    s_curve_function,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -52,20 +56,19 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'strech_scurve': {'type': 'float', 'default': 1.7},
         'shift_scurve': {'type': 'float', 'default': -0.2},
-        'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'init_rate_time_pref': {'type': 'float', 'default': 0., 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX, 'unit': '$/MWh',
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), GlossaryCore.EnergyPriceValue: ('float', None, True)}},
         'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
-        'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE, 'user_level': 2},
+        'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'user_level': 2},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
         GlossaryCore.UtilityDfValue: GlossaryCore.UtilityDf,
         GlossaryCore.QuantityObjectiveValue: GlossaryCore.QuantityObjective,
-        GlossaryCore.LastYearUtilityObjectiveValue: GlossaryCore.LastYearUtilityObjective,
         GlossaryCore.DecreasingGdpIncrementsObjectiveValue: GlossaryCore.DecreasingGdpIncrementsObjective,
         GlossaryCore.NetGdpGrowthRateObjectiveValue: GlossaryCore.NetGdpGrowthRateObjective,
     }
@@ -82,12 +85,11 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         energy_mean_price = inp_dict[GlossaryCore.EnergyMeanPriceValue]
         population_df = inp_dict[GlossaryCore.PopulationDfValue]
 
-        utility_df = self.utility_m.compute(economics_df, energy_mean_price, population_df)
+        self.utility_m.compute(economics_df, energy_mean_price, population_df)
 
         dict_values = {
-            GlossaryCore.UtilityDfValue: utility_df[GlossaryCore.UtilityDf['dataframe_descriptor'].keys()],
+            GlossaryCore.UtilityDfValue: self.utility_m.utility_df[GlossaryCore.UtilityDf['dataframe_descriptor'].keys()],
             GlossaryCore.QuantityObjectiveValue: self.utility_m.discounted_utility_quantity_objective,
-            GlossaryCore.LastYearUtilityObjectiveValue: self.utility_m.last_year_utility_objective,
             GlossaryCore.DecreasingGdpIncrementsObjectiveValue: self.utility_m.decreasing_gpd_obj,
             GlossaryCore.NetGdpGrowthRateObjectiveValue: self.utility_m.net_gdp_growth_rate_obj
         }
@@ -110,78 +112,36 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                 - energy_mean_price : GlossaryCore.EnergyPriceValue
         """
 
-        d_utility_denergy_price, d_utility_dpcc, \
-        d_discounted_utility_quantity_denergy_price, d_discounted_utility_quantity_dpcc, \
-        d_pop_discounted_utility_quantity_denergy_price, d_pop_discounted_utility_quantity_dpcc, d_pop_discounted_utility_quantity_dpop, \
-        d_utility_obj_d_energy_price, d_utility_obj_dpcc, d_utility_obj_dpop,\
-        d_ly_utility_obj_d_energy_price, d_ly_utility_obj_dpcc, d_ly_utility_obj_dpop= self.utility_m.d_utility_quantity()
+        economics_df = self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)
+        energy_mean_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)
+        population_df = self.get_sosdisc_inputs(GlossaryCore.PopulationDfValue)
+
+        energy_price = energy_mean_price[GlossaryCore.EnergyPriceValue].values
+        consumption_pc = economics_df[GlossaryCore.PerCapitaConsumption].values
+        population = population_df[GlossaryCore.PopulationValue].values
+        years = population_df[GlossaryCore.Years].values
+        init_rate_time_pref = self.get_sosdisc_inputs('init_rate_time_pref')
+        scurve_shift = self.get_sosdisc_inputs('shift_scurve')
+        scurve_stretch = self.get_sosdisc_inputs('strech_scurve')
+
+        obj_derivatives = compute_utility_objective_bis_der(years, consumption_pc, energy_price, population, init_rate_time_pref, scurve_shift, scurve_stretch)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.QuantityObjectiveValue,),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            obj_derivatives[0])
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.QuantityObjectiveValue,),
+            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
+            obj_derivatives[1])
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.QuantityObjectiveValue,),
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+            obj_derivatives[2])
 
         d_decreasing_obj_d_economic = self.utility_m.d_decreasing_gdp_obj()
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaUtilityQuantity),
-            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
-            d_utility_denergy_price)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaUtilityQuantity),
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            d_utility_dpcc)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtilityQuantityPerCapita),
-            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
-            d_discounted_utility_quantity_denergy_price)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtilityQuantityPerCapita),
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            d_discounted_utility_quantity_dpcc)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedQuantityUtilityPopulation),
-            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
-            d_pop_discounted_utility_quantity_denergy_price)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedQuantityUtilityPopulation),
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            d_pop_discounted_utility_quantity_dpcc)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedQuantityUtilityPopulation),
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            d_pop_discounted_utility_quantity_dpop)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.QuantityObjectiveValue,),
-            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
-            d_utility_obj_d_energy_price)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.QuantityObjectiveValue,),
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            d_utility_obj_dpcc)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.QuantityObjectiveValue,),
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            d_utility_obj_dpop)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.LastYearUtilityObjectiveValue,),
-            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
-            d_ly_utility_obj_d_energy_price)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.LastYearUtilityObjectiveValue,),
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            d_ly_utility_obj_dpcc)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.LastYearUtilityObjectiveValue,),
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            d_ly_utility_obj_dpop)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DecreasingGdpIncrementsObjectiveValue,),
@@ -270,9 +230,10 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
             n = 200
             ratios = np.linspace(-0.2, 4, n)
-
+            scurve_shift = self.get_sosdisc_inputs('shift_scurve')
+            scurve_stretch = self.get_sosdisc_inputs('strech_scurve')
             new_chart = TwoAxesInstanciatedChart(f'Variation of quantity of things consumed per capita since {years[0]} [%]', 'Utility gain per capita', chart_name='Model visualisation : Quantity utility per capita function')
-            new_series = InstanciatedSeries(list((ratios -1)*100), list(self.utility_m.s_curve_function(ratios)), 'welfare quantity', 'lines', True)
+            new_series = InstanciatedSeries(list((ratios -1)*100), list(s_curve_function(ratios, scurve_shift, scurve_stretch)), 'welfare quantity', 'lines', True)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
             #new_chart.to_plotly().show()

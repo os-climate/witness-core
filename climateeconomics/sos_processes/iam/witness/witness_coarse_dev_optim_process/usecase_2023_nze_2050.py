@@ -96,10 +96,8 @@ class Study(StudyOptimInvestDistrib):
         func_df_varname = list(filter(lambda x: 'function_df' in x, data_witness.keys()))[0]
         function_df = data_witness[func_df_varname]
         func_df_carbon_neg_2050 = pd.DataFrame({
-            'variable': [GlossaryCore.ConstraintCarbonNegative2050, ],
-            'parent': [
-                'constraint_carbon_negative_2050'
-            ],
+            'variable': [GlossaryCore.ConstraintEnergyCarbonNegative2050, ],
+            'parent': [GlossaryCore.ConstraintEnergyCarbonNegative2050],
             'ftype': FunctionManager.INEQ_CONSTRAINT,
             'weight': 1.,
             FunctionManager.AGGR: FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,

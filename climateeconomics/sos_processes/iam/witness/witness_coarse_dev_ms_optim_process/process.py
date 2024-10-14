@@ -25,6 +25,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'description': '',
         'category': '',
         'version': '',
+        'icon': "fa-solid fa-list",
     }
 
     def get_builders(self):

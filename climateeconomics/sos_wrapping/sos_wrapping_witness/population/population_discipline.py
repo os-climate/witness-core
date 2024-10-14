@@ -147,10 +147,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])
-            years = np.arange(year_start, year_end + 1)
-            default_calories_pc_df = pd.DataFrame({GlossaryCore.Years: years,
-                                                   'kcal_pc': 2400.})
-            self.set_dynamic_default_values({GlossaryCore.CaloriesPerCapitaValue: default_calories_pc_df})
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                default_calories_pc_df = pd.DataFrame({GlossaryCore.Years: years,
+                                                       'kcal_pc': 2400.})
+                self.set_dynamic_default_values({GlossaryCore.CaloriesPerCapitaValue: default_calories_pc_df})
 
     def run(self):
         ''' model execution '''

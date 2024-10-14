@@ -103,7 +103,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Temperature increase since industrial revolution' + u'[\u00B0C]'
         y_axis_name = 'Welfare [-]'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature change.temperature_detail_df',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}'
                     ]
         (temperature_df_dict, utility_df_dict) = get_df_per_scenario_dict(
@@ -232,7 +232,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df', ]
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature change.temperature_detail_df', ]
         (temperature_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         temperature_dict = {}

@@ -47,8 +47,6 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
-        GlossaryCore.SectorListValue: GlossaryCore.SectorList,
-        GlossaryCore.MissingSectorNameValue: GlossaryCore.MissingSectorName,
         GlossaryCore.ShareResidentialEnergyDfValue: GlossaryCore.ShareResidentialEnergyDf,
         GlossaryCore.ShareOtherEnergyDfValue: GlossaryCore.ShareOtherEnergyDf
     }
@@ -64,17 +62,16 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if GlossaryCore.SectorListValue in self.get_data_in():
-            sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
-            deduced_sector = self.get_sosdisc_inputs(GlossaryCore.MissingSectorNameValue)
+        GlossaryCore.SectorsPossibleValues = GlossaryCore.SectorsPossibleValues
+        deduced_sector = GlossaryCore.get_deduced_sector()
 
-            # share percentage for last sector is determined as 100 % - share other sector
-            for sector in sector_list:
-                if sector != deduced_sector:
-                    dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorEnergyDf)
+        # share percentage for last sector is determined as 100 % - share other sector
+        for sector in GlossaryCore.SectorsPossibleValues:
+            if sector != deduced_sector:
+                dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorEnergyDf)
 
-            for sector in sector_list:
-                dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors)
+        for sector in GlossaryCore.SectorsPossibleValues:
+            dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors)
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -87,8 +84,6 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
         sectors_energy, all_sectors_energy_df, residential_energy_df, all_sectors_share_df = model.compute(inputs)
 
-        sector_list = inputs[GlossaryCore.SectorListValue]
-
         outputs = {
             GlossaryCore.RedistributionEnergyProductionDfValue: all_sectors_energy_df,
             GlossaryCore.ResidentialEnergyConsumptionDfValue: residential_energy_df,
@@ -96,7 +91,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
         }
 
-        for sector in sector_list:
+        for sector in GlossaryCore.SectorsPossibleValues:
             outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = sectors_energy[sector]
 
         self.store_sos_outputs_values(outputs)
@@ -104,15 +99,12 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
     def compute_sos_jacobian(self):
         """compute gradients"""
         inputs = self.get_sosdisc_inputs()
-        sectors_list = inputs[GlossaryCore.SectorListValue]
-        deduced_sector = inputs[GlossaryCore.MissingSectorNameValue]
-
-        computed_sectors = list(filter(lambda x: x != deduced_sector, sectors_list))
+        deduced_sector = GlossaryCore.get_deduced_sector()
 
         total_energy_production = inputs[GlossaryCore.EnergyProductionValue][GlossaryCore.TotalProductionValue].values
 
         sum_share_other_sectors = []
-        for sector in computed_sectors:
+        for sector in GlossaryCore.SectorsValueOptim:
             sector_share_energy = inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
 
             sum_share_other_sectors.append(sector_share_energy)
@@ -166,7 +158,6 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
             np.diag(1 - sum_share_other_sectors / 100.)
         )
 
-
     def get_chart_filter_list(self):
         chart_filters = []
 
@@ -190,9 +181,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
             # first graph
             total_production_values = self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue)[GlossaryCore.TotalProductionValue].values
             redistribution_energy_production_df = self.get_sosdisc_outputs(GlossaryCore.RedistributionEnergyProductionDfValue)
-            sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             categories_list = [col for col in redistribution_energy_production_df.columns if col != GlossaryCore.Years]
-            other_categ_list = [categ for categ in categories_list if categ not in sector_list]
 
             chart_name = "Energy allocated to sectors [TWh]"
 

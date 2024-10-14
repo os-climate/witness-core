@@ -30,7 +30,6 @@ def get_ref_variable(var_name: str, unit: str, default_value=None) -> dict:
     variable_description = {
         "var_name": var_name,
         "description": f"Normalisation reference for {var_name}",
-        "namespace": "ns_ref",
         "type": "float",
         "unit": unit,
     }
@@ -52,6 +51,7 @@ class GlossaryCore:
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
+    NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
     NB_POLES_OPTIM_KU = 14  # number of poles for bspline design variables utilization ratio
     Years = "years"
@@ -100,6 +100,7 @@ class GlossaryCore:
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
     ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
+    ConstraintEnergyCarbonNegative2050 = "constraint_energy_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
     clean_energy = "clean_energy"
     ConsumptionObjective = "consumption_objective"
@@ -174,7 +175,6 @@ class GlossaryCore:
     NS_SECTORS = "ns_sectors"
     NS_WITNESS = "ns_witness"
     NS_ENERGY_MIX = "ns_energy_mix"
-    NS_REFERENCE = "ns_ref"
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
@@ -347,6 +347,8 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
+
+    SectorsValueOptim = [SectorServices, SectorAgriculture]
 
     CaloriesPerCapitaValue = "calories_pc_df"
     CaloriesPerCapita = {
@@ -1107,7 +1109,6 @@ class GlossaryCore:
     }
 
     QuantityObjectiveValue = "Quantity_objective"
-    LastYearUtilityObjectiveValue = "last_year_utility_obj"
 
     QuantityObjective = {
         "var_name": QuantityObjectiveValue,
@@ -1115,15 +1116,6 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
         "description": "objective of quantity of things consumed. Quantity  = Consumption / Price",
-        "unit": "-",
-    }
-
-    LastYearUtilityObjective = {
-        "var_name": LastYearUtilityObjectiveValue,
-        "type": "array",
-        "visibility": "Shared",
-        "namespace": NS_FUNCTIONS,
-        "description": "utility of last year",
         "unit": "-",
     }
 
@@ -1161,6 +1153,16 @@ class GlossaryCore:
             Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
+        },
+    }
+    ConsumptionSectorBreakdown = {
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            "Output net of damage": ("int", [1900, YearEndDefault], False),
+            "Investment in sector": ("float", [0, 1e30], False),
+            "Attributed investment in energy": ("float", [0, 1e30], False),
+            "Consumption": ("float", [0, 1e30], False),
         },
     }
 
@@ -1229,19 +1231,6 @@ class GlossaryCore:
         },
     }
 
-    ConsumptionDfValue = "consumption_df"
-    ConsumptionDf = {
-        "var_name": ConsumptionDfValue,
-        "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
-        "unit": "",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            Consumption: ("float", [0, 1e30], False),
-        },
-    }
-
     AllSectorsShareEnergyDfValue = "all_sectors_share_df"
     AllSectorsShareEnergyDf = {
         "type": "dataframe",
@@ -1291,12 +1280,12 @@ class GlossaryCore:
         },
     }
 
-    AllSectorsDemandDfValue = "sectorized_consumption_df"
-    AllSectorsDemandDf = {
-        "var_name": AllSectorsDemandDfValue,
+    SectorizedConsumptionDfValue = "sectorized_consumption_df"
+    SectorizedConsumptionDf = {
+        "var_name": SectorizedConsumptionDfValue,
         "type": "dataframe",
         "unit": "T$",
-        "description": "all sectors demands aggregated",
+        "description": "all sectors consumptions aggregated",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
         "visibility": "Shared",
@@ -1463,33 +1452,6 @@ class GlossaryCore:
         },
     }
 
-    SectorDemandPerCapitaDfValue = "sector_demand_per_capita"
-    SectorDemandPerCapitaDf = {
-        "var_name": SectorDemandPerCapitaDfValue,
-        "type": "dataframe",
-        "unit": "$/person",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
-        "description": "Sector demand per person per year [$/year]",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            SectorDemandPerCapitaDfValue: ("float", [0, 1e30], False),
-        },
-    }
-
-    SectorGDPDemandDfValue = "GDP sector demand [G$]"
-    SectorGDPDemandDf = {
-        "var_name": SectorGDPDemandDfValue,
-        "type": "dataframe",
-        "unit": "T$",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            SectorGDPDemandDfValue: ("float", [0, 1e30], False),
-        },
-    }
-
     InvestmentShareGDPValue = "total_investment_share_of_gdp"
     InvestmentShareGDP = {
         "var_name": InvestmentShareGDPValue,
@@ -1587,8 +1549,6 @@ class GlossaryCore:
         "unit": "T$",
         "default": 100.0,
         "user_level": 3,
-        "visibility": "Shared",
-        "namespace": NS_REFERENCE,
         "description": "reference to normalize usable capital objective",
     }
 
@@ -1645,8 +1605,6 @@ class GlossaryCore:
         "type": "float",
         "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.0),
         "unit": "Gt",
-        "visibility": "Shared",
-        "namespace": NS_REFERENCE,
         "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
     }
 
@@ -1747,3 +1705,7 @@ class GlossaryCore:
         for key in columns:
             out[key] = np.random.uniform(min_val, max_val)
         return pd.DataFrame(out)
+
+    @classmethod
+    def get_deduced_sector(cls)-> str:
+        return list(set(cls.SectorsPossibleValues).difference(set(cls.SectorsValueOptim)))[0]

@@ -96,94 +96,10 @@ class Study(ClimateEconomicsStudyManager):
         values_dict = {}
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        dv_arrays_dict = {}
-
-        design_var_descriptor = {}
+        dv_arrays_dict, design_var_descriptor = self.get_dvar_descriptor_energy_mix(dspace=dspace_df)
         years = np.arange(self.year_start, self.year_end + 1)
 
-        for energy in self.witness_uc.energy_list:
-            energy_wo_dot = energy.replace('.', '_')
-            for technology in self.witness_uc.dict_technos[energy]:
-                technology_wo_dot = technology.replace('.', '_')
 
-                dvar_value = dspace_df[
-                    f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
-                activated_dvar = dspace_df[
-                    f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
-                activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
-
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = activated_value
-
-                design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': GlossaryCore.invest_mix,
-                    'out_type': 'dataframe',
-                    'key': f'{energy}.{technology}',
-                    'index': years,
-                    'index_name': GlossaryCore.Years,
-                    'namespace_in': GlossaryCore.NS_ENERGY_MIX,
-                    'namespace_out': 'ns_invest'
-                }
-
-                design_var_utilization_ratio_value = dspace_df[f'{energy}_{technology}_utilization_ratio_array'][
-                    'value']
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
-                    data={GlossaryCore.Years: years,
-                          GlossaryCore.UtilisationRatioValue: 100.})
-                # add design variable for utilization ratio per technology
-                design_var_descriptor[f'{energy}_{technology}_utilization_ratio_array'] = {
-                    'out_name': f'{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}',
-                    'out_type': 'dataframe',
-                    'key': GlossaryCore.UtilisationRatioValue,
-                    'index': years,
-                    'index_name': GlossaryCore.Years,
-                    'namespace_in': GlossaryCore.NS_ENERGY_MIX,
-                    'namespace_out': GlossaryCore.NS_ENERGY_MIX
-                }
-
-        for ccs in self.witness_uc.ccs_list:
-            ccs_wo_dot = ccs.replace('.', '_')
-            for technology in self.witness_uc.dict_technos[ccs]:
-                technology_wo_dot = technology.replace('.', '_')
-                dvar_value = dspace_df[
-                    f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
-                activated_dvar = dspace_df[
-                    f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
-                activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
-
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
-                    activated_value
-                design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': GlossaryCore.invest_mix,
-                    'out_type': 'dataframe',
-                    'key': f'{ccs}.{technology}',
-                    'index': years,
-                    'index_name': GlossaryCore.Years,
-                    'namespace_in': GlossaryCore.NS_CCS,
-                    'namespace_out': 'ns_invest'
-                }
-
-                design_var_utilization_ratio_value = dspace_df[f'{ccs}.{technology}_utilization_ratio_array']['value']
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
-                    data={GlossaryCore.Years: years,
-                          GlossaryCore.UtilisationRatioValue: 100.})
-                # add design variable for utilization ratio per technology
-                design_var_descriptor[f'{ccs}.{technology}_utilization_ratio_array'] = {
-                    'out_name': f'{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}',
-                    'out_type': 'dataframe',
-                    'key': GlossaryCore.UtilisationRatioValue,
-                    'index': years,
-                    'index_name': GlossaryCore.Years,
-                    'namespace_in': GlossaryCore.NS_CCS,
-                    'namespace_out': GlossaryCore.NS_CCS
-                }
 
         dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = \
             dspace_df['forest_investment_array_mix']['value']
@@ -302,15 +218,6 @@ class Study(ClimateEconomicsStudyManager):
                 dspace_dict[column].append(value)
 
         self.dspace = pd.DataFrame(dspace_dict)
-        """
-
-        keys_to_update = ['carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
-                          'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
-                          'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
-        for key in keys_to_update:
-            self.dspace.loc[self.dspace['variable'] == key, 'value'] = \
-                np.array(self.dspace.loc[self.dspace['variable'] == key, 'lower_bnd'])
-        """
         values_dict[
             f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
         values_dict[f'{self.study_name}.design_space'] = self.dspace
