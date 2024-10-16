@@ -108,6 +108,19 @@ class Study(ClimateEconomicsStudyManager):
             'namespace_in': GlossaryCore.NS_FUNCTIONS,
             'namespace_out': 'ns_invest'
         }
+        energy_list = ['fossil', GlossaryCore.clean_energy]
+        techno_list = ['FossilSimpleTechno', GlossaryCore.CleanEnergySimpleTechno]
+        for energy, technology in zip(energy_list, techno_list):
+            # add design variable for utilization ratio per technology
+            design_var_descriptor[f'{energy}_{technology}_utilization_ratio_array'] = {
+                'out_name': f'{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}',
+                'out_type': 'dataframe',
+                'key': GlossaryCore.UtilisationRatioValue,
+                'index': years,
+                'index_name': GlossaryCore.Years,
+                'namespace_in': GlossaryCore.NS_ENERGY_MIX,
+                'namespace_out': GlossaryCore.NS_ENERGY_MIX
+            }
 
         self.design_var_descriptor = design_var_descriptor
         values_dict[
@@ -150,6 +163,10 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.extra_name}.percentage_gdp_invest_in_energy_array'] = np.ones(GlossaryCore.NB_POLES_OPTIM_KU - 1)
+        values_dict[
+            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.EnergyMix.fossil_FossilSimpleTechno_utilization_ratio_array'] = np.ones(GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1) * 100.
+        values_dict[
+            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.EnergyMix.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array'] = np.ones(GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1) * 100.
 
         setup_data_list.append(values_dict)
         setup_data_list.append(dv_arrays_dict)
