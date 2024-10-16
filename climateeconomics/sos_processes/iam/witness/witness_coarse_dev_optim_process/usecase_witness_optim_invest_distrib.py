@@ -84,16 +84,19 @@ class Study(ClimateEconomicsStudyManager):
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
 
+    #Todo: remove and replace usage in children class by method defined in too.design_space_creator
     def make_dspace_invests(self, dspace_dict: dict[str: list], overwrite_invest_index: list[int] = []) -> pd.DataFrame:
         return make_dspace_invests(dspace_dict, self.year_end, overwrite_invest_index)
 
+    # Todo: remove and replace usage in children class by method defined in too.design_space_creator
     def make_dspace_utilization_ratio(self, dspace_dict: dict[str: list]) -> pd.DataFrame:
         return make_dspace_utilization_ratio(dspace_dict)
 
+    # Todo: remove and replace usage in children class by method defined in too.design_space_creator
     def make_dspace_Ine(self, enable_variable: bool = False):
         return make_dspace_Ine(enable_variable)
 
-
+    # Todo: remove and replace usage in children class by method defined in too.design_space_creator
     def get_ine_dvar_descr(self):
         return get_ine_dvar_descr(self.year_start, self.year_end)
 
