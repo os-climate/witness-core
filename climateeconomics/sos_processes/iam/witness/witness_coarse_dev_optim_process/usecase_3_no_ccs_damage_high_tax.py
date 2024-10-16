@@ -57,7 +57,7 @@ class Study(StudyOptimInvestDistrib):
         }
         dspace_UR = self.make_dspace_utilization_ratio(dspace_UR)
         # dspace pour Ine
-        dspace_Ine = self.make_dspace_Ine()
+        dspace_Ine = self.make_dspace_Ine(enable_variable=False)
         dspace = pd.concat([dspace_invests, dspace_UR, dspace_Ine])
 
         # update design var descriptor with Ine variable

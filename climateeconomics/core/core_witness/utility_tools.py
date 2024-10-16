@@ -124,6 +124,25 @@ def compute_utility_quantities(years: np.ndarray, consumption: np.ndarray, energ
             GlossaryCore.DiscountedUtilityQuantityPerCapita: discounted_utility_pc,
             GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,}
 
+def compute_utility_quantities_bis(years: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
+                               population: np.ndarray, init_rate_time_pref: float,
+                               scurve_shift: float, scurve_stretch: float):
+    year_start = int(years[0])
+    year_end = int(years[-1])
+    years_range = np.arange(year_start, year_end + 1)
+
+    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
+    utility_pc = s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
+    discount_rate = compute_utility_discount_rate(years_range, year_start, init_rate_time_pref)
+    discounted_utility_pc = utility_pc * discount_rate
+    pop_ratio = population / population[0]
+    discounted_utility_pop = pop_ratio * discounted_utility_pc
+
+    return {GlossaryCore.UtilityDiscountRate: discount_rate, GlossaryCore.UtilityQuantity: quantity_pc,
+            GlossaryCore.PerCapitaUtilityQuantity: utility_pc,
+            GlossaryCore.DiscountedUtilityQuantityPerCapita: discounted_utility_pc,
+            GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,}
+
 
 def compute_utility_quantities_der(quantity_name: str, years: np.ndarray, consumption: np.ndarray,
                                    energy_price: np.ndarray,
@@ -144,6 +163,18 @@ def compute_utility_objective(years_range: np.ndarray, consumption: np.ndarray, 
                               population: np.ndarray, init_rate_time_pref: float,
                               scurve_shift: float, scurve_stretch: float) -> float:
     consumption_pc = consumption / population
+    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
+    utility_pc = 1 - s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
+    discount_rate = compute_utility_discount_rate(years_range, years_range[0], init_rate_time_pref)
+    discounted_utility_pc = utility_pc * discount_rate
+    pop_ratio = population[0] / population
+    discounted_utility_pop = pop_ratio * discounted_utility_pc
+
+    return discounted_utility_pop.mean()
+
+def compute_utility_objective_bis(years_range: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
+                                  population: np.ndarray, init_rate_time_pref: float,
+                                  scurve_shift: float, scurve_stretch: float) -> float:
     quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
     utility_pc = 1 - s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
     discount_rate = compute_utility_discount_rate(years_range, years_range[0], init_rate_time_pref)
@@ -179,55 +210,6 @@ def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, en
 
     return d_consumption(*args), d_energy_price(*args), d_population(*args)
 
-
-def compute_utility_quantities_bis(years: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
-                                   population: np.ndarray, init_rate_time_pref: float,
-                                   scurve_shift: float, scurve_stretch: float):
-    year_start = int(years[0])
-    year_end = int(years[-1])
-    years_range = np.arange(year_start, year_end + 1)
-
-    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
-    utility_pc = s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
-    discount_rate = compute_utility_discount_rate(years_range, year_start, init_rate_time_pref)
-    discounted_utility_pc = utility_pc * discount_rate
-    pop_ratio = population / population[0]
-    discounted_utility_pop = pop_ratio * discounted_utility_pc
-
-    return {GlossaryCore.UtilityDiscountRate: discount_rate, GlossaryCore.UtilityQuantity: quantity_pc,
-            GlossaryCore.PerCapitaUtilityQuantity: utility_pc,
-            GlossaryCore.DiscountedUtilityQuantityPerCapita: discounted_utility_pc,
-            GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,}
-
-
-def compute_utility_quantities_bis_der(quantity_name: str, years: np.ndarray, consumption_pc: np.ndarray,
-                                       energy_price: np.ndarray,
-                                       population: np.ndarray, init_rate_time_pref: float,
-                                       scurve_shift: float, scurve_stretch: float) -> Tuple[
-    np.ndarray, np.ndarray, np.ndarray]:
-    args = (years, consumption_pc, energy_price, population,
-            init_rate_time_pref, scurve_shift, scurve_stretch)
-
-    jac_consumption = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 1)
-    jac_energy_price = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 2)
-    jac_population = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 3)
-
-    return jac_consumption(*args), jac_energy_price(*args), jac_population(*args)
-
-
-def compute_utility_objective_bis(years_range: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
-                                  population: np.ndarray, init_rate_time_pref: float,
-                                  scurve_shift: float, scurve_stretch: float) -> float:
-    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
-    utility_pc = 1 - s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
-    discount_rate = compute_utility_discount_rate(years_range, years_range[0], init_rate_time_pref)
-    discounted_utility_pc = utility_pc * discount_rate
-    pop_ratio = population[0] / population
-    discounted_utility_pop = pop_ratio * discounted_utility_pc
-
-    return discounted_utility_pop.mean()
-
-
 def compute_utility_objective_bis_der(years: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
                                       population: np.ndarray, init_rate_time_pref: float,
                                       scurve_shift: float, scurve_stretch: float) -> Tuple[
@@ -252,6 +234,21 @@ def compute_utility_objective_bis_der(years: np.ndarray, consumption_pc: np.ndar
             init_rate_time_pref, scurve_shift, scurve_stretch)
 
     return d_consumption(*args), d_energy_price(*args), d_population(*args)
+
+
+def compute_utility_quantities_bis_der(quantity_name: str, years: np.ndarray, consumption_pc: np.ndarray,
+                                       energy_price: np.ndarray,
+                                       population: np.ndarray, init_rate_time_pref: float,
+                                       scurve_shift: float, scurve_stretch: float) -> Tuple[
+    np.ndarray, np.ndarray, np.ndarray]:
+    args = (years, consumption_pc, energy_price, population,
+            init_rate_time_pref, scurve_shift, scurve_stretch)
+
+    jac_consumption = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 1)
+    jac_energy_price = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 2)
+    jac_population = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 3)
+
+    return jac_consumption(*args), jac_energy_price(*args), jac_population(*args)
 
 
 def compute_decreasing_gdp_obj(output_net_of_damage: np.ndarray):

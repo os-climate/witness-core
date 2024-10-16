@@ -60,7 +60,7 @@ class Study(StudyOptimInvestDistrib):
         dspace_UR = self.make_dspace_utilization_ratio(dspace_UR)
 
         # dspace pour Ine
-        dspace_Ine = self.make_dspace_Ine()
+        dspace_Ine = self.make_dspace_Ine(enable_variable=False)
 
         # start from last iteration found in the optim assumed to be the optimum (design_space_out should but does not provide the optimum)
         # from https://integration.osc-tsa.com/study-workspace?studyId=4526, tp=3.5°C

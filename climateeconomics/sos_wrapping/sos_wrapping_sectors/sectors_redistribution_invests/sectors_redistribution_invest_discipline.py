@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import copy
+
 import numpy as np
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -43,9 +45,11 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
 
+    economics_df = copy.deepcopy(GlossaryCore.EconomicsDf)
+    del economics_df["dataframe_descriptor"][GlossaryCore.PerCapitaConsumption]
     DESC_IN = {
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
-        GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
+        GlossaryCore.EconomicsDfValue: economics_df,
     }
 
     DESC_OUT = {
