@@ -110,16 +110,16 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                          GlossaryCore.DamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),
                                          GlossaryCore.EstimatedDamagesFromClimate: np.linspace(1, 6, self.nb_per),
                                          GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(3, 9,
-                                                                                                        self.nb_per),
+                                          self.nb_per),
                                          GlossaryCore.EstimatedDamages: np.linspace(4, 15, self.nb_per),
                                          })
 
     def analytic_grad_entry(self):
         return [
-            self.test_macro_analytic_grad
+            self.test_macro_sectorized_analytic_grad
         ]
 
-    def test_macro_analytic_grad(self):
+    def test_macro_sectorized_analytic_grad(self):
         model_name = 'Macroeconomics'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',

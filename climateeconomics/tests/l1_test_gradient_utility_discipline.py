@@ -97,5 +97,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'
                             ],
                             outputs=[f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
-                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',],
+                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
+                            ],
                             derr_approx='complex_step')

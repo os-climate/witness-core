@@ -136,12 +136,15 @@ class Study(ClimateEconomicsStudyManager):
         out = pd.DataFrame(out)
         return out
 
-    def make_dspace_Ine(self, enable_variable: bool = True):
+    def make_dspace_Ine(self, enable_variable: bool = False):
+        value = DatabaseWitnessCore.ShareInvestNonEnergy.value
+        low_bound = 19. if enable_variable else 0.99 * value
+        upr_bound = 28. if enable_variable else 1.01 * value
         return pd.DataFrame({
             "variable": ["share_non_energy_invest_ctrl"],
-            "value": [[DatabaseWitnessCore.ShareInvestNonEnergy.value] * GlossaryCore.NB_POLES_COARSE],
-            "lower_bnd": [[19.] * GlossaryCore.NB_POLES_COARSE],
-            "upper_bnd": [[28.] * GlossaryCore.NB_POLES_COARSE],
+            "value": [[value] * GlossaryCore.NB_POLES_COARSE],
+            "lower_bnd": [[low_bound] * GlossaryCore.NB_POLES_COARSE],
+            "upper_bnd": [[upr_bound] * GlossaryCore.NB_POLES_COARSE],
             "enable_variable": [enable_variable],
             "activated_elem": [[False] + [True] * (GlossaryCore.NB_POLES_COARSE - 1)]
         })

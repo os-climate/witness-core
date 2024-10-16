@@ -66,11 +66,13 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     desc_in_default_diet_mortality_param = GlossaryCore.DietMortalityParamDf
     desc_in_default_diet_mortality_param['default'] = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
 
+    economics_df = deepcopy(GlossaryCore.EconomicsDf)
+    del economics_df['dataframe_descriptor'][GlossaryCore.PerCapitaConsumption]
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.PopulationStart: GlossaryCore.PopulationStartDf,
-        GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
+        GlossaryCore.EconomicsDfValue: economics_df,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',
                                        'dataframe_descriptor': {'param': ('string', None, False),

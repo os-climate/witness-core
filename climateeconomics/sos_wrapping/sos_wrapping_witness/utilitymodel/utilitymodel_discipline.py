@@ -61,7 +61,6 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX, 'unit': '$/MWh',
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), GlossaryCore.EnergyPriceValue: ('float', None, True)}},
-        'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'user_level': 2},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
@@ -88,7 +87,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         self.utility_m.compute(economics_df, energy_mean_price, population_df)
 
         dict_values = {
-            GlossaryCore.UtilityDfValue: self.utility_m.utility_df[GlossaryCore.UtilityDf['dataframe_descriptor'].keys()],
+            GlossaryCore.UtilityDfValue: self.utility_m.utility_df,
             GlossaryCore.QuantityObjectiveValue: self.utility_m.discounted_utility_quantity_objective,
             GlossaryCore.DecreasingGdpIncrementsObjectiveValue: self.utility_m.decreasing_gpd_obj,
             GlossaryCore.NetGdpGrowthRateObjectiveValue: self.utility_m.net_gdp_growth_rate_obj
@@ -112,19 +111,22 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                 - energy_mean_price : GlossaryCore.EnergyPriceValue
         """
 
-        economics_df = self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)
         energy_mean_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)
         population_df = self.get_sosdisc_inputs(GlossaryCore.PopulationDfValue)
-
-        energy_price = energy_mean_price[GlossaryCore.EnergyPriceValue].values
-        consumption_pc = economics_df[GlossaryCore.PerCapitaConsumption].values
-        population = population_df[GlossaryCore.PopulationValue].values
-        years = population_df[GlossaryCore.Years].values
+        economics_df = self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue)
         init_rate_time_pref = self.get_sosdisc_inputs('init_rate_time_pref')
         scurve_shift = self.get_sosdisc_inputs('shift_scurve')
         scurve_stretch = self.get_sosdisc_inputs('strech_scurve')
+        d_decreasing_obj_d_economic = self.utility_m.d_decreasing_gdp_obj()
 
-        obj_derivatives = compute_utility_objective_bis_der(years, consumption_pc, energy_price, population, init_rate_time_pref, scurve_shift, scurve_stretch)
+        energy_price = energy_mean_price[GlossaryCore.EnergyPriceValue].values
+        population = population_df[GlossaryCore.PopulationValue].values
+        consumption_pc = economics_df[GlossaryCore.PerCapitaConsumption].values
+        years = economics_df[GlossaryCore.Years].values
+
+        obj_derivatives = compute_utility_objective_bis_der(years, consumption_pc, energy_price, population,
+                                                        init_rate_time_pref,
+                                                        scurve_shift, scurve_stretch)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.QuantityObjectiveValue,),
@@ -140,8 +142,6 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.QuantityObjectiveValue,),
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             obj_derivatives[2])
-
-        d_decreasing_obj_d_economic = self.utility_m.d_decreasing_gdp_obj()
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DecreasingGdpIncrementsObjectiveValue,),
@@ -230,13 +230,13 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
             n = 200
             ratios = np.linspace(-0.2, 4, n)
-            scurve_shift = self.get_sosdisc_inputs('shift_scurve')
-            scurve_stretch = self.get_sosdisc_inputs('strech_scurve')
+            scurve_stretch = self.get_sosdisc_inputs("strech_scurve")
+            scurve_shift = self.get_sosdisc_inputs("shift_scurve")
+
             new_chart = TwoAxesInstanciatedChart(f'Variation of quantity of things consumed per capita since {years[0]} [%]', 'Utility gain per capita', chart_name='Model visualisation : Quantity utility per capita function')
             new_series = InstanciatedSeries(list((ratios -1)*100), list(s_curve_function(ratios, scurve_shift, scurve_stretch)), 'welfare quantity', 'lines', True)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
-            #new_chart.to_plotly().show()
 
         return instanciated_charts
 
