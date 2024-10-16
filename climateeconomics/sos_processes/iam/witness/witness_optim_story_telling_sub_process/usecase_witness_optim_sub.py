@@ -16,6 +16,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
+from tools.design_space_creator import (
+    make_dspace_utilization_ratio,
+)
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
@@ -119,7 +122,14 @@ class Study(ClimateEconomicsStudyManager):
                        'activated_elem': [[False] + [True] * (GlossaryCore.NB_POLES_OPTIM_KU - 1)]
                        }
 
-        self.dspace = pd.DataFrame(dspace_dict)
+        dspace_share_invest = pd.DataFrame(dspace_dict)
+        min_UR = 70.
+        dspace_UR = {
+            'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
+            f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array": [min_UR, min_UR, 100., True],
+        }
+        dspace_UR = make_dspace_utilization_ratio(dspace_UR)
+        self.dspace = pd.concat([dspace_share_invest, dspace_UR])
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         # create func manager
         func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.QuantityObjectiveValue,
