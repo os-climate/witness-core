@@ -16,9 +16,6 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
-from tools.design_space_creator import (
-    make_dspace_utilization_ratio,
-)
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
@@ -40,6 +37,9 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
 )
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import (
     Study as witness_usecase7_story_telling,
+)
+from tools.design_space_creator import (
+    make_dspace_utilization_ratio,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

@@ -1,8 +1,11 @@
 
-from climateeconomics.glossarycore import GlossaryCore
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 from climateeconomics.database import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
+
+
 def make_dspace_invests(dspace_dict: dict[str: list], year_start:[float], overwrite_invest_index: list[int] = []) -> pd.DataFrame:
     """
     :param dspace_dict: {variable_name: [value, lower_bnd, upper_bnd, enable_variable]}

@@ -16,12 +16,6 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from tools.design_space_creator import (
-    make_dspace_invests,
-    make_dspace_utilization_ratio,
-    make_dspace_Ine,
-    get_ine_dvar_descr
-)
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_optimization_plugins.models.design_var.design_var_disc import (
@@ -34,7 +28,6 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
@@ -46,6 +39,12 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 )
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_optim_sub_usecase,
+)
+from tools.design_space_creator import (
+    get_ine_dvar_descr,
+    make_dspace_Ine,
+    make_dspace_invests,
+    make_dspace_utilization_ratio,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

@@ -22,10 +22,10 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
     Study as StudyOptimInvestDistrib,
 )
 from tools.design_space_creator import (
+    get_ine_dvar_descr,
+    make_dspace_Ine,
     make_dspace_invests,
     make_dspace_utilization_ratio,
-    make_dspace_Ine,
-    get_ine_dvar_descr
 )
 
 
