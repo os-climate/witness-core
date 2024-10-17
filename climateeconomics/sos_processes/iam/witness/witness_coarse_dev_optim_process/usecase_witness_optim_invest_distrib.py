@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_optimization_plugins.models.design_var.design_var_disc import (
@@ -39,12 +38,6 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 )
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
     Study as witness_optim_sub_usecase,
-)
-from tools.design_space_creator import (
-    get_ine_dvar_descr,
-    make_dspace_Ine,
-    make_dspace_invests,
-    make_dspace_utilization_ratio,
 )
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -83,22 +76,6 @@ class Study(ClimateEconomicsStudyManager):
 
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
-
-    #Todo: remove and replace usage in children class by method defined in too.design_space_creator
-    def make_dspace_invests(self, dspace_dict: dict[str: list], overwrite_invest_index: list[int] = []) -> pd.DataFrame:
-        return make_dspace_invests(dspace_dict, self.year_end, overwrite_invest_index)
-
-    # Todo: remove and replace usage in children class by method defined in too.design_space_creator
-    def make_dspace_utilization_ratio(self, dspace_dict: dict[str: list]) -> pd.DataFrame:
-        return make_dspace_utilization_ratio(dspace_dict)
-
-    # Todo: remove and replace usage in children class by method defined in too.design_space_creator
-    def make_dspace_Ine(self, enable_variable: bool = False):
-        return make_dspace_Ine(enable_variable)
-
-    # Todo: remove and replace usage in children class by method defined in too.design_space_creator
-    def get_ine_dvar_descr(self):
-        return get_ine_dvar_descr(self.year_start, self.year_end)
 
     def setup_usecase(self, study_folder_path=None):
         ns = self.study_name
