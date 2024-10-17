@@ -376,28 +376,6 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 4, 24)
     )
 
-    InvestFossilYearStart = HeavyCollectedData(
-        value=join(data_folder, "fossil_energy_historic_invests.csv"),
-        unit="G$",
-        description="Investment in fossil energy 2015-2023",
-        link="https://www.iea.org/data-and-statistics/charts/global-energy-investment-in-clean-energy-and-in-fossil-fuels-2015-2023",
-        source="World energy investment - IEA",
-        last_update_date=date(2024, 7, 23),
-        critical_at_year_start=True,
-        column_to_pick="Fossil fuels"
-    )
-
-    InvestCleanEnergyYearStart = HeavyCollectedData(
-        value=join(data_folder, "renewable_energy_historic_invests.csv"),
-        unit="G$",
-        description="Investment in clean energy 2015-2023",
-        link="https://www.iea.org/data-and-statistics/charts/global-energy-investment-in-clean-energy-and-in-fossil-fuels-2015-2023",
-        source="World energy investment - IEA",
-        last_update_date=date(2024, 7, 23),
-        critical_at_year_start=True,
-        column_to_pick="Clean energy"
-    )
-
     InvestCCUSYearStart = HeavyCollectedData(
         value=join(data_folder, "ccus_historic_invests.csv"),
         unit="G$",
