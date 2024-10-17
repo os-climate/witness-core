@@ -86,7 +86,7 @@ class Study(ClimateEconomicsStudyManager):
 
     #Todo: remove and replace usage in children class by method defined in too.design_space_creator
     def make_dspace_invests(self, dspace_dict: dict[str: list], overwrite_invest_index: list[int] = []) -> pd.DataFrame:
-        return make_dspace_invests(dspace_dict, self.year_end, overwrite_invest_index)
+        return make_dspace_invests(dspace_dict, self.year_start, overwrite_invest_index)
 
     # Todo: remove and replace usage in children class by method defined in too.design_space_creator
     def make_dspace_utilization_ratio(self, dspace_dict: dict[str: list]) -> pd.DataFrame:
