@@ -53,7 +53,7 @@ class GlossaryCore:
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
-    NB_POLES_OPTIM_KU = 26  # number of poles for bspline design variables utilization ratio
+    NB_POLES_OPTIM_KU = 7  # number of poles for bspline design variables utilization ratio
     Years = "years"
     YearStart = "year_start"
     YearStartDefault = 2020
