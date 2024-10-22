@@ -68,7 +68,7 @@ class UtilityModel():
         self.years_range = years_range
         self.n_years = len(self.years_range)
 
-    def compute(self, economics_df, energy_mean_price, population_df):
+    def compute(self, economics_df, energy_mean_price, population_df, multiply_by_pop: bool):
         """compute"""
 
         self.economics_df = economics_df
@@ -84,7 +84,7 @@ class UtilityModel():
         self.utility_df = pd.DataFrame({GlossaryCore.Years: self.years_range} | utility_quantities)
         self.discounted_utility_quantity_objective = np.array([compute_utility_objective_bis(self.years_range, consumption_pc, energy_price, population,
                                                         self.init_rate_time_pref, self.shift_scurve,
-                                                        self.strech_scurve)])
+                                                        self.strech_scurve, multiply_by_pop)])
 
         self.compute_decreasing_gdp_obj()
         self.compute_net_gdp_growth_rate_obj()
