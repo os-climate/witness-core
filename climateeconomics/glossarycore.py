@@ -1524,11 +1524,15 @@ class GlossaryCore:
 
     MaxBudgetConstraint = {
         "var_name": MaxBudgetConstraintValue,
-        "type": "array",
+        "type": "dataframe",
         "description": "Maximum budget that can be invested in Energy production and CCUS technos",
         "unit": "G$",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YearEndDefault], False),
+            MaxBudgetConstraintValue: ("float", [0.0, 1e12], True),
+        },
     }
 
     MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
@@ -1569,11 +1573,15 @@ class GlossaryCore:
 
     TargetProductionConstraint = {
         "var_name": TargetProductionConstraintValue,
-        "type": "array",
+        "type": "dataframe",
         "description": "Production Constraint",
         "unit": "TWh",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YearEndDefault], False),
+            TargetProductionConstraintValue: ("float", [0.0, 1e12], True),
+        },
     }
 
     TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
