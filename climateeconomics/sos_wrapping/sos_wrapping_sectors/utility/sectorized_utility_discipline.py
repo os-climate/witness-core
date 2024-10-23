@@ -215,6 +215,33 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 variation = (consumption - consumption[0]) / consumption[0] * 100.0
                 new_series = InstanciatedSeries(years, variation, f'{sector}', 'lines', True)
                 new_chart.series.append(new_series)
+            instanciated_charts.append(new_chart)
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Variation [%]',
+                                                 chart_name="Variation of energy price and population")
+
+            energy_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)[GlossaryCore.EnergyPriceValue].values
+            variation = (energy_price - energy_price[0]) / energy_price[0] * 100.0
+            new_series = InstanciatedSeries(years, variation, 'Energy mean price', 'lines', True)
+            new_chart.series.append(new_series)
+
+            population = self.get_sosdisc_inputs(GlossaryCore.PopulationDfValue)[GlossaryCore.PopulationValue].values
+            variation = (population - population[0]) / population[0] * 100.0
+            new_series = InstanciatedSeries(years, variation, 'Population', 'lines', True)
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
+        if "Sectorization" in chart_list or True:
+            sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
+            sectors_consumption_df = self.get_sosdisc_inputs(GlossaryCore.SectorizedConsumptionDfValue)
+            years = sectors_consumption_df[GlossaryCore.Years]
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[-]', chart_name="Utility per capita by sector", stacked_bar=True)
+            for sector in sector_list:
+                discounted_utility_pc_sector = self.get_sosdisc_outputs(f'{sector}.{GlossaryCore.UtilityDfValue}')[GlossaryCore.DiscountedUtilityQuantityPerCapita].values
+                new_series = InstanciatedSeries(years, discounted_utility_pc_sector, f'{sector}', 'bar', True)
+                new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
