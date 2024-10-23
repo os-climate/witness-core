@@ -444,7 +444,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Utility'
         x_axis_name = 'Years'
-        y_axis_name = 'Discounted Utility [-]'
+        y_axis_name = 'Discounted Utility per capita [-]'
 
         df_paths = [f'{GlossaryCore.UtilityDfValue}', ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)

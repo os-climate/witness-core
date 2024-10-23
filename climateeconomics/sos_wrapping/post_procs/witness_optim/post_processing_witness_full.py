@@ -786,9 +786,9 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 # 'techno_detailed_prices')
 # transport_techno = techno_detailed_prices['transport'].values
 # factory_techno = techno_detailed_prices[f'{techno}_factory'].values
-# energy_cost_techno = techno_detailed_prices['energy_costs'].values
+# energy_cost_techno = techno_detailed_prices['energy_and_resources_costs'].values
 # CO2_taxes_techno = techno_detailed_prices['CO2_taxes_factory'].values
-# margin_techno = (techno_detailed_prices[['transport', f'{techno}_factory', 'energy_costs', 'CO2_taxes_factory']].sum(axis=1) * techno_disc.get_sosdisc_inputs('margin')[
+# margin_techno = (techno_detailed_prices[['transport', f'{techno}_factory', 'energy_and_resources_costs', 'CO2_taxes_factory']].sum(axis=1) * techno_disc.get_sosdisc_inputs('margin')[
 # 'margin'] / 100).values
 # #- Prod
 # production_stream = energy_disc.get_sosdisc_outputs(
@@ -848,9 +848,9 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 # 'techno_detailed_prices')
 # transport_techno = techno_detailed_prices['transport'].values
 # factory_techno = techno_detailed_prices[f'{techno}_factory'].values
-# energy_cost_techno = techno_detailed_prices['energy_costs'].values
+# energy_cost_techno = techno_detailed_prices['energy_and_resources_costs'].values
 # CO2_taxes_techno = techno_detailed_prices['CO2_taxes_factory'].values
-# margin_techno = (techno_detailed_prices[['transport', f'{techno}_factory', 'energy_costs', 'CO2_taxes_factory']].sum(axis=1) * techno_disc.get_sosdisc_inputs('margin')[
+# margin_techno = (techno_detailed_prices[['transport', f'{techno}_factory', 'energy_and_resources_costs', 'CO2_taxes_factory']].sum(axis=1) * techno_disc.get_sosdisc_inputs('margin')[
 # 'margin'] / 100).values
 # #- Prod
 # production_stream = stream_disc.get_sosdisc_outputs(

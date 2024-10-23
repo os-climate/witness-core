@@ -136,7 +136,7 @@ class Study(ClimateEconomicsStudyManager):
                        }
 
         dspace_share_invest = pd.DataFrame(dspace_dict)
-        min_UR = 70.
+        min_UR = 85.
         dspace_UR = {
             'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
             f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array": [min_UR, min_UR, 100., True],

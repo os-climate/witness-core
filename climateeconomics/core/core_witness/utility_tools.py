@@ -172,17 +172,19 @@ def compute_utility_objective(years_range: np.ndarray, consumption: np.ndarray, 
 
     return discounted_utility_pop.mean()
 
+
 def compute_utility_objective_bis(years_range: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
                                   population: np.ndarray, init_rate_time_pref: float,
-                                  scurve_shift: float, scurve_stretch: float) -> float:
+                                  scurve_shift: float, scurve_stretch: float, multiply_by_pop: bool) -> float:
     quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
     utility_pc = 1 - s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
     discount_rate = compute_utility_discount_rate(years_range, years_range[0], init_rate_time_pref)
-    discounted_utility_pc = utility_pc * discount_rate
-    pop_ratio = population[0] / population
-    discounted_utility_pop = pop_ratio * discounted_utility_pc
+    discounted_utility_obj = utility_pc * discount_rate
+    if multiply_by_pop:
+        pop_ratio = population[0] / population
+        discounted_utility_obj = pop_ratio * discounted_utility_obj
 
-    return discounted_utility_pop.mean()
+    return discounted_utility_obj.mean()
 
 
 def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
@@ -212,7 +214,7 @@ def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, en
 
 def compute_utility_objective_bis_der(years: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
                                       population: np.ndarray, init_rate_time_pref: float,
-                                      scurve_shift: float, scurve_stretch: float) -> Tuple[
+                                      scurve_shift: float, scurve_stretch: float, multiply_by_pop: bool) -> Tuple[
     np.ndarray, np.ndarray, np.ndarray]:
     """
     Compute the derivative of the utility objective function.
@@ -231,7 +233,7 @@ def compute_utility_objective_bis_der(years: np.ndarray, consumption_pc: np.ndar
     d_population = jacobian(compute_utility_objective_bis, 3)
 
     args = (years, consumption_pc, energy_price, population,
-            init_rate_time_pref, scurve_shift, scurve_stretch)
+            init_rate_time_pref, scurve_shift, scurve_stretch, multiply_by_pop)
 
     return d_consumption(*args), d_energy_price(*args), d_population(*args)
 
