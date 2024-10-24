@@ -490,7 +490,7 @@ class MacroEconomics:
         """
         ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
         usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
-        self.usable_capital_obj_content = (usable_capital - self.capital_utilisation_ratio * ne_capital) / self.usable_capital_objective_ref
+        self.usable_capital_obj_content = (usable_capital - self.max_capital_utilisation_ratio * ne_capital) / self.usable_capital_objective_ref
         self.usable_capital_objective = pseudo_abs_obj(self.usable_capital_obj_content)#np.array([np.sum(self.usable_capital_obj_content)]) # OK
 
     def prepare_outputs(self):
@@ -750,7 +750,7 @@ class MacroEconomics:
                d_estimated_damages_d_energy, d_damages_d_energy, d_energy_investment_d_energy, d_ku_obj_d_energy, d_ku_ub_contraint
 
     def _d_ku_obj_d_user_input(self, dku_d_user_input, dkne_d_user_input):
-        d_ku_obj_content_d_user_input = (dku_d_user_input - self.capital_utilisation_ratio * dkne_d_user_input) / self.usable_capital_objective_ref  # OK
+        d_ku_obj_content_d_user_input = (dku_d_user_input - self.max_capital_utilisation_ratio * dkne_d_user_input) / self.usable_capital_objective_ref  # OK
         d_ku_obj_d_user_input = d_pseudo_abs_obj(self.usable_capital_obj_content, d_ku_obj_content_d_user_input)
         return d_ku_obj_d_user_input
 
