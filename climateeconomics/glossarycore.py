@@ -99,6 +99,7 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
+    ObjectiveEnergyNonUseCapital = "objective_non_use_capital_energy"
     ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
     ConstraintEnergyCarbonNegative2050 = "constraint_energy_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
@@ -1715,5 +1716,5 @@ class GlossaryCore:
         return pd.DataFrame(out)
 
     @classmethod
-    def get_deduced_sector(cls)-> str:
+    def get_deduced_sector(cls) -> str:
         return list(set(cls.SectorsPossibleValues).difference(set(cls.SectorsValueOptim)))[0]
