@@ -88,6 +88,9 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         ]
 
     def test_01_utility_analytic_grad_welfare(self):
+        self.values_dict.update({
+            f'{self.name}.{self.model_name}.multiply_obj_by_pop': True
+        })
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline

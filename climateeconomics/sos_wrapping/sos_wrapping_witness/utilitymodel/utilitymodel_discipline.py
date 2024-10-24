@@ -62,7 +62,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX, 'unit': '$/MWh',
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), GlossaryCore.EnergyPriceValue: ('float', None, True)}},
         'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'user_level': 2},
-        'multiply_obj_by_pop': {'type': 'bool', 'unit': '-', 'default': True, 'user_level': 2,},
+        'multiply_obj_by_pop': {'type': 'bool', 'unit': '-', 'default': False, 'user_level': 2,},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
