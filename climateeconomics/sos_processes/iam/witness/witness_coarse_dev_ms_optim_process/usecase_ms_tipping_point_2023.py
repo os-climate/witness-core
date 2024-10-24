@@ -23,7 +23,6 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_fossil_only_no_damage_low_tax import (
     Study as Study1,
 )
-
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import (
     Study as Study3,
 )
@@ -72,7 +71,7 @@ class Study(ClimateEconomicsStudyManager):
 
         # changing the tipping point
 
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict) ,'scenario_name': list(scenario_dict.keys())})
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_dict), 'scenario_name': list(scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{scatter_scenario}.samples_df': scenario_df,
             f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
@@ -100,6 +99,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)
 
         return values_dict
+
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
