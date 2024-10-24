@@ -185,7 +185,7 @@ def post_processings(execution_engine, namespace, filters):
         tipping_ptt_title_msg = ""
         if len(set(tipping_points_dict.values())) == 1:
             tipping_ptt_title_msg = f' (tipping point {list(tipping_points_dict.values())[0]}°C)'
-        chart_name = f'Atmosphere temperature evolution' + tipping_ptt_title_msg
+        chart_name = 'Atmosphere temperature evolution' + tipping_ptt_title_msg
         temperature_dict = {}
         for scenario in scenario_list:
             temperature_dict[scenario] = temperature_detail_df_dict[scenario][GlossaryCore.TempAtmo].values.tolist(
