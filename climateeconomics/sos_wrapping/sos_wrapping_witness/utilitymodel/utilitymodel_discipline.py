@@ -62,6 +62,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX, 'unit': '$/MWh',
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), GlossaryCore.EnergyPriceValue: ('float', None, True)}},
         'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'user_level': 2},
+        'multiply_obj_by_pop': {'type': 'bool', 'unit': '-', 'default': False, 'user_level': 2,},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
@@ -84,7 +85,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         energy_mean_price = inp_dict[GlossaryCore.EnergyMeanPriceValue]
         population_df = inp_dict[GlossaryCore.PopulationDfValue]
 
-        self.utility_m.compute(economics_df, energy_mean_price, population_df)
+        self.utility_m.compute(economics_df, energy_mean_price, population_df,
+                            inp_dict['multiply_obj_by_pop'])
 
         dict_values = {
             GlossaryCore.UtilityDfValue: self.utility_m.utility_df,
@@ -125,8 +127,9 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         years = economics_df[GlossaryCore.Years].values
 
         obj_derivatives = compute_utility_objective_bis_der(years, consumption_pc, energy_price, population,
-                                                        init_rate_time_pref,
-                                                        scurve_shift, scurve_stretch)
+                                                            init_rate_time_pref,
+                                                            scurve_shift, scurve_stretch,
+                                                            self.get_sosdisc_inputs('multiply_obj_by_pop'))
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.QuantityObjectiveValue,),

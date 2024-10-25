@@ -40,7 +40,7 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
-        self.test_post_procs = False
+        self.test_post_procs = True
         self.year_start = year_start
 
     def setup_usecase(self, study_folder_path=None):
