@@ -33,14 +33,14 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import (
     Study as usecase_ms_mdo,
 )
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2_tipping_point_2023 import (
+    Study as usecase_ms_mdo_iamc,
+)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
     Study as usecase_ms_mda,
 )
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
     Study as usecase_ms_mda_tipping_point,
-)
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2_tipping_point_2023 import (
-    Study as usecase_ms_mdo_iamc,
 )
 
 TAX_NAME = 'with tax'
