@@ -101,7 +101,7 @@ class YearStartTest(unittest.TestCase):
 
         # initial production
         for techno_name in techno_list:
-            is_available = DatabaseWitnessEnergy.get_techno_prod(techno_name=techno_name, year=year,
+            is_available = DatabaseWitnessEnergy.get_techno_prod(techno_name=techno_name, year=year - 1,
                                                                  is_available_at_year=True)
             if not is_available:
                 missing_variables.append(f"{techno_name}.initial_production")

@@ -108,6 +108,6 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test_jacobians_of_each_disc()
+    uc_cls.test()
     #             for graph in graph_list:
     #                 graph.to_plotly().show()
