@@ -39,6 +39,9 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_tell
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
     Study as usecase_ms_mda_tipping_point,
 )
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2_tipping_point_2023 import (
+    Study as usecase_ms_mdo_iamc,
+)
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
@@ -623,7 +626,6 @@ def post_processings(execution_engine, namespace, filters):
             new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
 
-
     return instanciated_charts
 
 
@@ -719,6 +721,15 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
         usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
         usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
+
+        # the lower the TP, the darker the color
+        usecase_ms_mdo_iamc.UC1: dict(color='red'),  # Red
+        usecase_ms_mdo_iamc.UC3_tp1: dict(color='#FFD633'),  # Light Orange
+        usecase_ms_mdo_iamc.UC3_tp2: dict(color='#FFA533'),  # orange
+        usecase_ms_mdo_iamc.UC4_tp1: dict(color='#89CFF0'),  # Light blue
+        usecase_ms_mdo_iamc.UC4_tp2: dict(color='#0047AB'),  # Dark blue
+        usecase_ms_mdo_iamc.UC_NZE_tp1: dict(color='#7FFF00'),  # Light green
+        usecase_ms_mdo_iamc.UC_NZE_tp2: dict(color='#2E8B57'),  # Dark Green
     }
     line_color = None
 
