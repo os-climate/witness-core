@@ -15,13 +15,19 @@ limitations under the License.
 '''
 from os.path import dirname, join
 
+from energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc import (
+    CleanEnergySimpleTechnoDiscipline,
+)
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import (
+    FossilSimpleTechnoDiscipline,
+)
+
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_ku_process.usecase_ms_ku_tipping_point import Study as StudyTP
-from energy_models.models.clean_energy.clean_energy_simple_techno.clean_energy_simple_techno_disc import \
-    CleanEnergySimpleTechnoDiscipline
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_ku_process.usecase_ms_ku_tipping_point import (
+    Study as StudyTP,
+)
 
 
 class Study(ClimateEconomicsStudyManager):
