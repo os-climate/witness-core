@@ -141,7 +141,7 @@ class Study(ClimateEconomicsStudyManager):
             'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
             f"{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array": [min_UR, min_UR, 100., True],
         }
-        dspace_UR = make_dspace_utilization_ratio(dspace_UR)
+        dspace_UR = make_dspace_utilization_ratio(dspace_UR, allow_year_start=True)
         self.dspace = pd.concat([dspace_share_invest, dspace_UR])
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         # create func manager
