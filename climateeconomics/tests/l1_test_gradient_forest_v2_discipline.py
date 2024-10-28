@@ -113,7 +113,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_forest_v2_discipline.pkl',
                             local_data=disc_techno.local_data,
@@ -212,7 +212,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_forest_v2_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -307,7 +307,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_forest_v2_discipline_3.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -403,7 +403,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_forest_v2_discipline_4.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',

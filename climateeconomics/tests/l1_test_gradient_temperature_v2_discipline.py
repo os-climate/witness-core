@@ -87,7 +87,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_temperature_v2_discipline_DICE.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
@@ -146,7 +146,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_temperature_v2_discipline_Myhre.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
@@ -205,7 +205,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_temperature_v2_discipline_Meinshausen.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
@@ -264,7 +264,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_temperature_v2_discipline_etminan.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
@@ -321,7 +321,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_temperature_v2_discipline_Meinshausen.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
@@ -373,7 +373,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_temperature_v2_discipline_etminan_lower.pkl',
                             local_data = disc_techno.local_data,

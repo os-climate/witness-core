@@ -57,9 +57,9 @@ def find_mdo_disc(execution_engine, scenario_name, class_to_check):
     recover for the scenario name the mdo_discipline at the lowest level that respects the class_to_check
     ex:
     for an optim process:
-        mdo_disc = execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        mdo_disc = execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].discipline_wrapp.mdo_discipline
     for a ms_optim_process:
-            mdo_disc = execution_engine.root_process.proxy_disciplines[1].proxy_disciplines[0].proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+            mdo_disc = execution_engine.root_process.proxy_disciplines[1].proxy_disciplines[0].proxy_disciplines[0].discipline_wrapp.mdo_discipline
 
     this post-processing is assumed to be linked to the namespace ns_witness which value ends by .WITNESS. Therefore,
     the scenario name value = namespace value is something.WITNESS
@@ -70,9 +70,9 @@ def find_mdo_disc(execution_engine, scenario_name, class_to_check):
     while levels:
         current_level = levels.pop(0)
         # Check if current level has the required attribute
-        if hasattr(current_level, 'mdo_discipline_wrapp'):
-            if hasattr(current_level.mdo_discipline_wrapp, 'mdo_discipline'):
-                mdo_disc = current_level.mdo_discipline_wrapp.mdo_discipline
+        if hasattr(current_level, 'discipline_wrapp'):
+            if hasattr(current_level.discipline_wrapp, 'mdo_discipline'):
+                mdo_disc = current_level.discipline_wrapp.mdo_discipline
                 if isinstance(mdo_disc, class_to_check) and scenario_name_trimmed == mdo_disc.name:
                     logging.debug(f"The object at {current_level} is an instance of {class_to_check.__name__}")
                     return mdo_disc

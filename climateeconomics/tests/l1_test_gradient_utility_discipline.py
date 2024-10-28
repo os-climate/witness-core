@@ -92,7 +92,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
     def test_01_utility_analytic_grad_welfare(self):
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
