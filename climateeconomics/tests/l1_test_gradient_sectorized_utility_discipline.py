@@ -111,7 +111,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         np.set_printoptions(threshold=np.inf)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_consumption_discipline_welfare.pkl',
                             discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -135,7 +135,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(self.values_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_consumption_discipline_last_utility.pkl',
                             discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -164,7 +164,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_consumption_low_economy.pkl',
                             discipline=disc_techno,
                             step=1e-15, local_data=disc_techno.local_data,
@@ -187,7 +187,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
         # self.override_dump_jacobian = True
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sectorized_utility_discipline_sectors_obj.pkl',
                             discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',

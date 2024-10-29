@@ -89,7 +89,7 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_uranium_discipline.pkl', 
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.resources_demand'],
@@ -129,7 +129,7 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_uranium_demand_variable_discipline.pkl', 
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.resources_demand'],

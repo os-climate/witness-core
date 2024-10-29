@@ -252,7 +252,7 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
 
         disc_techno = ee.root_process.proxy_disciplines[
             0
-        ].discipline_wrapp.mdo_discipline
+        ].discipline_wrapp.discipline
         self.check_jacobian(
             location=dirname(__file__),
             filename="jacobian_sectors_demand_discipline.pkl",

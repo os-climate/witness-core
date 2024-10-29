@@ -121,7 +121,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_output.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_output.pkl',
@@ -145,7 +145,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_working_population_discipline_output.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_working_population_discipline_output.pkl',
@@ -168,7 +168,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_working_population_discipline_temp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_working_population_discipline_temp.pkl',
@@ -193,7 +193,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_temp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_temp.pkl',
@@ -242,7 +242,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_temp_neg.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_temp_neg.pkl',
@@ -293,7 +293,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_big_gdp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_big_gdp.pkl',
@@ -344,7 +344,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_augmente_temp.pkl'
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_augmente_temp.pkl',
@@ -399,7 +399,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_small_pop.pkl'
         self.check_jacobian(location=dirname(__file__), filename=pickle_filename,
@@ -454,7 +454,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_big_pop.pkl'
@@ -489,7 +489,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_3000_kcal.pkl'
@@ -524,7 +524,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_population_discipline_output_wo_climate_effect.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -553,7 +553,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.override_dump_jacobian = True
         pickle_filename = 'jacobian_population_discipline_output_w_pandemic_effect.pkl'
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename=pickle_filename,
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -595,7 +595,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(self.inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

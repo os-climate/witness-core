@@ -212,7 +212,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
@@ -236,7 +236,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_grad_damageproductivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -263,7 +263,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             #graph.to_plotly().show()
             pass
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_grad_max_damage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -288,7 +288,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
@@ -317,7 +317,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_very_high_emissions.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -338,7 +338,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_negative_emissions.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -356,7 +356,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_negative_co2_tax.pkl',
@@ -385,7 +385,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_macroeconomics_discipline_without_compute_gdp.pkl',
@@ -407,7 +407,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
@@ -437,7 +437,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
@@ -474,7 +474,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
@@ -522,7 +522,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(self.inputs_dict)
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

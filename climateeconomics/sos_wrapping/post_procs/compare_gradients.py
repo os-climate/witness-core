@@ -45,7 +45,7 @@ variables defined in the design_space. Therefore, this post-processing only work
 an optim process, namely optimization and multi-scenario optimization processes
 The gradient is computed at the last iteration of the optimization problem
 Does not work for optim sub-processes, since mdo_disc._differentiated_inputs=[] 
-NB: the mdo_discipline is set to None in the execution engine when the graphs are updated => the gradients must be computed 
+NB: the discipline is set to None in the execution engine when the graphs are updated => the gradients must be computed 
 at the end of a computation
 '''
 
@@ -54,16 +54,16 @@ TEMP_PKL_PATH = 'temp_pkl'
 
 def find_mdo_disc(execution_engine, scenario_name, class_to_check):
     '''
-    recover for the scenario name the mdo_discipline at the lowest level that respects the class_to_check
+    recover for the scenario name the discipline at the lowest level that respects the class_to_check
     ex:
     for an optim process:
-        mdo_disc = execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        mdo_disc = execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].discipline_wrapp.discipline
     for a ms_optim_process:
-            mdo_disc = execution_engine.root_process.proxy_disciplines[1].proxy_disciplines[0].proxy_disciplines[0].discipline_wrapp.mdo_discipline
+            mdo_disc = execution_engine.root_process.proxy_disciplines[1].proxy_disciplines[0].proxy_disciplines[0].discipline_wrapp.discipline
 
     this post-processing is assumed to be linked to the namespace ns_witness which value ends by .WITNESS. Therefore,
     the scenario name value = namespace value is something.WITNESS
-    The mdo_discipline should be in WITNESS_EVAL which is one step above witness
+    The discipline should be in WITNESS_EVAL which is one step above witness
     '''
     scenario_name_trimmed = scenario_name[:scenario_name.rfind('.')] # remove the .WITNESS of the namespace value
     levels = [execution_engine.root_process]
@@ -71,8 +71,8 @@ def find_mdo_disc(execution_engine, scenario_name, class_to_check):
         current_level = levels.pop(0)
         # Check if current level has the required attribute
         if hasattr(current_level, 'discipline_wrapp'):
-            if hasattr(current_level.discipline_wrapp, 'mdo_discipline'):
-                mdo_disc = current_level.discipline_wrapp.mdo_discipline
+            if hasattr(current_level.discipline_wrapp, 'discipline'):
+                mdo_disc = current_level.discipline_wrapp.discipline
                 if isinstance(mdo_disc, class_to_check) and scenario_name_trimmed == mdo_disc.name:
                     logging.debug(f"The object at {current_level} is an instance of {class_to_check.__name__}")
                     return mdo_disc
@@ -81,7 +81,7 @@ def find_mdo_disc(execution_engine, scenario_name, class_to_check):
         if hasattr(current_level, 'proxy_disciplines'):
             levels.extend(current_level.proxy_disciplines)
 
-    logging.debug(f"No instance of {class_to_check.__name__} found for mdo_discipline")
+    logging.debug(f"No instance of {class_to_check.__name__} found for discipline")
     return None
 
 

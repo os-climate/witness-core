@@ -89,7 +89,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_{temperature_obj_option}.pkl',
                             discipline=disc_techno, step=1e-15, local_data= disc_techno.local_data,
@@ -136,7 +136,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_temperature_discipline_Myhre.pkl',
                             local_data=disc_techno.local_data,
                             discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
@@ -182,7 +182,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_temperature_discipline_etminan.pkl',
                             local_data= disc_techno.local_data,discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
@@ -227,7 +227,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_temperature_discipline_Meinshausen.pkl',local_data= disc_techno.local_data,
                             discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
@@ -273,7 +273,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_temperature_discipline_etminan_lower.pkl',local_data= disc_techno.local_data,
                             discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], output_column='CO2 forcing', derr_approx='finite_differences')

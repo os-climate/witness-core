@@ -130,7 +130,7 @@ class DICEParallelTest(unittest.TestCase):
         self.ee.configure()
         self.ee.execute()
         dm_dict_1 = deepcopy(self.ee.get_anonimated_data_dict())
-        residual_history = self.ee.root_process.discipline_wrapp.mdo_discipline.sub_mda_list[0].residual_history
+        residual_history = self.ee.root_process.discipline_wrapp.discipline.sub_mda_list[0].residual_history
         """
         8 proc
         """
@@ -174,7 +174,7 @@ class DICEParallelTest(unittest.TestCase):
         compare_dict(dm_dict_1,
                      dm_dict_8, '', dict_error)
 
-        residual_history8 = self.ee8.root_process.discipline_wrapp.mdo_discipline.sub_mda_list[0].residual_history
+        residual_history8 = self.ee8.root_process.discipline_wrapp.discipline.sub_mda_list[0].residual_history
         self.assertListEqual(residual_history, residual_history8)
 
         # The only different value is n_processes

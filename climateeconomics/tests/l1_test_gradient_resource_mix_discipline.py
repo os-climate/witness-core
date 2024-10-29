@@ -212,7 +212,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         input_names = []
         input_stock = [
             f'{self.name}.{self.model_name}.{resource}.resource_stock' for resource in ResourceMixModel.RESOURCE_LIST]
