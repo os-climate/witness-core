@@ -164,9 +164,9 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.extra_name}.percentage_gdp_invest_in_energy_array'] = np.ones(GlossaryCore.NB_POLES_OPTIM_KU - 1)
         values_dict[
-            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.EnergyMix.fossil_FossilSimpleTechno_utilization_ratio_array'] = np.ones(GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1) * 100.
+            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.EnergyMix.fossil_FossilSimpleTechno_utilization_ratio_array'] = np.ones(GlossaryCore.NB_POLES_UTILIZATION_RATIO) * 100.
         values_dict[
-            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.EnergyMix.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array'] = np.ones(GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1) * 100.
+            f'{self.study_name}.{self.coupling_name}.{self.extra_name}.EnergyMix.{GlossaryCore.clean_energy}_{GlossaryCore.CleanEnergySimpleTechno}_utilization_ratio_array'] = np.ones(GlossaryCore.NB_POLES_UTILIZATION_RATIO) * 100.
 
         setup_data_list.append(values_dict)
         setup_data_list.append(dv_arrays_dict)
