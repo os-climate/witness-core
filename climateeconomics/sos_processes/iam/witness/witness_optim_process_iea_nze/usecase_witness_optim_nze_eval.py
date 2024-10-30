@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import os
 from os.path import dirname, join
 from pathlib import Path
 
@@ -202,6 +203,10 @@ class Study(ClimateEconomicsStudyManager):
         invest_mix_file = 'investment_mix.csv'
         invest_mix = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', invest_mix_file))
         hydro_prod_IEA = pd.read_csv(join(dirname(__file__), '../../../../data','IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv'))
+        models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "models")[0]
+        df_prod_iea = pd.read_csv(
+            os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'data',
+                         'IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv'))
         forest_invest_file = 'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
         #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
@@ -214,11 +219,13 @@ class Study(ClimateEconomicsStudyManager):
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.initial_production': hydro_prod_IEA.loc[hydro_prod_IEA[GlossaryEnergy.Years] == self.year_start]['electricity (TWh)'][0],
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.initial_production': 1555.51, # from data_energy/fitting/windpower.py
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.initial_production': 111.08, # from data_energy/fitting/windpower.py
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.initial_production': df_prod_iea.loc[df_prod_iea[GlossaryEnergy.Years] == self.year_start]["biogas AnaerobicDigestion (TWh)"].values[0],
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.initial_production': 1555.51,  # from data_energy/fitting/windpower.py
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.initial_production': 111.08,  # from data_energy/fitting/windpower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.2236,  #result from data_energy/fitting/hydropower.py
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.0137,  # result from data_energy/fitting/gaseous_bioenergy.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.164,  # result from data_energy/fitting/windpower.py
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.164, # result from data_energy/fitting/windpower.py
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.164,  # result from data_energy/fitting/windpower.py
                                  })
 
         values_dict.update(values_dict_updt)
@@ -276,6 +283,7 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
+    '''
     uc_cls = Study()
     uc_cls.test()
 
@@ -292,6 +300,5 @@ if '__main__' == __name__:
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
     for graph in graph_list:
         graph.to_plotly().show()
-    '''
 
 
