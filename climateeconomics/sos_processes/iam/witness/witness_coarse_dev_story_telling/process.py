@@ -62,7 +62,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
                    'ns_dashboard': f'{self.ee.study_name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)

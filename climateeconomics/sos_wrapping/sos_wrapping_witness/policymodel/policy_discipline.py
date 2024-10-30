@@ -60,7 +60,7 @@ class PolicyDiscipline(SoSWrapp):
                           }
                       },
         GlossaryCore.CO2DamagePrice: GlossaryCore.CO2DamagePriceDf,
-        'ccs_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
+        'ccs_price_percentage': {'type': 'float', 'default': 0., 'unit': '%',
                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                    'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'co2_damage_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',

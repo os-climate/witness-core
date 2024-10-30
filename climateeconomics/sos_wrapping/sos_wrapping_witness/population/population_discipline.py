@@ -66,11 +66,13 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     desc_in_default_diet_mortality_param = GlossaryCore.DietMortalityParamDf
     desc_in_default_diet_mortality_param['default'] = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
 
+    economics_df = deepcopy(GlossaryCore.EconomicsDf)
+    del economics_df['dataframe_descriptor'][GlossaryCore.PerCapitaConsumption]
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.PopulationStart: GlossaryCore.PopulationStartDf,
-        GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
+        GlossaryCore.EconomicsDfValue: economics_df,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',
                                        'dataframe_descriptor': {'param': ('string', None, False),
@@ -147,10 +149,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])
-            years = np.arange(year_start, year_end + 1)
-            default_calories_pc_df = pd.DataFrame({GlossaryCore.Years: years,
-                                                   'kcal_pc': 2400.})
-            self.set_dynamic_default_values({GlossaryCore.CaloriesPerCapitaValue: default_calories_pc_df})
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                default_calories_pc_df = pd.DataFrame({GlossaryCore.Years: years,
+                                                       'kcal_pc': 2400.})
+                self.set_dynamic_default_values({GlossaryCore.CaloriesPerCapitaValue: default_calories_pc_df})
 
     def run(self):
         ''' model execution '''

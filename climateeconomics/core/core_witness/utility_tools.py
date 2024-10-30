@@ -24,7 +24,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 def get_inputs_for_utility_all_sectors(inputs_dict: dict):
-    years = inputs_dict[GlossaryCore.EconomicsDfValue][GlossaryCore.Years].to_numpy()
+    years = inputs_dict[GlossaryCore.PopulationDfValue][GlossaryCore.Years].to_numpy()
     population = inputs_dict[GlossaryCore.PopulationDfValue][GlossaryCore.PopulationValue].to_numpy()
     energy_price = inputs_dict[GlossaryCore.EnergyMeanPriceValue][GlossaryCore.EnergyPriceValue].to_numpy()
 
@@ -32,13 +32,12 @@ def get_inputs_for_utility_all_sectors(inputs_dict: dict):
 
 
 def get_inputs_for_utility_per_sector(inputs_dict: dict, sector: str):
-    consumption = inputs_dict[GlossaryCore.AllSectorsDemandDfValue][sector].to_numpy()
-    energy_price_ref = inputs_dict[f"{sector}.initial_raw_energy_price"]
-    init_rate_time_pref = inputs_dict[f"{sector}.init_rate_time_pref"]
-    scurve_stretch = inputs_dict[f"{sector}.strech_scurve"]
-    scurve_shift = inputs_dict[f"{sector}.shift_scurve"]
+    consumption = inputs_dict[GlossaryCore.SectorizedConsumptionDfValue][sector].to_numpy()
+    init_rate_time_pref = inputs_dict[f"{sector}_init_rate_time_pref"]
+    scurve_stretch = inputs_dict[f"{sector}_strech_scurve"]
+    scurve_shift = inputs_dict[f"{sector}_shift_scurve"]
 
-    return consumption, energy_price_ref, init_rate_time_pref, scurve_shift, scurve_stretch
+    return consumption, init_rate_time_pref, scurve_shift, scurve_stretch
 
 
 def compute_utility_discount_rate(years_range: np.ndarray, year_start: int, init_rate_time_pref: float) -> np.ndarray:
@@ -58,53 +57,37 @@ def compute_utility_discount_rate(years_range: np.ndarray, year_start: int, init
     return u_discount_rate
 
 
-def compute_utility_quantity(consumption: np.ndarray, energy_price: np.ndarray,
-                             energy_price_ref: float, ) -> np.ndarray:
+def compute_quantity_pc(consumption_pc: np.ndarray, energy_price: np.ndarray) -> np.ndarray:
     """
     Compute utility per capita based on consumption and energy prices.
 
-    :param consumption: Array of consumption values
+    :param consumption_pc: Array of consumption values
     :param energy_price: Array of energy prices
-    :param energy_price_ref: Reference energy price
     :return: Array of utility per capita values
 
     Consumption = Quantity (of "things" consumed") * Price ("average price of things consumed")
     We consider that the average price of things that are consumed is driven by energy price.
     """
-    consumption_year_start = consumption[0]
-    quantity_year_start = consumption_year_start / energy_price_ref
-    quantity = consumption / energy_price
-    utility_quantity = quantity / quantity_year_start
-    return utility_quantity
+    consumption_pc_year_start = consumption_pc[0]
+    quantity_year_start = consumption_pc_year_start / energy_price[0]
+    quantity = consumption_pc / energy_price
+    utility_quantity_pc = quantity / quantity_year_start
+    return utility_quantity_pc
 
 
-def compute_utility_per_capita(utility_quantity: np.ndarray, population: np.array,
-                               scurve_shift: float, scurve_stretch: float) -> np.ndarray:
+
+def compute_utility_per_capita(quantity_pc: np.ndarray, scurve_shift: float, scurve_stretch: float) -> np.ndarray:
     """
     Compute utility per capita based on consumption and energy prices.
 
-    :param utility_quantity: Array with the utility quantity to apply the s-curve transformation
+    :param quantity_pc: Array with the utility quantity to apply the s-curve transformation
     :param scurve_shift: S-curve shift parameter
     :param scurve_stretch: S-curve stretch parameter
     :return: Array of utility per capita values transformed by s-curve
     """
 
-    utility_pc = utility_quantity / population
+    return s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
 
-    return s_curve_function(utility_pc, scurve_shift, scurve_stretch)
-
-
-def compute_discounted_utility(utility: np.ndarray, discount_factor: np.ndarray) -> np.ndarray:
-    """
-    Compute discounted utility.
-
-    :param utility: Array of utility values
-    :param discount_factor: Array of discount factors
-    :return: Array of discounted utility values
-
-    Discounted utility quantity (year) = Utility quantity(year) * discount factor (year)
-    """
-    return utility * discount_factor
 
 
 def compute_utility_population(utility: np.ndarray, population: np.ndarray) -> np.ndarray:
@@ -122,32 +105,51 @@ def compute_utility_population(utility: np.ndarray, population: np.ndarray) -> n
 
 
 def compute_utility_quantities(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
-                               population: np.ndarray, energy_price_ref: float, init_rate_time_pref: float,
+                               population: np.ndarray, init_rate_time_pref: float,
                                scurve_shift: float, scurve_stretch: float):
     year_start = int(years[0])
     year_end = int(years[-1])
     years_range = np.arange(year_start, year_end + 1)
 
-    utility_quantity = compute_utility_quantity(consumption, energy_price, energy_price_ref)
-    utility_pc = compute_utility_per_capita(utility_quantity, population, scurve_shift, scurve_stretch)
+    consumption_pc = consumption / population
+    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
+    utility_pc = s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
     discount_rate = compute_utility_discount_rate(years_range, year_start, init_rate_time_pref)
-    discounted_utility_pc = compute_discounted_utility(utility_pc, discount_rate)
-    discounted_utility_pop = compute_utility_population(discounted_utility_pc, population)
-    utility_obj = np.mean(discounted_utility_pop)
+    discounted_utility_pc = utility_pc * discount_rate
+    pop_ratio = population / population[0]
+    discounted_utility_pop = pop_ratio * discounted_utility_pc
 
-    return {GlossaryCore.UtilityDiscountRate: discount_rate, GlossaryCore.UtilityQuantity: utility_quantity,
+    return {GlossaryCore.UtilityDiscountRate: discount_rate, GlossaryCore.UtilityQuantity: quantity_pc,
             GlossaryCore.PerCapitaUtilityQuantity: utility_pc,
             GlossaryCore.DiscountedUtilityQuantityPerCapita: discounted_utility_pc,
-            GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,
-            GlossaryCore.UtilityObjectiveName: utility_obj}
+            GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,}
+
+def compute_utility_quantities_bis(years: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
+                               population: np.ndarray, init_rate_time_pref: float,
+                               scurve_shift: float, scurve_stretch: float):
+    year_start = int(years[0])
+    year_end = int(years[-1])
+    years_range = np.arange(year_start, year_end + 1)
+
+    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
+    utility_pc = s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
+    discount_rate = compute_utility_discount_rate(years_range, year_start, init_rate_time_pref)
+    discounted_utility_pc = utility_pc * discount_rate
+    pop_ratio = population / population[0]
+    discounted_utility_pop = pop_ratio * discounted_utility_pc
+
+    return {GlossaryCore.UtilityDiscountRate: discount_rate, GlossaryCore.UtilityQuantity: quantity_pc,
+            GlossaryCore.PerCapitaUtilityQuantity: utility_pc,
+            GlossaryCore.DiscountedUtilityQuantityPerCapita: discounted_utility_pc,
+            GlossaryCore.DiscountedQuantityUtilityPopulation: discounted_utility_pop,}
 
 
 def compute_utility_quantities_der(quantity_name: str, years: np.ndarray, consumption: np.ndarray,
                                    energy_price: np.ndarray,
-                                   population: np.ndarray, energy_price_ref: float, init_rate_time_pref: float,
+                                   population: np.ndarray, init_rate_time_pref: float,
                                    scurve_shift: float, scurve_stretch: float) -> Tuple[
     np.ndarray, np.ndarray, np.ndarray]:
-    args = (years, consumption, energy_price, population, energy_price_ref,
+    args = (years, consumption, energy_price, population,
             init_rate_time_pref, scurve_shift, scurve_stretch)
 
     jac_consumption = jacobian(lambda *args: compute_utility_quantities(*args)[quantity_name], 1)
@@ -157,37 +159,36 @@ def compute_utility_quantities_der(quantity_name: str, years: np.ndarray, consum
     return jac_consumption(*args), jac_energy_price(*args), jac_population(*args)
 
 
-def compute_utility_objective(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
-                              population: np.ndarray, energy_price_ref: float, init_rate_time_pref: float,
+def compute_utility_objective(years_range: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
+                              population: np.ndarray, init_rate_time_pref: float,
                               scurve_shift: float, scurve_stretch: float) -> float:
-    """
-    Compute the utility objective function.
+    consumption_pc = consumption / population
+    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
+    utility_pc = 1 - s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
+    discount_rate = compute_utility_discount_rate(years_range, years_range[0], init_rate_time_pref)
+    discounted_utility_pc = utility_pc * discount_rate
+    pop_ratio = population[0] / population
+    discounted_utility_pop = pop_ratio * discounted_utility_pc
 
-    :param years: Array of years
-    :param consumption: Array of consumption values
-    :param energy_price: Array of energy prices
-    :param population: Array of population values
-    :param energy_price_ref: Reference energy price
-    :param init_rate_time_pref: Initial rate of time preference
-    :param scurve_shift: S-curve shift parameter
-    :param scurve_stretch: S-curve stretch parameter
-    :return: 1.0 - Utility objective value
-    """
+    return discounted_utility_pop.mean()
 
-    utility_quantities = compute_utility_quantities(years,
-                                                    consumption,
-                                                    energy_price,
-                                                    population,
-                                                    energy_price_ref,
-                                                    init_rate_time_pref,
-                                                    scurve_shift,
-                                                    scurve_stretch)
 
-    return 1.0 - utility_quantities[GlossaryCore.UtilityObjectiveName]
+def compute_utility_objective_bis(years_range: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
+                                  population: np.ndarray, init_rate_time_pref: float,
+                                  scurve_shift: float, scurve_stretch: float, multiply_by_pop: bool) -> float:
+    quantity_pc = compute_quantity_pc(consumption_pc, energy_price)
+    utility_pc = 1 - s_curve_function(quantity_pc, scurve_shift, scurve_stretch)
+    discount_rate = compute_utility_discount_rate(years_range, years_range[0], init_rate_time_pref)
+    discounted_utility_obj = utility_pc * discount_rate
+    if multiply_by_pop:
+        pop_ratio = population[0] / population
+        discounted_utility_obj = pop_ratio * discounted_utility_obj
+
+    return discounted_utility_obj.mean()
 
 
 def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, energy_price: np.ndarray,
-                                  population: np.ndarray, energy_price_ref: float, init_rate_time_pref: float,
+                                  population: np.ndarray, init_rate_time_pref: float,
                                   scurve_shift: float, scurve_stretch: float) -> Tuple[
     np.ndarray, np.ndarray, np.ndarray]:
     """
@@ -197,7 +198,6 @@ def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, en
     :param consumption: Array of consumption values
     :param energy_price: Array of energy prices
     :param population: Array of population values
-    :param energy_price_ref: Reference energy price
     :param init_rate_time_pref: Initial rate of time preference
     :param scurve_shift: S-curve shift parameter
     :param scurve_stretch: S-curve stretch parameter
@@ -207,11 +207,92 @@ def compute_utility_objective_der(years: np.ndarray, consumption: np.ndarray, en
     d_energy_price = jacobian(compute_utility_objective, 2)
     d_population = jacobian(compute_utility_objective, 3)
 
-    args = (years, consumption, energy_price, population, energy_price_ref,
+    args = (years, consumption, energy_price, population,
             init_rate_time_pref, scurve_shift, scurve_stretch)
 
     return d_consumption(*args), d_energy_price(*args), d_population(*args)
 
+def compute_utility_objective_bis_der(years: np.ndarray, consumption_pc: np.ndarray, energy_price: np.ndarray,
+                                      population: np.ndarray, init_rate_time_pref: float,
+                                      scurve_shift: float, scurve_stretch: float, multiply_by_pop: bool) -> Tuple[
+    np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Compute the derivative of the utility objective function.
+
+    :param years: Array of years
+    :param consumption_pc: Array of consumption values
+    :param energy_price: Array of energy prices
+    :param population: Array of population values
+    :param init_rate_time_pref: Initial rate of time preference
+    :param scurve_shift: S-curve shift parameter
+    :param scurve_stretch: S-curve stretch parameter
+    :return: Tuple of derivatives with respect to consumption, energy price, and population
+    """
+    d_consumption = jacobian(compute_utility_objective_bis, 1)
+    d_energy_price = jacobian(compute_utility_objective_bis, 2)
+    d_population = jacobian(compute_utility_objective_bis, 3)
+
+    args = (years, consumption_pc, energy_price, population,
+            init_rate_time_pref, scurve_shift, scurve_stretch, multiply_by_pop)
+
+    return d_consumption(*args), d_energy_price(*args), d_population(*args)
+
+
+def compute_utility_quantities_bis_der(quantity_name: str, years: np.ndarray, consumption_pc: np.ndarray,
+                                       energy_price: np.ndarray,
+                                       population: np.ndarray, init_rate_time_pref: float,
+                                       scurve_shift: float, scurve_stretch: float) -> Tuple[
+    np.ndarray, np.ndarray, np.ndarray]:
+    args = (years, consumption_pc, energy_price, population,
+            init_rate_time_pref, scurve_shift, scurve_stretch)
+
+    jac_consumption = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 1)
+    jac_energy_price = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 2)
+    jac_population = jacobian(lambda *args: compute_utility_quantities_bis(*args)[quantity_name], 3)
+
+    return jac_consumption(*args), jac_energy_price(*args), jac_population(*args)
+
+
+def compute_decreasing_gdp_obj(output_net_of_damage: np.ndarray):
+    """
+    decreasing net gdp obj =   Sum_i [min(Qi+1/Qi, 1) - 1] / nb_years
+
+    Note: this objective is self normalized to [0,1], no need for reference.
+    It should be minimized and not maximized !
+    :return:
+    :rtype:
+    """
+    increments = list(output_net_of_damage[1:]/output_net_of_damage[:-1])
+    increments.append(0)
+    increments = np.array(increments)
+
+    increments[increments >= 1] = 1.
+    increments -= 1
+    increments[-1] = 0
+
+    decreasing_gpd_obj = - np.array([np.mean(increments)])
+    return decreasing_gpd_obj
+
+
+def d_decreasing_gdp_obj(output_net_of_damage: np.ndarray):
+    output_shift = list(output_net_of_damage[1:])
+    output_shift.append(0)
+    output_shift = np.array(output_shift)
+
+    increments = list(output_net_of_damage[1:] / output_net_of_damage[:-1])
+    increments.append(0)
+    increments = np.array(increments)
+
+    a = list(- output_shift / output_net_of_damage**2)
+    derivative = np.diag(a) + np.diag(1/output_net_of_damage[:-1], k=1)
+
+    derivative[increments > 1] = 0.
+    for i, incr in enumerate(increments):
+        if incr == 1:
+            derivative[i, i+1] = 0.
+    derivative = -np.mean(derivative, axis=0)
+
+    return derivative
 
 def s_curve_function(x: np.ndarray, shift: float, stretch: float) -> np.ndarray:
     """
@@ -263,45 +344,3 @@ def plot_s_curve(x: np.ndarray, shift: float, stretch: float, show: bool = False
         fig.show()
 
     return fig
-
-
-if __name__ == "__main__":
-    test_x = np.linspace(0, 50, 10)
-
-    test_shift = 1.0
-    test_stretch = 2.0
-
-    s_values = s_curve_function(test_x, test_shift, test_stretch)
-
-    # ds_values = d_s_curve_function(test_x, test_shift, test_stretch)
-    # print(ds_values)
-    #
-    # ds_values = d_s_curve_function(test_x, test_shift, test_stretch, use_autograd=False)
-    # print(ds_values)
-
-    #
-
-    years = np.array([x + 2020 for x in range(10)])
-    consumption = np.linspace(100.0, 10000.0, len(years))
-    population = np.ones_like(years) * 1.0
-    energy_price = np.ones_like(years) * 1.0
-    energy_price_ref = 1.0
-    init_rate_time_pref = 1.0
-
-    jac = compute_utility_objective_der(years, consumption, energy_price, population, energy_price_ref,
-                                        init_rate_time_pref,
-                                        test_shift, test_stretch)
-
-    print(jac)
-
-    # jac = compute_utility_quantities_der(GlossaryCore.DiscountedUtilityQuantityPerCapita, years, consumption,
-    #                                      energy_price, population, energy_price_ref,
-    #                                      init_rate_time_pref,
-    #                                      test_shift, test_stretch)
-    #
-    # print(jac)
-
-    utility_quantity = compute_utility_quantity(consumption, energy_price, energy_price_ref)
-    utility_pc = compute_utility_per_capita(consumption, population, test_shift, test_stretch)
-
-    plot_s_curve(utility_quantity, test_shift, test_stretch, show=False)

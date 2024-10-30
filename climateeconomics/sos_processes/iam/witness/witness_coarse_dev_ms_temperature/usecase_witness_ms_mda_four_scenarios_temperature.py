@@ -75,7 +75,7 @@ class Study(ClimateEconomicsStudyManager):
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
         # update values dict with start temperature for the model
-        temp_change_variable = 'Temperature_change.init_temp_atmo'
+        temp_change_variable = 'Temperature change.init_temp_atmo'
         values_dict.update({
             f'{self.study_name}.{self.scatter_scenario}.{usecase4_name_old}.{temp_change_variable}': 1.05,
             f'{self.study_name}.{self.scatter_scenario}.{usecase7_name_old}.{temp_change_variable}': 1.05,

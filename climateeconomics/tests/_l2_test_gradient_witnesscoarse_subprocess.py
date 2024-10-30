@@ -287,7 +287,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                self.ee.dm.get_all_namespaces_from_var_name('rockstrom_limit_constraint')[0],
                                self.ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
                                self.ee.dm.get_all_namespaces_from_var_name('calories_per_day_constraint')[0],
-                               self.ee.dm.get_all_namespaces_from_var_name('carbon_storage_constraint')[0],
                                self.ee.dm.get_all_namespaces_from_var_name('total_prod_minus_min_prod_constraint_df')[0],
                                self.ee.dm.get_all_namespaces_from_var_name('energy_production_objective')[0],
                                self.ee.dm.get_all_namespaces_from_var_name('syngas_prod_objective')[0],
@@ -361,7 +360,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                   ee.dm.get_all_namespaces_from_var_name('rockstrom_limit_constraint')[0],
                   ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
                   ee.dm.get_all_namespaces_from_var_name('calories_per_day_constraint')[0],
-                  ee.dm.get_all_namespaces_from_var_name('carbon_storage_constraint')[0],
                   ee.dm.get_all_namespaces_from_var_name('total_prod_minus_min_prod_constraint_df')[0],
                   ee.dm.get_all_namespaces_from_var_name('energy_production_objective')[0],
                   ee.dm.get_all_namespaces_from_var_name('syngas_prod_objective')[0],
@@ -844,8 +842,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}',
-                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

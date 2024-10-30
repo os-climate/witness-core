@@ -44,7 +44,6 @@ class UtilityDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -72,7 +71,6 @@ class UtilityDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
-                       f'{self.name}.initial_raw_energy_price': energy_price[0],
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,}

@@ -24,6 +24,12 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import (
     Study as StudyOptimInvestDistrib,
 )
+from tools.design_space_creator import (
+    get_ine_dvar_descr,
+    make_dspace_Ine,
+    make_dspace_invests,
+    make_dspace_utilization_ratio,
+)
 
 
 class Study(StudyOptimInvestDistrib):
@@ -49,7 +55,7 @@ class Study(StudyOptimInvestDistrib):
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix': [min_invest, min_invest, max_invest, True],
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix': [min_invest, min_invest, max_invest, True],
         }
-        dspace_invests = self.make_dspace_invests(dspace_invests)
+        dspace_invests = make_dspace_invests(dspace_invests, self.year_start)
         min_UR = 50.
         dspace_UR = {
             'fossil_FossilSimpleTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
@@ -59,14 +65,14 @@ class Study(StudyOptimInvestDistrib):
             'carbon_storage.CarbonStorageTechno_utilization_ratio_array': [min_UR, min_UR, 100., True],
 
         }
-        dspace_UR = self.make_dspace_utilization_ratio(dspace_UR)
+        dspace_UR = make_dspace_utilization_ratio(dspace_UR)
         # dspace pour Ine
-        dspace_Ine = self.make_dspace_Ine(enable_variable=False)
+        dspace_Ine = make_dspace_Ine(enable_variable=False)
         dspace = pd.concat([dspace_invests, dspace_UR, dspace_Ine])
 
         # update design var descriptor with Ine variable
         dvar_descriptor = data_witness[f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor']
-        design_var_descriptor_ine_variable = self.get_ine_dvar_descr()
+        design_var_descriptor_ine_variable = get_ine_dvar_descr(self.year_start, self.year_end)
         
         dvar_descriptor.update({
             "share_non_energy_invest_ctrl": design_var_descriptor_ine_variable
@@ -96,10 +102,8 @@ class Study(StudyOptimInvestDistrib):
         func_df_varname = list(filter(lambda x: 'function_df' in x, data_witness.keys()))[0]
         function_df = data_witness[func_df_varname]
         func_df_carbon_neg_2050 = pd.DataFrame({
-            'variable': [GlossaryCore.ConstraintCarbonNegative2050, ],
-            'parent': [
-                'constraint_carbon_negative_2050'
-            ],
+            'variable': [GlossaryCore.ConstraintEnergyCarbonNegative2050, ],
+            'parent': [GlossaryCore.ConstraintEnergyCarbonNegative2050],
             'ftype': FunctionManager.INEQ_CONSTRAINT,
             'weight': 1.,
             FunctionManager.AGGR: FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT,

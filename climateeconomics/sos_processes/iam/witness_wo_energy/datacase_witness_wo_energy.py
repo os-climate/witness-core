@@ -187,7 +187,6 @@ class DataStudy():
         setup_data_list = setup_data_list + agriculture_list
         self.dspace_size = dc_agriculture_mix.dspace.pop('dspace_size')
         self.dspace.update(dc_agriculture_mix.dspace)
-        nb_poles = 8
 
         # WITNESS
         # setup objectives

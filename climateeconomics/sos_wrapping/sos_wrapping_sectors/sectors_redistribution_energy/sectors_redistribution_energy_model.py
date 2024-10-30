@@ -120,6 +120,8 @@ class SectorRedistributionEnergyModel:
             .sum(axis=1)
             .values
         )
+        if missing_sector_energy.min() < 0:
+            raise ValueError("Shares of energy distribution between sectors are not good : they led to negative energy attribution for deduced sector")
 
         all_sectors_energy_df[self.deduced_sector] = missing_sector_energy
         sectors_energy[self.deduced_sector] = pd.DataFrame(
@@ -145,8 +147,8 @@ class SectorRedistributionEnergyModel:
         self, inputs: dict
     ) -> tuple[dict[Union[str, Any], DataFrame], DataFrame, DataFrame, DataFrame]:
         self.inputs = inputs
-        self.sectors = inputs[GlossaryCore.SectorListValue]
-        self.deduced_sector = inputs[GlossaryCore.MissingSectorNameValue]
+        self.sectors = GlossaryCore.SectorsPossibleValues
+        self.deduced_sector = GlossaryCore.get_deduced_sector()
 
         (
             sectors_energy,

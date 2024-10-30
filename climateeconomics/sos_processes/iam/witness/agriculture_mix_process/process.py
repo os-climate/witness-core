@@ -50,7 +50,6 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
                    GlossaryCore.NS_WITNESS: f'{ns_study}',
-                    GlossaryCore.NS_REFERENCE: f'{ns_study}',
                    GlossaryCore.NS_FUNCTIONS: f'{ns_study}',
                    'ns_biomass_dry': f'{ns_study}',
                    'ns_land_use': f'{ns_study}',

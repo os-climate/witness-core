@@ -53,4 +53,5 @@ class IndustrialDiscipline(SectorDiscipline):
         self.update_default_value('energy_eff_max', 'in',3.1562276)
         self.update_default_value('output_alpha', 'in', 0.909985)
         self.update_default_value('depreciation_capital', 'in', 0.075)
+        self.update_default_value('usable_capital_ref', 'in', 1.12)
 

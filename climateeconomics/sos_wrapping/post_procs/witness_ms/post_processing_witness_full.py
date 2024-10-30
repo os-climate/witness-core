@@ -87,7 +87,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Temperature anomaly (°C above pre-industrial)'
         y_axis_name = 'Utility'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature change.temperature_detail_df',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}'
                     ]
         (temperature_df_dict, utility_df_dict) = get_variables_values_per_scenario(

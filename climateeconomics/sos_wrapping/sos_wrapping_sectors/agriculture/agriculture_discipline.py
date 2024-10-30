@@ -53,5 +53,6 @@ class AgricultureDiscipline(SectorDiscipline):
         self.update_default_value('energy_eff_max', 'in',2.35832)
         self.update_default_value('output_alpha', 'in', 0.99)
         self.update_default_value('depreciation_capital', 'in', 0.058)
+        self.update_default_value('usable_capital_ref', 'in', 0.1)
 
 

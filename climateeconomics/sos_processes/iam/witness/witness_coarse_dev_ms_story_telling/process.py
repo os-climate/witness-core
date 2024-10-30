@@ -15,8 +15,6 @@ limitations under the License.
 '''
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
-from climateeconomics.glossarycore import GlossaryCore
-
 
 class ProcessBuilder(BaseProcessBuilder):
 
@@ -52,7 +50,6 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_fossil',
                                          GlossaryCore.NS_CCS,
                                          'ns_resource',
-                                         #GlossaryCore.NS_REFERENCE,
                                          'ns_invest',
                                          'ns_agriculture',
                                          'ns_crop',
@@ -74,12 +71,11 @@ class ProcessBuilder(BaseProcessBuilder):
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
                    'ns_post_processing': f'{self.ee.study_name}.{scatter_scenario_name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences',
                    }
 
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': [GlossaryCore.NS_REFERENCE, 'ns_post_processing',
+        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_post_processing',
                                                                                   'ns_scatter_scenario']})
 
         multi_scenario = self.ee.factory.create_multi_instance_driver(

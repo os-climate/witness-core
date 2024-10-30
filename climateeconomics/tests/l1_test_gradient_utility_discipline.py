@@ -41,7 +41,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -76,8 +75,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         })
 
         self.values_dict = {f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-
+                            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
@@ -90,6 +88,9 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         ]
 
     def test_01_utility_analytic_grad_welfare(self):
+        self.values_dict.update({
+            f'{self.name}.{self.model_name}.multiply_obj_by_pop': True
+        })
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
@@ -98,10 +99,25 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'
                             ],
-                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
-                                     f'{self.name}.{GlossaryCore.LastYearUtilityObjectiveValue}',
+                            outputs=[f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
                                      f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
-                                     #f'{self.name}.{GlossaryCore.NetGdpGrowthRateObjectiveValue}',
+                            ],
+                            derr_approx='complex_step')
+
+    def test_02_utility_analytic_grad_welfare_no_population_multiplication_in_obj(self):
+        self.values_dict.update({
+            f'{self.name}.{self.model_name}.multiply_obj_by_pop': False
+        })
+        self.ee.load_study_from_input_dict(self.values_dict)
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename='jacobian_utility_discipline_welfare2.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDfValue}'
+                            ],
+                            outputs=[f'{self.name}.{GlossaryCore.QuantityObjectiveValue}',
+                                     f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',
                             ],
                             derr_approx='complex_step')

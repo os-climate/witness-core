@@ -61,14 +61,16 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             optim_name, after_name=self.ee.study_name, clean_existing = True)  # optim_name
 
         #-- set optim builder
+        builders = []
         opt_builder = self.ee.factory.create_optim_builder(
             optim_name, [coupling_builder])
-
+        builders.append(opt_builder)
         # adding the iea data preparation discipline
         mods_dict = {iea_name: 'climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline.IEADataPreparationDiscipline',
         }
         ns_dict = {'ns_dashboard_iea': self.ee.study_name}
         builder_iea_disc = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+        builders.extend(builder_iea_disc)
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             'ns_optim',
@@ -78,4 +80,4 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_dashboard_iea',
             'climateeconomics.sos_wrapping.post_procs.iea_nze_comparison.post_processing_iea_nze_comparison')
 
-        return [opt_builder, builder_iea_disc]
+        return builders

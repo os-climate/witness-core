@@ -66,7 +66,6 @@ class DamageDiscTest(unittest.TestCase):
                    f'ns_{GlossaryCore.SectorServices.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp': self.name,
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -122,7 +121,6 @@ class DamageDiscTest(unittest.TestCase):
                    f'ns_{GlossaryCore.SectorServices.lower()}_gdp': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_gdp': self.name,
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

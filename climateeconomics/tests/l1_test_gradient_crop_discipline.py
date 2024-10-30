@@ -148,7 +148,6 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_biomass_dry': f'{self.name}',
                    'ns_land_use':f'{self.name}',
                    'ns_crop':f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    'ns_invest':f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

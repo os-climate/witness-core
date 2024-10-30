@@ -44,7 +44,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-smog fa-fw',
+        'icon': 'fas fa-seedling fa-fw',
         'version': '',
     }
     years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)

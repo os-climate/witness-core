@@ -33,6 +33,9 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import (
     Study as usecase_ms_mdo,
 )
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2_tipping_point_2023 import (
+    Study as usecase_ms_mdo_iamc,
+)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
     Study as usecase_ms_mda,
 )
@@ -119,7 +122,7 @@ def post_processings(execution_engine, namespace, filters):
     scenario_list = samples_df['scenario_name'].tolist()
 
     selected_scenarios = scenario_list
-
+    sectorization: bool = len(execution_engine.dm.get_all_namespaces_from_var_name(f"{GlossaryEnergy.SectorServices}.{GlossaryEnergy.DamageDetailedDfValue}")) > 0
     year_start, _ = get_shared_value(execution_engine, GlossaryCore.YearStart)
     year_end, _ = get_shared_value(execution_engine, GlossaryCore.YearEnd)
 
@@ -179,10 +182,13 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            f'Temperature_change.{GlossaryCore.TemperatureDetailedDfValue}','tp_a3' ]
+            f'Temperature change.{GlossaryCore.TemperatureDetailedDfValue}','tp_a3' ]
         (temperature_detail_df_dict, tipping_points_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
-        chart_name = f'Atmosphere temperature evolution (tipping point {list(tipping_points_dict.values())[0]}°C)'
+        tipping_ptt_title_msg = ""
+        if len(set(tipping_points_dict.values())) == 1:
+            tipping_ptt_title_msg = f' (tipping point {list(tipping_points_dict.values())[0]}°C)'
+        chart_name = 'Atmosphere temperature evolution' + tipping_ptt_title_msg
         temperature_dict = {}
         for scenario in scenario_list:
             temperature_dict[scenario] = temperature_detail_df_dict[scenario][GlossaryCore.TempAtmo].values.tolist(
@@ -440,11 +446,11 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-    if 'Utility' in graphs_list:
+    if 'Utility' in graphs_list and not sectorization:
 
         chart_name = 'Utility'
         x_axis_name = 'Years'
-        y_axis_name = 'Discounted Utility [-]'
+        y_axis_name = 'Discounted Utility per capita [-]'
 
         df_paths = [f'{GlossaryCore.UtilityDfValue}', ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
@@ -597,7 +603,7 @@ def post_processings(execution_engine, namespace, filters):
             new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
 
-        if 'Consumption' in graphs_list:
+        if 'Consumption' in graphs_list and not sectorization:
 
             chart_name = 'Consumption'
             x_axis_name = 'Years'
@@ -620,7 +626,6 @@ def post_processings(execution_engine, namespace, filters):
             new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
 
-
     return instanciated_charts
 
 
@@ -641,7 +646,7 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
     (ccs_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
     df_paths = ['co2_damage_price_percentage', ]
     (co2_damage_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
-    df_paths = ['Macroeconomics.damage_to_productivity', ]
+    df_paths = ['damage_to_productivity', ]
     (damage_to_productivity_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
     status_dict = {}
     for scenario in scenario_list:
@@ -716,6 +721,15 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
         usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
         usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
+
+        # the lower the TP, the darker the color
+        usecase_ms_mdo_iamc.UC1: dict(color='red'),  # Red
+        usecase_ms_mdo_iamc.UC3_tp1: dict(color='#FFD633'),  # Light Orange
+        usecase_ms_mdo_iamc.UC3_tp2: dict(color='#FFA533'),  # orange
+        usecase_ms_mdo_iamc.UC4_tp1: dict(color='#89CFF0'),  # Light blue
+        usecase_ms_mdo_iamc.UC4_tp2: dict(color='#0047AB'),  # Dark blue
+        usecase_ms_mdo_iamc.UC_NZE_tp1: dict(color='#7FFF00'),  # Light green
+        usecase_ms_mdo_iamc.UC_NZE_tp2: dict(color='#2E8B57'),  # Dark Green
     }
     line_color = None
 
