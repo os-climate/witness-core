@@ -100,6 +100,7 @@ class GlossaryCore:
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
     ObjectiveEnergyNonUseCapital = "objective_non_use_capital_energy"
+    ObjectiveEnergyNonUseCapitalByStream = "objective_non_use_capital_energy_by_stream"
     ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
     ConstraintEnergyCarbonNegative2050 = "constraint_energy_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
