@@ -692,6 +692,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs.remove(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyCapitalDfValue}")
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ConstraintEnergyNonUseCapital}")
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ObjectiveEnergyNonUseCapital}")
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
