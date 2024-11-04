@@ -55,7 +55,7 @@ def make_dspace_invests(dspace_dict: dict[str: list], year_start:[float], overwr
     out = pd.DataFrame(out)
     return out
 
-def make_dspace_utilization_ratio(dspace_dict: dict[str: list]) -> pd.DataFrame:
+def make_dspace_utilization_ratio(dspace_dict: dict[str: list], allow_year_start: bool = False) -> pd.DataFrame:
     """
     :param dspace_dict: {variable_name: [value, lower_bnd, upper_bnd, enable_variable]}
     """
@@ -74,7 +74,7 @@ def make_dspace_utilization_ratio(dspace_dict: dict[str: list]) -> pd.DataFrame:
         out['lower_bnd'].append([infos[1]] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO))
         out['upper_bnd'].append([infos[2]] * GlossaryCore.NB_POLES_UTILIZATION_RATIO)
         out['enable_variable'].append(infos[3])
-        out['activated_elem'].append([False] + [True] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1))
+        out['activated_elem'].append([allow_year_start] + [True] * (GlossaryCore.NB_POLES_UTILIZATION_RATIO - 1))
 
     out = pd.DataFrame(out)
     return out

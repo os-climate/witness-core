@@ -540,7 +540,6 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
-
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -692,6 +691,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs.append(f"{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}")
         coupled_outputs.remove(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyCapitalDfValue}")
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ConstraintEnergyNonUseCapital}")
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ObjectiveEnergyNonUseCapital}")
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.ObjectiveEnergyNonUseCapitalByStream}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

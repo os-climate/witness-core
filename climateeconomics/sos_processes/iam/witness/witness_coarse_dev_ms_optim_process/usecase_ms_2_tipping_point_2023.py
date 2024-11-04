@@ -26,6 +26,9 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import (
     Study as Study3,
 )
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import (
+    Study as Study4,
+)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_2023_nze_2050 import (
     Study as StudyNZE,
 )
@@ -33,21 +36,17 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
 
 class Study(ClimateEconomicsStudyManager):
     TIPPING_POINT = 'Tipping point'
-    TIPPING_POINT_LIST = [6, 4.5, 3.5]
+    TIPPING_POINT_LIST = [6, 3.5]
     SEP = ' '
-    UNIT = 'deg C'
+    UNIT = '°C'
 
     UC1 = "- Damage, - Tax"
     UC3_tp1 = "+ Damage, + Tax, No CCUS" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
-    UC3_tp2 = "+ Damage, + Tax, No CCUS" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.',
-                                                                                                           '_') + UNIT
-    UC3_tp3 = "+ Damage, + Tax, No CCUS" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.',
-                                                                                                           '_') + UNIT
-    UC4_tp1 = "+ Damage, + Tax, All technos NZE" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
-    UC4_tp2 = "+ Damage, + Tax, All technos NZE" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.',
-                                                                                                                   '_') + UNIT
-    UC4_tp3 = "+ Damage, + Tax, All technos NZE" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[2]).replace('.',
-                                                                                                                   '_') + UNIT
+    UC3_tp2 = "+ Damage, + Tax, No CCUS" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
+    UC4_tp1 = "+ Damage, + Tax, All technos" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    UC4_tp2 = "+ Damage, + Tax, All technos" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
+    UC_NZE_tp1 = "+ Damage, + Tax, All technos NZE" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[0]).replace('.', '_') + UNIT
+    UC_NZE_tp2 = "+ Damage, + Tax, All technos NZE" + ', ' + TIPPING_POINT + SEP + str(TIPPING_POINT_LIST[1]).replace('.', '_') + UNIT
 
     def __init__(self, year_start=2023, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -63,10 +62,10 @@ class Study(ClimateEconomicsStudyManager):
             self.UC1: Study1,
             self.UC3_tp1: Study3,
             self.UC3_tp2: Study3,
-            self.UC3_tp3: Study3,
-            self.UC4_tp1: StudyNZE,
-            self.UC4_tp2: StudyNZE,
-            self.UC4_tp3: StudyNZE,
+            self.UC4_tp1: Study4,
+            self.UC4_tp2: Study4,
+            self.UC_NZE_tp1: StudyNZE,
+            self.UC_NZE_tp2: StudyNZE,
         }
 
         # changing the tipping point
@@ -85,22 +84,25 @@ class Study(ClimateEconomicsStudyManager):
             scenarioDatadict.update(scenarioData)
             values_dict.update(scenarioDatadict)
 
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 1 for scenario_name in scenario_dict.keys()})
         # update the tipping point value
         values_dict.update({
             f'{self.study_name}.{scatter_scenario}.{self.UC3_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[0],
             f'{self.study_name}.{scatter_scenario}.{self.UC3_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[1],
-            f'{self.study_name}.{scatter_scenario}.{self.UC3_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[2],
             f'{self.study_name}.{scatter_scenario}.{self.UC4_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[0],
             f'{self.study_name}.{scatter_scenario}.{self.UC4_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[1],
-            f'{self.study_name}.{scatter_scenario}.{self.UC4_tp3}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[2],
+            f'{self.study_name}.{scatter_scenario}.{self.UC_NZE_tp1}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[0],
+            f'{self.study_name}.{scatter_scenario}.{self.UC_NZE_tp2}.WITNESS_MDO.WITNESS_Eval.WITNESS.Damage.tp_a3': self.TIPPING_POINT_LIST[1],
         })
 
         values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)
+        values_dict.update(
+            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 2 for scenario_name in
+             scenario_dict.keys()})
 
         return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
+    uc_cls.load_data()
     uc_cls.test()

@@ -53,7 +53,7 @@ class GlossaryCore:
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
-    NB_POLES_OPTIM_KU = 4  # number of poles for bspline design variables utilization ratio
+    NB_POLES_OPTIM_KU = 6  # number of poles for bspline design variables utilization ratio
     Years = "years"
     YearStart = "year_start"
     YearStartDefault = 2020
@@ -99,6 +99,8 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
+    ObjectiveEnergyNonUseCapital = "objective_non_use_capital_energy"
+    ObjectiveEnergyNonUseCapitalByStream = "objective_non_use_capital_energy_by_stream"
     ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
     ConstraintEnergyCarbonNegative2050 = "constraint_energy_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
@@ -1715,5 +1717,5 @@ class GlossaryCore:
         return pd.DataFrame(out)
 
     @classmethod
-    def get_deduced_sector(cls)-> str:
+    def get_deduced_sector(cls) -> str:
         return list(set(cls.SectorsPossibleValues).difference(set(cls.SectorsValueOptim)))[0]
