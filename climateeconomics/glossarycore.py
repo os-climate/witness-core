@@ -1150,7 +1150,7 @@ class GlossaryCore:
         "namespace": NS_SECTORS,
         "visibility": "Shared",
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
@@ -1159,7 +1159,7 @@ class GlossaryCore:
     }
     ConsumptionSectorBreakdown = {
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             "Output net of damage": ("int", [1900, YearEndDefault], False),
             "Investment in sector": ("float", [0, 1e30], False),
@@ -1298,7 +1298,7 @@ class GlossaryCore:
     RedistributionInvestmentsDf = {
         "var_name": RedistributionInvestmentsDfValue,
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
     }
@@ -1445,7 +1445,7 @@ class GlossaryCore:
     InvestmentDf = {
         "var_name": InvestmentDfValue,
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "visibility": "Shared",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
