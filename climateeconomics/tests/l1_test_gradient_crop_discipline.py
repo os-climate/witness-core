@@ -52,25 +52,25 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.temperature_df.index = years
 
         # Age distribution of forests in 2008 (
-        self.default_kg_to_m2 = {'red meat': 345.,
-                            'white meat': 14.5,
-                            'milk': 8.95,
-                            'eggs': 6.27,
-                            'rice and maize': 2.89,
-                            'cereals': 4.5,
-                            'fruits and vegetables': 0.8,
+        self.default_kg_to_m2 = {GlossaryCore.RedMeat: 345.,
+                            GlossaryCore.WhiteMeat: 14.5,
+                            GlossaryCore.Milk: 8.95,
+                            GlossaryCore.Eggs: 6.27,
+                            GlossaryCore.RiceAndMaize: 2.89,
+                            GlossaryCore.Cereals: 4.5,
+                            GlossaryCore.FruitsAndVegetables: 0.8,
                             GlossaryCore.Fish: 0.,
                             GlossaryCore.OtherFood: 5.1041,
                             }
         # land use of other is provided in variable 'other_use_crop'
 
-        self.default_kg_to_kcal = {'red meat': 1551.05,
-                              'white meat': 2131.99,
-                              'milk': 921.76,
-                              'eggs': 1425.07,
-                              'rice and maize': 2572.46,
-                              'cereals': 2964.99,
-                              'fruits and vegetables': 559.65,
+        self.default_kg_to_kcal = {GlossaryCore.RedMeat: 1551.05,
+                              GlossaryCore.WhiteMeat: 2131.99,
+                              GlossaryCore.Milk: 921.76,
+                              GlossaryCore.Eggs: 1425.07,
+                              GlossaryCore.RiceAndMaize: 2572.46,
+                              GlossaryCore.Cereals: 2964.99,
+                              GlossaryCore.FruitsAndVegetables: 559.65,
                               GlossaryCore.Fish: 609.17,
                               GlossaryCore.OtherFood: 3061.06,
                               }

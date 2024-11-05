@@ -160,8 +160,28 @@ class GlossaryCore:
     ConsumptionObjectiveRef = get_ref_variable(var_name=ConsumptionObjectiveRefValue, unit="T$", default_value=250)
 
     # Diet
+    RedMeat = "red meat"
+    WhiteMeat = "white meat"
+    Milk = "milk"
+    Eggs = 'eggs'
+    RiceAndMaize = 'rice and maize'
+    Cereals = 'cereals'
+    FruitsAndVegetables = 'fruits and vegetables'
     Fish = "fish"
     OtherFood = "other"
+    
+    DefaultFoodTypes = [
+        RedMeat,
+        WhiteMeat,
+        Milk,
+        Eggs,
+        RiceAndMaize,
+        Cereals,
+        FruitsAndVegetables,
+        Fish,
+        OtherFood,
+    ]
+    
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
@@ -184,6 +204,7 @@ class GlossaryCore:
     NS_SECTORS_POST_PROC_GDP = "ns_sectors_postproc_gdp"
     NS_GHGEMISSIONS = "ns_ghg_emissions"
     NS_HOUSEHOLDS_EMISSIONS = "ns_households_emissions"
+    NS_FOOD = "ns_food"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -369,6 +390,17 @@ class GlossaryCore:
         "var_name": CaloriesPerCapitaBreakdownValue,
         "type": "dataframe",
         "unit": "kcal/day/person",
+    }
+
+    InvestDf = {
+        'var_name': InvestmentsValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            InvestmentsValue: ("float", None, True),
+        },
+        "dataframe_edition_locked": False,
     }
 
     CarbonCycleDfValue = "carboncycle_df"
@@ -1065,6 +1097,18 @@ class GlossaryCore:
             TempAtmo: ("float", None, False),
         },
     }
+    CropProductivityReductionName = "crop_productivity_reduction"
+    CropProductivityReductionDf = {
+        "var_name": CropProductivityReductionName,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "unit": "%",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            CropProductivityReductionName: ("float", None, False),
+        },
+    }
 
     TemperatureDetailedDfValue = "temperature_detailed_df"
     TemperatureDetailedDf = {
@@ -1673,6 +1717,285 @@ class GlossaryCore:
             # OutputNetOfDamage: ("float", None, False),
             PerCapitaConsumption: ("float", None, False),
         },
+    }
+
+    FoodTypesName = "food_types"
+    FoodTypesVar = {
+        "var_name": FoodTypesName,
+        'type': 'list', 'subtype_descriptor': {'list': 'string'},
+        'namespace': NS_FOOD,
+        'default': DefaultFoodTypes
+    }
+
+    ShareInvestFoodTypesName = "share_invest_crop_food_split"
+    ShareInvestFoodTypesVar = {
+        "var_name": ShareInvestFoodTypesName,
+        "type": "dataframe",
+        "namespace": NS_FOOD,
+        "unit": "%",
+        "visibility": "Shared",
+        "description": "Indicates how the crop investment for food in shared between all food types",
+    }
+
+    ShareEnergyUsageFoodTypesName = "share_energy_crop_food_split"
+    ShareEnergyUsageFoodTypesVar = {
+        "var_name": ShareEnergyUsageFoodTypesName,
+        "type": "dataframe",
+        "namespace": NS_FOOD,
+        "unit": "%",
+        "visibility": "Shared",
+        "description": "Indicates how the energy attributed to crop for food in shared between all food types",
+    }
+
+    ShareWorkforceFoodTypesName = "share_workforce_crop_food_split"
+    ShareWorkforceFoodTypesVar = {
+        "var_name": ShareWorkforceFoodTypesName,
+        "type": "dataframe",
+        "namespace": NS_FOOD,
+        "unit": "%",
+        "visibility": "Shared",
+        "description": "Indicates how the workforce attributed to crop for food in shared between all food types",
+    }
+
+    FoodTypeEnergyNeedName = "food_type_energy_need"
+    FoodTypeEnergyNeedVar = {
+        "var_name": FoodTypeEnergyNeedName,
+        "type": "dataframe",
+        "unit": "kWh/ton",
+        "description": "Indicates how much energy is needed to produce 1 ton of given food type",
+    }
+
+    FoodTypeWorkforceNeedName = "food_type_workforce_need"
+    FoodTypeWorkforceNeedVar = {
+        "var_name": FoodTypeWorkforceNeedName,
+        "type": "dataframe",
+        "unit": "people/ton",
+        "description": "Indicates how much workforce is needed to produce 1 ton of given food type",
+    }
+
+    FoodTypeCapexName = "food_type_capex"
+    FoodTypeCapexVar = {
+        "var_name": FoodTypeCapexName,
+        "type": "dataframe",
+        "unit": "$/ton",
+        "description": "Indicates how much dollars is needed to produce 1 ton of food type",
+    }
+
+    FoodTypeWasteAtProductionShareName = "food_type_waste_at_production_share"
+    FoodTypeWasteAtProductionShareVar = {
+        "var_name": FoodTypeWasteAtProductionShareName,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Indicates what percentage of the production is wasted between production and distribution for each food type",
+    }
+
+    FoodTypeWasteByConsumersShareName = "food_type_waste_by_consumers_share"
+    FoodTypeWasteByConsumersShareVar = {
+        "var_name": FoodTypeWasteByConsumersShareName,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Indicates what percentage of the production is wasted by the consumers for each food type",
+    }
+
+    FoodTypeWasteAtProductionName = "food_type_waste_at_production"
+    FoodTypeWasteAtProductionVar = {
+        "var_name": FoodTypeWasteAtProductionName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Production wasted between production and distribution for each food type",
+    }
+
+    FoodTypeWasteByConsumersName = "food_type_waste_by_consumers"
+    FoodTypeWasteByConsumersVar = {
+        "var_name": FoodTypeWasteByConsumersName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Production wasted by consumers for each food type",
+    }
+
+    FoodTypeNotProducedDueToClimateChangeName = "food_type_waste_by_productivity_loss"
+    FoodTypeWasteByProductivityLossVar = {
+        "var_name": FoodTypeNotProducedDueToClimateChangeName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Food that is not produced due to loss of productivity (caused by climate change)",
+    }
+
+    FoodTypeDedicatedToProductionForStreamName = "food_type_production_for_stream_{}"
+    FoodTypeDedicatedToProductionForStreamVar = {
+        "var_name": FoodTypeNotProducedDueToClimateChangeName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Dedicated production", # for energy production
+    }
+
+    FoodTypeUserWasteShareForStreamName = "food_type_share_of_user_waste_for_stream_{}"
+    FoodTypeUserWasteShareForStreamVar = {
+        "var_name": FoodTypeUserWasteShareForStreamName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Share of the user waste that goes back for {} stream production",
+    }
+
+    FoodTypeWasteBeforeDistribShareForStreamName = "food_type_share_of_waste_before_distrib_for_stream_{}"
+    FoodTypeWasteBeforeDistribShareForStreamVar = {
+        "var_name": FoodTypeWasteBeforeDistribShareForStreamName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Share of the waste happening before distribution that is used for {} stream production",
+    }
+
+    FoodTypeWasteByClimateDamagesName = "food_type_waste_by_climate_change"
+    FoodTypeWasteByClimateDamagesVar = {
+        "var_name": FoodTypeWasteByClimateDamagesName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Production wasted due to immediate climate change",
+    }
+
+    # Food energy production shares
+    FoodTypeShareDedicatedToStreamProdName = "food_type_share_allocated_to_stream_{}"
+    FoodTypeShareDedicatedToStreamProdVar = {
+        "var_name": FoodTypeShareDedicatedToStreamProdName,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Share of the production that is dedicated to a stream {} for energy production",
+    }
+
+    FoodTypeShareUserWasteUsedToStreamProdName = "food_type_share_user_waste_used_for_stream_{}_prod"
+    FoodTypeShareUserWasteUsedToStreamProdVar = {
+        "var_name": FoodTypeShareUserWasteUsedToStreamProdName,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Share of the user waste that is used for stream {} to produce energy",
+    }
+
+    FoodTypeShareWasteBeforeDistribUsedToStreamProdName = "food_type_share_user_waste_before_distribution_used_for_stream_{}_prod"
+    FoodTypeShareWasteBeforeDistrbUsedToStreamProdVar = {
+        "var_name": FoodTypeShareWasteBeforeDistribUsedToStreamProdName,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Share of user waste happening before distribution used for stream {} to produce energy",
+    }
+
+    # Food stream production
+    ConsumerWasteUsedForEnergyName = "consumers_waste_used_for_energy_{}"
+    ConsumerWasteUsedForEnergyVar = {
+        "var_name": ConsumerWasteUsedForEnergyName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Consumers waste reused",
+    }
+    WasteBeforeDistribReusedForEnergyProdName = "waste_before_distribution_used_for_energy_prod_{}"
+    WasteBeforeDistribReusedForEnergyProdVar = {
+        "var_name": WasteBeforeDistribReusedForEnergyProdName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Waste between production and distribution reused",
+    }
+    CropDedicatedProdForEnergyName = "crop_dedicated_prod_for_energy_{}"
+    CropDedicatedProdForEnergyVar = {
+        "var_name": CropDedicatedProdForEnergyName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Crop dedicated production of {}",
+    }
+    CropProdForEnergyName = "crop_prod_for_energy_{}"
+    CropProdForEnergyVar = {
+        "var_name": CropProdForEnergyName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "namespace": NS_FOOD,
+        "visibility": "Shared",
+        "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
+    }
+
+    FoodTypeDeliveredToConsumersName = "food_type_delivered_to_consumers"
+    FoodTypeDeliveredToConsumersVar = {
+        "var_name": FoodTypeDeliveredToConsumersName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Production delivered to consumers",
+    }
+
+    FoodTypeEmissionsByProdUnitName = "food_type_prod_unit_{}_emissions"
+    FoodTypeEmissionsByProdUnitVar = {
+        "type": "dataframe",
+        "unit": "kg{}/kg produced",
+        "description": "Food type {} emissions by production unit for each food type",
+    }
+
+    FoodTypeKcalByProdUnitName = "food_type_kcal_by_mass_prod_unit"
+    FoodTypeKcalByProdUnitVar = {
+        "type": "dataframe",
+        "unit": "kcal/kg",
+        "description": "Kcal per kg for each food type",
+    }
+
+    FoodTypeLandUseByProdUnitName = "food_type_prod_unit_land_use"
+    FoodTypeLandUseByProdUnitVar = {
+        "type": "dataframe",
+        "unit": "m²/kg produced",
+        "description": "Land used by kg produced for each food type",
+    }
+
+    FoodTypeLandUseName = "food_type_land_use"
+    FoodTypeLandUseVar = {
+        "var_name": FoodTypeLandUseName,
+        "type": "dataframe",
+        "unit": "(Gha)",
+        "description": "Land used by each food type",
+    }
+
+    FoodLandUseName = "food_land_use"
+    FoodLandUseVar = {
+        "var_name": FoodTypeLandUseName,
+        "type": "dataframe",
+        "unit": "(Gha)",
+        "visibility": "Shared",
+        "namespace": NS_FOOD,
+        "description": "Land used for food production",
+    }
+
+    FoodTypeEmissionsName = "food_type_{}_emissions"
+    FoodTypeEmissionsVar = {
+        "type": "dataframe",
+        "unit": "Gt",
+        "description": "Food type {} emissions by food type",
+    }
+
+    CropFoodEmissionsName = "crop_food_emissions"
+    CropFoodEmissionsVar = {
+        "var_name": CropFoodEmissionsName,
+        "type": "dataframe",
+        "unit": "Gt",
+        "visibility": "Shared",
+        "namespace": NS_FOOD,
+        "description": "Crop for food emissions for each GHG",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            CO2: ("float", None, True),
+            CH4: ("float", None, True),
+            N2O: ("float", None, True),
+        },
+    }
+
+    CropFoodLandUseName = "crop_food_land_use"
+    CropFoodLandUseVar = {
+        "var_name": CropFoodLandUseName,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_FOOD,
+        "unit": "Gha",
+        "description": "Land use by crop for food production",
+    }
+
+    CropFoodKcalForConsumersName = "crop_kcal_for_consumers"
+    CropFoodKcalForConsumersVar = {
+        "var_name": CropFoodKcalForConsumersName,
+        "type": "dataframe",
+        "unit": "kcal",
+        "description": "kcal delivered by crop for food to consumers",
     }
 
     @staticmethod
