@@ -195,9 +195,12 @@ class Study(ClimateEconomicsStudyManager):
                 dspace_df.at[index, "upper_bnd"] = upper_bnd_array
                 dspace_df.at[index, "lower_bnd"] = lower_bnd_array
                 dspace_df.at[index, "activated_elem"] = activated_elem_array
+                # update the array_mix in the designVariables since it does not take the value in the design space
+                # for 1 iteration
                 values_dict_updt.update({
                     f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.{variable}': valeur_array,
-                    f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.CCUS.{variable}': valeur_array})
+                    f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.CCUS.{variable}': valeur_array,
+                })
         dspace_df['enable_variable'] = True
 
         invest_mix_file = 'investment_mix.csv'
@@ -211,6 +214,8 @@ class Study(ClimateEconomicsStudyManager):
         forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
         #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
+        construction_delay = GlossaryEnergy.TechnoConstructionDelayDict['AnaerobicDigestion']
+        invest_before_year_start_anaerobicdigestion = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - construction_delay, self.year_start), GlossaryEnergy.InvestValue: [1.43, 1.43, 1.43]})
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
@@ -226,6 +231,8 @@ class Study(ClimateEconomicsStudyManager):
                                  #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.0137,  # result from data_energy/fitting/gaseous_bioenergy.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_anaerobicdigestion,
+
                                  })
 
         values_dict.update(values_dict_updt)
