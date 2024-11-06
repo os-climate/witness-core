@@ -15,14 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import re
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
-    AGRI_MIX_MODEL_LIST,
-)
 
 
 class ProcessBuilder(EnergyProcessBuilder):
