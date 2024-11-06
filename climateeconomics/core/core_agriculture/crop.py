@@ -195,9 +195,9 @@ class Crop():
         self.land_use_required = pd.DataFrame({GlossaryCore.Years: self.years})
         self.cost_details = pd.DataFrame({GlossaryCore.Years: self.years})
         self.techno_prices = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.column_dict = {'red meat (Gha)': 'red meat', 'white meat (Gha)': 'white meat',
-                            'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
-                            'cereals (Gha)': 'cereals', 'fruits and vegetables (Gha)': 'fruits and vegetables',
+        self.column_dict = {'red meat (Gha)': GlossaryCore.RedMeat, 'white meat (Gha)': GlossaryCore.WhiteMeat,
+                            'milk (Gha)': GlossaryCore.Milk, 'eggs (Gha)': GlossaryCore.Eggs, 'rice and maize (Gha)': GlossaryCore.RiceAndMaize,
+                            'cereals (Gha)': GlossaryCore.Cereals, 'fruits and vegetables (Gha)': GlossaryCore.FruitsAndVegetables,
                             'fish (Gha)': GlossaryCore.Fish, 'other (Gha)': GlossaryCore.OtherFood,
                             'total surface (Gha)': 'total surface'}
         self.techno_consumption = pd.DataFrame({GlossaryCore.Years: self.years})
@@ -376,8 +376,8 @@ class Crop():
                 - compute new diet_df
         '''
         changed_diet_df = pd.DataFrame({GlossaryCore.Years: self.years})
-        changed_diet_df['red meat'] = self.red_meat_calories_per_day * 365
-        changed_diet_df['white meat'] = self.white_meat_calories_per_day * 365
+        changed_diet_df[GlossaryCore.RedMeat] = self.red_meat_calories_per_day * 365
+        changed_diet_df[GlossaryCore.WhiteMeat] = self.white_meat_calories_per_day * 365
         changed_diet_df[GlossaryCore.Fish] = self.fish_calories_per_day * 365
         changed_diet_df[GlossaryCore.OtherFood] = self.other_calories_per_day * 365
         # design var is milk + eggs => need to recompute milk and egg separately
@@ -390,20 +390,20 @@ class Crop():
         diet_init_kcal = diet_init_kcal.mul(pd.Series(self.kg_to_kcal_dict) / 365, axis=1)
         self.diet_init_kcal = diet_init_kcal
 
-        list_variables = ['fruits and vegetables', 'cereals', 'rice and maize', 'eggs', 'milk']
+        list_variables = [GlossaryCore.FruitsAndVegetables, GlossaryCore.Cereals, GlossaryCore.RiceAndMaize, GlossaryCore.Eggs, GlossaryCore.Milk]
 
         for key in list_variables:
             # compute new vegetable diet in kg_food/person/year: add the removed_kcal/3 for each 3 category of vegetable
-            if key == 'fruits and vegetables' or key == 'cereals' or key == 'rice and maize':
+            if key == GlossaryCore.FruitsAndVegetables or key == GlossaryCore.Cereals or key == GlossaryCore.RiceAndMaize:
                 # proportion of current key wrt to other
                 proportion = diet_init_kcal[key].values[0] / \
-                             (diet_init_kcal['fruits and vegetables'].values[0] + diet_init_kcal['cereals'].values[0] +
-                              diet_init_kcal['rice and maize'].values[0])
+                             (diet_init_kcal[GlossaryCore.FruitsAndVegetables].values[0] + diet_init_kcal[GlossaryCore.Cereals].values[0] +
+                              diet_init_kcal[GlossaryCore.RiceAndMaize].values[0])
                 changed_diet_df[key] = vegetables_and_carbs_calories * proportion
             # eggs and milk have fixed value for now
-            elif key == 'eggs' or key == 'milk':
+            elif key == GlossaryCore.Eggs or key == GlossaryCore.Milk:
                 proportion = diet_init_kcal[key].values[0] / \
-                             (diet_init_kcal['eggs'].values[0] + diet_init_kcal['milk'].values[0])
+                             (diet_init_kcal[GlossaryCore.Eggs].values[0] + diet_init_kcal[GlossaryCore.Milk].values[0])
 
                 changed_diet_df[key] = milk_and_eggs_calories * proportion
 
@@ -762,7 +762,7 @@ class Crop():
         for food in self.co2_emissions_per_kg:
 
             # add crop energy surface for rice and maize
-            if food == 'rice and maize':
+            if food == GlossaryCore.RiceAndMaize:
                 surface = self.food_land_surface_df[f'{food} (Gha)'] + self.land_use_required['Crop (Gha)']
 
             else:
@@ -932,13 +932,13 @@ class Crop():
 
         kg_food_to_surface = self.kg_to_m2_dict
 
-        vegetables_column_names = ['fruits and vegetables', 'cereals', 'rice and maize']
+        vegetables_column_names = [GlossaryCore.FruitsAndVegetables, GlossaryCore.Cereals, GlossaryCore.RiceAndMaize]
         l_years = len(self.years)
         grad_res = np.zeros((l_years, l_years))
         for veg in vegetables_column_names:
-            proportion = diet_df[veg].values[0] / (diet_df['fruits and vegetables'].values[0] +
-                                                   diet_df['cereals'].values[0] +
-                                                   diet_df['rice and maize'].values[0])
+            proportion = diet_df[veg].values[0] / (diet_df[GlossaryCore.FruitsAndVegetables].values[0] +
+                                                   diet_df[GlossaryCore.Cereals].values[0] +
+                                                   diet_df[GlossaryCore.RiceAndMaize].values[0])
 
             grad_value = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
@@ -960,12 +960,12 @@ class Crop():
 
         kg_food_to_surface = self.kg_to_m2_dict
 
-        eggs_milk_column_names = ['eggs', 'milk']
+        eggs_milk_column_names = [GlossaryCore.Eggs, GlossaryCore.Milk]
         l_years = len(self.years)
         grad_res = np.zeros((l_years, l_years))
         for veg in eggs_milk_column_names:
-            proportion = diet_df[veg].values[0] / (diet_df['eggs'].values[0] +
-                                                   diet_df['milk'].values[0])
+            proportion = diet_df[veg].values[0] / (diet_df[GlossaryCore.Eggs].values[0] +
+                                                   diet_df[GlossaryCore.Milk].values[0])
 
             grad_value = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
@@ -1001,7 +1001,7 @@ class Crop():
         idty = np.identity(number_of_values)
         kg_food_to_surface = self.kg_to_m2_dict
         # red to white meat value influences red meat, white meat, and vegetable surface
-        red_meat_diet_grad = 365 * kg_food_to_surface['red meat']
+        red_meat_diet_grad = 365 * kg_food_to_surface[GlossaryCore.RedMeat]
 
         total_surface_grad = red_meat_diet_grad * population_df[
             GlossaryCore.PopulationValue].values * 1e6 * self.ha_to_m2 / 1e9
@@ -1017,7 +1017,7 @@ class Crop():
         idty = np.identity(number_of_values)
         kg_food_to_surface = self.kg_to_m2_dict
         # red to white meat value influences red meat, white meat, and vegetable surface
-        white_meat_diet_grad = 365 * kg_food_to_surface['white meat']
+        white_meat_diet_grad = 365 * kg_food_to_surface[GlossaryCore.WhiteMeat]
 
         sub_total_surface_grad = white_meat_diet_grad
 
@@ -1071,9 +1071,9 @@ class Crop():
         diet_df = self.diet_init_kcal
         # red to white meat value influences red meat, white meat, and vegetable surface
 
-        proportion = diet_df[veg].values[0] / (diet_df['fruits and vegetables'].values[0] +
-                                               diet_df['cereals'].values[0] +
-                                               diet_df['rice and maize'].values[0])
+        proportion = diet_df[veg].values[0] / (diet_df[GlossaryCore.FruitsAndVegetables].values[0] +
+                                               diet_df[GlossaryCore.Cereals].values[0] +
+                                               diet_df[GlossaryCore.RiceAndMaize].values[0])
 
         white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
@@ -1095,8 +1095,8 @@ class Crop():
         diet_df = self.diet_init_kcal
         # red to white meat value influences red meat, white meat, and vegetable surface
 
-        proportion = diet_df[veg].values[0] / (diet_df['milk'].values[0] +
-                                               diet_df['eggs'].values[0])
+        proportion = diet_df[veg].values[0] / (diet_df[GlossaryCore.Milk].values[0] +
+                                               diet_df[GlossaryCore.Eggs].values[0])
 
         white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
@@ -1186,18 +1186,18 @@ class Crop():
         sub_total_surface_grad = 0.0
         kg_food_to_surface = self.kg_to_m2_dict
 
-        red_meat_diet_grad = 365 * kg_food_to_surface['red meat']
+        red_meat_diet_grad = 365 * kg_food_to_surface[GlossaryCore.RedMeat]
         # removed_red_kcal = -self.kcal_diet_df['total'] / 100
 
         # red to white meat value influences red meat, white meat, and vegetable surface
-        if food in ['red meat', 'fruits and vegetables', 'cereals', 'rice and maize']:
+        if food in [GlossaryCore.RedMeat, GlossaryCore.FruitsAndVegetables, GlossaryCore.Cereals, GlossaryCore.RiceAndMaize]:
 
-            if food == 'red meat':
+            if food == GlossaryCore.RedMeat:
                 sub_total_surface_grad = red_meat_diet_grad / self.kg_to_kcal_dict[food]
 
             else:
                 pass
-                """proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['cereals'] + self.kcal_diet_df['rice and maize'])
+                """proportion = self.kcal_diet_df[food] / (self.kcal_diet_df[GlossaryCore.FruitsAndVegetables] + self.kcal_diet_df[GlossaryCore.Cereals] + self.kcal_diet_df[GlossaryCore.RiceAndMaize])
                 sub_total_surface_grad = removed_red_kcal * proportion / self.kg_to_kcal_dict[food] * kg_food_to_surface[food]
                 """
         total_surface_grad = sub_total_surface_grad * population_df[
@@ -1215,17 +1215,17 @@ class Crop():
         sub_total_surface_grad = 0.0
         kg_food_to_surface = self.kg_to_m2_dict
 
-        white_meat_diet_grad = 365 * kg_food_to_surface['white meat']
+        white_meat_diet_grad = 365 * kg_food_to_surface[GlossaryCore.WhiteMeat]
         # removed_white_kcal = -self.kcal_diet_df['total'] / 100
 
         # red to white meat value influences red meat, white meat, and vegetable surface
-        if food in ['white meat', 'fruits and vegetables', 'cereals', 'rice and maize']:
+        if food in [GlossaryCore.WhiteMeat, GlossaryCore.FruitsAndVegetables, GlossaryCore.Cereals, GlossaryCore.RiceAndMaize]:
 
-            if food == 'white meat':
+            if food == GlossaryCore.WhiteMeat:
                 sub_total_surface_grad = white_meat_diet_grad / self.kg_to_kcal_dict[food]
         """
             else:
-                proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['cereals'] + self.kcal_diet_df['rice and maize'])
+                proportion = self.kcal_diet_df[food] / (self.kcal_diet_df[GlossaryCore.FruitsAndVegetables] + self.kcal_diet_df[GlossaryCore.Cereals] + self.kcal_diet_df[GlossaryCore.RiceAndMaize])
                 sub_total_surface_grad = removed_white_kcal * proportion / self.kg_to_kcal_dict[food] * kg_food_to_surface[food]
         """
         total_surface_grad = sub_total_surface_grad * population_df[
@@ -1246,7 +1246,7 @@ class Crop():
         fish_diet_grad = 365 * kg_food_to_surface[GlossaryCore.Fish]
 
         # red to white meat value influences red meat, white meat, and vegetable surface
-        if food in ['white meat', 'fruits and vegetables', 'cereals', 'rice and maize', GlossaryCore.OtherFood,
+        if food in [GlossaryCore.WhiteMeat, GlossaryCore.FruitsAndVegetables, GlossaryCore.Cereals, GlossaryCore.RiceAndMaize, GlossaryCore.OtherFood,
                     GlossaryCore.Fish]:
 
             if food == GlossaryCore.Fish:
@@ -1270,7 +1270,7 @@ class Crop():
         other_food_diet_grad = 365 * kg_food_to_surface[GlossaryCore.OtherFood]
 
         # red to white meat value influences red meat, white meat, and vegetable surface
-        if food in ['white meat', 'fruits and vegetables', 'cereals', 'rice and maize', GlossaryCore.OtherFood]:
+        if food in [GlossaryCore.WhiteMeat, GlossaryCore.FruitsAndVegetables, GlossaryCore.Cereals, GlossaryCore.RiceAndMaize, GlossaryCore.OtherFood]:
 
             if food == GlossaryCore.OtherFood:
                 sub_total_surface_grad = other_food_diet_grad / self.kg_to_kcal_dict[food]

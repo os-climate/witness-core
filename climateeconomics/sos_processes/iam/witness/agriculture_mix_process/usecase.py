@@ -101,28 +101,28 @@ class Study(StudyManager):
                                         GlossaryCore.Fish: [23.38],
                                         GlossaryCore.OtherFood: [77.24]
                                         })
-        default_kg_to_kcal = {'red meat': 1551.05,
-                              'white meat': 2131.99,
-                              'milk': 921.76,
-                              'eggs': 1425.07,
-                              'rice and maize': 2572.46,
-                              'cereals': 2964.99,
-                              'fruits and vegetables': 559.65,
+        default_kg_to_kcal = {GlossaryCore.RedMeat: 1551.05,
+                              GlossaryCore.WhiteMeat: 2131.99,
+                              GlossaryCore.Milk: 921.76,
+                              GlossaryCore.Eggs: 1425.07,
+                              GlossaryCore.RiceAndMaize: 2572.46,
+                              GlossaryCore.Cereals: 2964.99,
+                              GlossaryCore.FruitsAndVegetables: 559.65,
                               GlossaryCore.Fish: 609.17,
                               GlossaryCore.OtherFood: 3061.06,
                               }
-        red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0] / 365
-        milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0] / 365 + \
-                                            default_kg_to_kcal['milk'] * diet_df_default['milk'].values[0] / 365
+        red_meat_average_ca_daily_intake = default_kg_to_kcal[GlossaryCore.RedMeat] * diet_df_default[GlossaryCore.RedMeat].values[0] / 365
+        milk_eggs_average_ca_daily_intake = default_kg_to_kcal[GlossaryCore.Eggs] * diet_df_default[GlossaryCore.Eggs].values[0] / 365 + \
+                                            default_kg_to_kcal[GlossaryCore.Milk] * diet_df_default[GlossaryCore.Milk].values[0] / 365
         white_meat_average_ca_daily_intake = default_kg_to_kcal[
-                                                 'white meat'] * diet_df_default['white meat'].values[0] / 365
+                                                 GlossaryCore.WhiteMeat] * diet_df_default[GlossaryCore.WhiteMeat].values[0] / 365
         # kcal per kg 'vegetables': 200 https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
-        vegetables_and_carbs_average_ca_daily_intake = diet_df_default['fruits and vegetables'].values[0] / 365 * \
-                                                       default_kg_to_kcal['fruits and vegetables'] + \
-                                                       diet_df_default['cereals'].values[0] / 365 * default_kg_to_kcal[
-                                                           'cereals'] + \
-                                                       diet_df_default['rice and maize'].values[0] / 365 * \
-                                                       default_kg_to_kcal['rice and maize']
+        vegetables_and_carbs_average_ca_daily_intake = diet_df_default[GlossaryCore.FruitsAndVegetables].values[0] / 365 * \
+                                                       default_kg_to_kcal[GlossaryCore.FruitsAndVegetables] + \
+                                                       diet_df_default[GlossaryCore.Cereals].values[0] / 365 * default_kg_to_kcal[
+                                                           GlossaryCore.Cereals] + \
+                                                       diet_df_default[GlossaryCore.RiceAndMaize].values[0] / 365 * \
+                                                       default_kg_to_kcal[GlossaryCore.RiceAndMaize]
         fish_average_ca_daily_intake = default_kg_to_kcal[
                                            GlossaryCore.Fish] * diet_df_default[GlossaryCore.Fish].values[0] / 365
         other_average_ca_daily_intake = default_kg_to_kcal[

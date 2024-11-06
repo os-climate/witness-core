@@ -103,14 +103,15 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         GlossaryCore.CO2DamagePriceInitValue: GlossaryCore.CO2DamagePriceInitVar,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
-
-
+        'crop_prod_reduction_param_a': {'type': 'float', 'default': -0.00833, 'unit': '-', 'user_level': 3},
+        'crop_prod_reduction_param_b': {'type': 'float', 'default': -0.04167, 'unit': '-', 'user_level': 3},
     }
 
     DESC_OUT = {
         GlossaryCore.CO2DamagePrice: GlossaryCore.CO2DamagePriceDf,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
-        GlossaryCore.ExtraCO2tDamagePrice: GlossaryCore.ExtraCO2tDamagePriceDf
+        GlossaryCore.ExtraCO2tDamagePrice: GlossaryCore.ExtraCO2tDamagePriceDf,
+        GlossaryCore.CropProductivityReductionName: GlossaryCore.CropProductivityReductionDf,
     }
 
     _maturity = 'Research'
@@ -166,7 +167,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.CO2DamagePrice: co2_damage_price_df,
                     GlossaryCore.ExtraCO2tDamagePrice: extra_co2_damage_price}
 
-        
+        out_dict.update(self.model.outputs)
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
