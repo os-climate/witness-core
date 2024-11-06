@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/21-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/06/24 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,88 +14,54 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-
-import numpy as np
 import pandas as pd
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
+import numpy as np
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.glossarycore import GlossaryCore
 
 
+class Study(StudyManager):
+    def __init__(self, execution_engine=None):
+        super().__init__(__file__, execution_engine=execution_engine)
 
-from energy_models.glossaryenergy import GlossaryEnergy
+    def setup_usecase(self, study_folder_path=None):
+        ns_study = self.ee.study_name
+        model_name = 'Crop2'
+        year_start = GlossaryCore.YearStartDefault
+        year_end = 2050
+        years = np.arange(year_start, year_end + 1, 1)
+        year_range = year_end - year_start + 1
 
-
-class CropFoodTestCase(unittest.TestCase):
-
-    def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
-        self.year_start = GlossaryCore.YearStartDefault
-        self.year_end = 2050
-        self.years = np.arange(self.year_start, self.year_end + 1, 1)
-        year_range = self.year_end - self.year_start + 1
-
-        self.crop_productivity_reduction = pd.DataFrame({
-            GlossaryCore.Years: self.years,
+        crop_productivity_reduction = pd.DataFrame({
+            GlossaryCore.Years: years,
             GlossaryCore.CropProductivityReductionName: np.linspace(3, 12, year_range),  # fake
         })
 
-        self.damage_fraction = pd.DataFrame({
-            GlossaryCore.Years: self.years,
+        damage_fraction = pd.DataFrame({
+            GlossaryCore.Years: years,
             GlossaryCore.DamageFractionOutput: np.linspace(0.43 /100., 12 / 100., year_range), # 2020 value
         })
 
-        self.investments = pd.DataFrame({
-            GlossaryCore.Years: self.years,
+        investments = pd.DataFrame({
+            GlossaryCore.Years: years,
             GlossaryCore.InvestmentsValue: 0.61, # T$ (2020 value)
         })
-        self.workforce_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
+        workforce_df = pd.DataFrame({
+            GlossaryCore.Years: years,
             GlossaryCore.SectorAgriculture: 935.,  # millions of people (2020 value)
         })
 
-        self.population_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
+        population_df = pd.DataFrame({
+            GlossaryCore.Years: years,
             GlossaryCore.PopulationValue: np.linspace(7870, 9000, year_range),  # millions of people (2020 value)
         })
 
-        self.enegy_agri = pd.DataFrame({
-            GlossaryCore.Years: self.years,
+        enegy_agri = pd.DataFrame({
+            GlossaryCore.Years: years,
             GlossaryCore.TotalProductionValue: 2591. /1000.,  # PWh, 2020 value
         })
-
-
-
-    def test_crop_discipline_2(self):
-        '''
-        Check discipline setup and run
-        '''
-
-        name = 'Test'
-        model_name = 'crop_food'
-        ee = ExecutionEngine(name)
-        ns_dict = {
-            'ns_public': name,
-            GlossaryCore.NS_WITNESS: name,
-            'ns_crop': f'{name}.{model_name}',
-            'ns_food': f'{name}.{model_name}',
-            'ns_sectors': f'{name}',
-        }
-
-        ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-        builder = ee.factory.get_builder_from_module(model_name, mod_path)
-
-        ee.factory.set_builders_to_coupling_builder(builder)
-
-        ee.configure()
-        ee.display_treeview_nodes()
 
         dict_inputs = {
             GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.CO2): {
@@ -156,26 +122,26 @@ class CropFoodTestCase(unittest.TestCase):
                 GlossaryCore.OtherFood: 5.1041,
             },
             GlossaryCore.FoodTypeEnergyNeedName: {
-                GlossaryCore.RedMeat: 0.1,
-                GlossaryCore.WhiteMeat: 0.1,
-                GlossaryCore.Milk: 0.1,
-                GlossaryCore.Eggs: 0.1,
-                GlossaryCore.RiceAndMaize: 0.1,
-                GlossaryCore.Cereals: 0.1,
-                GlossaryCore.FruitsAndVegetables: 0.1,
-                GlossaryCore.Fish: 0.1,
-                GlossaryCore.OtherFood: 0.1,
+                GlossaryCore.RedMeat: 0.0001,
+                GlossaryCore.WhiteMeat: 0.0001,
+                GlossaryCore.Milk: 0.0001,
+                GlossaryCore.Eggs: 0.0001,
+                GlossaryCore.RiceAndMaize: 0.0001,
+                GlossaryCore.Cereals: 0.0001,
+                GlossaryCore.FruitsAndVegetables: 0.0001,
+                GlossaryCore.Fish: 0.0001,
+                GlossaryCore.OtherFood: 0.0001,
             },
             GlossaryCore.FoodTypeWorkforceNeedName: {
-                GlossaryCore.RedMeat: 0.1,
-                GlossaryCore.WhiteMeat: 0.1,
-                GlossaryCore.Milk: 0.1,
-                GlossaryCore.Eggs: 0.1,
-                GlossaryCore.RiceAndMaize: 0.1,
-                GlossaryCore.Cereals: 0.1,
-                GlossaryCore.FruitsAndVegetables: 0.1,
-                GlossaryCore.Fish: 0.1,
-                GlossaryCore.OtherFood: 0.1,
+                GlossaryCore.RedMeat: 0.0001,
+                GlossaryCore.WhiteMeat: 0.0001,
+                GlossaryCore.Milk: 0.0001,
+                GlossaryCore.Eggs: 0.0001,
+                GlossaryCore.RiceAndMaize: 0.0001,
+                GlossaryCore.Cereals: 0.0001,
+                GlossaryCore.FruitsAndVegetables: 0.0001,
+                GlossaryCore.Fish: 0.0001,
+                GlossaryCore.OtherFood: 0.0001,
             },
             GlossaryCore.FoodTypeCapexName: {  # $ / ton
                 GlossaryCore.RedMeat: 225.0,  # Average for red meat
@@ -314,33 +280,27 @@ class CropFoodTestCase(unittest.TestCase):
         }
         food_types = list(list(dict_inputs.values())[0].keys())
         inputs_dict = {
-            f'{name}.{GlossaryCore.YearStart}': self.year_start,
-            f'{name}.{GlossaryCore.YearEnd}': self.year_end,
-            f'{name}.{GlossaryCore.CropProductivityReductionName}': self.crop_productivity_reduction,
-            f'{name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
-            f'{name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-            f'{name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
-            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': self.enegy_agri,
-            f'{name}.{model_name}.{GlossaryCore.FoodTypesName}': food_types,
-            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.investments,
+            f'{ns_study}.{GlossaryCore.YearStart}': year_start,
+            f'{ns_study}.{GlossaryCore.YearEnd}': year_end,
+            f'{ns_study}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
+            f'{ns_study}.{GlossaryCore.WorkforceDfValue}': workforce_df,
+            f'{ns_study}.{GlossaryCore.PopulationDfValue}': population_df,
+            f'{ns_study}.{GlossaryCore.DamageFractionDfValue}': damage_fraction,
+            f'{ns_study}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': enegy_agri,
+            f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesName}': food_types,
+            f'{ns_study}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': investments,
         }
         for varname, default_dict_values_var in dict_to_dataframes.items():
             df = pd.DataFrame({
-                GlossaryCore.Years: self.years,
+                GlossaryCore.Years: years,
                 **default_dict_values_var
             })
-            inputs_dict.update({f'{name}.{model_name}.{varname}': df})
+            inputs_dict.update({f'{ns_study}.{model_name}.{varname}': df})
 
-        inputs_dict.update({f'{name}.{model_name}.{varname}': value for varname, value in dict_inputs.items()})
+        inputs_dict.update({f'{ns_study}.{model_name}.{varname}': value for varname, value in dict_inputs.items()})
+        return inputs_dict
 
-        ee.load_study_from_input_dict(inputs_dict)
 
-        ee.execute()
-
-        disc = ee.dm.get_disciplines_with_name(
-            f'{name}.{model_name}')[0]
-        filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
-            pass
+if '__main__' == __name__:
+    uc_cls = Study()
+    uc_cls.test()

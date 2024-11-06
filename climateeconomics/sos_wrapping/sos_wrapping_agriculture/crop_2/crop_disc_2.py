@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2024 Airbus SAS
 Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -73,6 +73,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CropFoodEmissionsName: GlossaryCore.CropFoodEmissionsVar,
         GlossaryCore.CropFoodKcalForConsumersName: GlossaryCore.CropFoodKcalForConsumersVar,
         GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
+        "kcal_dict_infos": {'type': 'dict',},
+        "kg_dict_infos": {'type': 'dict',},
     }
     df_output_streams = {
         GlossaryCore.FoodTypeDedicatedToProductionForStreamName: GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
@@ -138,15 +140,17 @@ class CropDiscipline(ClimateEcoDiscipline):
                 # outputs
                 dataframes_outputs = {
                     # coupling with breakdown
-                    GlossaryCore.FoodTypeWasteAtProductionName: GlossaryCore.FoodTypeWasteAtProductionVar,
+                    GlossaryCore.FoodTypeWasteAtProductionDistributionName: GlossaryCore.FoodTypeWasteAtProductionDistributionVar,
                     GlossaryCore.FoodTypeWasteByConsumersName: GlossaryCore.FoodTypeWasteByConsumersVar,
-                    GlossaryCore.FoodTypeNotProducedDueToClimateChangeName: GlossaryCore.FoodTypeWasteByProductivityLossVar,
+                    GlossaryCore.FoodTypeNotProducedDueToClimateChangeName: GlossaryCore.FoodTypeNotProducedDueToClimateChangeVar,
                     GlossaryCore.FoodTypeWasteByClimateDamagesName: GlossaryCore.FoodTypeWasteByClimateDamagesVar,
                     GlossaryCore.FoodTypeDeliveredToConsumersName: GlossaryCore.FoodTypeDeliveredToConsumersVar,
                     GlossaryCore.FoodTypeLandUseName: GlossaryCore.FoodTypeLandUseVar,
                     GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry): GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
                     GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass): GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
                     GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
+                    "unused_energy" + "_breakdown": {"type": "dataframe", "unit": "PWh",},
+                    "unused_workforce" + "_breakdown": {"type": "dataframe", "unit": "million people",},
                 }
 
                 for stream in self.streams_energy_prod:
@@ -171,7 +175,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     dynamic_outputs[varname] = df_output
 
         self.add_inputs(dynamic_inputs)
-        self.update_default_values()
+        #self.update_default_values()
         self.add_outputs(dynamic_outputs)
 
     def update_default_values(self):
@@ -341,15 +345,20 @@ class CropDiscipline(ClimateEcoDiscipline):
         # chart_list = ["assets emissions", "assets emissions per category",
         #               "transportation subsector assets emissions", "agriculture subsector assets emissions",
         #               "energy subsector assets emissions", "Oil and Gas subsector assets emissions"]
-        chart_list = ['Land use',
-                      'Emissions',
-                      'Energy production',
-                      "Calories per capita"]
+        chart_list = [
+            "Production",
+            "Damages",
+            "Waste",
+            'Land use',
+            'Emissions',
+            'Crop for energy production',
+            "Food data (kcal)",
+            "Food data (kg)",
+            "Calibration",
+        ]
 
         chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
 
-        food_types = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
-        chart_filters.append(ChartFilter("Focus one food type", food_types, food_types[0], "selected food type", multiple_selection="False"))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -361,21 +370,80 @@ class CropDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     charts = chart_filter.selected_values
 
-        selected_focus_food_type = None
-        if filters is not None:
-            for chart_filter in filters:
-                if chart_filter.filter_key == 'selected food type':
-                    selected_focus_food_type = chart_filter.selected_values
-
+        inputs = self.get_sosdisc_inputs()
         outputs = self.get_sosdisc_outputs()
-        if "Calories per capita" in charts:
+        if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue],
                 charts_name="Calories per capita",
                 unit=GlossaryCore.CaloriesPerCapitaBreakdown['unit'],
                 df_total=outputs[GlossaryCore.CaloriesPerCapitaValue],
                 column_total="kcal_pc",
-                post_proc_category="Calories per capita"
+                post_proc_category="Production",
+            )
+            instanciated_charts.append(new_chart)
+
+        if "Production" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.FoodTypeDeliveredToConsumersName],
+                charts_name="Production delivered to consumers",
+                unit=GlossaryCore.FoodTypeDeliveredToConsumersVar['unit'],
+                df_total=None,
+                column_total=None,
+                post_proc_category="Production",
+                lines=True,
+            )
+            instanciated_charts.append(new_chart)
+
+        if "Damages" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.FoodTypeNotProducedDueToClimateChangeName],
+                charts_name="Food not produced due to loss of productivity (climate change)",
+                unit=GlossaryCore.FoodTypeNotProducedDueToClimateChangeVar['unit'],
+                df_total=None,
+                column_total=None,
+                post_proc_category="Damages",
+                lines=True,
+                note={"Loss of productivity": "climate change lowers crop yields"}
+            )
+            instanciated_charts.append(new_chart)
+
+        if "Damages" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.FoodTypeWasteByClimateDamagesName],
+                charts_name="Food produced and waste due to climate damages",
+                unit=GlossaryCore.FoodTypeWasteByClimateDamagesVar['unit'],
+                df_total=None,
+                column_total=None,
+                post_proc_category="Damages",
+                lines=True,
+                note={"Climate damages": "Extreme events such as floodings, droughts, fires destroy production."}
+            )
+            instanciated_charts.append(new_chart)
+
+        if "Waste" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.FoodTypeWasteAtProductionDistributionName],
+                charts_name="Food wasted at production and distribution level",
+                unit=GlossaryCore.FoodTypeWasteAtProductionDistributionVar['unit'],
+                df_total=None,
+                column_total=None,
+                post_proc_category="Waste",
+                lines=True,
+                note={"Waste at production and distribution": "some of it is reused for energy production"},
+            )
+            instanciated_charts.append(new_chart)
+
+        if "Waste" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.FoodTypeWasteByConsumersName],
+                charts_name="Food wasted at consumers level",
+                unit=GlossaryCore.FoodTypeWasteByConsumersVar['unit'],
+                df_total=None,
+                column_total=None,
+                post_proc_category="Waste",
+                lines=True,
+                note={"Food waste by consumers": "some of it is reused for energy production"}
             )
             instanciated_charts.append(new_chart)
 
@@ -439,6 +507,52 @@ class CropDiscipline(ClimateEcoDiscipline):
                 new_chart = self.graph_total_prod_for_energy_chart(stream=stream)
                 instanciated_charts.append(new_chart)
 
+        if "Food data (kcal)" in charts:
+            for output_name, dict_values in outputs['kcal_dict_infos'].items():
+                unit = output_name.split(" (")[1]
+                unit = unit.replace(')','')
+                new_chart = self.get_dict_bar_plot(
+                    dict_values=dict_values,
+                    charts_name=output_name.split(' (')[0],
+                    unit=unit,
+                    post_proc_category="Food data (kcal)",
+                    note={"CO2 equivalent": "100-years basis"} if "emissions" in output_name.lower() else {}
+                )
+                instanciated_charts.append(new_chart)
+
+        if "Food data (kg)" in charts:
+            for output_name, dict_values in outputs['kg_dict_infos'].items():
+                unit = output_name.split(" (")[1]
+                unit = unit.replace(')', '')
+                new_chart = self.get_dict_bar_plot(
+                    dict_values=dict_values,
+                    charts_name=output_name.split(' (')[0],
+                    unit=unit,
+                    post_proc_category="Food data (kg)",
+                    note={"CO2 equivalent": "100-years basis"} if "emissions" in output_name.lower() else {}
+                )
+                instanciated_charts.append(new_chart)
+
+        if "Calibration" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs["unused_energy" + "_breakdown"],
+                charts_name="Unused energy",
+                unit="PWh",
+                df_total=inputs[f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}'],
+                column_total=GlossaryCore.TotalProductionValue,
+                post_proc_category="Calibration",
+            )
+            instanciated_charts.append(new_chart)
+
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs["unused_workforce" + "_breakdown"],
+                charts_name="Unused workforce",
+                unit="milllion people",
+                df_total=inputs[GlossaryCore.WorkforceDfValue],
+                column_total=GlossaryCore.SectorAgriculture,
+                post_proc_category="Calibration",
+            )
+            instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
@@ -448,14 +562,16 @@ class CropDiscipline(ClimateEcoDiscipline):
                                           unit: str,
                                           df_total: Union[None, pd.DataFrame],
                                           column_total: Union[None, str],
-                                          post_proc_category: Union[None, str]):
+                                          post_proc_category: Union[None, str],
+                                          lines: bool = False,
+                                          note: Union[dict, None] = None):
 
         years = df_all_food_types[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, unit, stacked_bar=True, chart_name=charts_name)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, unit, stacked_bar=True, chart_name=charts_name, y_min_zero=lines)
 
         for col in df_all_food_types.columns:
             if col != GlossaryCore.Years:
-                new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar', True)
+                new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True)
                 new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
@@ -464,6 +580,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         if post_proc_category is not None:
             new_chart.post_processing_section_name = post_proc_category
+
+        if note is not None:
+            new_chart.annotation_upper_left = note
         return new_chart
 
     def graph_total_prod_for_energy_chart(self, stream: str):
@@ -492,4 +611,25 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         new_chart.post_processing_section_name = "Energy production"
 
+        return new_chart
+
+    def get_dict_bar_plot(self,
+                          dict_values: dict,
+                          charts_name: str,
+                          unit: str,
+                          post_proc_category: Union[None, str],
+                          note: Union[dict, None] = None):
+
+        new_chart = TwoAxesInstanciatedChart('', unit, stacked_bar=True, chart_name=charts_name)
+
+        for key, value in dict_values.items():
+            if key != GlossaryCore.Years:
+                new_series = InstanciatedSeries([str(key).capitalize()], [value], '', 'bar', True)
+                new_chart.add_series(new_series)
+
+        if post_proc_category is not None:
+            new_chart.post_processing_section_name = post_proc_category
+
+        if note is not None:
+            new_chart.annotation_upper_left = note
         return new_chart

@@ -1760,7 +1760,7 @@ class GlossaryCore:
     FoodTypeEnergyNeedName = "food_type_energy_need"
     FoodTypeEnergyNeedVar = {
         "var_name": FoodTypeEnergyNeedName,
-        "type": "dataframe",
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kWh/ton",
         "description": "Indicates how much energy is needed to produce 1 ton of given food type",
     }
@@ -1768,7 +1768,7 @@ class GlossaryCore:
     FoodTypeWorkforceNeedName = "food_type_workforce_need"
     FoodTypeWorkforceNeedVar = {
         "var_name": FoodTypeWorkforceNeedName,
-        "type": "dataframe",
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "people/ton",
         "description": "Indicates how much workforce is needed to produce 1 ton of given food type",
     }
@@ -1776,7 +1776,7 @@ class GlossaryCore:
     FoodTypeCapexName = "food_type_capex"
     FoodTypeCapexVar = {
         "var_name": FoodTypeCapexName,
-        "type": "dataframe",
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "$/ton",
         "description": "Indicates how much dollars is needed to produce 1 ton of food type",
     }
@@ -1797,12 +1797,12 @@ class GlossaryCore:
         "description": "Indicates what percentage of the production is wasted by the consumers for each food type",
     }
 
-    FoodTypeWasteAtProductionName = "food_type_waste_at_production"
-    FoodTypeWasteAtProductionVar = {
-        "var_name": FoodTypeWasteAtProductionName,
+    FoodTypeWasteAtProductionDistributionName = "food_type_waste_at_production_and_distrib"
+    FoodTypeWasteAtProductionDistributionVar = {
+        "var_name": FoodTypeWasteAtProductionDistributionName,
         "type": "dataframe",
         "unit": "Mt",
-        "description": "Production wasted between production and distribution for each food type",
+        "description": "Production wasted at production and distribution level for each food type",
     }
 
     FoodTypeWasteByConsumersName = "food_type_waste_by_consumers"
@@ -1814,7 +1814,7 @@ class GlossaryCore:
     }
 
     FoodTypeNotProducedDueToClimateChangeName = "food_type_waste_by_productivity_loss"
-    FoodTypeWasteByProductivityLossVar = {
+    FoodTypeNotProducedDueToClimateChangeVar = {
         "var_name": FoodTypeNotProducedDueToClimateChangeName,
         "type": "dataframe",
         "unit": "Mt",
@@ -1920,21 +1920,21 @@ class GlossaryCore:
 
     FoodTypeEmissionsByProdUnitName = "food_type_prod_unit_{}_emissions"
     FoodTypeEmissionsByProdUnitVar = {
-        "type": "dataframe",
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kg{}/kg produced",
         "description": "Food type {} emissions by production unit for each food type",
     }
 
     FoodTypeKcalByProdUnitName = "food_type_kcal_by_mass_prod_unit"
     FoodTypeKcalByProdUnitVar = {
-        "type": "dataframe",
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kcal/kg",
         "description": "Kcal per kg for each food type",
     }
 
     FoodTypeLandUseByProdUnitName = "food_type_prod_unit_land_use"
     FoodTypeLandUseByProdUnitVar = {
-        "type": "dataframe",
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "m²/kg produced",
         "description": "Land used by kg produced for each food type",
     }
