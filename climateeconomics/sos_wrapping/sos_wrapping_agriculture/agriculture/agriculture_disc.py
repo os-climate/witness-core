@@ -49,27 +49,27 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     default_year_start = GlossaryCore.YearStartDefault
     default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
-    default_kg_to_m2 = {'red meat': 348,
-                        'white meat': 14.5,
-                        'milk': 8.9,
-                        'eggs': 6.3,
-                        'rice and maize': 2.9,
+    default_kg_to_m2 = {GlossaryCore.RedMeat: 348,
+                        GlossaryCore.WhiteMeat: 14.5,
+                        GlossaryCore.Milk: 8.9,
+                        GlossaryCore.Eggs: 6.3,
+                        GlossaryCore.RiceAndMaize: 2.9,
                         'potatoes': 0.9,
-                        'fruits and vegetables': 0.8,
+                        GlossaryCore.FruitsAndVegetables: 0.8,
                         }
-    default_kg_to_kcal = {'red meat': 2566,
-                          'white meat': 1860,
-                          'milk': 550,
-                          'eggs': 1500,
-                          'rice and maize': 1150,
+    default_kg_to_kcal = {GlossaryCore.RedMeat: 2566,
+                          GlossaryCore.WhiteMeat: 1860,
+                          GlossaryCore.Milk: 550,
+                          GlossaryCore.Eggs: 1500,
+                          GlossaryCore.RiceAndMaize: 1150,
                           'potatoes': 670,
-                          'fruits and vegetables': 624,
+                          GlossaryCore.FruitsAndVegetables: 624,
                           }
     year_range = default_year_end - default_year_start + 1
 
     total_kcal = 414542.4
-    red_meat_percentage = default_kg_to_kcal['red meat'] / total_kcal * 100
-    white_meat_percentage = default_kg_to_kcal['white meat'] / total_kcal * 100
+    red_meat_percentage = default_kg_to_kcal[GlossaryCore.RedMeat] / total_kcal * 100
+    white_meat_percentage = default_kg_to_kcal[GlossaryCore.WhiteMeat] / total_kcal * 100
     default_red_meat_percentage = pd.DataFrame({
         GlossaryCore.Years: default_years,
         'red_meat_percentage': np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)})
@@ -78,25 +78,25 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'white_meat_percentage': np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)})
 
     default_other_use = np.linspace(0.102, 0.102, year_range)
-    default_diet_df = pd.DataFrame({'red meat': [11.02],
-                                    'white meat': [31.11],
-                                    'milk': [79.27],
-                                    'eggs': [9.68],
-                                    'rice and maize': [97.76],
+    default_diet_df = pd.DataFrame({GlossaryCore.RedMeat: [11.02],
+                                    GlossaryCore.WhiteMeat: [31.11],
+                                    GlossaryCore.Milk: [79.27],
+                                    GlossaryCore.Eggs: [9.68],
+                                    GlossaryCore.RiceAndMaize: [97.76],
                                     'potatoes': [32.93],
-                                    'fruits and vegetables': [217.62],
+                                    GlossaryCore.FruitsAndVegetables: [217.62],
                                     })
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
-                                   'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True),
-                                                            'white meat': ('float', [0, 1e9], True),
-                                                            'milk': ('float', [0, 1e9], True),
-                                                            'eggs': ('float', [0, 1e9], True),
-                                                            'rice and maize': ('float', [0, 1e9], True),
+                                   'dataframe_descriptor': {GlossaryCore.RedMeat: ('float', [0, 1e9], True),
+                                                            GlossaryCore.WhiteMeat: ('float', [0, 1e9], True),
+                                                            GlossaryCore.Milk: ('float', [0, 1e9], True),
+                                                            GlossaryCore.Eggs: ('float', [0, 1e9], True),
+                                                            GlossaryCore.RiceAndMaize: ('float', [0, 1e9], True),
                                                             'potatoes': ('float', [0, 1e9], True),
-                                                            'fruits and vegetables': ('float', [0, 1e9], True)},
+                                                            GlossaryCore.FruitsAndVegetables: ('float', [0, 1e9], True)},
                                    'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
                'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
                'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
