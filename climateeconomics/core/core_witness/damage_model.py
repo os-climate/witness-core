@@ -63,6 +63,8 @@ class DamageModel:
             GlossaryCore.DamageFractionOutput: 0.,
         })
 
+        self.outputs = {}
+
     def compute_damage_fraction_of_gdp(self,):
         """
         Compute damages fraction of output at t
@@ -91,6 +93,18 @@ class DamageModel:
             {GlossaryCore.Years: self.damage_fraction_df.index,
              GlossaryCore.CO2DamagePrice: co2_damage_price}
         )
+
+    def compute_crop_productivity_reduction(self):
+        """computes the reduction production due to temperature change for crop"""
+        temperature = self.temperature_df[GlossaryCore.TempAtmo].values
+        # Compute the difference in temperature wrt 2020 reference
+        temp = temperature - temperature[0]
+        # Compute reduction in productivity due to increase in temperature
+        pdctivity_reduction = self.param["crop_prod_reduction_param_a"] * temp ** 2 + self.param["crop_prod_reduction_param_b"] * temp
+        self.outputs[GlossaryCore.CropProductivityReductionName] = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.CropProductivityReductionName: pdctivity_reduction
+        })
 
     def compute_gradient(self):
         """
@@ -202,6 +216,7 @@ class DamageModel:
 
         self.compute_damage_fraction_of_gdp()
         self.compute_extra_ton_damage_price()
+        self.compute_crop_productivity_reduction()
         if co2_damage_price_dev_formula:
             self.compute_CO2_damage_price_dev()
         else:
