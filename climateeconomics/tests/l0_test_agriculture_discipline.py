@@ -46,21 +46,21 @@ class AgricultureTestCase(unittest.TestCase):
         })
         self.temperature_df.index = years
 
-        self.default_kg_to_m2 = {'red meat': 360,
-                                 'white meat': 16,
-                                 'milk': 8.95,
-                                 'eggs': 6.3,
-                                 'rice and maize': 2.9,
+        self.default_kg_to_m2 = {GlossaryCore.RedMeat: 360,
+                                 GlossaryCore.WhiteMeat: 16,
+                                 GlossaryCore.Milk: 8.95,
+                                 GlossaryCore.Eggs: 6.3,
+                                 GlossaryCore.RiceAndMaize: 2.9,
                                  'potatoes': 0.88,
-                                 'fruits and vegetables': 0.8,
+                                 GlossaryCore.FruitsAndVegetables: 0.8,
                                  }
-        self.default_kg_to_kcal = {'red meat': 2566,
-                                   'white meat': 1860,
-                                   'milk': 550,
-                                   'eggs': 1500,
-                                   'rice and maize': 1150,
+        self.default_kg_to_kcal = {GlossaryCore.RedMeat: 2566,
+                                   GlossaryCore.WhiteMeat: 1860,
+                                   GlossaryCore.Milk: 550,
+                                   GlossaryCore.Eggs: 1500,
+                                   GlossaryCore.RiceAndMaize: 1150,
                                    'potatoes': 670,
-                                   'fruits and vegetables': 624,
+                                   GlossaryCore.FruitsAndVegetables: 624,
                                    }
         red_meat_percentage = np.linspace(6, 1, year_range)
         white_meat_percentage = np.linspace(14, 5, year_range)
@@ -71,13 +71,13 @@ class AgricultureTestCase(unittest.TestCase):
             GlossaryCore.Years: years,
             'white_meat_percentage': white_meat_percentage})
 
-        self.diet_df = pd.DataFrame({'red meat': [11.02],
-                                     'white meat': [31.11],
-                                     'milk': [79.27],
-                                     'eggs': [9.68],
-                                     'rice and maize': [97.76],
+        self.diet_df = pd.DataFrame({GlossaryCore.RedMeat: [11.02],
+                                     GlossaryCore.WhiteMeat: [31.11],
+                                     GlossaryCore.Milk: [79.27],
+                                     GlossaryCore.Eggs: [9.68],
+                                     GlossaryCore.RiceAndMaize: [97.76],
                                      'potatoes': [32.93],
-                                     'fruits and vegetables': [217.62],
+                                     GlossaryCore.FruitsAndVegetables: [217.62],
                                      })
         self.other = np.array(np.linspace(0.102, 0.102, year_range))
 
