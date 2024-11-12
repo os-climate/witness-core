@@ -1499,16 +1499,6 @@ class GlossaryCore:
         },
     }
 
-    InvestmentMDODf = {
-        "var_name": InvestmentDfValue,
-        "type": "dataframe",
-        "unit": "T$",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            InvestmentsValue: ("float", [0, 1e30], False),
-        },
-    }
-
     InvestmentShareGDPValue = "total_investment_share_of_gdp"
     InvestmentShareGDP = {
         "var_name": InvestmentShareGDPValue,
