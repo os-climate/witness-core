@@ -196,6 +196,7 @@ class GlossaryCore:
     NS_MACRO = "ns_macro"
     NS_SECTORS = "ns_sectors"
     NS_WITNESS = "ns_witness"
+    NS_PUBLIC = "ns_public"
     NS_ENERGY_MIX = "ns_energy_mix"
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
@@ -1769,7 +1770,7 @@ class GlossaryCore:
     FoodTypeWorkforceNeedVar = {
         "var_name": FoodTypeWorkforceNeedName,
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
-        "unit": "people/ton",
+        "unit": "people/ton/year",
         "description": "Indicates how much workforce is needed to produce 1 ton of given food type",
     }
 
@@ -1777,7 +1778,7 @@ class GlossaryCore:
     FoodTypeCapexVar = {
         "var_name": FoodTypeCapexName,
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
-        "unit": "$/ton",
+        "unit": "$/ton/year",
         "description": "Indicates how much dollars is needed to produce 1 ton of food type",
     }
 
@@ -1945,6 +1946,13 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "(Gha)",
         "description": "Land used by each food type",
+    }
+    FoodTypeProductionName = "food_type_production"
+    FoodTypeProductionVar = {
+        "var_name": FoodTypeProductionName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "description": "Production of food type, before any waste is applied",
     }
 
     FoodLandUseName = "food_land_use"

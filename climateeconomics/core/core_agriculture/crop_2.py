@@ -58,6 +58,7 @@ class Crop:
     def init_dataframes(self):
         years = np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
         dataframe_to_init = [
+            GlossaryCore.FoodTypeProductionName,
             GlossaryCore.FoodTypeWasteAtProductionDistributionName,
             GlossaryCore.FoodTypeWasteByConsumersName,
             GlossaryCore.FoodTypeNotProducedDueToClimateChangeName,
@@ -88,7 +89,8 @@ class Crop:
             GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.wet_biomass),
 
             "unused_energy" + "_breakdown",
-            "unused_workforce" + "_breakdown"
+            "unused_workforce" + "_breakdown",
+            "workforce_breakdown"
         ]
         for df_name in dataframe_to_init:
             self.outputs[df_name] = pd.DataFrame({GlossaryCore.Years: years})
@@ -148,8 +150,9 @@ class Crop:
             workforce_food: np.ndarray,
             damage_fraction: np.ndarray,
             crop_productivity_reduction: np.ndarray,
+            population: np.ndarray,
 
-            # the rest
+            # parameters
             share_invest_food_type: np.ndarray,
             share_energy_consumption_food_type: np.ndarray,
             share_workforce_food_type: np.ndarray,
@@ -169,7 +172,6 @@ class Crop:
             n2o_emissions_per_prod_unit: np.ndarray,
             share_food_waste_before_distribution: np.ndarray,
             share_food_waste_by_consumers: np.ndarray,
-            population: np.ndarray,
     ):
         invest_food_type = invest_food * share_invest_food_type / 100. # T$
         energy_allocated_to_food_type = energy_consumption_food * share_energy_consumption_food_type / 100.  # Pwh
@@ -224,6 +226,7 @@ class Crop:
         kcal_per_pers_per_day = kcal_produced_for_consumers / population / 365. * 1000  # Gkcal / (10^6 person) / (day) * 1000 = k kcal / person / day * 1000 = kcal / person / day
         land_use_food = production_raw * (1 - share_dedicated_to_biomass_dry_prod / 100. + share_dedicated_to_biomass_wet_prod / 100.) * land_use_by_prod_unit / (10**5)  # Mt * m² / kg = 10^9 kg * m² / kg / 10^5= G m² / 10^5 = G ha
         return {
+            GlossaryCore.FoodTypeProductionName: production_for_consumers,
             GlossaryCore.FoodTypeLandUseName: land_use_food,
             GlossaryCore.FoodTypeWasteAtProductionDistributionName: food_waste_before_distribution,
             GlossaryCore.FoodTypeWasteByConsumersName: food_waste_by_consumers,
@@ -249,6 +252,7 @@ class Crop:
             GlossaryCore.CaloriesPerCapitaBreakdownValue: kcal_per_pers_per_day,
             "unused_energy" + "_breakdown": unused_energy,
             "unused_workforce" + "_breakdown": unused_workforce,
+            "workforce_breakdown": workforce_allocated_to_food_type,
         }
     @staticmethod
     def compute_ratio(production_wo_ratio: np.ndarray,
@@ -307,4 +311,5 @@ class Crop:
         self.outputs['kg_dict_infos']['Capex ($/kg)'] = {
             # $ / kg = ($ / ton) * 1000
         key: value1 / 1000 for key, value1 in self.inputs[GlossaryCore.FoodTypeCapexName].items()
+
         }
