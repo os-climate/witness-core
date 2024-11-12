@@ -36,7 +36,7 @@ capex_per_ton_range_chat_gpt = {
     "Eggs": (800, 1500),
     "RiceAndMaize": (300, 700),
     "Cereals": (400, 800),
-    "FruitsAndVegetables": (500, 5000),
+    "FruitsAndVegetables": (500, 1500),
     "Fish": (3000, 5500),
     "OtherFood": (1000, 4000)
 }

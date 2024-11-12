@@ -14,15 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from scipy.optimize import LinearConstraint
+from datetime import datetime
+
 import numpy as np
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from scipy.optimize import LinearConstraint, minimize
+from sostrades_core.tools.post_processing.post_processing_factory import (
+    PostProcessingFactory,
+)
 
-from climateeconomics.calibration.crop.data import CalibrationData, output_calibration_datas, input_calibration_datas, \
-    unused_workforce_data, unused_energy_data
-from climateeconomics.calibration.crop.tools import DesignVar, DesignSpace
+from climateeconomics.calibration.crop.data import (
+    CalibrationData,
+    input_calibration_datas,
+    output_calibration_datas,
+)
+from climateeconomics.calibration.crop.tools import DesignSpace, DesignVar
 from climateeconomics.glossarycore import GlossaryCore
-
 from climateeconomics.sos_processes.iam.witness.crop_2.usecase import Study
 
 year_start_calibration = 2022
@@ -206,7 +212,7 @@ def loss_function(x: np.ndarray, print_report=False, show_graph=False):
 
 
 print(design_space)
-from scipy.optimize import minimize
+
 
 x0 = design_space.get_x()
 result = minimize(loss_function, x0, bounds=design_space.get_bounds(), constraints=equality_constraints,)
@@ -215,7 +221,8 @@ result = minimize(loss_function, x0, bounds=design_space.get_bounds(), constrain
 x_optimal = result.x
 
 design_space.set_x_opt(x_optimal)
-from datetime import datetime
+
+
 ts = datetime.now().strftime("%Y%m%d_%H%M")
 design_space.dump(f"calibration_optimale_{ts}.json")
 print(design_space)

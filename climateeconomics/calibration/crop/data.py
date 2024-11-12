@@ -14,9 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from climateeconomics.calibration.crop.tools import solve_share_prod_waste, CalibrationData
+from climateeconomics.calibration.crop.tools import (
+    CalibrationData,
+    solve_share_prod_waste,
+)
 from climateeconomics.glossarycore import GlossaryCore
-
 
 output_calibration_datas = [
     CalibrationData(

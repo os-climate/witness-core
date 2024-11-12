@@ -15,10 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from typing import Union
+
 import numpy as np
 import pandas as pd
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -311,11 +310,3 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     uc_cls.run()
-
-
-    if False:
-        ppf = PostProcessingFactory()
-        post_procs = ppf.get_all_post_processings(execution_engine=uc_cls.ee, filters_only=False, as_json=False)
-        for list_chart in post_procs.values():
-            for pp in list_chart[0].post_processings:
-                pp.to_plotly().show()
