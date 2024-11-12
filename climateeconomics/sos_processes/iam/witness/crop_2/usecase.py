@@ -14,8 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from typing import Union
 import numpy as np
 import pandas as pd
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -23,25 +26,28 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(StudyManager):
-    def __init__(self, execution_engine=None):
+    def __init__(self, data: Union[None, dict]=None, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault):
         super().__init__(__file__, execution_engine=execution_engine)
+        self.year_start = year_start
+        self.year_end = year_end
+        self.data = data
 
     def setup_usecase(self, study_folder_path=None):
+        if self.data is not None:
+            return self.data
         ns_study = self.ee.study_name
         model_name = 'Crop2'
-        year_start = GlossaryCore.YearStartDefault
-        year_end = 2050
-        years = np.arange(year_start, year_end + 1, 1)
-        year_range = year_end - year_start + 1
+        years = np.arange(self.year_start, self.year_end + 1, 1)
+        year_range = self.year_end - self.year_start + 1
 
         crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(3, 12, year_range),  # fake
+            GlossaryCore.CropProductivityReductionName: 0.,  # fake
         })
 
         damage_fraction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.DamageFractionOutput: np.linspace(0.43 /100., 12 / 100., year_range), # 2020 value
+            GlossaryCore.DamageFractionOutput: 0.43, # 2020 value
         })
 
         investments = pd.DataFrame({
@@ -147,10 +153,10 @@ class Study(StudyManager):
                 GlossaryCore.RedMeat: 225.0,  # Average for red meat
                 GlossaryCore.WhiteMeat: 150.0,  # Average for white meat
                 GlossaryCore.Milk: 75.0,  # Average for milk
-                GlossaryCore.Eggs: 112.5,  # Average for eggs
-                GlossaryCore.RiceAndMaize: 30.0,  # Average for rice and maize
+                GlossaryCore.Eggs: 113.5,  # Average for eggs
+                GlossaryCore.RiceAndMaize: 31.75,  # Average for rice and maize
                 GlossaryCore.Cereals: 37.5,  # Average for cereals
-                GlossaryCore.FruitsAndVegetables: 90.0,  # Average for fruits and vegetables
+                GlossaryCore.FruitsAndVegetables: 84.9,  # Average for fruits and vegetables
                 GlossaryCore.Fish: 300.0,  # Average for fish
                 GlossaryCore.OtherFood: 100.0,  # General estimate for other food types
             },
@@ -280,8 +286,8 @@ class Study(StudyManager):
         }
         food_types = list(list(dict_inputs.values())[0].keys())
         inputs_dict = {
-            f'{ns_study}.{GlossaryCore.YearStart}': year_start,
-            f'{ns_study}.{GlossaryCore.YearEnd}': year_end,
+            f'{ns_study}.{GlossaryCore.YearStart}': self.year_start,
+            f'{ns_study}.{GlossaryCore.YearEnd}': self.year_end,
             f'{ns_study}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
             f'{ns_study}.{GlossaryCore.WorkforceDfValue}': workforce_df,
             f'{ns_study}.{GlossaryCore.PopulationDfValue}': population_df,
@@ -303,4 +309,13 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
+
+
+    if False:
+        ppf = PostProcessingFactory()
+        post_procs = ppf.get_all_post_processings(execution_engine=uc_cls.ee, filters_only=False, as_json=False)
+        for list_chart in post_procs.values():
+            for pp in list_chart[0].post_processings:
+                pp.to_plotly().show()
