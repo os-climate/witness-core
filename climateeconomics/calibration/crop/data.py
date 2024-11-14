@@ -24,42 +24,51 @@ output_calibration_datas = [
     CalibrationData(
         varname=GlossaryCore.FoodTypeProductionName,
         column_name=GlossaryCore.Milk,
-        year=2022,
-        value=930 ,
+        year=2022, # 2021 data
+        value=688.413, # allocated for direct human consumption
         unit='Mt',
         source='FAO',
-        link='https://www.fao.org/dairy-production-products/production/milk-production/en'),
+        link='https://ourworldindata.org/agricultural-production'),
     # rice
     CalibrationData(
         varname=GlossaryCore.FoodTypeProductionName,
         column_name=GlossaryCore.RiceAndMaize,
-        year=2022,
-        value=516.02 ,
+        year=2022, # 2021 data
+        value=638.091 ,
         unit='Mt',
-        source='FAS',
-        link='https://fas.usda.gov/data/production/commodity/0422110') +
+        source='FA0',
+        link='https://ourworldindata.org/agricultural-production') +
     # maize
     CalibrationData(
         varname=GlossaryCore.FoodTypeProductionName,
         column_name=GlossaryCore.RiceAndMaize,
+        year=2022, # 2021 data
+        value=140.668,  # allocated for direct human consumption
+        unit='Mt',
+        source='https://ourworldindata.org/agricultural-production',
+        link='https://ourworldindata.org/agricultural-production'),
+    # cereals
+    CalibrationData(
+        varname=GlossaryCore.FoodTypeProductionName,
+        column_name=GlossaryCore.Cereals,
         year=2022,
-        value=1163.497,
+        value=(3059640300 / 1e6 * .45 - 638.091 - 140.668),  # prod totale * 45% (only 45% allocated to human food) - rice and maize prod
         unit='Mt',
         source='Food and Agriculture Organization of the United Nations (2023)',
         link='https://ourworldindata.org/grapher/maize-production?tab=table&time=2021..latest&showSelectionOnlyInTable=1&country=European+Union~OWID_WRL'),
     CalibrationData(
         varname=GlossaryCore.FoodTypeProductionName,
         column_name=GlossaryCore.Fish,
-        year=2022,
-        value=223.2,
+        year=2022, # 2021 data
+        value=158.440, # allocated for direct human consumption
         unit='Mt',
         source='2024 edition of The State of World Fisheries and Aquaculture (SOFIA) ',
-        link='https://www.fao.org/newsroom/detail/fao-report-global-fisheries-and-aquaculture-production-reaches-a-new-record-high/en'),
+        link='https://ourworldindata.org/agricultural-production'),
     CalibrationData(
         varname=GlossaryCore.FoodTypeProductionName,
         column_name=GlossaryCore.Eggs,
-        year=2022,
-        value=87,
+        year=2022, # 2021 data
+        value=81.786,
         unit='Mt',
         source='Statista',
         link='https://www.statista.com/statistics/263972/egg-production-worldwide-since-1990/#:~:text=The%20production%20volume%20of%20eggs,increased%20by%20over%20100%20percent.'),
@@ -168,16 +177,18 @@ output_calibration_datas = [
         source='FAO',
         link='https://openknowledge.fao.org/server/api/core/bitstreams/66538eba-9c85-4504-8438-c1cf0a0a3903/content/sofia/2024/fisheries-aquaculture-employment.html'),
 
-    # total available calories for consumption
-    CalibrationData(
+]
+# total available calories for consumption
+actual_calories_per_capita_per_day_2022 = CalibrationData(
         varname=GlossaryCore.CaloriesPerCapitaValue,
         column_name='kcal_pc',
         year=2022, # actually for 2021 but guess it didnt change much
         value=2959,
         unit='kcal/person/day',
         source='Food and Agriculture Organization of the United Nations (2023) and other sources',
-        link='https://openknowledge.fao.org/server/api/core/bitstreams/66538eba-9c85-4504-8438-c1cf0a0a3903/content/sofia/2024/fisheries-aquaculture-employment.html'),
-]
+        link='https://ourworldindata.org/grapher/daily-per-capita-caloric-supply?country=~OWID_WRL')
+
+output_calibration_datas.append(actual_calories_per_capita_per_day_2022)
 
 input_calibration_datas = [
     CalibrationData(
@@ -294,6 +305,32 @@ for food_type, total_waste in total_foodchain_wastes.items():
             source='',
             link=""),
     )
+
+kcal_by_kg_produced = {
+    GlossaryCore.RedMeat: 1551.05,
+    GlossaryCore.WhiteMeat: 2131.99,
+    GlossaryCore.Milk: 921.76,
+    GlossaryCore.Eggs: 1425.07,
+    GlossaryCore.RiceAndMaize: 2572.46,
+    GlossaryCore.Cereals: 2964.99,
+    GlossaryCore.FruitsAndVegetables: 559.65,
+    GlossaryCore.Fish: 609.17,
+    GlossaryCore.OtherFood: 3061.06,
+}
+
+dict_of_production_in_megatons = {}
+for data in output_calibration_datas:
+    if data.varname == GlossaryCore.FoodTypeProductionName:
+        dict_of_production_in_megatons[data.key] = data.value
+
+total_kcal_available_wo_other_2022 = sum(dict_of_production_in_megatons[food_type] * 1e9 * kcal_by_kg_produced[food_type] for food_type in dict_of_production_in_megatons.keys())
+population_2022 = 7.95 * 1e9
+calories_per_capita_per_year_wo_other_2022 = total_kcal_available_wo_other_2022 / 365 / population_2022  # kcal/person/day * days in a year
+
+missing_kcals_per_day_per_person = actual_calories_per_capita_per_day_2022.value - calories_per_capita_per_year_wo_other_2022
+missing_prod_other = missing_kcals_per_day_per_person / kcal_by_kg_produced[GlossaryCore.OtherFood] * 365 * population_2022 / 1e9  # Megatons
+
+dict_of_production_in_megatons[GlossaryCore.OtherFood] = missing_prod_other
 
 # needs of workforce and energy. Aiming for 0 unused workforce and energy in model with 2022 data
 food_types = GlossaryCore.DefaultFoodTypes

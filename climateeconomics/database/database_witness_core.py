@@ -521,6 +521,17 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 7, 26),
     )
 
+    SectorAgricultureCapital2022 = ColectedData(
+        value=6.5,
+        unit="T$",
+        description="Sector Agriculture capital",
+        year_value=2022,
+        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content",
+        critical_at_year_start=False,
+        source="",
+        last_update_date=date(2024, 11, 13),
+    )
+
     SectorAgricultureProductivityStart = ColectedData(
         value=1.31162,
         unit="-",
