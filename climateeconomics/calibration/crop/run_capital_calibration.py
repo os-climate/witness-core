@@ -14,12 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import json
+
 import numpy as np
-from scipy.optimize import minimize, LinearConstraint
+from scipy.optimize import LinearConstraint, minimize
+
 from climateeconomics.calibration.crop.data import dict_of_production_in_megatons
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-
 
 capex_per_ton_value_rangechat_gpt = { # initial value, min value, max value
     GlossaryCore.RedMeat: (5250.0, 4000, 6500),
@@ -91,7 +93,6 @@ capital_intensity_food_types = {food_type: np.round(dict_of_production_in_megato
 print("Capital intensity by food types (t / k$):")
 print(sorted(capital_intensity_food_types.items(), key=lambda x: x[1], reverse=True))
 
-import json
 
 # Save the dictionaries to a JSON file
 data_to_save = {
