@@ -214,8 +214,8 @@ class Study(ClimateEconomicsStudyManager):
         forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
         #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
-        construction_delay = GlossaryEnergy.TechnoConstructionDelayDict['AnaerobicDigestion']
-        invest_before_year_start_anaerobicdigestion = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - construction_delay, self.year_start), GlossaryEnergy.InvestValue: [1.43, 1.43, 1.43]})
+        invest_before_year_start_anaerobicdigestion = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['AnaerobicDigestion'], self.year_start), GlossaryEnergy.InvestValue: [0., 1.54817207, 1.64611214]})
+        invest_before_year_start_hydropower = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['Hydropower'], self.year_start), GlossaryEnergy.InvestValue: [0., 102.49276698, 98.17710767]})
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
@@ -232,6 +232,7 @@ class Study(ClimateEconomicsStudyManager):
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_anaerobicdigestion,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_hydropower,
 
                                  })
 
