@@ -190,15 +190,17 @@ actual_calories_per_capita_per_day_2022 = CalibrationData(
 
 output_calibration_datas.append(actual_calories_per_capita_per_day_2022)
 
-input_calibration_datas = [
-    CalibrationData(
+invest_agriculture_2022_data = CalibrationData(
         varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}',
         column_name=GlossaryCore.InvestmentsValue,
         year=2022,
         value=0.597,
         unit='T$',
         source='FAO',
-        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content"),
+        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content")
+
+input_calibration_datas = [
+    invest_agriculture_2022_data,
     CalibrationData(  # share of total final energy consumption in agriculture
         varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
         column_name=GlossaryCore.TotalProductionValue,
@@ -240,7 +242,7 @@ input_calibration_datas = [
     # share consumers waste = 2.043 / 23.813 * 100
     # 14.78 / 100 = share prod waste / 100 + share consumers waste/ 100 - share prod waste * share consumers / 10000
     CalibrationData(
-        varname=GlossaryCore.FoodTypeWasteAtProductionShareName,
+        varname=GlossaryCore.FoodTypeWasteAtProdAndDistribShareName,
         column_name=GlossaryCore.Fish,
         year=2022,  # actually 2021 in the report but guess it didnt change much
         value=solve_share_prod_waste(14.78, 6.78),
@@ -267,7 +269,7 @@ input_calibration_datas = [
         source='FAO',
         link="https://www.toogoodtogo.com/en-au/about-food-waste;https://www.sciencedirect.com/science/article/pii/S0921344920302305#tbl0001"),
     CalibrationData(
-        varname=GlossaryCore.FoodTypeWasteAtProductionShareName,
+        varname=GlossaryCore.FoodTypeWasteAtProdAndDistribShareName,
         column_name=GlossaryCore.FruitsAndVegetables,
         year=2022,  # actually 2021 in the report but guess it didnt change much
         value=solve_share_prod_waste(14.78, 6.78),
@@ -287,7 +289,7 @@ assumed_consumers_waste_share = 6.78
 for food_type, total_waste in total_foodchain_wastes.items():
     input_calibration_datas.append(
         CalibrationData(
-            varname=GlossaryCore.FoodTypeWasteAtProductionShareName,
+            varname=GlossaryCore.FoodTypeWasteAtProdAndDistribShareName,
             column_name=food_type,
             year=2022,
             value=solve_share_prod_waste(total_waste, min(total_waste, assumed_consumers_waste_share)),
