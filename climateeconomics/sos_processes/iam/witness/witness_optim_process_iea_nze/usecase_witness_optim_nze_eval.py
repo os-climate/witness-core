@@ -296,10 +296,10 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
 
-    #uc_cls = Study()
-    #uc_cls.test()
+    uc_cls = Study()
+    uc_cls.test()
 
-    #'''
+    '''
     from sostrades_core.tools.post_processing.post_processing_factory import (
         PostProcessingFactory,
     )
@@ -313,6 +313,6 @@ if '__main__' == __name__:
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
     for graph in graph_list:
         graph.to_plotly().show()
-    #'''
+    '''
 
 
