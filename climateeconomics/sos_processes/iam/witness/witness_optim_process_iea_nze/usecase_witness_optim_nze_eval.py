@@ -216,6 +216,8 @@ class Study(ClimateEconomicsStudyManager):
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
         invest_before_year_start_anaerobicdigestion = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['AnaerobicDigestion'], self.year_start), GlossaryEnergy.InvestValue: [0., 1.54817207, 1.64611214]})
         invest_before_year_start_hydropower = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['Hydropower'], self.year_start), GlossaryEnergy.InvestValue: [0., 102.49276698, 98.17710767]})
+        invest_before_year_start_windonshore = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['WindOnshore'], self.year_start), GlossaryEnergy.InvestValue: [0., 125.73068603, 125.73068603]})
+        invest_before_year_start_windoffshore = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['WindOffshore'], self.year_start), GlossaryEnergy.InvestValue: [0., 34.26931397, 34.26931397]})
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
@@ -229,10 +231,12 @@ class Study(ClimateEconomicsStudyManager):
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.initial_production': 111.08,  # from data_energy/fitting/windpower.py
                                  #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.2236,  #result from data_energy/fitting/hydropower.py
                                  #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.0137,  # result from data_energy/fitting/gaseous_bioenergy.py
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
+                                 #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
+                                 #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_anaerobicdigestion,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_hydropower,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_windonshore,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_windoffshore,
 
                                  })
 
@@ -292,10 +296,10 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
 
-    uc_cls = Study()
-    uc_cls.test()
+    #uc_cls = Study()
+    #uc_cls.test()
 
-    '''
+    #'''
     from sostrades_core.tools.post_processing.post_processing_factory import (
         PostProcessingFactory,
     )
@@ -309,6 +313,6 @@ if '__main__' == __name__:
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
     for graph in graph_list:
         graph.to_plotly().show()
-    '''
+    #'''
 
 
