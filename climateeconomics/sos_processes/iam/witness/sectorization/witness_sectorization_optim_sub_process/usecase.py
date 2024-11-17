@@ -70,13 +70,13 @@ class Study(ClimateEconomicsStudyManager):
         dspace_size = 0
 
         invest_val_year_start = {
-            GlossaryCore.SectorServices: DatabaseWitnessCore.InvestServicespercofgdpYearStart.value,
-            GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value,
-            GlossaryCore.SectorIndustry: DatabaseWitnessCore.InvestInduspercofgdp2020.value
+            GlossaryCore.SectorServices: DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(year=self.year_start) * DatabaseWitnessCore.InvestServicespercofgdpYearStart.value / 100.,
+            GlossaryCore.SectorAgriculture: DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(year=self.year_start) * DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value / 100.,
+            GlossaryCore.SectorIndustry: DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(year=self.year_start) * DatabaseWitnessCore.InvestInduspercofgdp2020.value / 100.
         }
 
         for sector, val_year_start in invest_val_year_start.items():
-            design_var_name = f"{sector}_share_invest_array"
+            design_var_name = f"{sector}_invest_array"
             dspace_size += GlossaryCore.NB_POLES_SECTORS_DVAR
             dspace_dict[design_var_name] = {
                 'value': [np.round(val_year_start, 2)] * GlossaryEnergy.NB_POLES_SECTORS_DVAR,
@@ -112,16 +112,16 @@ class Study(ClimateEconomicsStudyManager):
 
         # share invest dvars
         for sector in GlossaryCore.SectorsPossibleValues:
-            dvar_value = dspace[f'{sector}_share_invest_array']['value']
-            activated_dvar = dspace[f'{sector}_share_invest_array']['activated_elem']
+            dvar_value = dspace[f'{sector}_invest_array']['value']
+            activated_dvar = dspace[f'{sector}_invest_array']['activated_elem']
             activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
 
-            dv_arrays_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.Macroeconomics.{sector}_share_invest_array'] = activated_value
+            dv_arrays_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.Macroeconomics.{sector}_invest_array'] = activated_value
 
-            design_var_descriptor[f'{sector}_share_invest_array'] = {
-                'out_name': f"{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}",
+            design_var_descriptor[f'{sector}_invest_array'] = {
+                'out_name': f"{sector}.invest_mdo_df",
                 'out_type': 'dataframe',
-                'key': GlossaryCore.ShareInvestment,
+                'key': GlossaryCore.InvestmentsValue,
                 'index': years,
                 'index_name': GlossaryCore.Years,
                 'namespace_in': GlossaryCore.NS_SECTORS,
@@ -239,6 +239,7 @@ class Study(ClimateEconomicsStudyManager):
         self.dspace_size, self.dspace = self.dspace_dict_to_dataframe(dspace)
 
         values_dict_out[f'{self.study_name}.design_space'] = self.dspace
+        values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode'] = True
         values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
         self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.ShareSectorInvestmentDfValue)
@@ -249,4 +250,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test_jacobians_of_each_disc()
+    uc_cls.test()

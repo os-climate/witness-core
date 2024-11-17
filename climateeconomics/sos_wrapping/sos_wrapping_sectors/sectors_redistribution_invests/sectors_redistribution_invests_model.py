@@ -25,20 +25,24 @@ class SectorRedistributionInvestsModel:
 
     def compute_invest_redistribution(self) -> tuple[dict, pd.DataFrame]:
         """distrubute total energy production between sectors"""
-        economics_df: pd.DataFrame = self.inputs[GlossaryCore.EconomicsDfValue]
-        net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
 
         sectors_invests = {}
-        all_sectors_invests_df = {GlossaryCore.Years: economics_df[GlossaryCore.Years].values}
+        all_sectors_invests_df = {}
         for sector in GlossaryCore.SectorsPossibleValues:
-            sector_invests_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
-                                       GlossaryCore.ShareInvestment].values / 100. * net_output
-            sector_invests_df = pd.DataFrame(
-                {GlossaryCore.Years: economics_df[GlossaryCore.Years].values,
-                 GlossaryCore.InvestmentsValue: sector_invests_values}
-            )
+            if not self.inputs["mdo_mode"]:
+                economics_df: pd.DataFrame = self.inputs[GlossaryCore.EconomicsDfValue]
+                net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
+                sector_invests_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
+                                            GlossaryCore.ShareInvestment].values / 100. * net_output
+                sector_invests_df = pd.DataFrame(
+                    {GlossaryCore.Years: economics_df[GlossaryCore.Years].values,
+                     GlossaryCore.InvestmentsValue: sector_invests_values}
+                )
+            else:
+                sector_invests_df = self.inputs[f'{sector}.invest_mdo_df']
 
-            all_sectors_invests_df[sector] = sector_invests_values
+            all_sectors_invests_df[sector] = sector_invests_df[GlossaryCore.InvestmentsValue].values
+            all_sectors_invests_df[GlossaryCore.Years] = sector_invests_df[GlossaryCore.Years].values
 
             sectors_invests[sector] = sector_invests_df
 
