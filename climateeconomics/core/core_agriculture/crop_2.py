@@ -240,8 +240,8 @@ class Crop:
             outputs[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = production_before_waste * params[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] * (1 - share_dedicated_to_food)  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
 
         # land use
-        outputs[GlossaryCore.CropFoodLandUseName + "_breakdown"] = share_dedicated_to_food * production_raw * params[GlossaryCore.FoodTypeLandUseByProdUnitName] / (10 ** 5)   # Mt * m² / kg = 10^9 kg * m² / kg / 10^5= G m² / 10^5 = G ha
-        outputs[GlossaryCore.CropEnergyLandUseName + "_breakdown"] = (1 - share_dedicated_to_food) * production_raw * params[GlossaryCore.FoodTypeLandUseByProdUnitName] / (10 ** 5)   # Mt * m² / kg = 10^9 kg * m² / kg / 10^5= G m² / 10^5 = G ha
+        outputs[GlossaryCore.CropFoodLandUseName + "_breakdown"] = share_dedicated_to_food * production_raw * params[GlossaryCore.FoodTypeLandUseByProdUnitName] / (10 ** 4)   # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
+        outputs[GlossaryCore.CropEnergyLandUseName + "_breakdown"] = (1 - share_dedicated_to_food) * production_raw * params[GlossaryCore.FoodTypeLandUseByProdUnitName] / (10 ** 4)   # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
 
         net_production = production_before_waste - outputs[GlossaryCore.FoodTypeWasteByClimateDamagesName]  # Mt
         production_for_consumers = net_production

@@ -265,7 +265,6 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         '''
         Check discipline setup and run
         '''
-        self.override_dump_jacobian = 1
         self.ee.load_study_from_input_dict(self.inputs_dict)
 
         self.ee.execute()
