@@ -252,7 +252,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.FoodTypesInvestName}',
         ]
         self.coupling_outputs = [
-            f"{self.name}.{GlossaryCore.FoodLandUseName}",
+            f"{self.name}.{GlossaryCore.CropFoodLandUseName}",
             f"{self.name}.{GlossaryCore.CropFoodEmissionsName}",
             f"{self.name}.{GlossaryCore.CaloriesPerCapitaValue}",
             f"{self.name}.{self.model_name}.non_used_capital",
@@ -265,6 +265,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         '''
         Check discipline setup and run
         '''
+        self.override_dump_jacobian = 1
         self.ee.load_study_from_input_dict(self.inputs_dict)
 
         self.ee.execute()
@@ -274,10 +275,9 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            graph.to_plotly().show()
             pass
 
-        #self.override_dump_jacobian = 1
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_crop_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,

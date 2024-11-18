@@ -1949,13 +1949,26 @@ class GlossaryCore:
         }
     }
 
-    FoodTypeLandUseName = "food_type_land_use"
-    FoodTypeLandUseVar = {
-        "var_name": FoodTypeLandUseName,
+    CropFoodLandUseName = "crop_for_food_land_use"
+    CropFoodLandUseVar = {
+        "var_name": CropFoodLandUseName,
         "type": "dataframe",
         "unit": "(Gha)",
-        "description": "Land used by each food type",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
+        "description": "Land used by each food type for food energy production",
     }
+
+    CropEnergyLandUseName = "crop_for_energy_land_use"
+    CropEnergyLandUseVar = {
+        "var_name": CropEnergyLandUseName,
+        "type": "dataframe",
+        "unit": "(Gha)",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
+        "description": "Land used by each food type for food energy production",
+    }
+
     FoodTypeProductionName = "food_type_production"
     FoodTypeProductionVar = {
         "var_name": FoodTypeProductionName,
@@ -1964,21 +1977,18 @@ class GlossaryCore:
         "description": "Production of food type, before any waste is applied",
     }
 
-    FoodLandUseName = "food_land_use"
-    FoodLandUseVar = {
-        "var_name": FoodTypeLandUseName,
-        "type": "dataframe",
-        "unit": "(Gha)",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
-        "description": "Land used for food production",
-    }
-
-    FoodTypeEmissionsName = "food_type_{}_emissions"
-    FoodTypeEmissionsVar = {
+    FoodTypeFoodEmissionsName = "food_type_{}_emissions_for_food"
+    FoodTypeFoodEmissionsVar = {
         "type": "dataframe",
         "unit": "Gt",
-        "description": "Food type {} emissions by food type",
+        "description": "Food type {} emissions by food type for food production",
+    }
+
+    FoodTypeEnergyEmissionsName = "food_type_{}_emissions_for_energy"
+    FoodTypeEnergyEmissionsVar = {
+        "type": "dataframe",
+        "unit": "Gt",
+        "description": "Food type {} emissions by food type for energy production",
     }
 
     CropFoodEmissionsName = "crop_food_emissions"
@@ -1997,14 +2007,20 @@ class GlossaryCore:
         },
     }
 
-    CropFoodLandUseName = "crop_food_land_use"
-    CropFoodLandUseVar = {
-        "var_name": CropFoodLandUseName,
+    CropEnergyEmissionsName = "crop_energy_emissions"
+    CropEnergyEmissionsVar = {
+        "var_name": CropEnergyEmissionsName,
         "type": "dataframe",
+        "unit": "Gt",
         "visibility": "Shared",
         "namespace": NS_CROP,
-        "unit": "Gha",
-        "description": "Land use by crop for food production",
+        "description": "Crop for energy emissions for each GHG",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            CO2: ("float", None, True),
+            CH4: ("float", None, True),
+            N2O: ("float", None, True),
+        },
     }
 
     @staticmethod

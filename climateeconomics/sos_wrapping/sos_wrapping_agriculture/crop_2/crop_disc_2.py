@@ -14,13 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import plotly.colors
 import copy
 import logging
 from typing import Union
 
-import numpy as np
 import pandas as pd
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -66,8 +65,10 @@ class CropDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        GlossaryCore.FoodLandUseName: GlossaryCore.FoodLandUseVar,
+        GlossaryCore.CropFoodLandUseName: GlossaryCore.CropFoodLandUseVar,
+        GlossaryCore.CropEnergyLandUseName: GlossaryCore.CropEnergyLandUseVar,
         GlossaryCore.CropFoodEmissionsName: GlossaryCore.CropFoodEmissionsVar,
+        GlossaryCore.CropEnergyEmissionsName: GlossaryCore.CropEnergyEmissionsVar,
         GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
         "non_used_capital": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"},
         "kcal_dict_infos": {'type': 'dict',},
@@ -87,6 +88,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
+        self.food_types_colors = {}
         self.crop_model = Crop()
 
     def setup_sos_disciplines(self):
@@ -144,7 +146,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.FoodTypeNotProducedDueToClimateChangeName: GlossaryCore.FoodTypeNotProducedDueToClimateChangeVar,
                     GlossaryCore.FoodTypeWasteByClimateDamagesName: GlossaryCore.FoodTypeWasteByClimateDamagesVar,
                     GlossaryCore.FoodTypeDeliveredToConsumersName: GlossaryCore.FoodTypeDeliveredToConsumersVar,
-                    GlossaryCore.FoodTypeLandUseName: GlossaryCore.FoodTypeLandUseVar,
+                    GlossaryCore.CropFoodLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for food production"},
+                    GlossaryCore.CropEnergyLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for energy production in first intention. That is "},
                     GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
                     "non_used_capital_breakdown": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"}
                 }
@@ -165,9 +168,13 @@ class CropDiscipline(ClimateEcoDiscipline):
                         dataframes_outputs[df_name.format(stream) + "_breakdown"] = df_out
 
                 for ghg in GlossaryCore.GreenHouseGases:
-                    df_ghg = copy.deepcopy(GlossaryCore.FoodTypeEmissionsVar)
-                    df_ghg["description"] = df_ghg["description"].format(ghg)
-                    dataframes_outputs[GlossaryCore.FoodTypeEmissionsName.format(ghg)] = df_ghg
+                    for varname, variable in [
+                        (GlossaryCore.FoodTypeFoodEmissionsName, GlossaryCore.FoodTypeFoodEmissionsVar),
+                        (GlossaryCore.FoodTypeEnergyEmissionsName, GlossaryCore.FoodTypeEnergyEmissionsVar),
+                    ]:
+                        df_ghg = copy.deepcopy(variable)
+                        df_ghg["description"] = df_ghg["description"].format(ghg)
+                        dataframes_outputs[varname.format(ghg)] = df_ghg
 
                 for varname, df_output in dataframes_outputs.items():
                     df_output["dataframe_descriptor"] = dataframes_descriptors
@@ -222,6 +229,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                     charts = chart_filter.selected_values
 
         outputs = self.get_sosdisc_outputs()
+        food_types = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
+        self.food_types_colors = generate_distinct_colors(food_types)
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue],
@@ -352,10 +361,20 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         if "Land use" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
-                df_all_food_types=outputs[GlossaryCore.FoodTypeLandUseName],
+                df_all_food_types=outputs[GlossaryCore.CropFoodLandUseName + "_breakdown"],
                 charts_name="Land use for food production",
-                unit=GlossaryCore.FoodLandUseVar['unit'],
-                df_total=outputs[GlossaryCore.FoodLandUseName],
+                unit=GlossaryCore.CropFoodLandUseVar['unit'],
+                df_total=outputs[GlossaryCore.CropFoodLandUseName],
+                column_total="Total",
+                post_proc_category="Land use"
+            )
+            instanciated_charts.append(new_chart)
+
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.CropEnergyLandUseName + "_breakdown"],
+                charts_name="Land use for energy production",
+                unit=GlossaryCore.CropFoodLandUseVar['unit'],
+                df_total=outputs[GlossaryCore.CropEnergyLandUseName],
                 column_total="Total",
                 post_proc_category="Land use"
             )
@@ -364,10 +383,21 @@ class CropDiscipline(ClimateEcoDiscipline):
         if "Emissions" in charts:
             for ghg in GlossaryCore.GreenHouseGases:
                 new_chart = self.get_breakdown_charts_on_food_type(
-                    df_all_food_types=outputs[GlossaryCore.FoodTypeEmissionsName.format(ghg)],
+                    df_all_food_types=outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)],
                     charts_name=f"{ghg} Emissions of food production",
                     unit=GlossaryCore.CropFoodEmissionsVar['unit'],
                     df_total=outputs[GlossaryCore.CropFoodEmissionsName],
+                    column_total=ghg,
+                    post_proc_category="Emissions"
+                )
+                instanciated_charts.append(new_chart)
+
+            for ghg in GlossaryCore.GreenHouseGases:
+                new_chart = self.get_breakdown_charts_on_food_type(
+                    df_all_food_types=outputs[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)],
+                    charts_name=f"{ghg} Emissions of energy production",
+                    unit=GlossaryCore.CropEnergyEmissionsVar['unit'],
+                    df_total=outputs[GlossaryCore.CropEnergyEmissionsName],
                     column_total=ghg,
                     post_proc_category="Emissions"
                 )
@@ -453,7 +483,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         for col in df_all_food_types.columns:
             if col != GlossaryCore.Years:
-                new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True)
+                dict_color = {'color': self.food_types_colors[col]} if col in self.food_types_colors else None
+                kwargs = {'line': dict_color} if lines else {'marker': dict_color}
+                new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
                 new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
@@ -506,7 +538,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         for key, value in dict_values.items():
             if key != GlossaryCore.Years:
-                new_series = InstanciatedSeries([str(key).capitalize()], [value], '', 'bar', True)
+                dict_color = {'color': self.food_types_colors[key]} if key in self.food_types_colors else None
+                new_series = InstanciatedSeries([str(key).capitalize()], [value], '', 'bar', True, marker=dict_color)
                 new_chart.add_series(new_series)
 
         if post_proc_category is not None:
@@ -515,3 +548,23 @@ class CropDiscipline(ClimateEcoDiscipline):
         if note is not None:
             new_chart.annotation_upper_left = note
         return new_chart
+
+
+def generate_distinct_colors(labels: list[str]):
+    """
+    Generate a dictionary of distinct plotly colors for a given list of labels.
+
+    :param labels: List of string labels
+    :return: Dictionary mapping each label to a distinct plotly color
+    """
+    # Get a list of plotly colors
+    plotly_colors = plotly.colors.qualitative.Plotly
+
+    # Ensure we have enough colors for the labels
+    if len(labels) > len(plotly_colors):
+        raise ValueError("Not enough distinct colors available for the given labels")
+
+    # Create a dictionary mapping each label to a distinct color
+    color_dict = {label: plotly_colors[i % len(plotly_colors)] for i, label in enumerate(labels)}
+
+    return color_dict
