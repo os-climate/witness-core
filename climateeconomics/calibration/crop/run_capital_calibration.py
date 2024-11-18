@@ -19,7 +19,7 @@ import json
 import numpy as np
 from scipy.optimize import LinearConstraint, minimize
 
-from climateeconomics.calibration.crop.data import dict_of_production_in_megatons
+from climateeconomics.calibration.crop.data import dict_of_production_in_megatons, invest_agriculture_2022_data
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -93,13 +93,14 @@ capital_intensity_food_types = {food_type: np.round(dict_of_production_in_megato
 print("Capital intensity by food types (t / k$):")
 print(sorted(capital_intensity_food_types.items(), key=lambda x: x[1], reverse=True))
 
-
+invest_food_type_share_start = {food_type: share_of_capital_sector_food_type[food_type] for food_type in GlossaryCore.DefaultFoodTypes}
+invest_food_type_start = {food_type: np.round(invest_food_type_share_start[food_type] * invest_agriculture_2022_data.value * 1000, 2) for food_type in GlossaryCore.DefaultFoodTypes} # in billion $
 # Save the dictionaries to a JSON file
 data_to_save = {
-    "capital_start_food_type_breakdown": capital_start_food_type_breakdown,
-    "capital_intensity_food_types": capital_intensity_food_types,
-    "capital_share_sector_food_type": share_of_capital_sector_food_type,
-    "invest_food_type_share_start": share_of_capital_sector_food_type,
+    "capital_start_food_type": capital_start_food_type_breakdown,
+    "capital_intensity_food_type": capital_intensity_food_types,
+    "invest_food_type_share_start": share_of_capital_sector_food_type, # at year start we invest in each food type proportionally to the capital share
+    "invest_food_type_start": invest_food_type_start,
 }
 
 with open('output_calibration.json', 'w') as json_file:

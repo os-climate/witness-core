@@ -14,13 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import plotly.colors
 import copy
 import logging
 from typing import Union
 
-import numpy as np
 import pandas as pd
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -48,10 +47,10 @@ class CropDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-seedling fa-fw',
         'version': '',
     }
-    streams_energy_prod = [GlossaryEnergy.biomass_dry, GlossaryEnergy.wet_biomass]
+    streams_energy_prod = Crop.streams_energy_prod
 
     invest_df = copy.deepcopy(GlossaryCore.InvestDf)
-    invest_df['namespace'] = GlossaryCore.NS_FOOD
+    invest_df['namespace'] = GlossaryCore.NS_CROP
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -60,19 +59,18 @@ class CropDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CropProductivityReductionName: GlossaryCore.CropProductivityReductionDf,
         GlossaryCore.FoodTypesName: GlossaryCore.FoodTypesVar,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
-        f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf),
         f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors),
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
-        'constraint_calories_ref': {'type': 'float', 'default': 4000.},
-        'constraint_calories_limit': {'type': 'float', 'default': 2000.},
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
     }
 
     DESC_OUT = {
-        GlossaryCore.FoodLandUseName: GlossaryCore.FoodLandUseVar,
+        GlossaryCore.CropFoodLandUseName: GlossaryCore.CropFoodLandUseVar,
+        GlossaryCore.CropEnergyLandUseName: GlossaryCore.CropEnergyLandUseVar,
         GlossaryCore.CropFoodEmissionsName: GlossaryCore.CropFoodEmissionsVar,
-        GlossaryCore.CropFoodKcalForConsumersName: GlossaryCore.CropFoodKcalForConsumersVar,
+        GlossaryCore.CropEnergyEmissionsName: GlossaryCore.CropEnergyEmissionsVar,
         GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
+        "non_used_capital": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"},
         "kcal_dict_infos": {'type': 'dict',},
         "kg_dict_infos": {'type': 'dict',},
     }
@@ -90,7 +88,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
-        self.crop_model = None
+        self.food_types_colors = {}
+        self.crop_model = Crop()
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
@@ -104,18 +103,19 @@ class CropDiscipline(ClimateEcoDiscipline):
                     **{ft: ("float", None, False) for ft in food_types}
                 }
                 # inputs
-                dataframes_inputs = {
-                    GlossaryCore.ShareInvestFoodTypesName: GlossaryCore.ShareInvestFoodTypesVar,
-                    GlossaryCore.ShareEnergyUsageFoodTypesName: GlossaryCore.ShareEnergyUsageFoodTypesVar,
-                    GlossaryCore.ShareWorkforceFoodTypesName: GlossaryCore.ShareWorkforceFoodTypesVar,
-                    GlossaryCore.FoodTypeEnergyNeedName: GlossaryCore.FoodTypeEnergyNeedVar,
-                    GlossaryCore.FoodTypeWorkforceNeedName: GlossaryCore.FoodTypeWorkforceNeedVar,
-                    GlossaryCore.FoodTypeCapexName: GlossaryCore.FoodTypeCapexVar,
-                    GlossaryCore.FoodTypeWasteAtProductionShareName: GlossaryCore.FoodTypeWasteAtProductionShareVar,
-                    GlossaryCore.FoodTypeWasteByConsumersShareName: GlossaryCore.FoodTypeWasteByConsumersShareVar,
+                dynamic_inputs.update({
+                    GlossaryCore.FoodTypeCapitalStartName: GlossaryCore.FoodTypeCapitalStartVar,
+                    GlossaryCore.FoodTypeCapitalIntensityName: GlossaryCore.FoodTypeCapitalIntensityVar,
+                    GlossaryCore.FoodTypeCapitalDepreciationRateName: GlossaryCore.FoodTypeCapitalDepreciationRateVar,
                     GlossaryCore.FoodTypeLandUseByProdUnitName: GlossaryCore.FoodTypeLandUseByProdUnitVar,
                     GlossaryCore.FoodTypeKcalByProdUnitName: GlossaryCore.FoodTypeKcalByProdUnitVar,
-                }
+                })
+
+                dataframes_inputs = {
+                    GlossaryCore.FoodTypeWasteAtProdAndDistribShareName: GlossaryCore.FoodTypeWasteAtProductionShareVar,
+                    GlossaryCore.FoodTypeWasteByConsumersShareName: GlossaryCore.FoodTypeWasteByConsumersShareVar,
+                    GlossaryCore.FoodTypesInvestName: GlossaryCore.FoodTypesInvestVar}
+
                 for stream in self.streams_energy_prod:
                     df_shares = {
                         GlossaryCore.FoodTypeShareDedicatedToStreamProdName: GlossaryCore.FoodTypeShareDedicatedToStreamProdVar,
@@ -140,20 +140,21 @@ class CropDiscipline(ClimateEcoDiscipline):
                 # outputs
                 dataframes_outputs = {
                     # coupling with breakdown
+                    GlossaryCore.FoodTypeCapitalName: GlossaryCore.FoodTypeCapitalVar,
                     GlossaryCore.FoodTypeProductionName: GlossaryCore.FoodTypeProductionVar,
                     GlossaryCore.FoodTypeWasteAtProductionDistributionName: GlossaryCore.FoodTypeWasteAtProductionDistributionVar,
                     GlossaryCore.FoodTypeWasteByConsumersName: GlossaryCore.FoodTypeWasteByConsumersVar,
                     GlossaryCore.FoodTypeNotProducedDueToClimateChangeName: GlossaryCore.FoodTypeNotProducedDueToClimateChangeVar,
                     GlossaryCore.FoodTypeWasteByClimateDamagesName: GlossaryCore.FoodTypeWasteByClimateDamagesVar,
                     GlossaryCore.FoodTypeDeliveredToConsumersName: GlossaryCore.FoodTypeDeliveredToConsumersVar,
-                    GlossaryCore.FoodTypeLandUseName: GlossaryCore.FoodTypeLandUseVar,
-                    GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry): GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
-                    GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass): GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
+                    GlossaryCore.CropFoodLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for food production"},
+                    GlossaryCore.CropEnergyLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for energy production in first intention. That is "},
                     GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
-                    "unused_energy" + "_breakdown": {"type": "dataframe", "unit": "PWh",},
-                    "unused_workforce" + "_breakdown": {"type": "dataframe", "unit": "million people",},
-                    "workforce_breakdown": {"type": "dataframe", "unit": "million people",},
+                    "non_used_capital_breakdown": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"}
                 }
+
+                for stream in self.streams_energy_prod:
+                    dataframes_outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream)] = GlossaryCore.FoodTypeDedicatedToProductionForStreamVar
 
                 for stream in self.streams_energy_prod:
                     df_output_streams = {
@@ -168,185 +169,44 @@ class CropDiscipline(ClimateEcoDiscipline):
                         dataframes_outputs[df_name.format(stream) + "_breakdown"] = df_out
 
                 for ghg in GlossaryCore.GreenHouseGases:
-                    df_ghg = copy.deepcopy(GlossaryCore.FoodTypeEmissionsVar)
-                    df_ghg["description"] = df_ghg["description"].format(ghg)
-                    dataframes_outputs[GlossaryCore.FoodTypeEmissionsName.format(ghg)] = df_ghg
+                    for varname, variable in [
+                        (GlossaryCore.FoodTypeFoodEmissionsName, GlossaryCore.FoodTypeFoodEmissionsVar),
+                        (GlossaryCore.FoodTypeEnergyEmissionsName, GlossaryCore.FoodTypeEnergyEmissionsVar),
+                    ]:
+                        df_ghg = copy.deepcopy(variable)
+                        df_ghg["description"] = df_ghg["description"].format(ghg)
+                        dataframes_outputs[varname.format(ghg)] = df_ghg
 
                 for varname, df_output in dataframes_outputs.items():
                     df_output["dataframe_descriptor"] = dataframes_descriptors
                     dynamic_outputs[varname] = df_output
 
         self.add_inputs(dynamic_inputs)
-        #self.update_default_values()
         self.add_outputs(dynamic_outputs)
-
-    def update_default_values(self):
-        if GlossaryCore.YearEnd in self.get_data_in() and GlossaryCore.YearStart in self.get_data_in() and GlossaryCore.FoodTypesName in self.get_data_in():
-            year_start, year_end, food_types = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd, GlossaryCore.FoodTypesName])
-            if year_start is not None and food_types is not None:
-                years = np.arange(year_start, year_end + 1)
-                default_dict_values = {
-                    GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.CO2): {
-                        GlossaryCore.RedMeat: 0.0,
-                        GlossaryCore.WhiteMeat: 3.95,
-                        GlossaryCore.Milk: 0.0,
-                        GlossaryCore.Eggs: 1.88,
-                        GlossaryCore.RiceAndMaize: 0.84,
-                        GlossaryCore.Cereals: 0.12,
-                        GlossaryCore.FruitsAndVegetables: 0.44,
-                        GlossaryCore.Fish: 2.37,
-                        GlossaryCore.OtherFood: 0.48
-                    },
-                    GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.CH4): {
-                        GlossaryCore.RedMeat: 6.823e-1,
-                        GlossaryCore.WhiteMeat: 1.25e-2,
-                        GlossaryCore.Milk: 3.58e-2,
-                        GlossaryCore.Eggs: 0.0,
-                        GlossaryCore.RiceAndMaize: 3.17e-2,
-                        # negligible methane in this category
-                        GlossaryCore.Cereals: 0.0,
-                        GlossaryCore.FruitsAndVegetables: 0.0,
-                        # consider fish farm only
-                        GlossaryCore.Fish: 3.39e-2,
-                        GlossaryCore.OtherFood: 0.,
-                        },
-                    GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.N2O): {
-                        GlossaryCore.RedMeat: 9.268e-3,
-                        GlossaryCore.WhiteMeat: 3.90e-4,
-                        GlossaryCore.Milk: 2.40e-4,
-                        GlossaryCore.Eggs: 1.68e-4,
-                        GlossaryCore.RiceAndMaize: 9.486e-4,
-                        GlossaryCore.Cereals: 1.477e-3,
-                        GlossaryCore.FruitsAndVegetables: 2.63e-4,
-                        GlossaryCore.Fish: 0.,  # no crop or livestock related
-                        GlossaryCore.OtherFood: 1.68e-3,
-                        },
-                    GlossaryCore.FoodTypeKcalByProdUnitName: {
-                        GlossaryCore.RedMeat: 1551.05,
-                        GlossaryCore.WhiteMeat: 2131.99,
-                        GlossaryCore.Milk: 921.76,
-                        GlossaryCore.Eggs: 1425.07,
-                        GlossaryCore.RiceAndMaize: 2572.46,
-                        GlossaryCore.Cereals: 2964.99,
-                        GlossaryCore.FruitsAndVegetables: 559.65,
-                        GlossaryCore.Fish: 609.17,
-                        GlossaryCore.OtherFood: 3061.06,
-                    },
-                    GlossaryCore.FoodTypeLandUseByProdUnitName: {
-                        GlossaryCore.RedMeat: 345.,
-                        GlossaryCore.WhiteMeat: 14.5,
-                        GlossaryCore.Milk: 8.95,
-                        GlossaryCore.Eggs: 6.27,
-                        GlossaryCore.RiceAndMaize: 2.89,
-                        GlossaryCore.Cereals: 4.5,
-                        GlossaryCore.FruitsAndVegetables: 0.8,
-                        GlossaryCore.Fish: 0.,
-                        GlossaryCore.OtherFood: 5.1041,
-                    },
-                    GlossaryCore.FoodTypeWasteAtProductionShareName: {
-                        GlossaryCore.RedMeat: 3,
-                        GlossaryCore.WhiteMeat: 3,
-                        GlossaryCore.Milk: 8,
-                        GlossaryCore.Eggs: 7,
-                        GlossaryCore.RiceAndMaize: 8,
-                        GlossaryCore.Cereals: 10,
-                        GlossaryCore.FruitsAndVegetables: 15,
-                        GlossaryCore.Fish: 10,
-                        GlossaryCore.OtherFood: 5,
-                    },
-                    GlossaryCore.FoodTypeWasteByConsumersName: {
-                        GlossaryCore.RedMeat: 3,
-                        GlossaryCore.WhiteMeat: 3,
-                        GlossaryCore.Milk: 8,
-                        GlossaryCore.Eggs: 7,
-                        GlossaryCore.RiceAndMaize: 8,
-                        GlossaryCore.Cereals: 10,
-                        GlossaryCore.FruitsAndVegetables: 15,
-                        GlossaryCore.Fish: 10,
-                        GlossaryCore.OtherFood: 5,
-                    },
-                    GlossaryCore.FoodTypeEnergyNeedName: {
-                        GlossaryCore.RedMeat: 1,
-                        GlossaryCore.WhiteMeat: 1,
-                        GlossaryCore.Milk: 1,
-                        GlossaryCore.Eggs: 1,
-                        GlossaryCore.RiceAndMaize: 1,
-                        GlossaryCore.Cereals: 1,
-                        GlossaryCore.FruitsAndVegetables: 1,
-                        GlossaryCore.Fish: 1,
-                        GlossaryCore.OtherFood: 1,
-                    },
-                    GlossaryCore.FoodTypeWorkforceNeedName: {
-                        GlossaryCore.RedMeat: 3,
-                        GlossaryCore.WhiteMeat: 3,
-                        GlossaryCore.Milk: 8,
-                        GlossaryCore.Eggs: 7,
-                        GlossaryCore.RiceAndMaize: 8,
-                        GlossaryCore.Cereals: 10,
-                        GlossaryCore.FruitsAndVegetables: 15,
-                        GlossaryCore.Fish: 10,
-                        GlossaryCore.OtherFood: 5,
-                    },
-                    GlossaryCore.ShareInvestFoodTypesName: {
-                        GlossaryCore.RedMeat: 1/9 * 100.,
-                        GlossaryCore.WhiteMeat: 1/9 * 100.,
-                        GlossaryCore.Milk: 1/9 * 100.,
-                        GlossaryCore.Eggs: 1/9 * 100.,
-                        GlossaryCore.RiceAndMaize: 1/9 * 100.,
-                        GlossaryCore.Cereals: 1/9 * 100.,
-                        GlossaryCore.FruitsAndVegetables: 1/9 * 100.,
-                        GlossaryCore.Fish: 1/9 * 100.,
-                        GlossaryCore.OtherFood: 1/9 * 100.,
-                    },
-                    GlossaryCore.ShareEnergyUsageFoodTypesName: {
-                        GlossaryCore.RedMeat: 1/9 * 100.,
-                        GlossaryCore.WhiteMeat: 1/9 * 100.,
-                        GlossaryCore.Milk: 1/9 * 100.,
-                        GlossaryCore.Eggs: 1/9 * 100.,
-                        GlossaryCore.RiceAndMaize: 1/9 * 100.,
-                        GlossaryCore.Cereals: 1/9 * 100.,
-                        GlossaryCore.FruitsAndVegetables: 1/9 * 100.,
-                        GlossaryCore.Fish: 1/9 * 100.,
-                        GlossaryCore.OtherFood: 1/9 * 100.,
-                    },
-                }
-
-                out = {}
-                for varname, default_dict_values_var in default_dict_values.items():
-                    df = pd.DataFrame({
-                        GlossaryCore.Years: years,
-                        **default_dict_values_var
-                    })
-                    #self.update_default_value(varname, 'in', df)
-                    out.update({varname: df})
-                self.set_dynamic_default_values(out)
-
-    def init_execution(self):
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
-        self.crop_model = Crop(param)
 
     def run(self):
         # -- get inputs
         input_dict = self.get_sosdisc_inputs()
-
-        # -- configure class with inputs
         self.crop_model.compute(input_dict)
 
-        outputs = self.crop_model.outputs
-        self.store_sos_outputs_values(outputs)
+        self.store_sos_outputs_values(self.crop_model.outputs)
 
     def compute_sos_jacobian(self):
         """
         Compute jacobian for each coupling variable
         """
-        pass
+        gradients = self.crop_model.jacobians()
+
+        for input_varname in gradients:
+            for input_colname in gradients[input_varname]:
+                for output_varname in gradients[input_varname][input_colname]:
+                    for output_colname, value in gradients[input_varname][input_colname][output_varname].items():
+                        self.set_partial_derivative_for_other_types(
+                            (output_varname, output_colname),
+                            (input_varname, input_colname),
+                            value)
 
     def get_chart_filter_list(self):
-        chart_filters = []
-        # chart_list = ["assets emissions", "assets emissions per category",
-        #               "transportation subsector assets emissions", "agriculture subsector assets emissions",
-        #               "energy subsector assets emissions", "Oil and Gas subsector assets emissions"]
         chart_list = [
             "Production",
             "Damages",
@@ -356,12 +216,9 @@ class CropDiscipline(ClimateEcoDiscipline):
             'Crop for energy production',
             "Food data (kcal)",
             "Food data (kg)",
-            "Calibration",
         ]
 
-        chart_filters.append(ChartFilter("Charts", chart_list, chart_list, "charts"))
-
-        return chart_filters
+        return [ChartFilter("Charts", chart_list, chart_list, "charts")]
 
     def get_post_processing_list(self, filters=None):
         instanciated_charts = []
@@ -372,8 +229,9 @@ class CropDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     charts = chart_filter.selected_values
 
-        inputs = self.get_sosdisc_inputs()
         outputs = self.get_sosdisc_outputs()
+        food_types = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
+        self.food_types_colors = generate_distinct_colors(food_types)
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue],
@@ -412,12 +270,13 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
-                df_all_food_types=outputs["workforce_breakdown"],
-                charts_name="Workforce breakdown",
-                unit=GlossaryCore.WorkforceDf['unit'],
-                df_total=inputs[GlossaryCore.WorkforceDfValue],
-                column_total=GlossaryCore.SectorAgriculture,
+                df_all_food_types=outputs["non_used_capital_breakdown"],
+                charts_name="Non used capital",
+                unit=GlossaryCore.FoodTypeCapitalStartVar['unit'],
+                df_total=outputs["non_used_capital"],
+                column_total="Total",
                 post_proc_category="Production",
+                note={"Non used capital": "due to missing workforce or energy attribution to agriculture sector"}
             )
             instanciated_charts.append(new_chart)
 
@@ -503,10 +362,20 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         if "Land use" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
-                df_all_food_types=outputs[GlossaryCore.FoodTypeLandUseName],
+                df_all_food_types=outputs[GlossaryCore.CropFoodLandUseName + "_breakdown"],
                 charts_name="Land use for food production",
-                unit=GlossaryCore.FoodLandUseVar['unit'],
-                df_total=outputs[GlossaryCore.FoodLandUseName],
+                unit=GlossaryCore.CropFoodLandUseVar['unit'],
+                df_total=outputs[GlossaryCore.CropFoodLandUseName],
+                column_total="Total",
+                post_proc_category="Land use"
+            )
+            instanciated_charts.append(new_chart)
+
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.CropEnergyLandUseName + "_breakdown"],
+                charts_name="Land use for energy production",
+                unit=GlossaryCore.CropFoodLandUseVar['unit'],
+                df_total=outputs[GlossaryCore.CropEnergyLandUseName],
                 column_total="Total",
                 post_proc_category="Land use"
             )
@@ -515,10 +384,21 @@ class CropDiscipline(ClimateEcoDiscipline):
         if "Emissions" in charts:
             for ghg in GlossaryCore.GreenHouseGases:
                 new_chart = self.get_breakdown_charts_on_food_type(
-                    df_all_food_types=outputs[GlossaryCore.FoodTypeEmissionsName.format(ghg)],
+                    df_all_food_types=outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)],
                     charts_name=f"{ghg} Emissions of food production",
                     unit=GlossaryCore.CropFoodEmissionsVar['unit'],
                     df_total=outputs[GlossaryCore.CropFoodEmissionsName],
+                    column_total=ghg,
+                    post_proc_category="Emissions"
+                )
+                instanciated_charts.append(new_chart)
+
+            for ghg in GlossaryCore.GreenHouseGases:
+                new_chart = self.get_breakdown_charts_on_food_type(
+                    df_all_food_types=outputs[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)],
+                    charts_name=f"{ghg} Emissions of energy production",
+                    unit=GlossaryCore.CropEnergyEmissionsVar['unit'],
+                    df_total=outputs[GlossaryCore.CropEnergyEmissionsName],
                     column_total=ghg,
                     post_proc_category="Emissions"
                 )
@@ -587,43 +467,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                 )
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_dict_bar_plot(
-                dict_values=inputs[GlossaryCore.FoodTypeEnergyNeedName],
-                charts_name="Energy need",
-                unit=GlossaryCore.FoodTypeEnergyNeedVar['unit'],
-                post_proc_category="Food data (kg)",
-            )
-            instanciated_charts.append(new_chart)
-
-            new_chart = self.get_dict_bar_plot(
-                dict_values=inputs[GlossaryCore.FoodTypeWorkforceNeedName],
-                charts_name="Workforce need",
-                unit=GlossaryCore.FoodTypeWorkforceNeedVar['unit'],
-                post_proc_category="Food data (kg)",
-            )
-            instanciated_charts.append(new_chart)
-
-        if "Calibration" in charts:
-            new_chart = self.get_breakdown_charts_on_food_type(
-                df_all_food_types=outputs["unused_energy" + "_breakdown"],
-                charts_name="Unused energy",
-                unit="PWh",
-                df_total=inputs[f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}'],
-                column_total=GlossaryCore.TotalProductionValue,
-                post_proc_category="Calibration",
-            )
-            instanciated_charts.append(new_chart)
-
-            new_chart = self.get_breakdown_charts_on_food_type(
-                df_all_food_types=outputs["unused_workforce" + "_breakdown"],
-                charts_name="Unused workforce",
-                unit="milllion people",
-                df_total=inputs[GlossaryCore.WorkforceDfValue],
-                column_total=GlossaryCore.SectorAgriculture,
-                post_proc_category="Calibration",
-            )
-            instanciated_charts.append(new_chart)
-
         return instanciated_charts
 
     def get_breakdown_charts_on_food_type(self,
@@ -641,7 +484,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         for col in df_all_food_types.columns:
             if col != GlossaryCore.Years:
-                new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True)
+                dict_color = {'color': self.food_types_colors[col]} if col in self.food_types_colors else None
+                kwargs = {'line': dict_color} if lines else {'marker': dict_color}
+                new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
                 new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
@@ -694,7 +539,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         for key, value in dict_values.items():
             if key != GlossaryCore.Years:
-                new_series = InstanciatedSeries([str(key).capitalize()], [value], '', 'bar', True)
+                dict_color = {'color': self.food_types_colors[key]} if key in self.food_types_colors else None
+                new_series = InstanciatedSeries([str(key).capitalize()], [value], '', 'bar', True, marker=dict_color)
                 new_chart.add_series(new_series)
 
         if post_proc_category is not None:
@@ -703,3 +549,23 @@ class CropDiscipline(ClimateEcoDiscipline):
         if note is not None:
             new_chart.annotation_upper_left = note
         return new_chart
+
+
+def generate_distinct_colors(labels: list[str]):
+    """
+    Generate a dictionary of distinct plotly colors for a given list of labels.
+
+    :param labels: List of string labels
+    :return: Dictionary mapping each label to a distinct plotly color
+    """
+    # Get a list of plotly colors
+    plotly_colors = plotly.colors.qualitative.Plotly
+
+    # Ensure we have enough colors for the labels
+    if len(labels) > len(plotly_colors):
+        raise ValueError("Not enough distinct colors available for the given labels")
+
+    # Create a dictionary mapping each label to a distinct color
+    color_dict = {label: plotly_colors[i % len(plotly_colors)] for i, label in enumerate(labels)}
+
+    return color_dict

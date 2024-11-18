@@ -50,8 +50,9 @@ class Study(StudyManager):
         })
 
         investments = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.InvestmentsValue: 0.61, # T$ (2020 value)
+            GlossaryCore.Years: years,  # 0.61 T$ (2020 value)
+            **{food_type: 0.61 * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][
+                food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypes}  # convert to G$
         })
         workforce_df = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -104,64 +105,9 @@ class Study(StudyManager):
                 GlossaryCore.Fish: 0.,  # no crop or livestock related
                 GlossaryCore.OtherFood: 1.68e-3,
             },
-            GlossaryCore.FoodTypeKcalByProdUnitName: {
-                GlossaryCore.RedMeat: 1551.05,
-                GlossaryCore.WhiteMeat: 2131.99,
-                GlossaryCore.Milk: 921.76,
-                GlossaryCore.Eggs: 1425.07,
-                GlossaryCore.RiceAndMaize: 2572.46,
-                GlossaryCore.Cereals: 2964.99,
-                GlossaryCore.FruitsAndVegetables: 559.65,
-                GlossaryCore.Fish: 609.17,
-                GlossaryCore.OtherFood: 3061.06,
-            },
-            GlossaryCore.FoodTypeLandUseByProdUnitName: {
-                GlossaryCore.RedMeat: 345.,
-                GlossaryCore.WhiteMeat: 14.5,
-                GlossaryCore.Milk: 8.95,
-                GlossaryCore.Eggs: 6.27,
-                GlossaryCore.RiceAndMaize: 2.89,
-                GlossaryCore.Cereals: 4.5,
-                GlossaryCore.FruitsAndVegetables: 0.8,
-                GlossaryCore.Fish: 0.,
-                GlossaryCore.OtherFood: 5.1041,
-            },
-            GlossaryCore.FoodTypeEnergyNeedName: {
-                GlossaryCore.RedMeat: 0.0001,
-                GlossaryCore.WhiteMeat: 0.0001,
-                GlossaryCore.Milk: 0.0001,
-                GlossaryCore.Eggs: 0.0001,
-                GlossaryCore.RiceAndMaize: 0.0001,
-                GlossaryCore.Cereals: 0.0001,
-                GlossaryCore.FruitsAndVegetables: 0.0001,
-                GlossaryCore.Fish: 0.0001,
-                GlossaryCore.OtherFood: 0.0001,
-            },
-            GlossaryCore.FoodTypeWorkforceNeedName: {
-                GlossaryCore.RedMeat: 0.0001,
-                GlossaryCore.WhiteMeat: 0.0001,
-                GlossaryCore.Milk: 0.0001,
-                GlossaryCore.Eggs: 0.0001,
-                GlossaryCore.RiceAndMaize: 0.0001,
-                GlossaryCore.Cereals: 0.0001,
-                GlossaryCore.FruitsAndVegetables: 0.0001,
-                GlossaryCore.Fish: 0.0001,
-                GlossaryCore.OtherFood: 0.0001,
-            },
-            GlossaryCore.FoodTypeCapexName: {  # $ / ton
-                GlossaryCore.RedMeat: 225.0,  # Average for red meat
-                GlossaryCore.WhiteMeat: 150.0,  # Average for white meat
-                GlossaryCore.Milk: 75.0,  # Average for milk
-                GlossaryCore.Eggs: 113.5,  # Average for eggs
-                GlossaryCore.RiceAndMaize: 31.75,  # Average for rice and maize
-                GlossaryCore.Cereals: 37.5,  # Average for cereals
-                GlossaryCore.FruitsAndVegetables: 84.9,  # Average for fruits and vegetables
-                GlossaryCore.Fish: 300.0,  # Average for fish
-                GlossaryCore.OtherFood: 100.0,  # General estimate for other food types
-            },
         }
         dict_to_dataframes = {
-            GlossaryCore.FoodTypeWasteAtProductionShareName: {
+            GlossaryCore.FoodTypeWasteAtProdAndDistribShareName: {
                 GlossaryCore.RedMeat: 3,
                 GlossaryCore.WhiteMeat: 3,
                 GlossaryCore.Milk: 8,
@@ -182,39 +128,6 @@ class Study(StudyManager):
                 GlossaryCore.FruitsAndVegetables: 15,
                 GlossaryCore.Fish: 10,
                 GlossaryCore.OtherFood: 5,
-            },
-            GlossaryCore.ShareInvestFoodTypesName: {
-                GlossaryCore.RedMeat: 1 / 9 * 100.,
-                GlossaryCore.WhiteMeat: 1 / 9 * 100.,
-                GlossaryCore.Milk: 1 / 9 * 100.,
-                GlossaryCore.Eggs: 1 / 9 * 100.,
-                GlossaryCore.RiceAndMaize: 1 / 9 * 100.,
-                GlossaryCore.Cereals: 1 / 9 * 100.,
-                GlossaryCore.FruitsAndVegetables: 1 / 9 * 100.,
-                GlossaryCore.Fish: 1 / 9 * 100.,
-                GlossaryCore.OtherFood: 1 / 9 * 100.,
-            },
-            GlossaryCore.ShareEnergyUsageFoodTypesName: {
-                GlossaryCore.RedMeat: 1 / 9 * 100.,
-                GlossaryCore.WhiteMeat: 1 / 9 * 100.,
-                GlossaryCore.Milk: 1 / 9 * 100.,
-                GlossaryCore.Eggs: 1 / 9 * 100.,
-                GlossaryCore.RiceAndMaize: 1 / 9 * 100.,
-                GlossaryCore.Cereals: 1 / 9 * 100.,
-                GlossaryCore.FruitsAndVegetables: 1 / 9 * 100.,
-                GlossaryCore.Fish: 1 / 9 * 100.,
-                GlossaryCore.OtherFood: 1 / 9 * 100.,
-            },
-            GlossaryCore.ShareWorkforceFoodTypesName: {
-                GlossaryCore.RedMeat: 1 / 9 * 100.,
-                GlossaryCore.WhiteMeat: 1 / 9 * 100.,
-                GlossaryCore.Milk: 1 / 9 * 100.,
-                GlossaryCore.Eggs: 1 / 9 * 100.,
-                GlossaryCore.RiceAndMaize: 1 / 9 * 100.,
-                GlossaryCore.Cereals: 1 / 9 * 100.,
-                GlossaryCore.FruitsAndVegetables: 1 / 9 * 100.,
-                GlossaryCore.Fish: 1 / 9 * 100.,
-                GlossaryCore.OtherFood: 1 / 9 * 100.,
             },
             GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(GlossaryEnergy.biomass_dry): {
                 GlossaryCore.RedMeat: 0.,
@@ -293,7 +206,7 @@ class Study(StudyManager):
             f'{ns_study}.{GlossaryCore.DamageFractionDfValue}': damage_fraction,
             f'{ns_study}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': enegy_agri,
             f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesName}': food_types,
-            f'{ns_study}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': investments,
+            f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesInvestName}': investments,
         }
         for varname, default_dict_values_var in dict_to_dataframes.items():
             df = pd.DataFrame({

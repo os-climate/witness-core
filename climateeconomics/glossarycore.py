@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import json
+from os import path
 from copy import copy, deepcopy
 
 import numpy as np
@@ -205,7 +207,7 @@ class GlossaryCore:
     NS_SECTORS_POST_PROC_GDP = "ns_sectors_postproc_gdp"
     NS_GHGEMISSIONS = "ns_ghg_emissions"
     NS_HOUSEHOLDS_EMISSIONS = "ns_households_emissions"
-    NS_FOOD = "ns_food"
+    NS_CROP = "ns_crop"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -1724,67 +1726,52 @@ class GlossaryCore:
     FoodTypesVar = {
         "var_name": FoodTypesName,
         'type': 'list', 'subtype_descriptor': {'list': 'string'},
-        'namespace': NS_FOOD,
+        'namespace': NS_CROP,
         'default': DefaultFoodTypes
     }
 
-    ShareInvestFoodTypesName = "share_invest_crop_food_split"
-    ShareInvestFoodTypesVar = {
-        "var_name": ShareInvestFoodTypesName,
+    FoodTypesInvestName = "invest_food_type"
+    FoodTypesInvestVar = {
         "type": "dataframe",
-        "namespace": NS_FOOD,
-        "unit": "%",
+        "namespace": NS_CROP,
+        "unit": "G$",
         "visibility": "Shared",
-        "description": "Indicates how the crop investment for food in shared between all food types",
+        "description": "Investments in each food type (Billion $)",
     }
 
-    ShareEnergyUsageFoodTypesName = "share_energy_crop_food_split"
-    ShareEnergyUsageFoodTypesVar = {
-        "var_name": ShareEnergyUsageFoodTypesName,
-        "type": "dataframe",
-        "namespace": NS_FOOD,
+    with open(path.join(path.dirname(__file__), "calibration", "crop", "output_calibration.json"), 'r') as json_file:
+        crop_calibration_data = json.load(json_file)
+
+    FoodTypeCapitalStartName = "food_type_capital_start"
+    FoodTypeCapitalStartVar = {
+        "var_name": FoodTypeCapitalStartName,
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "G$",
+        "description": "Capital start for each food type, in billion dollars",
+        "default": crop_calibration_data["capital_start_food_type"]
+    }
+
+    FoodTypeCapitalIntensityName = "food_type_capital_intensity"
+    FoodTypeCapitalIntensityVar = {
+        "var_name": FoodTypeCapitalIntensityName,
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "ton/k$ or kg/$",
+        "description": "Capital intensity: metric tons produced by k$ of capital",
+        "default": crop_calibration_data["capital_intensity_food_type"]
+    }
+
+    FoodTypeCapitalDepreciationRateName = "food_type_capital_depreciation_rate"
+    FoodTypeCapitalDepreciationRateVar = {
+        "var_name": FoodTypeCapitalDepreciationRateName,
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
-        "visibility": "Shared",
-        "description": "Indicates how the energy attributed to crop for food in shared between all food types",
+        "description": "Depreciation rate of capital each year for each food type",
+        "default": {food_type: 5.8 for food_type in DefaultFoodTypes}
     }
 
-    ShareWorkforceFoodTypesName = "share_workforce_crop_food_split"
-    ShareWorkforceFoodTypesVar = {
-        "var_name": ShareWorkforceFoodTypesName,
-        "type": "dataframe",
-        "namespace": NS_FOOD,
-        "unit": "%",
-        "visibility": "Shared",
-        "description": "Indicates how the workforce attributed to crop for food in shared between all food types",
-    }
-
-    FoodTypeEnergyNeedName = "food_type_energy_need"
-    FoodTypeEnergyNeedVar = {
-        "var_name": FoodTypeEnergyNeedName,
-        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
-        "unit": "kWh/ton",
-        "description": "Indicates how much energy is needed to produce 1 ton of given food type",
-    }
-
-    FoodTypeWorkforceNeedName = "food_type_workforce_need"
-    FoodTypeWorkforceNeedVar = {
-        "var_name": FoodTypeWorkforceNeedName,
-        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
-        "unit": "people/ton/year",
-        "description": "Indicates how much workforce is needed to produce 1 ton of given food type",
-    }
-
-    FoodTypeCapexName = "food_type_capex"
-    FoodTypeCapexVar = {
-        "var_name": FoodTypeCapexName,
-        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
-        "unit": "$/ton/year",
-        "description": "Indicates how much dollars is needed to produce 1 ton of food type",
-    }
-
-    FoodTypeWasteAtProductionShareName = "food_type_waste_at_production_share"
+    FoodTypeWasteAtProdAndDistribShareName = "food_type_waste_at_prod_and_distrib_share"
     FoodTypeWasteAtProductionShareVar = {
-        "var_name": FoodTypeWasteAtProductionShareName,
+        "var_name": FoodTypeWasteAtProdAndDistribShareName,
         "type": "dataframe",
         "unit": "%",
         "description": "Indicates what percentage of the production is wasted between production and distribution for each food type",
@@ -1906,7 +1893,7 @@ class GlossaryCore:
         "var_name": CropProdForEnergyName,
         "type": "dataframe",
         "unit": "Mt",
-        "namespace": NS_FOOD,
+        "namespace": NS_CROP,
         "visibility": "Shared",
         "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
     }
@@ -1916,6 +1903,8 @@ class GlossaryCore:
         "var_name": FoodTypeDeliveredToConsumersName,
         "type": "dataframe",
         "unit": "Mt",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
         "description": "Production delivered to consumers",
     }
 
@@ -1931,6 +1920,17 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kcal/kg",
         "description": "Kcal per kg for each food type",
+        "default": {
+            RedMeat: 1551.05,
+            WhiteMeat: 2131.99,
+            Milk: 921.76,
+            Eggs: 1425.07,
+            RiceAndMaize: 2572.46,
+            Cereals: 2964.99,
+            FruitsAndVegetables: 559.65,
+            Fish: 609.17,
+            OtherFood: 3061.06,
+        }
     }
 
     FoodTypeLandUseByProdUnitName = "food_type_prod_unit_land_use"
@@ -1938,15 +1938,52 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "m²/kg produced",
         "description": "Land used by kg produced for each food type",
+        #Sources:
+        #[1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+        #[2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
+        "default": {
+            RedMeat: 345.,
+            WhiteMeat: 14.5,
+            Milk: 8.95,
+            Eggs: 6.27,
+            RiceAndMaize: 2.89,
+            Cereals: 4.5,
+            FruitsAndVegetables: 0.8,
+            Fish: 0.,
+            OtherFood: 5.1041,
+        }
     }
 
-    FoodTypeLandUseName = "food_type_land_use"
-    FoodTypeLandUseVar = {
-        "var_name": FoodTypeLandUseName,
+    CropFoodLandUseName = "crop_for_food_land_use"
+    CropFoodLandUseVar = {
+        "var_name": CropFoodLandUseName,
         "type": "dataframe",
         "unit": "(Gha)",
-        "description": "Land used by each food type",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
+        "description": "Land used by each food type for food energy production",
     }
+
+    CropEnergyLandUseName = "crop_for_energy_land_use"
+    CropEnergyLandUseVar = {
+        "var_name": CropEnergyLandUseName,
+        "type": "dataframe",
+        "unit": "(Gha)",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
+        "description": "Land used by each food type for food energy production",
+    }
+
+    FoodTypeCapitalName = "food_type_capital_breakdown"
+    FoodTypeCapitalVar = {
+        "var_name": FoodTypeCapitalName,
+        "type": "dataframe",
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
+        "description": "Capital of each food type",
+    }
+
     FoodTypeProductionName = "food_type_production"
     FoodTypeProductionVar = {
         "var_name": FoodTypeProductionName,
@@ -1955,21 +1992,18 @@ class GlossaryCore:
         "description": "Production of food type, before any waste is applied",
     }
 
-    FoodLandUseName = "food_land_use"
-    FoodLandUseVar = {
-        "var_name": FoodTypeLandUseName,
-        "type": "dataframe",
-        "unit": "(Gha)",
-        "visibility": "Shared",
-        "namespace": NS_FOOD,
-        "description": "Land used for food production",
-    }
-
-    FoodTypeEmissionsName = "food_type_{}_emissions"
-    FoodTypeEmissionsVar = {
+    FoodTypeFoodEmissionsName = "food_type_{}_emissions_for_food"
+    FoodTypeFoodEmissionsVar = {
         "type": "dataframe",
         "unit": "Gt",
-        "description": "Food type {} emissions by food type",
+        "description": "Food type {} emissions by food type for food production",
+    }
+
+    FoodTypeEnergyEmissionsName = "food_type_{}_emissions_for_energy"
+    FoodTypeEnergyEmissionsVar = {
+        "type": "dataframe",
+        "unit": "Gt",
+        "description": "Food type {} emissions by food type for energy production",
     }
 
     CropFoodEmissionsName = "crop_food_emissions"
@@ -1978,7 +2012,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Gt",
         "visibility": "Shared",
-        "namespace": NS_FOOD,
+        "namespace": NS_CROP,
         "description": "Crop for food emissions for each GHG",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -1988,22 +2022,20 @@ class GlossaryCore:
         },
     }
 
-    CropFoodLandUseName = "crop_food_land_use"
-    CropFoodLandUseVar = {
-        "var_name": CropFoodLandUseName,
+    CropEnergyEmissionsName = "crop_energy_emissions"
+    CropEnergyEmissionsVar = {
+        "var_name": CropEnergyEmissionsName,
         "type": "dataframe",
+        "unit": "Gt",
         "visibility": "Shared",
-        "namespace": NS_FOOD,
-        "unit": "Gha",
-        "description": "Land use by crop for food production",
-    }
-
-    CropFoodKcalForConsumersName = "crop_kcal_for_consumers"
-    CropFoodKcalForConsumersVar = {
-        "var_name": CropFoodKcalForConsumersName,
-        "type": "dataframe",
-        "unit": "kcal",
-        "description": "kcal delivered by crop for food to consumers",
+        "namespace": NS_CROP,
+        "description": "Crop for energy emissions for each GHG",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            CO2: ("float", None, True),
+            CH4: ("float", None, True),
+            N2O: ("float", None, True),
+        },
     }
 
     @staticmethod
