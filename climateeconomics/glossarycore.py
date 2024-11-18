@@ -1903,6 +1903,8 @@ class GlossaryCore:
         "var_name": FoodTypeDeliveredToConsumersName,
         "type": "dataframe",
         "unit": "Mt",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
         "description": "Production delivered to consumers",
     }
 
@@ -1936,6 +1938,9 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "m²/kg produced",
         "description": "Land used by kg produced for each food type",
+        #Sources:
+        #[1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+        #[2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
         "default": {
             RedMeat: 345.,
             WhiteMeat: 14.5,
@@ -1967,6 +1972,16 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
+    }
+
+    FoodTypeCapitalName = "food_type_capital_breakdown"
+    FoodTypeCapitalVar = {
+        "var_name": FoodTypeCapitalName,
+        "type": "dataframe",
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_CROP,
+        "description": "Capital of each food type",
     }
 
     FoodTypeProductionName = "food_type_production"

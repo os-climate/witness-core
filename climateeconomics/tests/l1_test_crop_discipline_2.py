@@ -256,6 +256,8 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             f"{self.name}.{GlossaryCore.CropFoodEmissionsName}",
             f"{self.name}.{GlossaryCore.CaloriesPerCapitaValue}",
             f"{self.name}.{self.model_name}.non_used_capital",
+            f"{self.name}.{GlossaryCore.FoodTypeDeliveredToConsumersName}",
+            f"{self.name}.{GlossaryCore.FoodTypeCapitalName}",
         ]
         self.coupling_outputs.extend(
             [f'{self.name}.{GlossaryCore.CropProdForEnergyName.format(stream)}' for stream in CropDiscipline.streams_energy_prod]
@@ -274,7 +276,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline

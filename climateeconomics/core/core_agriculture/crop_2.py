@@ -38,6 +38,10 @@ class Crop:
         self.outputs = {}
 
         # couplings
+        self.coupling_dataframes_not_totalized = [
+            GlossaryCore.FoodTypeDeliveredToConsumersName,
+            GlossaryCore.FoodTypeCapitalName,
+        ]
         self.dataframes_to_totalize_by_food_type_couplings = {
             GlossaryCore.CropFoodLandUseName + "_breakdown": (GlossaryCore.CropFoodLandUseName, "Total"),
             GlossaryCore.CropEnergyLandUseName + "_breakdown": (GlossaryCore.CropEnergyLandUseName, "Total"),
@@ -99,6 +103,7 @@ class Crop:
             GlossaryCore.FoodTypeNotProducedDueToClimateChangeName,
             GlossaryCore.FoodTypeWasteByClimateDamagesName,
             GlossaryCore.FoodTypeDeliveredToConsumersName,
+            GlossaryCore.FoodTypeCapitalName
         ]
 
         for stream in self.streams_energy_prod:
@@ -160,7 +165,7 @@ class Crop:
                 gradient_food_type = jac_coupling_input_food_type(*args)
                 dict_jacobians_of_food_type = self.unwrap_arrays_to_outputs(gradient_food_type)
                 for varname, value in dict_jacobians_of_food_type.items():
-                    co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname]
+                    co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname] if varname in self.dataframes_to_totalize_by_food_type_couplings else (varname, food_type)
                     if co_varname not in gradients[ci_varname][ci_colomn_name]:
                         gradients[ci_varname][ci_colomn_name][co_varname] = {}
                     if co_colname not in gradients[ci_varname][ci_colomn_name][co_varname]:
@@ -178,7 +183,7 @@ class Crop:
             gradient_food_type = jac_coupling_input_food_type(*args)
             dict_jacobians_of_food_type = self.unwrap_arrays_to_outputs(gradient_food_type)
             for varname, value in dict_jacobians_of_food_type.items():
-                co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname]
+                co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname] if varname in self.dataframes_to_totalize_by_food_type_couplings else (varname, food_type)
                 if co_varname not in gradients[ci_varname][ci_colomn_name]:
                     gradients[ci_varname][ci_colomn_name][co_varname] = {}
                 gradients[ci_varname][ci_colomn_name][co_varname][co_colname] = value
@@ -190,11 +195,12 @@ class Crop:
         gathers the dictionnary outputs of the compute food type function and flattens it in an array
         helps for the using autograd jacobian which only deals with arrays
         """
-        return np.array([outputs[varname] for varname in self.dataframes_to_totalize_by_food_type_couplings.keys()])
+        return np.array([outputs[varname] for varname in list(self.dataframes_to_totalize_by_food_type_couplings.keys()) + self.coupling_dataframes_not_totalized])
 
     def unwrap_arrays_to_outputs(self, array: dict):
         """converts the array output of autograd back to dictionnary to store derivatives values"""
-        return {varname: value for varname, value in zip(self.dataframes_to_totalize_by_food_type_couplings.keys(), array)}
+        return {varname: value for varname, value in zip(list(self.dataframes_to_totalize_by_food_type_couplings.keys()) + self.coupling_dataframes_not_totalized,
+                                                         array)}
 
     @staticmethod
     def compute_food_type(
@@ -269,6 +275,7 @@ class Crop:
 
 
         outputs.update({
+            GlossaryCore.FoodTypeCapitalName: capital_food_type,
             GlossaryCore.FoodTypeProductionName: production_for_consumers,
             GlossaryCore.FoodTypeWasteAtProductionDistributionName: food_waste_at_prod_and_distrib,
             GlossaryCore.FoodTypeDeliveredToConsumersName: production_delivered_to_consumers,

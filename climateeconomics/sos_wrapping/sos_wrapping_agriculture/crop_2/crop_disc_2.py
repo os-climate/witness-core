@@ -140,6 +140,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 # outputs
                 dataframes_outputs = {
                     # coupling with breakdown
+                    GlossaryCore.FoodTypeCapitalName: GlossaryCore.FoodTypeCapitalVar,
                     GlossaryCore.FoodTypeProductionName: GlossaryCore.FoodTypeProductionVar,
                     GlossaryCore.FoodTypeWasteAtProductionDistributionName: GlossaryCore.FoodTypeWasteAtProductionDistributionVar,
                     GlossaryCore.FoodTypeWasteByConsumersName: GlossaryCore.FoodTypeWasteByConsumersVar,
