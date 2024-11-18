@@ -50,8 +50,9 @@ class Study(StudyManager):
         })
 
         investments = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.InvestmentsValue: 0.61, # T$ (2020 value)
+            GlossaryCore.Years: years,  # 0.61 T$ (2020 value)
+            **{food_type: 0.61 * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][
+                food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypes}  # convert to G$
         })
         workforce_df = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -205,7 +206,7 @@ class Study(StudyManager):
             f'{ns_study}.{GlossaryCore.DamageFractionDfValue}': damage_fraction,
             f'{ns_study}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': enegy_agri,
             f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesName}': food_types,
-            f'{ns_study}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': investments,
+            f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesInvestName}': investments,
         }
         for varname, default_dict_values_var in dict_to_dataframes.items():
             df = pd.DataFrame({
