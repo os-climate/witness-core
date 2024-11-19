@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import json
-from os import path
 from copy import copy, deepcopy
+from os import path
 
 import numpy as np
 import pandas as pd
