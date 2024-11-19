@@ -491,12 +491,17 @@ class CropDiscipline(ClimateEcoDiscipline):
         years = df_all_food_types[GlossaryCore.Years]
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, unit, stacked_bar=True, chart_name=charts_name, y_min_zero=lines)
 
-        for col in df_all_food_types.columns:
-            if col != GlossaryCore.Years:
-                dict_color = {'color': self.food_types_colors[col]} if col in self.food_types_colors else None
-                kwargs = {'line': dict_color} if lines else {'marker': dict_color}
-                new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
-                new_chart.add_series(new_series)
+        list_food_types = list(df_all_food_types.columns)
+        list_food_types.remove(GlossaryCore.Years)
+        if not lines:
+            dict_mean_columns = {col: df_all_food_types[col].mean() for col in df_all_food_types.columns if col != GlossaryCore.Years}
+            sorted_dict_columns = dict(sorted(dict_mean_columns.items(), key=lambda item: item[1], reverse=True))
+            list_food_types = list(sorted_dict_columns.keys())
+        for col in list_food_types:
+            dict_color = {'color': self.food_types_colors[col]} if col in self.food_types_colors else None
+            kwargs = {'line': dict_color} if lines else {'marker': dict_color}
+            new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
+            new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
             new_series = InstanciatedSeries(years, df_total[column_total], 'Total', 'lines', True, line={'color': 'gray'})
