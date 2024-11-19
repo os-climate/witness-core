@@ -230,8 +230,17 @@ class CropDiscipline(ClimateEcoDiscipline):
                     charts = chart_filter.selected_values
 
         outputs = self.get_sosdisc_outputs()
-        food_types = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
-        self.food_types_colors = generate_distinct_colors(food_types)
+        self.food_types_colors = {
+            GlossaryCore.RedMeat: 'crimson',
+            GlossaryCore.WhiteMeat: 'burlywood',
+            GlossaryCore.Milk: 'ivory',
+            GlossaryCore.Eggs: 'yellow',
+            GlossaryCore.RiceAndMaize: 'gold',
+            GlossaryCore.Cereals: 'olive',
+            GlossaryCore.FruitsAndVegetables: 'green',
+            GlossaryCore.Fish: 'cornflowerblue',
+            GlossaryCore.OtherFood: 'lightslategrey'
+        }
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue],
@@ -296,7 +305,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         if "Damages" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.FoodTypeWasteByClimateDamagesName],
-                charts_name="Food produced and waste due to climate damages",
+                charts_name="Food produced and wasted due to climate damages",
                 unit=GlossaryCore.FoodTypeWasteByClimateDamagesVar['unit'],
                 df_total=None,
                 column_total=None,
@@ -490,7 +499,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
-            new_series = InstanciatedSeries(years, df_total[column_total], 'Total', 'lines', True)
+            new_series = InstanciatedSeries(years, df_total[column_total], 'Total', 'lines', True, line={'color': 'gray'})
             new_chart.add_series(new_series)
 
         if post_proc_category is not None:
