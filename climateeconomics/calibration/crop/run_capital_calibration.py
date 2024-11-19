@@ -26,6 +26,19 @@ from climateeconomics.calibration.crop.data import (
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
+# Road map calibration of crop discipline :
+
+# We want the discipline to output a production for each food type, based on a capital.
+# We have the total capital for agriculture in 2022, and we want to distribute it among the food types.
+# We have the production in megatons for each food type.
+# Chat GPT gave the following estimation for capex intensity for each food type which makes sense
+# We want to find the capex per ton for each food type that will match the total capital for agriculture in 2022.
+# We will use a loss function that will be the relative difference between the total capital modeled and the actual capital for agriculture in 2022.
+# We will use the scipy minimize function to find the optimal capex per ton for each food type, in order to match the total capital for agriculture in 2022 AND production of each food type.
+# Then we will be able to obtain the capital of each food type : Actual produciton * deduced capex per ton
+# We also have the investments for the agriculture sector in 2022, we will distribute it among the food types proportionally to the capital share of each food type, to deduce the investment for each food type.
+
+
 capex_per_ton_value_rangechat_gpt = { # initial value, min value, max value
     GlossaryCore.RedMeat: (5250.0, 4000, 6500),
     GlossaryCore.Fish: (4250.0, 3000, 5500),
