@@ -19,7 +19,10 @@ import json
 import numpy as np
 from scipy.optimize import LinearConstraint, minimize
 
-from climateeconomics.calibration.crop.data import dict_of_production_in_megatons, invest_agriculture_2022_data
+from climateeconomics.calibration.crop.data import (
+    dict_of_production_in_megatons,
+    invest_agriculture_2022_data,
+)
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
