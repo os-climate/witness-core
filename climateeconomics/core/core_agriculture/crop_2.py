@@ -301,9 +301,9 @@ class Crop:
             # co2 eq / kcal = (co2eq/kg) / (kcal/kg)
             self.outputs['kcal_dict_infos']['Green house gases emissions (kgCO2eq/kcal)'][food_type] = co2_eq_per_kg_prod / kcal_per_kg
 
-        self.outputs['kcal_dict_infos']['Capital intensity (kcal/$)'] = {
-            # (kg / $) * (kcal / kg) = kcal / $
-            key: value1 * value2 for (key, value1), value2 in zip(
+        self.outputs['kcal_dict_infos']['Capital intensity ($/kcal)'] = {
+            # ($ / kg ) / (kcal / kg) = $ / kcal
+            key: 1 / value1 / value2 for (key, value1), value2 in zip(
                 self.inputs[GlossaryCore.FoodTypeCapitalIntensityName].items(), self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName].values()
             )
         }
@@ -318,7 +318,7 @@ class Crop:
             self.outputs['kg_dict_infos'][info_name.replace('kcal', 'kg')] = {key: value1 * value2 for (key, value1), value2 in zip(
                 dict_values.items(), self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName].values()
             )}
-        self.outputs['kg_dict_infos']['Capital intensity (kg/$)'] = {key: value1 for key, value1 in
+        self.outputs['kg_dict_infos']['Capital intensity ($/kg)'] = {key: 1 / value1 for key, value1 in
                                                          self.inputs[GlossaryCore.FoodTypeCapitalIntensityName].items()}
         for dict_name, dict_values in self.outputs['kg_dict_infos'].items():
             self.outputs['kg_dict_infos'][dict_name] = dict(sorted(dict_values.items(), key=lambda item: item[1], reverse=True))
