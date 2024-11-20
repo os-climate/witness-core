@@ -38,7 +38,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             'ns_public': ns_study,
             GlossaryCore.NS_WITNESS: ns_study,
             'ns_crop': f'{ns_study}.{model_name}',
-            'ns_food': f'{ns_study}.{model_name}',
             'ns_sectors': f'{ns_study}',
         }
 
