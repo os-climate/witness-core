@@ -155,7 +155,7 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
                            self.sector_list]
 
         output_checked = [f'{name}.{sector}.{GlossaryCore.InvestmentDfValue}' for sector in self.sector_list]
-        disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__),
                             filename='jacobian_sectors_redistribution_invest_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
