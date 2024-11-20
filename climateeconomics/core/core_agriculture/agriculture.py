@@ -99,9 +99,9 @@ class Agriculture():
         self.years = years
         self.food_land_surface_df = pd.DataFrame()
         self.total_food_land_surface = pd.DataFrame()
-        self.column_dict = {'red meat (Gha)': 'red meat', 'white meat (Gha)': 'white meat',
-                            'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
-                            'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': 'fruits and vegetables',
+        self.column_dict = {'red meat (Gha)': GlossaryCore.RedMeat, 'white meat (Gha)': GlossaryCore.WhiteMeat,
+                            'milk (Gha)': GlossaryCore.Milk, 'eggs (Gha)': GlossaryCore.Eggs, 'rice and maize (Gha)': GlossaryCore.RiceAndMaize,
+                            'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': GlossaryCore.FruitsAndVegetables,
                             'other (Gha)': 'other', 'total surface (Gha)': 'total surface'}
 
     def compute(self, population_df, temperature_df):
@@ -248,30 +248,30 @@ class Agriculture():
 
         # compute the kcal changed of red meat:
         # kg_food/person/year
-        changed_diet_df['red meat'] = self.kcal_diet_df['total'] * \
-            self.red_meat_percentage / 100 / self.kg_to_kcal_dict['red meat']
-        changed_diet_df['white meat'] = self.kcal_diet_df['total'] * \
+        changed_diet_df[GlossaryCore.RedMeat] = self.kcal_diet_df['total'] * \
+            self.red_meat_percentage / 100 / self.kg_to_kcal_dict[GlossaryCore.RedMeat]
+        changed_diet_df[GlossaryCore.WhiteMeat] = self.kcal_diet_df['total'] * \
             self.white_meat_percentage / 100 / \
-            self.kg_to_kcal_dict['white meat']
+            self.kg_to_kcal_dict[GlossaryCore.WhiteMeat]
 
         # removed kcal/person/year
-        removed_red_meat_kcal = self.kcal_diet_df['red meat'] - \
+        removed_red_meat_kcal = self.kcal_diet_df[GlossaryCore.RedMeat] - \
             self.kcal_diet_df['total'] * self.red_meat_percentage / 100
-        removed_white_meat_kcal = self.kcal_diet_df['white meat'] - \
+        removed_white_meat_kcal = self.kcal_diet_df[GlossaryCore.WhiteMeat] - \
             self.kcal_diet_df['total'] * self.white_meat_percentage / 100
 
         for key in starting_diet:
             # compute new vegetable diet in kg_food/person/year: add the
             # removed_kcal/3 for each 3 category of vegetable
-            if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
+            if key == GlossaryCore.FruitsAndVegetables or key == 'potatoes' or key == GlossaryCore.RiceAndMaize:
                 proportion = self.kcal_diet_df[key] / \
-                    (self.kcal_diet_df['fruits and vegetables'] + 
-                     self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
+                    (self.kcal_diet_df[GlossaryCore.FruitsAndVegetables] + 
+                     self.kcal_diet_df['potatoes'] + self.kcal_diet_df[GlossaryCore.RiceAndMaize])
                 changed_diet_df[key] = [starting_diet[key].values[0]] * len(self.years) + \
                     (removed_red_meat_kcal + removed_white_meat_kcal) * \
                     proportion / self.kg_to_kcal_dict[key]
             # no impact on eggs and milk
-            elif key != 'red meat' and key != 'white meat':
+            elif key != GlossaryCore.RedMeat and key != GlossaryCore.WhiteMeat:
                 changed_diet_df[key] = [
                     starting_diet[key].values[0]] * len(self.years)
 
@@ -398,18 +398,18 @@ class Agriculture():
         # red to white meat value influences red meat, white meat, and
         # vegetable surface
         red_meat_diet_grad = self.kcal_diet_df['total'] / 100 / \
-            self.kg_to_kcal_dict['red meat'] * kg_food_to_surface['red meat']
+            self.kg_to_kcal_dict[GlossaryCore.RedMeat] * kg_food_to_surface[GlossaryCore.RedMeat]
         removed_red_kcal = -self.kcal_diet_df['total'] / 100
 
         vegetables_column_names = [
-            'fruits and vegetables', 'potatoes', 'rice and maize']
+            GlossaryCore.FruitsAndVegetables, 'potatoes', GlossaryCore.RiceAndMaize]
         # sub total gradient is the sum of all gradients of food category
         sub_total_surface_grad = red_meat_diet_grad
         for vegetable_name in vegetables_column_names:
 
             proportion = self.kcal_diet_df[vegetable_name] / \
-                (self.kcal_diet_df['fruits and vegetables'] + 
-                 self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
+                (self.kcal_diet_df[GlossaryCore.FruitsAndVegetables] + 
+                 self.kcal_diet_df['potatoes'] + self.kcal_diet_df[GlossaryCore.RiceAndMaize])
             sub_total_surface_grad = sub_total_surface_grad + removed_red_kcal * proportion / \
                 self.kg_to_kcal_dict[vegetable_name] * \
                 kg_food_to_surface[vegetable_name]
@@ -431,19 +431,19 @@ class Agriculture():
         # red to white meat value influences red meat, white meat, and
         # vegetable surface
         white_meat_diet_grad = self.kcal_diet_df['total'] / 100 / \
-            self.kg_to_kcal_dict['white meat'] * \
-            kg_food_to_surface['white meat']
+            self.kg_to_kcal_dict[GlossaryCore.WhiteMeat] * \
+            kg_food_to_surface[GlossaryCore.WhiteMeat]
         removed_white_kcal = -self.kcal_diet_df['total'] / 100
 
         vegetables_column_names = [
-            'fruits and vegetables', 'potatoes', 'rice and maize']
+            GlossaryCore.FruitsAndVegetables, 'potatoes', GlossaryCore.RiceAndMaize]
         # sub total gradient is the sum of all gradients of food category
         sub_total_surface_grad = white_meat_diet_grad
         for vegetable_name in vegetables_column_names:
 
             proportion = self.kcal_diet_df[vegetable_name] / \
-                (self.kcal_diet_df['fruits and vegetables'] + 
-                 self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
+                (self.kcal_diet_df[GlossaryCore.FruitsAndVegetables] + 
+                 self.kcal_diet_df['potatoes'] + self.kcal_diet_df[GlossaryCore.RiceAndMaize])
             sub_total_surface_grad = sub_total_surface_grad + removed_white_kcal * proportion / \
                 self.kg_to_kcal_dict[vegetable_name] * \
                 kg_food_to_surface[vegetable_name]

@@ -45,11 +45,9 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
 
-    economics_df = copy.deepcopy(GlossaryCore.EconomicsDf)
-    del economics_df["dataframe_descriptor"][GlossaryCore.PerCapitaConsumption]
     DESC_IN = {
+        "mdo_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False},
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
-        GlossaryCore.EconomicsDfValue: economics_df,
     }
 
     DESC_OUT = {
@@ -60,13 +58,23 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
         """setup dynamic inputs and outputs"""
         dynamic_inputs = {}
         dynamic_outputs = {}
+        if "mdo_mode" in self.get_data_in():
+            mdo_mode = self.get_sosdisc_inputs(["mdo_mode"])
+            if mdo_mode is not None:
+                if mdo_mode:
+                    for sector in GlossaryCore.SectorsPossibleValues:
+                        dynamic_inputs[f'{sector}.invest_mdo_df'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
+                        dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
+                else:
+                    economics_df = copy.deepcopy(GlossaryCore.EconomicsDf)
+                    del economics_df["dataframe_descriptor"][GlossaryCore.PerCapitaConsumption]
+                    dynamic_inputs[GlossaryCore.EconomicsDfValue] = economics_df
+                    for sector in GlossaryCore.SectorsPossibleValues:
+                        dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorInvestmentDf)
+                        dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
 
-        for sector in GlossaryCore.SectorsPossibleValues:
-            dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorInvestmentDf)
-            dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-
-        self.add_inputs(dynamic_inputs)
-        self.add_outputs(dynamic_outputs)
+            self.add_inputs(dynamic_inputs)
+            self.add_outputs(dynamic_outputs)
 
     def run(self):
         """run method"""
@@ -90,21 +98,29 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
         inputs = self.get_sosdisc_inputs()
 
         sectors_list = inputs[GlossaryCore.SectorListValue]
-        net_output = inputs[GlossaryCore.EconomicsDfValue][GlossaryCore.OutputNetOfDamage].values
 
-        for sector in sectors_list:
-            sector_share_invests = inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][GlossaryCore.ShareInvestment].values
-            self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
-                np.diag(sector_share_invests/ 100.)
-            )
+        if inputs["mdo_mode"]:
+            for sector in sectors_list:
+                self.set_partial_derivative_for_other_types(
+                    (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                    (f'{sector}.invest_mdo_df', GlossaryCore.InvestmentsValue),
+                    np.eye(len(inputs[f'{sector}.invest_mdo_df'][GlossaryCore.InvestmentsValue].values))
+                )
+        else:
+            net_output = inputs[GlossaryCore.EconomicsDfValue][GlossaryCore.OutputNetOfDamage].values
+            for sector in sectors_list:
+                sector_share_invests = inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][GlossaryCore.ShareInvestment].values
+                self.set_partial_derivative_for_other_types(
+                    (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                    (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+                    np.diag(sector_share_invests/ 100.)
+                )
 
-            self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                (f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}', GlossaryCore.ShareInvestment),
-                np.diag(net_output) / 100.
-            )
+                self.set_partial_derivative_for_other_types(
+                    (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                    (f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}', GlossaryCore.ShareInvestment),
+                    np.diag(net_output) / 100.
+                )
 
     def get_chart_filter_list(self):
         chart_filters = []

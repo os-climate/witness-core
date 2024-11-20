@@ -60,25 +60,25 @@ class CropTestCase(unittest.TestCase):
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
 
-        self.default_kg_to_m2 = {'red meat': 345.,
-                            'white meat': 14.5,
-                            'milk': 8.95,
-                            'eggs': 6.27,
-                            'rice and maize': 2.89,
-                            'cereals': 4.5,
-                            'fruits and vegetables': 0.8,
+        self.default_kg_to_m2 = {GlossaryCore.RedMeat: 345.,
+                            GlossaryCore.WhiteMeat: 14.5,
+                            GlossaryCore.Milk: 8.95,
+                            GlossaryCore.Eggs: 6.27,
+                            GlossaryCore.RiceAndMaize: 2.89,
+                            GlossaryCore.Cereals: 4.5,
+                            GlossaryCore.FruitsAndVegetables: 0.8,
                             GlossaryCore.Fish: 0.,
                             GlossaryCore.OtherFood: 5.1041,
                             }
         # land use of other is provided in variable 'other_use_crop'
 
-        self.default_kg_to_kcal = {'red meat': 1551.05,
-                              'white meat': 2131.99,
-                              'milk': 921.76,
-                              'eggs': 1425.07,
-                              'rice and maize': 2572.46,
-                              'cereals': 2964.99,
-                              'fruits and vegetables': 559.65,
+        self.default_kg_to_kcal = {GlossaryCore.RedMeat: 1551.05,
+                              GlossaryCore.WhiteMeat: 2131.99,
+                              GlossaryCore.Milk: 921.76,
+                              GlossaryCore.Eggs: 1425.07,
+                              GlossaryCore.RiceAndMaize: 2572.46,
+                              GlossaryCore.Cereals: 2964.99,
+                              GlossaryCore.FruitsAndVegetables: 559.65,
                               GlossaryCore.Fish: 609.17,
                               GlossaryCore.OtherFood: 3061.06,
                               }
@@ -123,13 +123,13 @@ class CropTestCase(unittest.TestCase):
         n2o_gwp_100 = 265.0
 
         ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
-        default_ghg_emissions = {'red meat': 21.56,
-                                 'white meat': 4.41,
-                                 'milk': 1.07,
-                                 'eggs': 1.93,
-                                 'rice and maize': 1.98,
-                                 'cereals': 0.52,
-                                 'fruits and vegetables': 0.51,
+        default_ghg_emissions = {GlossaryCore.RedMeat: 21.56,
+                                 GlossaryCore.WhiteMeat: 4.41,
+                                 GlossaryCore.Milk: 1.07,
+                                 GlossaryCore.Eggs: 1.93,
+                                 GlossaryCore.RiceAndMaize: 1.98,
+                                 GlossaryCore.Cereals: 0.52,
+                                 GlossaryCore.FruitsAndVegetables: 0.51,
                                  GlossaryCore.Fish: 3.32,
                                  GlossaryCore.OtherFood: 0.93,
                                  }
@@ -137,14 +137,14 @@ class CropTestCase(unittest.TestCase):
         # Our World in Data
         # https://ourworldindata.org/carbon-footprint-food-methane
         ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
-        default_ch4_emissions = {'red meat': 6.823e-1,
-                                 'white meat': 1.25e-2,
-                                 'milk': 3.58e-2,
-                                 'eggs': 0.0,
-                                 'rice and maize': 3.17e-2,
+        default_ch4_emissions = {GlossaryCore.RedMeat: 6.823e-1,
+                                 GlossaryCore.WhiteMeat: 1.25e-2,
+                                 GlossaryCore.Milk: 3.58e-2,
+                                 GlossaryCore.Eggs: 0.0,
+                                 GlossaryCore.RiceAndMaize: 3.17e-2,
                                  # negligible methane in this category
-                                 'cereals': 0.0,
-                                 'fruits and vegetables': 0.0,
+                                 GlossaryCore.Cereals: 0.0,
+                                 GlossaryCore.FruitsAndVegetables: 0.0,
                                  # consider fish farm only
                                  GlossaryCore.Fish: 3.39e-2,
                                  GlossaryCore.OtherFood: 0.,
@@ -153,13 +153,13 @@ class CropTestCase(unittest.TestCase):
         # FAO Stats
         # https://www.fao.org/faostat/en/#data/GT
         n2o_emissions_unit = 'kg/kg'  # in kgN2O per kg food$
-        default_n2o_emissions = {'red meat': 9.268e-3,
-                                 'white meat': 3.90e-4,
-                                 'milk': 2.40e-4,
-                                 'eggs': 1.68e-4,
-                                 'rice and maize': 9.486e-4,
-                                 'cereals': 1.477e-3,
-                                 'fruits and vegetables': 2.63e-4,
+        default_n2o_emissions = {GlossaryCore.RedMeat: 9.268e-3,
+                                 GlossaryCore.WhiteMeat: 3.90e-4,
+                                 GlossaryCore.Milk: 2.40e-4,
+                                 GlossaryCore.Eggs: 1.68e-4,
+                                 GlossaryCore.RiceAndMaize: 9.486e-4,
+                                 GlossaryCore.Cereals: 1.477e-3,
+                                 GlossaryCore.FruitsAndVegetables: 2.63e-4,
                                  GlossaryCore.Fish: 0.,  # no crop or livestock related
                                  GlossaryCore.OtherFood: 1.68e-3,
                                  }

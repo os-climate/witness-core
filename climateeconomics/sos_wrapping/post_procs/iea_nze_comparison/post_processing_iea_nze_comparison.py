@@ -579,7 +579,7 @@ def post_processings(execution_engine, namespace, filters):
                 chart_name="Land use",
                 y_axis_name=f"{surface}",
                 iea_variable=f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}{SUFFIX_VAR_IEA}",
-                witness_variable="WITNESS.Land_Use.land_surface_detail_df",
+                witness_variable="WITNESS.Land Use.land_surface_detail_df",
                 columns_to_plot=[surface],
                 args_to_plot={
                     "args_0": {'y_min_zero': True},

@@ -1,0 +1,46 @@
+{
+    "capital_start_food_type": {
+        "red meat": 576.0,
+        "white meat": 459.0,
+        "milk": 969.0,
+        "eggs": 93.0,
+        "rice and maize": 308.0,
+        "cereals": 310.0,
+        "fruits and vegetables": 1508.0,
+        "fish": 670.0,
+        "other": 1608.0
+    },
+    "capital_intensity_food_type": {
+        "red meat": 0.19,
+        "white meat": 0.58,
+        "milk": 0.71,
+        "eggs": 0.88,
+        "rice and maize": 2.53,
+        "cereals": 1.93,
+        "fruits and vegetables": 1.4,
+        "fish": 0.24,
+        "other": 0.41
+    },
+    "invest_food_type_share_start": {
+        "red meat": 8.86,
+        "white meat": 7.06,
+        "milk": 14.91,
+        "eggs": 1.43,
+        "rice and maize": 4.74,
+        "cereals": 4.77,
+        "fruits and vegetables": 23.2,
+        "fish": 10.31,
+        "other": 24.74
+    },
+    "invest_food_type_start": {
+        "red meat": 5289.42,
+        "white meat": 4214.82,
+        "milk": 8901.27,
+        "eggs": 853.71,
+        "rice and maize": 2829.78,
+        "cereals": 2847.69,
+        "fruits and vegetables": 13850.4,
+        "fish": 6155.07,
+        "other": 14769.78
+    }
+}

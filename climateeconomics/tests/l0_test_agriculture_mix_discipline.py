@@ -58,13 +58,13 @@ class AgricultureMixModelTestCase(unittest.TestCase):
                                 'white_meat_percentage': white_meat_percentage})
 
 
-        self.diet_df = pd.DataFrame({'red meat': [11.02],
-                                'white meat': [31.11],
-                                'milk': [79.27],
-                                'eggs': [9.68],
-                                'rice and maize': [97.76],
+        self.diet_df = pd.DataFrame({GlossaryCore.RedMeat: [11.02],
+                                GlossaryCore.WhiteMeat: [31.11],
+                                GlossaryCore.Milk: [79.27],
+                                GlossaryCore.Eggs: [9.68],
+                                GlossaryCore.RiceAndMaize: [97.76],
                                 'potatoes': [32.93],
-                                'fruits and vegetables': [217.62],
+                                GlossaryCore.FruitsAndVegetables: [217.62],
                                 })
         self.other = np.array(np.linspace(0.102, 0.102, year_range))
 
