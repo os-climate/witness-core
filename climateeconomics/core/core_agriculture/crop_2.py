@@ -59,7 +59,7 @@ class Crop:
         self.dataframes_to_totalize_by_food_type = self.dataframes_to_totalize_by_food_type_couplings
 
         for stream in self.streams_energy_prod:
-            self.dataframes_to_totalize_by_food_type[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream) + "_breakdown"] = (GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream), "Total")
+            self.dataframes_to_totalize_by_food_type[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream) + "_breakdown"] = (GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream), "Total")
             self.dataframes_to_totalize_by_food_type[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] = (GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream), "Total")
 
         # these are the parameters that are required to compute each food type
@@ -70,13 +70,13 @@ class Crop:
             GlossaryCore.FoodTypeKcalByProdUnitName,
             GlossaryCore.FoodTypeWasteByConsumersShareName,
             GlossaryCore.FoodTypeLandUseByProdUnitName,
-            GlossaryCore.FoodTypeWasteAtProdAndDistribShareName,
+            GlossaryCore.FoodTypeWasteSupplyChainShareName,
         ]
         for ghg in GlossaryCore.GreenHouseGases:
             self.params_for_food_types.append(GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg))
         for stream_ouput in [GlossaryEnergy.biomass_dry, GlossaryEnergy.wet_biomass]:
             self.params_for_food_types.append(GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(stream_ouput))
-            self.params_for_food_types.append(GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(stream_ouput))
+            self.params_for_food_types.append(GlossaryCore.FoodTypeShareWasteSupplyChainUsedToStreamProdName.format(stream_ouput))
             self.params_for_food_types.append(GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(stream_ouput))
 
         # mapping of the coupling inputs to the compute function, used for the gradients with autograd
@@ -91,25 +91,29 @@ class Crop:
     def get_params_food_type(self, food_type: str):
         params_food_type= {}
         for param in self.params_for_food_types:
-            params_food_type[param] = self.inputs[param][food_type] if isinstance(self.inputs[param], dict) else self.inputs[param][food_type].values
+            try:
+                params_food_type[param] = self.inputs[param][food_type] if isinstance(self.inputs[param], dict) else self.inputs[param][food_type].values
+            except:
+                a = 1
         return params_food_type
 
     def init_dataframes(self):
         years = np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
         dataframe_to_init = [
             GlossaryCore.FoodTypeProductionName,
-            GlossaryCore.FoodTypeWasteAtProductionDistributionName,
+            GlossaryCore.FoodTypeWasteAtSupplyChainName,
             GlossaryCore.FoodTypeWasteByConsumersName,
             GlossaryCore.FoodTypeNotProducedDueToClimateChangeName,
             GlossaryCore.FoodTypeWasteByClimateDamagesName,
             GlossaryCore.FoodTypeDeliveredToConsumersName,
-            GlossaryCore.FoodTypeCapitalName
+            GlossaryCore.FoodTypeCapitalName,
+            GlossaryCore.FoodTypeFoodGWPEmissionsName
         ]
 
         for stream in self.streams_energy_prod:
             for var in [
                 GlossaryCore.FoodTypeDedicatedToProductionForStreamName,
-                GlossaryCore.WasteBeforeDistribReusedForEnergyProdName,
+                GlossaryCore.WasteSupplyChainReusedForEnergyProdName,
                 GlossaryCore.CropProdForEnergyName
             ]:
 
@@ -241,9 +245,11 @@ class Crop:
         for stream in Crop.streams_energy_prod:
             share_dedicated_to_food *= (1 - params[GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(stream)] / 100.)
         # emissions
+        outputs[GlossaryCore.FoodTypeFoodGWPEmissionsName] = 0.
         for ghg in GlossaryCore.GreenHouseGases:
-            outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] = production_before_waste * params[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] * share_dedicated_to_food  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
-            outputs[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = production_before_waste * params[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] * (1 - share_dedicated_to_food)  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
+            outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] = production_before_waste * params[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] * share_dedicated_to_food / 1e3  # Mt * kgCO2eq / kg = 10^9 kg * kgCO2eq / kg / 10^3 = G kgCO2eq = 10-3 Gt
+            outputs[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = production_before_waste * params[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] * (1 - share_dedicated_to_food) / 1e3 # Mt * kgCO2eq / kg = 10^9 kg * kgCO2eq / kg / 10^3 = G kgCO2eq = 10-3 Gt
+            outputs[GlossaryCore.FoodTypeFoodGWPEmissionsName] += outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] * ClimateEcoDiscipline.GWP_100_default[ghg]
 
         # land use
         outputs[GlossaryCore.CropFoodLandUseName + "_breakdown"] = share_dedicated_to_food * production_raw * params[GlossaryCore.FoodTypeLandUseByProdUnitName] / (10 ** 4)   # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
@@ -255,9 +261,9 @@ class Crop:
             outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] = net_production * params[GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(stream)] / 100.
             production_for_consumers -= outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"]
 
-        food_waste_at_prod_and_distrib = production_for_consumers * params[GlossaryCore.FoodTypeWasteAtProdAndDistribShareName] / 100.  # Mt
+        food_waste_at_prod_and_distrib = production_for_consumers * params[GlossaryCore.FoodTypeWasteSupplyChainShareName] / 100.  # Mt
         for stream in Crop.streams_energy_prod:
-            outputs[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream) + "_breakdown"] = food_waste_at_prod_and_distrib * params[GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(stream)] / 100.  # Mt
+            outputs[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream) + "_breakdown"] = food_waste_at_prod_and_distrib * params[GlossaryCore.FoodTypeShareWasteSupplyChainUsedToStreamProdName.format(stream)] / 100.  # Mt
 
         production_delivered_to_consumers = production_for_consumers - food_waste_at_prod_and_distrib  # Mt
         outputs[GlossaryCore.FoodTypeWasteByConsumersName] = production_delivered_to_consumers * params[GlossaryCore.FoodTypeWasteByConsumersShareName] / 100. # Mt
@@ -265,8 +271,8 @@ class Crop:
         for stream in Crop.streams_energy_prod:
             outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] = outputs[GlossaryCore.FoodTypeWasteByConsumersName] * params[GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(stream)] / 100. # Mt
             outputs[GlossaryCore.CropProdForEnergyName.format(stream) + "_breakdown"] = \
-                outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] +\
-                outputs[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream) + "_breakdown"] +\
+                outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] + \
+                outputs[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream) + "_breakdown"] + \
                 outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] # Mt
 
         kcal_produced_for_consumers = production_delivered_to_consumers * params[GlossaryCore.FoodTypeKcalByProdUnitName]  # Mt * kcal/ kg = 10^9 kg * kcal/kg = 10^9 kcal  = G kcal
@@ -277,7 +283,7 @@ class Crop:
         outputs.update({
             GlossaryCore.FoodTypeCapitalName: capital_food_type,
             GlossaryCore.FoodTypeProductionName: production_for_consumers,
-            GlossaryCore.FoodTypeWasteAtProductionDistributionName: food_waste_at_prod_and_distrib,
+            GlossaryCore.FoodTypeWasteAtSupplyChainName: food_waste_at_prod_and_distrib,
             GlossaryCore.FoodTypeDeliveredToConsumersName: production_delivered_to_consumers,
             GlossaryCore.FoodTypeNotProducedDueToClimateChangeName: production_wasted_by_productivity_loss,
         })
@@ -296,6 +302,7 @@ class Crop:
         for food_type in self.inputs[GlossaryCore.FoodTypesName]:
             co2_eq_per_kg_prod = sum([self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)][food_type] * ClimateEcoDiscipline.GWP_100_default[ghg]
                                       for ghg in GlossaryCore.GreenHouseGases])
+            print(food_type, co2_eq_per_kg_prod)
             kcal_per_kg = self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName][food_type]
 
             # co2 eq / kcal = (co2eq/kg) / (kcal/kg)
@@ -315,10 +322,7 @@ class Crop:
         self.outputs['kg_dict_infos'] = {}
         for info_name, dict_values in self.outputs['kcal_dict_infos'].items():
             # m2 / kg = (m2 / kcal) * kcal/kg
-            self.outputs['kg_dict_infos'][info_name.replace('kcal', 'kg')] = {key: value1 * value2 for (key, value1), value2 in zip(
-                dict_values.items(), self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName].values()
-            )}
-        self.outputs['kg_dict_infos']['Capital intensity ($/kg)'] = {key: 1 / value1 for key, value1 in
-                                                         self.inputs[GlossaryCore.FoodTypeCapitalIntensityName].items()}
+            self.outputs['kg_dict_infos'][info_name.replace('kcal', 'kg')] = {ft: value1 * self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName][ft] for ft, value1 in dict_values.items()}
+        self.outputs['kg_dict_infos']['Capital intensity ($/kg)'] = {key: 1 / value1 for key, value1 in self.inputs[GlossaryCore.FoodTypeCapitalIntensityName].items()}
         for dict_name, dict_values in self.outputs['kg_dict_infos'].items():
             self.outputs['kg_dict_infos'][dict_name] = dict(sorted(dict_values.items(), key=lambda item: item[1], reverse=True))

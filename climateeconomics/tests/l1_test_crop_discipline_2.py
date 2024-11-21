@@ -18,6 +18,8 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.database import DatabaseWitnessCore
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
@@ -43,24 +45,24 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         self.name = 'Test'
         self.model_name = 'crop_food'
 
-        self.year_start = GlossaryCore.YearStartDefault
+        self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
         self.crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(3, 12, year_range),  # fake
+            GlossaryCore.CropProductivityReductionName: np.linspace(0, 12, year_range),  # fake
         })
 
         self.damage_fraction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.DamageFractionOutput: np.linspace(0.43 /100., 12 / 100., year_range), # 2020 value
+            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range), # 2020 value
         })
 
         self.investments_food_types = pd.DataFrame({
             GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
-            **{food_type: 0.61 * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypes}  # convert to G$
+            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest2021.value * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
         })
         self.workforce_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -69,7 +71,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
 
         self.population_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.PopulationValue: np.linspace(7870, 7870 * 1.2, year_range),  # millions of people (2020 value)
+            GlossaryCore.PopulationValue: np.linspace(7900, 7870 * 1.2, year_range),  # millions of people (2021 value)
         })
 
         self.enegy_agri = pd.DataFrame({
@@ -77,134 +79,6 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             GlossaryCore.TotalProductionValue: 2591. /1000.,  # PWh, 2020 value
         })
 
-        dict_inputs = {
-            GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.CO2): {
-                GlossaryCore.RedMeat: 0.0,
-                GlossaryCore.WhiteMeat: 3.95,
-                GlossaryCore.Milk: 0.0,
-                GlossaryCore.Eggs: 1.88,
-                GlossaryCore.RiceAndMaize: 0.84,
-                GlossaryCore.Cereals: 0.12,
-                GlossaryCore.FruitsAndVegetables: 0.44,
-                GlossaryCore.Fish: 2.37,
-                GlossaryCore.OtherFood: 0.48
-            },
-            GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.CH4): {
-                GlossaryCore.RedMeat: 6.823e-1,
-                GlossaryCore.WhiteMeat: 1.25e-2,
-                GlossaryCore.Milk: 3.58e-2,
-                GlossaryCore.Eggs: 0.0,
-                GlossaryCore.RiceAndMaize: 3.17e-2,
-                # negligible methane in this category
-                GlossaryCore.Cereals: 0.0,
-                GlossaryCore.FruitsAndVegetables: 0.0,
-                # consider fish farm only
-                GlossaryCore.Fish: 3.39e-2,
-                GlossaryCore.OtherFood: 0.,
-            },
-            GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.N2O): {
-                GlossaryCore.RedMeat: 9.268e-3,
-                GlossaryCore.WhiteMeat: 3.90e-4,
-                GlossaryCore.Milk: 2.40e-4,
-                GlossaryCore.Eggs: 1.68e-4,
-                GlossaryCore.RiceAndMaize: 9.486e-4,
-                GlossaryCore.Cereals: 1.477e-3,
-                GlossaryCore.FruitsAndVegetables: 2.63e-4,
-                GlossaryCore.Fish: 0.,  # no crop or livestock related
-                GlossaryCore.OtherFood: 1.68e-3,
-            },
-        }
-        dict_to_dataframes = {
-            GlossaryCore.FoodTypeWasteAtProdAndDistribShareName: {
-                GlossaryCore.RedMeat: 3,
-                GlossaryCore.WhiteMeat: 3,
-                GlossaryCore.Milk: 8,
-                GlossaryCore.Eggs: 7,
-                GlossaryCore.RiceAndMaize: 8,
-                GlossaryCore.Cereals: 10,
-                GlossaryCore.FruitsAndVegetables: 15,
-                GlossaryCore.Fish: 10,
-                GlossaryCore.OtherFood: 5,
-            },
-            GlossaryCore.FoodTypeWasteByConsumersShareName: {
-                GlossaryCore.RedMeat: 3,
-                GlossaryCore.WhiteMeat: 3,
-                GlossaryCore.Milk: 8,
-                GlossaryCore.Eggs: 7,
-                GlossaryCore.RiceAndMaize: 8,
-                GlossaryCore.Cereals: 10,
-                GlossaryCore.FruitsAndVegetables: 15,
-                GlossaryCore.Fish: 10,
-                GlossaryCore.OtherFood: 5,
-            },
-            GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(GlossaryEnergy.biomass_dry): {
-                GlossaryCore.RedMeat: 0.,
-                GlossaryCore.WhiteMeat: 0.,
-                GlossaryCore.Milk: 0.,
-                GlossaryCore.Eggs: 0.,
-                GlossaryCore.RiceAndMaize: 3,
-                GlossaryCore.Cereals: 10,
-                GlossaryCore.FruitsAndVegetables: 0.,
-                GlossaryCore.Fish: 0.,
-                GlossaryCore.OtherFood: 0.,
-            },
-            GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(GlossaryEnergy.biomass_dry): {
-                GlossaryCore.RedMeat: 0.,
-                GlossaryCore.WhiteMeat: 0.,
-                GlossaryCore.Milk: 0.,
-                GlossaryCore.Eggs: 0.,
-                GlossaryCore.RiceAndMaize: 20.,
-                GlossaryCore.Cereals: 30.,
-                GlossaryCore.FruitsAndVegetables: 0.,
-                GlossaryCore.Fish: 0.,
-                GlossaryCore.OtherFood: 0.,
-            },
-            GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(GlossaryEnergy.biomass_dry): {
-                GlossaryCore.RedMeat: 0.,
-                GlossaryCore.WhiteMeat: 0.,
-                GlossaryCore.Milk: 0.,
-                GlossaryCore.Eggs: 0.,
-                GlossaryCore.RiceAndMaize: 10.,
-                GlossaryCore.Cereals: 10.,
-                GlossaryCore.FruitsAndVegetables: 0.,
-                GlossaryCore.Fish: 0.,
-                GlossaryCore.OtherFood: 0.,
-            },
-            GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(GlossaryEnergy.wet_biomass): {
-                GlossaryCore.RedMeat: 0.,
-                GlossaryCore.WhiteMeat: 0.,
-                GlossaryCore.Milk: 0.,
-                GlossaryCore.Eggs: 0.,
-                GlossaryCore.RiceAndMaize: 0.,
-                GlossaryCore.Cereals: 0.,
-                GlossaryCore.FruitsAndVegetables: 5,
-                GlossaryCore.Fish: 0.,
-                GlossaryCore.OtherFood: 1.,
-            },
-            GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(GlossaryEnergy.wet_biomass): {
-                GlossaryCore.RedMeat: 0.,
-                GlossaryCore.WhiteMeat: 0.,
-                GlossaryCore.Milk: 0.,
-                GlossaryCore.Eggs: 0.,
-                GlossaryCore.RiceAndMaize: 0.,
-                GlossaryCore.Cereals: 0.,
-                GlossaryCore.FruitsAndVegetables: 0.,
-                GlossaryCore.Fish: 0.,
-                GlossaryCore.OtherFood: 20.,
-            },
-            GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(GlossaryEnergy.wet_biomass): {
-                GlossaryCore.RedMeat: 0.,
-                GlossaryCore.WhiteMeat: 0.,
-                GlossaryCore.Milk: 0.,
-                GlossaryCore.Eggs: 0.,
-                GlossaryCore.RiceAndMaize: 10.,
-                GlossaryCore.Cereals: 0.,
-                GlossaryCore.FruitsAndVegetables: 0.,
-                GlossaryCore.Fish: 0.,
-                GlossaryCore.OtherFood: 5.,
-            },
-        }
-        food_types = list(list(dict_inputs.values())[0].keys())
         inputs_dict = {
             f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -213,20 +87,8 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
             f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': self.enegy_agri,
-            f'{self.name}.{self.model_name}.{GlossaryCore.FoodTypesName}': food_types,
             f'{self.name}.{GlossaryCore.FoodTypesInvestName}': self.investments_food_types,
         }
-        for varname, default_dict_values_var in dict_to_dataframes.items():
-            df = pd.DataFrame({
-                GlossaryCore.Years: self.years,
-                **default_dict_values_var
-            })
-            inputs_dict.update({f'{self.name}.{varname}': df})
-            inputs_dict.update({f'{self.name}.{self.model_name}.{varname}': df})
-
-        inputs_dict.update({f'{self.name}.{self.model_name}.{varname}': value for varname, value in dict_inputs.items()})
-
-
 
         self.inputs_dict = inputs_dict
 
@@ -281,9 +143,9 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            graph.to_plotly().show()
             pass
-
+        #self.override_dump_jacobian = 1
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_crop_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,

@@ -52,7 +52,7 @@ class Study(StudyManager):
         investments = pd.DataFrame({
             GlossaryCore.Years: years,  # 0.61 T$ (2020 value)
             **{food_type: 0.61 * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][
-                food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypes}  # convert to G$
+                food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
         })
         workforce_df = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -107,28 +107,6 @@ class Study(StudyManager):
             },
         }
         dict_to_dataframes = {
-            GlossaryCore.FoodTypeWasteAtProdAndDistribShareName: {
-                GlossaryCore.RedMeat: 3,
-                GlossaryCore.WhiteMeat: 3,
-                GlossaryCore.Milk: 8,
-                GlossaryCore.Eggs: 7,
-                GlossaryCore.RiceAndMaize: 8,
-                GlossaryCore.Cereals: 10,
-                GlossaryCore.FruitsAndVegetables: 15,
-                GlossaryCore.Fish: 10,
-                GlossaryCore.OtherFood: 5,
-            },
-            GlossaryCore.FoodTypeWasteByConsumersShareName: {
-                GlossaryCore.RedMeat: 3,
-                GlossaryCore.WhiteMeat: 3,
-                GlossaryCore.Milk: 8,
-                GlossaryCore.Eggs: 7,
-                GlossaryCore.RiceAndMaize: 8,
-                GlossaryCore.Cereals: 10,
-                GlossaryCore.FruitsAndVegetables: 15,
-                GlossaryCore.Fish: 10,
-                GlossaryCore.OtherFood: 5,
-            },
             GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(GlossaryEnergy.biomass_dry): {
                 GlossaryCore.RedMeat: 0.,
                 GlossaryCore.WhiteMeat: 0.,
@@ -140,7 +118,7 @@ class Study(StudyManager):
                 GlossaryCore.Fish: 0.,
                 GlossaryCore.OtherFood: 0.,
             },
-            GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(GlossaryEnergy.biomass_dry): {
+            GlossaryCore.FoodTypeShareWasteSupplyChainUsedToStreamProdName.format(GlossaryEnergy.biomass_dry): {
                 GlossaryCore.RedMeat: 0.,
                 GlossaryCore.WhiteMeat: 0.,
                 GlossaryCore.Milk: 0.,
@@ -173,7 +151,7 @@ class Study(StudyManager):
                 GlossaryCore.Fish: 0.,
                 GlossaryCore.OtherFood: 1.,
             },
-            GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(GlossaryEnergy.wet_biomass): {
+            GlossaryCore.FoodTypeShareWasteSupplyChainUsedToStreamProdName.format(GlossaryEnergy.wet_biomass): {
                 GlossaryCore.RedMeat: 0.,
                 GlossaryCore.WhiteMeat: 0.,
                 GlossaryCore.Milk: 0.,

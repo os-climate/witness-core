@@ -76,7 +76,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     }
     df_output_streams = {
         GlossaryCore.FoodTypeDedicatedToProductionForStreamName: GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
-        GlossaryCore.WasteBeforeDistribReusedForEnergyProdName: GlossaryCore.WasteBeforeDistribReusedForEnergyProdVar,
+        GlossaryCore.WasteSupplyChainReusedForEnergyProdName: GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
         GlossaryCore.ConsumerWasteUsedForEnergyName: GlossaryCore.ConsumerWasteUsedForEnergyVar,
         GlossaryCore.CropProdForEnergyName: GlossaryCore.CropProdForEnergyVar,
     }
@@ -96,8 +96,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         dynamic_outputs = {}
 
         if GlossaryCore.FoodTypesName in self.get_data_in():
-            food_types = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
-            if food_types is not None:
+            year_start, year_end, food_types = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd, GlossaryCore.FoodTypesName])
+            if year_start is not None and year_end is not None and food_types is not None:
+                years = list(range(year_start, year_end + 1))
                 dataframes_descriptors = {
                     GlossaryCore.Years: ("int", [1900, GlossaryCore.YearEndDefault], False),
                     **{ft: ("float", None, False) for ft in food_types}
@@ -109,29 +110,38 @@ class CropDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.FoodTypeCapitalDepreciationRateName: GlossaryCore.FoodTypeCapitalDepreciationRateVar,
                     GlossaryCore.FoodTypeLandUseByProdUnitName: GlossaryCore.FoodTypeLandUseByProdUnitVar,
                     GlossaryCore.FoodTypeKcalByProdUnitName: GlossaryCore.FoodTypeKcalByProdUnitVar,
+                    GlossaryCore.FoodTypeWasteSupplyChainShareName: GlossaryCore.FoodTypeWasteSupplyChainShareVar,
+                    GlossaryCore.FoodTypeWasteByConsumersShareName: GlossaryCore.FoodTypeWasteByConsumersShareVar,
                 })
 
                 dataframes_inputs = {
-                    GlossaryCore.FoodTypeWasteAtProdAndDistribShareName: GlossaryCore.FoodTypeWasteAtProductionShareVar,
-                    GlossaryCore.FoodTypeWasteByConsumersShareName: GlossaryCore.FoodTypeWasteByConsumersShareVar,
                     GlossaryCore.FoodTypesInvestName: GlossaryCore.FoodTypesInvestVar}
 
                 for stream in self.streams_energy_prod:
                     df_shares = {
                         GlossaryCore.FoodTypeShareDedicatedToStreamProdName: GlossaryCore.FoodTypeShareDedicatedToStreamProdVar,
                         GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName: GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdVar,
-                        GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName: GlossaryCore.FoodTypeShareWasteBeforeDistrbUsedToStreamProdVar,
+                        GlossaryCore.FoodTypeShareWasteSupplyChainUsedToStreamProdName: GlossaryCore.FoodTypeShareWasteSupplyChainUsedToStreamProdVar,
                     }
                     for df_name, df_var in df_shares.items():
                         df_share = copy.deepcopy(df_var)
                         df_share["description"] = df_share["description"].format(stream)
-                        dataframes_inputs[df_name.format(stream)] = df_share
+                        varname = df_name.format(stream)
+                        if varname in GlossaryCore.crop_calibration_data:
+                            df_share["default"] = pd.DataFrame({
+                                GlossaryCore.Years: years,
+                                **GlossaryCore.crop_calibration_data[varname]
+                            })
+                        dataframes_inputs[varname] = df_share
 
                 for ghg in GlossaryCore.GreenHouseGases:
-                    df_ghg_by_prod_unit = copy.deepcopy(GlossaryCore.FoodTypeEmissionsByProdUnitVar)
-                    df_ghg_by_prod_unit["unit"] = df_ghg_by_prod_unit["unit"].format(ghg)
-                    df_ghg_by_prod_unit["description"] = df_ghg_by_prod_unit["description"].format(ghg)
-                    dataframes_inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] = df_ghg_by_prod_unit
+                    varname = GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)
+                    dict_ghg_by_prod_unit = copy.deepcopy(GlossaryCore.FoodTypeEmissionsByProdUnitVar)
+                    dict_ghg_by_prod_unit["unit"] = dict_ghg_by_prod_unit["unit"].format(ghg)
+                    dict_ghg_by_prod_unit["description"] = dict_ghg_by_prod_unit["description"].format(ghg)
+                    if varname in GlossaryCore.crop_calibration_data:
+                        dict_ghg_by_prod_unit["default"] = GlossaryCore.crop_calibration_data[varname]
+                    dataframes_inputs[varname] = dict_ghg_by_prod_unit
 
                 for varname, df_input in dataframes_inputs.items():
                     df_input["dataframe_descriptor"] = dataframes_descriptors
@@ -142,7 +152,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     # coupling with breakdown
                     GlossaryCore.FoodTypeCapitalName: GlossaryCore.FoodTypeCapitalVar,
                     GlossaryCore.FoodTypeProductionName: GlossaryCore.FoodTypeProductionVar,
-                    GlossaryCore.FoodTypeWasteAtProductionDistributionName: GlossaryCore.FoodTypeWasteAtProductionDistributionVar,
+                    GlossaryCore.FoodTypeWasteAtSupplyChainName: GlossaryCore.FoodTypeWasteAtSupplyChainVar,
                     GlossaryCore.FoodTypeWasteByConsumersName: GlossaryCore.FoodTypeWasteByConsumersVar,
                     GlossaryCore.FoodTypeNotProducedDueToClimateChangeName: GlossaryCore.FoodTypeNotProducedDueToClimateChangeVar,
                     GlossaryCore.FoodTypeWasteByClimateDamagesName: GlossaryCore.FoodTypeWasteByClimateDamagesVar,
@@ -150,6 +160,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.CropFoodLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for food production"},
                     GlossaryCore.CropEnergyLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for energy production in first intention. That is "},
                     GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
+                    GlossaryCore.FoodTypeFoodGWPEmissionsName: GlossaryCore.FoodTypeFoodGWPEmissionsVar,
                     "non_used_capital_breakdown": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"}
                 }
 
@@ -159,7 +170,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 for stream in self.streams_energy_prod:
                     df_output_streams = {
                         GlossaryCore.FoodTypeDedicatedToProductionForStreamName: GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
-                        GlossaryCore.WasteBeforeDistribReusedForEnergyProdName: GlossaryCore.WasteBeforeDistribReusedForEnergyProdVar,
+                        GlossaryCore.WasteSupplyChainReusedForEnergyProdName: GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
                         GlossaryCore.ConsumerWasteUsedForEnergyName: GlossaryCore.ConsumerWasteUsedForEnergyVar,
                         GlossaryCore.CropProdForEnergyName: GlossaryCore.CropProdForEnergyVar,
                     }
@@ -233,13 +244,15 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.food_types_colors = {
             GlossaryCore.RedMeat: 'crimson',
             GlossaryCore.WhiteMeat: 'burlywood',
-            GlossaryCore.Milk: 'ivory',
+            GlossaryCore.Milk: 'sienna',
             GlossaryCore.Eggs: 'yellow',
-            GlossaryCore.RiceAndMaize: 'gold',
+            GlossaryCore.Rice: 'mediumseagreen',
+            GlossaryCore.Maize: 'greenyellow',
             GlossaryCore.Cereals: 'olive',
             GlossaryCore.FruitsAndVegetables: 'green',
             GlossaryCore.Fish: 'cornflowerblue',
-            GlossaryCore.OtherFood: 'lightslategrey'
+            GlossaryCore.OtherFood: 'lightslategrey',
+            GlossaryCore.SugarCane: 'orange'
         }
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
@@ -260,7 +273,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 df_total=None,
                 column_total=None,
                 post_proc_category="Production",
-                lines=True,
+                lines=False,
             )
             instanciated_charts.append(new_chart)
 
@@ -272,7 +285,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 df_total=None,
                 column_total=None,
                 post_proc_category="Production",
-                lines=True,
+                lines=False,
                 note={"Net production": "waste is not applied"}
             )
             instanciated_charts.append(new_chart)
@@ -297,7 +310,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 df_total=None,
                 column_total=None,
                 post_proc_category="Damages",
-                lines=True,
+                lines=False,
                 note={"Loss of productivity": "climate change lowers crop yields"}
             )
             instanciated_charts.append(new_chart)
@@ -310,7 +323,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 df_total=None,
                 column_total=None,
                 post_proc_category="Damages",
-                lines=True,
+                lines=False,
                 note={"Climate damages": "Extreme events such as floodings, droughts, fires destroy production."}
             )
             instanciated_charts.append(new_chart)
@@ -325,20 +338,20 @@ class CropDiscipline(ClimateEcoDiscipline):
                 df_total=None,
                 column_total=None,
                 post_proc_category="Damages",
-                lines=True,
+                lines=False,
             )
             instanciated_charts.append(new_chart)
 
         if "Waste" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
-                df_all_food_types=outputs[GlossaryCore.FoodTypeWasteAtProductionDistributionName],
-                charts_name="Food wasted at production and distribution level",
-                unit=GlossaryCore.FoodTypeWasteAtProductionDistributionVar['unit'],
+                df_all_food_types=outputs[GlossaryCore.FoodTypeWasteAtSupplyChainName],
+                charts_name="Food wasted during supply chain",
+                unit=GlossaryCore.FoodTypeWasteAtSupplyChainVar['unit'],
                 df_total=None,
                 column_total=None,
                 post_proc_category="Waste",
-                lines=True,
-                note={"Waste at production and distribution": "some of it is reused for energy production"},
+                lines=False,
+                note={"Waste at supply chain": "Does not include waste by consumer. Some of it is reused for energy production"},
             )
             instanciated_charts.append(new_chart)
 
@@ -350,22 +363,22 @@ class CropDiscipline(ClimateEcoDiscipline):
                 df_total=None,
                 column_total=None,
                 post_proc_category="Waste",
-                lines=True,
+                lines=False,
                 note={"Food waste by consumers": "some of it is reused for energy production"}
             )
             instanciated_charts.append(new_chart)
 
         if "Waste" in charts:
-            df_sum = outputs[GlossaryCore.FoodTypeWasteAtProductionDistributionName] + outputs[GlossaryCore.FoodTypeWasteByConsumersName]
-            df_sum[GlossaryCore.Years] = outputs[GlossaryCore.FoodTypeWasteAtProductionDistributionName][GlossaryCore.Years]
+            df_sum = outputs[GlossaryCore.FoodTypeWasteAtSupplyChainName] + outputs[GlossaryCore.FoodTypeWasteByConsumersName]
+            df_sum[GlossaryCore.Years] = outputs[GlossaryCore.FoodTypeWasteAtSupplyChainName][GlossaryCore.Years]
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=df_sum,
-                charts_name="Total wasted food (production + distribution + consumers)",
+                charts_name="Total wasted food (supply chain + consumers)",
                 unit=GlossaryCore.FoodTypeWasteByConsumersVar['unit'],
                 df_total=None,
                 column_total=None,
                 post_proc_category="Waste",
-                lines=True,
+                lines=False,
             )
             instanciated_charts.append(new_chart)
 
@@ -391,6 +404,17 @@ class CropDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if "Emissions" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs[GlossaryCore.FoodTypeFoodGWPEmissionsName],
+                charts_name=f"Emissions of food production in CO2eq",
+                unit=GlossaryCore.FoodTypeFoodGWPEmissionsVar['unit'],
+                df_total=None,
+                column_total=None,
+                note={"CO2eq": "computed on a 100-year scale."},
+                post_proc_category="Emissions"
+            )
+            instanciated_charts.append(new_chart)
+
             for ghg in GlossaryCore.GreenHouseGases:
                 new_chart = self.get_breakdown_charts_on_food_type(
                     df_all_food_types=outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)],
@@ -428,10 +452,10 @@ class CropDiscipline(ClimateEcoDiscipline):
                 instanciated_charts.append(new_chart)
 
                 new_chart = self.get_breakdown_charts_on_food_type(
-                    df_all_food_types=outputs[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream) + '_breakdown'],
+                    df_all_food_types=outputs[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream) + '_breakdown'],
                     charts_name=f"Waste before distribution reused for {stream_nicer} production",
-                    unit=GlossaryCore.WasteBeforeDistribReusedForEnergyProdVar['unit'],
-                    df_total=outputs[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream)],
+                    unit=GlossaryCore.WasteSupplyChainReusedForEnergyProdVar['unit'],
+                    df_total=outputs[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream)],
                     column_total="Total",
                     post_proc_category="Energy production",
                 )
@@ -520,7 +544,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         dfs_to_sum = {
             GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream): GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream): GlossaryCore.WasteBeforeDistribReusedForEnergyProdVar,
+            GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream): GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
             GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream): GlossaryCore.ConsumerWasteUsedForEnergyVar,
         }
         df_total = self.get_sosdisc_outputs(GlossaryCore.CropProdForEnergyName.format(stream))
