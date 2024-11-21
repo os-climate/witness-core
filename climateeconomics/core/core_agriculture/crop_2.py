@@ -16,6 +16,7 @@ limitations under the License.
 '''
 import autograd.numpy as np
 import pandas as pd
+from autograd import jacobian
 from energy_models.glossaryenergy import GlossaryEnergy
 
 from climateeconomics.core.core_witness.climateeco_discipline import (
@@ -29,72 +30,98 @@ class Crop:
     Crop model class 
     """
 
-    def __init__(self, param):
-        '''
-        Constructor
-        '''
+    streams_energy_prod = [GlossaryEnergy.biomass_dry, GlossaryEnergy.wet_biomass]
+
+    def __init__(self):
+        """Constructor"""
         self.inputs = {}
         self.outputs = {}
 
-        self.dataframes_to_totalize_by_food_type = {
-            GlossaryCore.FoodTypeLandUseName: (GlossaryCore.FoodLandUseName, "Total"),
+        # couplings
+        self.coupling_dataframes_not_totalized = [
+            GlossaryCore.FoodTypeDeliveredToConsumersName,
+            GlossaryCore.FoodTypeCapitalName,
+        ]
+        self.dataframes_to_totalize_by_food_type_couplings = {
+            GlossaryCore.CropFoodLandUseName + "_breakdown": (GlossaryCore.CropFoodLandUseName, "Total"),
+            GlossaryCore.CropEnergyLandUseName + "_breakdown": (GlossaryCore.CropEnergyLandUseName, "Total"),
             GlossaryCore.CaloriesPerCapitaBreakdownValue: (GlossaryCore.CaloriesPerCapitaValue, "kcal_pc"),
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry): (GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.biomass_dry), "Total"),
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass): (GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.wet_biomass), "Total"),
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.CO2): (GlossaryCore.CropFoodEmissionsName, GlossaryCore.CO2),
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.CH4): (GlossaryCore.CropFoodEmissionsName, GlossaryCore.CH4),
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.N2O): (GlossaryCore.CropFoodEmissionsName, GlossaryCore.N2O),
-
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry) + "_breakdown": (GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry), "Total"),
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass) + "_breakdown": (GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass), "Total"),
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.biomass_dry) + "_breakdown": (GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.biomass_dry), "Total"),
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.wet_biomass) + "_breakdown": (GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.wet_biomass), "Total"),
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.biomass_dry) + "_breakdown": (GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.biomass_dry), "Total"),
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.wet_biomass) + "_breakdown": (GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.wet_biomass), "Total"),
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.biomass_dry) + "_breakdown": (GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.biomass_dry), "Total"),
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.wet_biomass) + "_breakdown": (GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.wet_biomass), "Total"),
+            "non_used_capital" + "_breakdown": ("non_used_capital", "Total"),
         }
+        for ghg in GlossaryCore.GreenHouseGases:
+            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] = (GlossaryCore.CropFoodEmissionsName, ghg)
+            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = (GlossaryCore.CropEnergyEmissionsName, ghg)
+
+        for stream in self.streams_energy_prod:
+            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] = (GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream), "Total")
+
+        # non couplings + couplings
+        self.dataframes_to_totalize_by_food_type = self.dataframes_to_totalize_by_food_type_couplings
+
+        for stream in self.streams_energy_prod:
+            self.dataframes_to_totalize_by_food_type[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream) + "_breakdown"] = (GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream), "Total")
+            self.dataframes_to_totalize_by_food_type[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] = (GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream), "Total")
+
+        # these are the parameters that are required to compute each food type
+        self.params_for_food_types = [
+            GlossaryCore.FoodTypeCapitalStartName,
+            GlossaryCore.FoodTypeCapitalDepreciationRateName,
+            GlossaryCore.FoodTypeCapitalIntensityName,
+            GlossaryCore.FoodTypeKcalByProdUnitName,
+            GlossaryCore.FoodTypeWasteByConsumersShareName,
+            GlossaryCore.FoodTypeLandUseByProdUnitName,
+            GlossaryCore.FoodTypeWasteAtProdAndDistribShareName,
+        ]
+        for ghg in GlossaryCore.GreenHouseGases:
+            self.params_for_food_types.append(GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg))
+        for stream_ouput in [GlossaryEnergy.biomass_dry, GlossaryEnergy.wet_biomass]:
+            self.params_for_food_types.append(GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(stream_ouput))
+            self.params_for_food_types.append(GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(stream_ouput))
+            self.params_for_food_types.append(GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(stream_ouput))
+
+        # mapping of the coupling inputs to the compute function, used for the gradients with autograd
+        self.mapping_coupling_inputs_argument_number = {
+            0: (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}", GlossaryCore.TotalProductionValue),
+            1: (GlossaryCore.WorkforceDfValue, GlossaryCore.SectorAgriculture),
+            2: (GlossaryCore.CropProductivityReductionName, GlossaryCore.CropProductivityReductionName),
+            3: (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            4: (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+        }
+
+    def get_params_food_type(self, food_type: str):
+        params_food_type= {}
+        for param in self.params_for_food_types:
+            params_food_type[param] = self.inputs[param][food_type] if isinstance(self.inputs[param], dict) else self.inputs[param][food_type].values
+        return params_food_type
 
     def init_dataframes(self):
         years = np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
         dataframe_to_init = [
+            GlossaryCore.FoodTypeProductionName,
             GlossaryCore.FoodTypeWasteAtProductionDistributionName,
             GlossaryCore.FoodTypeWasteByConsumersName,
             GlossaryCore.FoodTypeNotProducedDueToClimateChangeName,
             GlossaryCore.FoodTypeWasteByClimateDamagesName,
             GlossaryCore.FoodTypeDeliveredToConsumersName,
-            GlossaryCore.CaloriesPerCapitaBreakdownValue,
-            GlossaryCore.FoodTypeLandUseName,
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.CO2),
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.CH4),
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.N2O),
-
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry) + "_breakdown",
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass) + "_breakdown",
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.biomass_dry) + "_breakdown",
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.wet_biomass) + "_breakdown",
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.biomass_dry) + "_breakdown",
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.wet_biomass) + "_breakdown",
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.biomass_dry) + "_breakdown",
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.wet_biomass) + "_breakdown",
-
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry),
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass),
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.biomass_dry),
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.wet_biomass),
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.biomass_dry),
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.wet_biomass),
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.biomass_dry),
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.wet_biomass),
-
-            "unused_energy" + "_breakdown",
-            "unused_workforce" + "_breakdown"
+            GlossaryCore.FoodTypeCapitalName
         ]
+
+        for stream in self.streams_energy_prod:
+            for var in [
+                GlossaryCore.FoodTypeDedicatedToProductionForStreamName,
+                GlossaryCore.WasteBeforeDistribReusedForEnergyProdName,
+                GlossaryCore.CropProdForEnergyName
+            ]:
+
+                dataframe_to_init.append(var.format(stream))
+                dataframe_to_init.append(var.format(stream) + "_breakdown")
+
         for df_name in dataframe_to_init:
             self.outputs[df_name] = pd.DataFrame({GlossaryCore.Years: years})
 
-        for (df_name, _) in self.dataframes_to_totalize_by_food_type.values():
-            self.outputs[df_name] = pd.DataFrame({GlossaryCore.Years: years})
+        for df_name1, (df_name2, _) in self.dataframes_to_totalize_by_food_type.items():
+            self.outputs[df_name1] = pd.DataFrame({GlossaryCore.Years: years})
+            self.outputs[df_name2] = pd.DataFrame({GlossaryCore.Years: years})
 
         for (df_name, column) in self.dataframes_to_totalize_by_food_type.values():
             self.outputs[df_name][column] = 0.
@@ -102,177 +129,160 @@ class Crop:
     def compute(self, inputs: dict):
         self.inputs = inputs
         self.init_dataframes()
-
         for food_type in inputs[GlossaryCore.FoodTypesName]:
-            output_food_type = self.compute_food_type(
-                invest_food=self.inputs[f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}'][GlossaryCore.InvestmentsValue].values,
-                energy_consumption_food=self.inputs[f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}'][GlossaryCore.TotalProductionValue].values,
-                workforce_food=self.inputs[GlossaryCore.WorkforceDfValue][GlossaryCore.SectorAgriculture].values,
-                crop_productivity_reduction=self.inputs[GlossaryCore.CropProductivityReductionName][GlossaryCore.CropProductivityReductionName].values,
-                damage_fraction=self.inputs[GlossaryCore.DamageFractionDfValue][GlossaryCore.DamageFractionOutput].values,
-                population=self.inputs[GlossaryCore.PopulationDfValue][GlossaryCore.PopulationValue].values,
-                share_invest_food_type=self.inputs[GlossaryCore.ShareInvestFoodTypesName][food_type].values,
-                share_energy_consumption_food_type=self.inputs[GlossaryCore.ShareEnergyUsageFoodTypesName][food_type].values,
-                share_workforce_food_type=self.inputs[GlossaryCore.ShareWorkforceFoodTypesName][food_type].values,
-                food_type_capex=self.inputs[GlossaryCore.FoodTypeCapexName][food_type],
-                food_type_energy_need=self.inputs[GlossaryCore.FoodTypeEnergyNeedName][food_type],
-                food_type_workforce_need=self.inputs[GlossaryCore.FoodTypeWorkforceNeedName][food_type],
-                share_food_waste_before_distribution=self.inputs[GlossaryCore.FoodTypeWasteAtProductionShareName][food_type].values,
-                share_food_waste_by_consumers=self.inputs[GlossaryCore.FoodTypeWasteByConsumersShareName][food_type].values,
-                co2_emissions_per_prod_unit=self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.CO2)][food_type],
-                ch4_emissions_per_prod_unit=self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.CH4)][food_type],
-                n2o_emissions_per_prod_unit=self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(GlossaryCore.N2O)][food_type],
-                share_dedicated_to_biomass_dry_prod=self.inputs[GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(GlossaryEnergy.biomass_dry)][food_type].values,
-                share_dedicated_to_biomass_wet_prod=self.inputs[GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(GlossaryEnergy.wet_biomass)][food_type].values,
-                kcal_per_prod_unit=self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName][food_type],
-                land_use_by_prod_unit=self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][food_type],
-                share_user_waste_reused_for_energy_prod_biomass_dry=self.inputs[GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(GlossaryEnergy.biomass_dry)][food_type].values,
-                share_user_waste_reused_for_energy_prod_biomass_wet=self.inputs[GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(GlossaryEnergy.wet_biomass)][food_type].values,
-                share_waste_before_distrib_reused_for_energy_prod_biomass_dry=self.inputs[GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(GlossaryEnergy.biomass_dry)][food_type].values,
-                share_waste_before_distrib_reused_for_energy_prod_biomass_wet=self.inputs[GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(GlossaryEnergy.wet_biomass)][food_type].values,
-            )
+            output_food_type = self.compute_food_type(*self.get_args(food_type))
             for varname, value in output_food_type.items():
                 self.outputs[varname][food_type] = value
                 if varname in self.dataframes_to_totalize_by_food_type:
                     varname_total_df, column_total_df = self.dataframes_to_totalize_by_food_type[varname]
                     self.outputs[varname_total_df][column_total_df] += value
 
-            self.compute_kcal_infos()
-            self.compute_kg_infos()
+        self.compute_kcal_infos()
+        self.compute_kg_infos()
+
+    def get_coupling_inputs_arrays(self) -> tuple:
+        """returns the tuple of all the coupling inputs arrays for the compute_food_type function"""
+        return tuple([self.inputs[varname][colname].values for varname, colname in self.mapping_coupling_inputs_argument_number.values()])
+
+    def _null_derivative(self):
+        nb_years = self.inputs[GlossaryCore.YearEnd] - self.inputs[GlossaryCore.YearStart] + 1
+        return np.zeros((nb_years, nb_years))
+
+    def get_args(self, food_type: str):
+        return self.get_coupling_inputs_arrays() + (self.inputs[GlossaryCore.FoodTypesInvestName][food_type].values, self.get_params_food_type(food_type))
+    def jacobians(self):
+        """Compute the gradients using autograd"""
+        # gradients dict structure: [input_varname][input_columnname][output_varname][output_colomnname] = value
+
+        gradients = {}
+
+        # jacobians to sum on all food types
+        for index, (ci_varname, ci_colomn_name) in enumerate(self.mapping_coupling_inputs_argument_number.values()):
+            gradients[ci_varname] = {ci_colomn_name: {}}
+            for food_type in self.inputs[GlossaryCore.FoodTypesName]:
+                args = self.get_args(food_type)
+                jac_coupling_input_food_type = jacobian(lambda *args: self.wrap_outputs_to_arrays(self.compute_food_type(*args)), index)
+                gradient_food_type = jac_coupling_input_food_type(*args)
+                dict_jacobians_of_food_type = self.unwrap_arrays_to_outputs(gradient_food_type)
+                for varname, value in dict_jacobians_of_food_type.items():
+                    co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname] if varname in self.dataframes_to_totalize_by_food_type_couplings else (varname, food_type)
+                    if co_varname not in gradients[ci_varname][ci_colomn_name]:
+                        gradients[ci_varname][ci_colomn_name][co_varname] = {}
+                    if co_colname not in gradients[ci_varname][ci_colomn_name][co_varname]:
+                        gradients[ci_varname][ci_colomn_name][co_varname][co_colname] = self._null_derivative()
+                    gradients[ci_varname][ci_colomn_name][co_varname][co_colname] += value
+
+        # gradients wrt invest food type
+        ci_varname = GlossaryCore.FoodTypesInvestName
+        gradients[ci_varname] = {}
+        for food_type in self.inputs[GlossaryCore.FoodTypesName]:
+            ci_colomn_name = food_type
+            gradients[ci_varname][ci_colomn_name] = {}
+            args = self.get_args(food_type)
+            jac_coupling_input_food_type = jacobian(lambda *args: self.wrap_outputs_to_arrays(self.compute_food_type(*args)), 5)
+            gradient_food_type = jac_coupling_input_food_type(*args)
+            dict_jacobians_of_food_type = self.unwrap_arrays_to_outputs(gradient_food_type)
+            for varname, value in dict_jacobians_of_food_type.items():
+                co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname] if varname in self.dataframes_to_totalize_by_food_type_couplings else (varname, food_type)
+                if co_varname not in gradients[ci_varname][ci_colomn_name]:
+                    gradients[ci_varname][ci_colomn_name][co_varname] = {}
+                gradients[ci_varname][ci_colomn_name][co_varname][co_colname] = value
+
+        return gradients
+
+    def wrap_outputs_to_arrays(self, outputs: dict):
+        """
+        gathers the dictionnary outputs of the compute food type function and flattens it in an array
+        helps for the using autograd jacobian which only deals with arrays
+        """
+        return np.array([outputs[varname] for varname in list(self.dataframes_to_totalize_by_food_type_couplings.keys()) + self.coupling_dataframes_not_totalized])
+
+    def unwrap_arrays_to_outputs(self, array: dict):
+        """converts the array output of autograd back to dictionnary to store derivatives values"""
+        return {varname: value for varname, value in zip(list(self.dataframes_to_totalize_by_food_type_couplings.keys()) + self.coupling_dataframes_not_totalized,
+                                                         array)}
 
     @staticmethod
     def compute_food_type(
-            # coupling inputs first
-            invest_food: np.ndarray,
-            energy_consumption_food: np.ndarray,
-            workforce_food: np.ndarray,
-            damage_fraction: np.ndarray,
-            crop_productivity_reduction: np.ndarray,
-
-            # the rest
-            share_invest_food_type: np.ndarray,
-            share_energy_consumption_food_type: np.ndarray,
-            share_workforce_food_type: np.ndarray,
-            food_type_energy_need: np.ndarray,
-            food_type_workforce_need: np.ndarray,
-            food_type_capex: np.ndarray,
-            share_dedicated_to_biomass_dry_prod: np.ndarray,
-            share_dedicated_to_biomass_wet_prod: np.ndarray,
-            share_user_waste_reused_for_energy_prod_biomass_dry: np.ndarray,
-            share_user_waste_reused_for_energy_prod_biomass_wet: np.ndarray,
-            share_waste_before_distrib_reused_for_energy_prod_biomass_dry: np.ndarray,
-            share_waste_before_distrib_reused_for_energy_prod_biomass_wet: np.ndarray,
-            land_use_by_prod_unit: np.ndarray,
-            kcal_per_prod_unit: np.ndarray,
-            co2_emissions_per_prod_unit: np.ndarray,
-            ch4_emissions_per_prod_unit: np.ndarray,
-            n2o_emissions_per_prod_unit: np.ndarray,
-            share_food_waste_before_distribution: np.ndarray,
-            share_food_waste_by_consumers: np.ndarray,
-            population: np.ndarray,
+            energy_allocated_to_agri: np.ndarray,  # 0
+            workforce_agri: np.ndarray,  # 1
+            damage_fraction: np.ndarray,  # 2
+            crop_productivity_reduction: np.ndarray,  # 3
+            population: np.ndarray,  # 4
+            invest_food_type: np.ndarray,  # 5
+            params: dict,
     ):
-        invest_food_type = invest_food * share_invest_food_type / 100. # T$
-        energy_allocated_to_food_type = energy_consumption_food * share_energy_consumption_food_type / 100.  # Pwh
-        workforce_allocated_to_food_type = workforce_food * share_workforce_food_type / 100.  # million people
+        outputs = {}
+        # forecasting capital of food type
+        capital_food_type = [params[GlossaryCore.FoodTypeCapitalStartName]]  # G$
+        for invest in invest_food_type[:-1]:
+            capital_food_type.append(capital_food_type[-1] * (1 - params[GlossaryCore.FoodTypeCapitalDepreciationRateName] / 100) + invest)
+        capital_food_type = np.array(capital_food_type)  # G$
 
-        production_wo_ratio = invest_food_type / food_type_capex * 10**6  # T$ / ($/ton) / 1O^6 = T$ / ($/ton) = T ton, so need to multiply by 10^6. Prod in Mt
+        # limiting capital to usable capital, depending on the variation of ratios of energy and workforce per capital, relative to year start
+        year_start_energy_per_capital = energy_allocated_to_agri[0] / params[GlossaryCore.FoodTypeCapitalStartName]
+        year_start_workforce_per_capital = workforce_agri[0] / params[GlossaryCore.FoodTypeCapitalStartName]
 
-        # convert energy need from kWh/ton to PWh/Mt : PWh/Mt = (10^12 kWh/ 10^6 ton) = 10^6 kWh/ton
-        food_type_energy_need = food_type_energy_need / 10**12 * 10**6  # PWh/Mt
+        energy_per_capital = energy_allocated_to_agri / capital_food_type
+        workforce_per_capital = workforce_agri / capital_food_type
 
-        # convert workforce need from person/ton to million people/Mt : million people/Mt = (10^6 person/ 10^6 ton) = person/ton
-        food_type_workforce_need = food_type_workforce_need
+        usable_capital_food_type = capital_food_type * np.minimum(1, np.minimum(energy_per_capital / year_start_energy_per_capital, workforce_per_capital / year_start_workforce_per_capital))
+        outputs["non_used_capital_breakdown"] = capital_food_type - usable_capital_food_type
 
-        applied_ratio, applied_ratio_df, df_ratios = Crop.compute_ratio(production_wo_ratio=production_wo_ratio,
-                                                                        needs={'energy': food_type_energy_need,
-                                                                               'workforce': food_type_workforce_need},
-                                                                        availability={
-                                                                            'energy': energy_allocated_to_food_type,
-                                                                            'workforce': workforce_allocated_to_food_type})
+        # computing production : usable capital * capital intensity
+        production_raw = usable_capital_food_type * params[GlossaryCore.FoodTypeCapitalIntensityName]  # G$ * t/k$ = 10^9 $ * t/k$ = 10^6 t = Mt
 
-        unused_energy = energy_allocated_to_food_type - applied_ratio * food_type_energy_need * production_wo_ratio # Pwh
-        unused_workforce = workforce_allocated_to_food_type - applied_ratio * food_type_workforce_need * production_wo_ratio # million people
-
-        production_raw = production_wo_ratio * applied_ratio # Mt * unitless
         production_wasted_by_productivity_loss = production_raw * crop_productivity_reduction / 100. # Mt
-        production_wasted_by_immediate_damages = production_wasted_by_productivity_loss * damage_fraction # Mt
-        production_before_waste = production_raw - production_wasted_by_productivity_loss # Mt
-        co2_emissions_food = production_before_waste * co2_emissions_per_prod_unit * (1 - share_dedicated_to_biomass_dry_prod / 100. - share_dedicated_to_biomass_wet_prod / 100.)  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
-        ch4_emissions_food = production_before_waste * ch4_emissions_per_prod_unit * (1 - share_dedicated_to_biomass_dry_prod / 100. - share_dedicated_to_biomass_wet_prod / 100.)  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
-        n2o_emissions_food = production_before_waste * n2o_emissions_per_prod_unit * (1 - share_dedicated_to_biomass_dry_prod / 100. - share_dedicated_to_biomass_wet_prod / 100.)  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
+        outputs[GlossaryCore.FoodTypeWasteByClimateDamagesName] = production_wasted_by_productivity_loss * damage_fraction # Mt
+        production_before_waste = production_raw - production_wasted_by_productivity_loss  # Mt
 
-        net_production = production_before_waste - production_wasted_by_immediate_damages # Mt
-        production_dedicated_to_biomass_dry = net_production * share_dedicated_to_biomass_dry_prod / 100. # Mt
-        production_dedicated_to_biomass_wet = net_production * share_dedicated_to_biomass_wet_prod / 100. # Mt
-        production_dedicated_to_energy = production_dedicated_to_biomass_dry + production_dedicated_to_biomass_wet  # Mt
+        # split energy and food production land use and emissions
+        share_dedicated_to_food = 1
+        for stream in Crop.streams_energy_prod:
+            share_dedicated_to_food *= (1 - params[GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(stream)] / 100.)
+        # emissions
+        for ghg in GlossaryCore.GreenHouseGases:
+            outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] = production_before_waste * params[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] * share_dedicated_to_food  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
+            outputs[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = production_before_waste * params[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)] * (1 - share_dedicated_to_food)  # Mt_food * (kg{ghg}/kg_food) = 10^9 kg_food * kg_ghg / kg_food = 10^9 kg_ghg = Gt kg_ghg
 
-        production_for_consumers = net_production - production_dedicated_to_energy  # Mt
-        food_waste_before_distribution = production_for_consumers * share_food_waste_before_distribution / 100.  # Mt
+        # land use
+        outputs[GlossaryCore.CropFoodLandUseName + "_breakdown"] = share_dedicated_to_food * production_raw * params[GlossaryCore.FoodTypeLandUseByProdUnitName] / (10 ** 4)   # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
+        outputs[GlossaryCore.CropEnergyLandUseName + "_breakdown"] = (1 - share_dedicated_to_food) * production_raw * params[GlossaryCore.FoodTypeLandUseByProdUnitName] / (10 ** 4)   # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
 
-        food_waste_before_distribution_reused_for_energy_prod_biomass_dry = food_waste_before_distribution * share_waste_before_distrib_reused_for_energy_prod_biomass_dry / 100.  # Mt
-        food_waste_before_distribution_reused_for_energy_prod_biomass_wet = food_waste_before_distribution * share_waste_before_distrib_reused_for_energy_prod_biomass_wet / 100.  # Mt
+        net_production = production_before_waste - outputs[GlossaryCore.FoodTypeWasteByClimateDamagesName]  # Mt
+        production_for_consumers = net_production
+        for stream in Crop.streams_energy_prod:
+            outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] = net_production * params[GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(stream)] / 100.
+            production_for_consumers -= outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"]
 
-        production_delivered_to_consumers = production_for_consumers - food_waste_before_distribution  # Mt
-        food_waste_by_consumers = production_delivered_to_consumers * share_food_waste_by_consumers / 100. # Mt
-        consumers_waste_reused_for_energy_prod_biomass_dry = food_waste_by_consumers * share_user_waste_reused_for_energy_prod_biomass_dry / 100. # Mt
-        consumers_waste_reused_for_energy_prod_biomass_wet = food_waste_by_consumers * share_user_waste_reused_for_energy_prod_biomass_wet / 100. # Mt
+        food_waste_at_prod_and_distrib = production_for_consumers * params[GlossaryCore.FoodTypeWasteAtProdAndDistribShareName] / 100.  # Mt
+        for stream in Crop.streams_energy_prod:
+            outputs[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream) + "_breakdown"] = food_waste_at_prod_and_distrib * params[GlossaryCore.FoodTypeShareWasteBeforeDistribUsedToStreamProdName.format(stream)] / 100.  # Mt
 
-        total_biomass_dry_prod_available = production_dedicated_to_biomass_dry + food_waste_before_distribution_reused_for_energy_prod_biomass_dry + consumers_waste_reused_for_energy_prod_biomass_dry # Mt
-        total_biomass_wet_prod_available = production_dedicated_to_biomass_wet + food_waste_before_distribution_reused_for_energy_prod_biomass_wet + consumers_waste_reused_for_energy_prod_biomass_wet # Mt
+        production_delivered_to_consumers = production_for_consumers - food_waste_at_prod_and_distrib  # Mt
+        outputs[GlossaryCore.FoodTypeWasteByConsumersName] = production_delivered_to_consumers * params[GlossaryCore.FoodTypeWasteByConsumersShareName] / 100. # Mt
 
-        kcal_produced_for_consumers = production_delivered_to_consumers * kcal_per_prod_unit  # Mt * kcal/ kg = 10^9 kg * kcal/kg = 10^9 kcal  = G kcal
-        kcal_per_pers_per_day = kcal_produced_for_consumers / population / 365. * 1000  # Gkcal / (10^6 person) / (day) * 1000 = k kcal / person / day * 1000 = kcal / person / day
-        land_use_food = production_raw * (1 - share_dedicated_to_biomass_dry_prod / 100. + share_dedicated_to_biomass_wet_prod / 100.) * land_use_by_prod_unit / (10**5)  # Mt * m² / kg = 10^9 kg * m² / kg / 10^5= G m² / 10^5 = G ha
-        return {
-            GlossaryCore.FoodTypeLandUseName: land_use_food,
-            GlossaryCore.FoodTypeWasteAtProductionDistributionName: food_waste_before_distribution,
-            GlossaryCore.FoodTypeWasteByConsumersName: food_waste_by_consumers,
+        for stream in Crop.streams_energy_prod:
+            outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] = outputs[GlossaryCore.FoodTypeWasteByConsumersName] * params[GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(stream)] / 100. # Mt
+            outputs[GlossaryCore.CropProdForEnergyName.format(stream) + "_breakdown"] = \
+                outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] +\
+                outputs[GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(stream) + "_breakdown"] +\
+                outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] # Mt
+
+        kcal_produced_for_consumers = production_delivered_to_consumers * params[GlossaryCore.FoodTypeKcalByProdUnitName]  # Mt * kcal/ kg = 10^9 kg * kcal/kg = 10^9 kcal  = G kcal
+
+        outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue] = kcal_produced_for_consumers / population / 365. * 1000  # Gkcal / (10^6 person) / (day) * 1000 = k kcal / person / day * 1000 = kcal / person / day
+
+
+        outputs.update({
+            GlossaryCore.FoodTypeCapitalName: capital_food_type,
+            GlossaryCore.FoodTypeProductionName: production_for_consumers,
+            GlossaryCore.FoodTypeWasteAtProductionDistributionName: food_waste_at_prod_and_distrib,
             GlossaryCore.FoodTypeDeliveredToConsumersName: production_delivered_to_consumers,
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.CO2): co2_emissions_food,
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.CH4): ch4_emissions_food,
-            GlossaryCore.FoodTypeEmissionsName.format(GlossaryCore.N2O): n2o_emissions_food,
             GlossaryCore.FoodTypeNotProducedDueToClimateChangeName: production_wasted_by_productivity_loss,
-            GlossaryCore.FoodTypeWasteByClimateDamagesName: production_wasted_by_immediate_damages,
-
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.biomass_dry) + "_breakdown": production_dedicated_to_biomass_dry,
-            GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(GlossaryEnergy.wet_biomass) + "_breakdown": production_dedicated_to_biomass_wet,
-
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.biomass_dry) + "_breakdown": food_waste_before_distribution_reused_for_energy_prod_biomass_dry,
-            GlossaryCore.WasteBeforeDistribReusedForEnergyProdName.format(GlossaryEnergy.wet_biomass) + "_breakdown": food_waste_before_distribution_reused_for_energy_prod_biomass_wet,
-
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.biomass_dry) + "_breakdown": consumers_waste_reused_for_energy_prod_biomass_dry,
-            GlossaryCore.ConsumerWasteUsedForEnergyName.format(GlossaryEnergy.wet_biomass) + "_breakdown": consumers_waste_reused_for_energy_prod_biomass_wet,
-
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.biomass_dry) + "_breakdown": total_biomass_dry_prod_available,
-            GlossaryCore.CropProdForEnergyName.format(GlossaryEnergy.wet_biomass) + "_breakdown": total_biomass_wet_prod_available,
-
-            GlossaryCore.CaloriesPerCapitaBreakdownValue: kcal_per_pers_per_day,
-            "unused_energy" + "_breakdown": unused_energy,
-            "unused_workforce" + "_breakdown": unused_workforce,
-        }
-    @staticmethod
-    def compute_ratio(production_wo_ratio: np.ndarray,
-                      needs: dict[str: np.ndarray],
-                      availability: dict[str: np.ndarray]):
-        """compute ratio to apply to limit ratio"""
-
-        if set(needs.keys()) != set(availability.keys()):
-            raise ValueError("'needs' and 'available' dict inputs should have same keys")
-        ratios_dict = {}
-        for resource in needs.keys():
-            consumption_wo_ratio = production_wo_ratio * needs[resource]
-            availability_resource = availability[resource]
-            limiting_ratio_resource = np.minimum(availability_resource / consumption_wo_ratio, 1)
-            ratios_dict[resource] = limiting_ratio_resource
-
-        df_ratios = pd.DataFrame(ratios_dict)
-        limiting_input = [df_ratios.columns[i] for i in df_ratios.values.argmin(axis=1)]
-        applied_ratio = np.array(list(ratios_dict.values())).min(axis=0)
-        applied_ratio_df = pd.DataFrame({
-            'applied_ratio': applied_ratio,
-            'limiting_input': limiting_input
         })
-        return applied_ratio, applied_ratio_df, df_ratios
+
+        return outputs
 
     def compute_kcal_infos(self):
         self.outputs['kcal_dict_infos'] = {}
@@ -282,20 +292,24 @@ class Crop:
             )
         }
 
-        self.outputs['kcal_dict_infos']['Green house gases emissions (CO2eq/kcal)'] = {}
+        self.outputs['kcal_dict_infos']['Green house gases emissions (kgCO2eq/kcal)'] = {}
         for food_type in self.inputs[GlossaryCore.FoodTypesName]:
             co2_eq_per_kg_prod = sum([self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)][food_type] * ClimateEcoDiscipline.GWP_100_default[ghg]
                                       for ghg in GlossaryCore.GreenHouseGases])
             kcal_per_kg = self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName][food_type]
 
             # co2 eq / kcal = (co2eq/kg) / (kcal/kg)
-            self.outputs['kcal_dict_infos']['Green house gases emissions (CO2eq/kcal)'][food_type] = co2_eq_per_kg_prod / kcal_per_kg
+            self.outputs['kcal_dict_infos']['Green house gases emissions (kgCO2eq/kcal)'][food_type] = co2_eq_per_kg_prod / kcal_per_kg
 
-        self.outputs['kcal_dict_infos']['Capex ($/kcal)'] = { # $ / kcal * 1000 =  ($/ton) / (kcal / kg) * 1000  = ($ / 1000 ) / kcal * 1000 = $ / kcal
-            key: value1 / value2 * 1000 for (key, value1), value2 in zip(
-                self.inputs[GlossaryCore.FoodTypeCapexName].items(), self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName].values()
+        self.outputs['kcal_dict_infos']['Capital intensity ($/kcal)'] = {
+            # ($ / kg ) / (kcal / kg) = $ / kcal
+            key: 1 / value1 / value2 for (key, value1), value2 in zip(
+                self.inputs[GlossaryCore.FoodTypeCapitalIntensityName].items(), self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName].values()
             )
         }
+
+        for dict_name, dict_values in self.outputs['kcal_dict_infos'].items():
+            self.outputs['kcal_dict_infos'][dict_name] = dict(sorted(dict_values.items(), key=lambda item: item[1], reverse=True))
 
     def compute_kg_infos(self):
         self.outputs['kg_dict_infos'] = {}
@@ -304,7 +318,7 @@ class Crop:
             self.outputs['kg_dict_infos'][info_name.replace('kcal', 'kg')] = {key: value1 * value2 for (key, value1), value2 in zip(
                 dict_values.items(), self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName].values()
             )}
-        self.outputs['kg_dict_infos']['Capex ($/kg)'] = {
-            # $ / kg = ($ / ton) * 1000
-        key: value1 / 1000 for key, value1 in self.inputs[GlossaryCore.FoodTypeCapexName].items()
-        }
+        self.outputs['kg_dict_infos']['Capital intensity ($/kg)'] = {key: 1 / value1 for key, value1 in
+                                                         self.inputs[GlossaryCore.FoodTypeCapitalIntensityName].items()}
+        for dict_name, dict_values in self.outputs['kg_dict_infos'].items():
+            self.outputs['kg_dict_infos'][dict_name] = dict(sorted(dict_values.items(), key=lambda item: item[1], reverse=True))
