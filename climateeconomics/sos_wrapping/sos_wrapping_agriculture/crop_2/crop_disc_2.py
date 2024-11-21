@@ -224,7 +224,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             "Waste",
             'Land use',
             'Emissions',
-            'Crop for energy production',
+            'Energy production',
             "Food data (kcal)",
             "Food data (kg)",
         ]
@@ -410,7 +410,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                 unit=GlossaryCore.FoodTypeFoodGWPEmissionsVar['unit'],
                 df_total=None,
                 column_total=None,
-                note={"CO2eq": "computed on a 100-year scale."},
+                note={"CO2eq": "computed on a 100-year scale.",
+                      "Emissions": "does not include emissions due to land use change"},
                 post_proc_category="Emissions"
             )
             instanciated_charts.append(new_chart)
@@ -422,7 +423,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                     unit=GlossaryCore.CropFoodEmissionsVar['unit'],
                     df_total=outputs[GlossaryCore.CropFoodEmissionsName],
                     column_total=ghg,
-                    post_proc_category="Emissions"
+                    post_proc_category="Emissions",
+                    note={"Emissions": "does not include emissions due to land use change"}
                 )
                 instanciated_charts.append(new_chart)
 
@@ -433,7 +435,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                     unit=GlossaryCore.CropEnergyEmissionsVar['unit'],
                     df_total=outputs[GlossaryCore.CropEnergyEmissionsName],
                     column_total=ghg,
-                    post_proc_category="Emissions"
+                    post_proc_category="Emissions",
+                    note={"Emissions": "does not include emissions due to land use change"}
                 )
                 instanciated_charts.append(new_chart)
 
@@ -441,6 +444,16 @@ class CropDiscipline(ClimateEcoDiscipline):
             for stream in self.streams_energy_prod:
                 stream_nicer = stream.replace('_', ' ')
                 stream_nicer = stream_nicer.capitalize()
+                new_chart = self.get_breakdown_charts_on_food_type(
+                    df_all_food_types=outputs[GlossaryCore.CropProdForEnergyName.format(stream) + '_breakdown'],
+                    charts_name=f"Total crop production for {stream_nicer} stream (dedicated + waste reused)",
+                    unit=GlossaryCore.CropProdForEnergyVar['unit'],
+                    df_total=outputs[GlossaryCore.CropProdForEnergyName.format(stream)],
+                    column_total="Total",
+                    post_proc_category="Energy production",
+                )
+                instanciated_charts.append(new_chart)
+
                 new_chart = self.get_breakdown_charts_on_food_type(
                     df_all_food_types=outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + '_breakdown'],
                     charts_name=f"Dedicated crop production for {stream_nicer} stream",
@@ -483,7 +496,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     charts_name=output_name.split(' (')[0],
                     unit=unit,
                     post_proc_category="Food data (kcal)",
-                    note={"CO2 equivalent": "100-years basis"} if "emissions" in output_name.lower() else {}
+                    note={"CO2 equivalent": "100-years basis", "Emissions": "does not include emissions to land use change"} if "emissions" in output_name.lower() else {}
                 )
                 instanciated_charts.append(new_chart)
 

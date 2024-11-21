@@ -53,12 +53,13 @@ class Crop:
             self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = (GlossaryCore.CropEnergyEmissionsName, ghg)
 
         for stream in self.streams_energy_prod:
-            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] = (GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream), "Total")
+            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.CropProdForEnergyName.format(stream) + "_breakdown"] = (GlossaryCore.CropProdForEnergyName.format(stream), "Total")
 
         # non couplings + couplings
         self.dataframes_to_totalize_by_food_type = self.dataframes_to_totalize_by_food_type_couplings
 
         for stream in self.streams_energy_prod:
+            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] = (GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream), "Total")
             self.dataframes_to_totalize_by_food_type[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream) + "_breakdown"] = (GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream), "Total")
             self.dataframes_to_totalize_by_food_type[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] = (GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream), "Total")
 
@@ -302,7 +303,6 @@ class Crop:
         for food_type in self.inputs[GlossaryCore.FoodTypesName]:
             co2_eq_per_kg_prod = sum([self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)][food_type] * ClimateEcoDiscipline.GWP_100_default[ghg]
                                       for ghg in GlossaryCore.GreenHouseGases])
-            print(food_type, co2_eq_per_kg_prod)
             kcal_per_kg = self.inputs[GlossaryCore.FoodTypeKcalByProdUnitName][food_type]
 
             # co2 eq / kcal = (co2eq/kg) / (kcal/kg)

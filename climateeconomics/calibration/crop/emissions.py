@@ -109,15 +109,49 @@ modeled_emissions_ch4 = sum(dict_of_production_in_megatons_2021[ft] * ch4_emissi
 print("Relative error on modeled agriculture CH4 emissions in 2021:")
 print((modeled_emissions_ch4 - agri_emissions_including_biofuel) / agri_emissions_including_biofuel)
 
-# Focus N2O emissions ... todo
-#https://www.statista.com/statistics/1351550/agriculture-nitrous-oxide-emissions-worldwide/#:~:text=Global%20emissions%20of%20nitrous%20oxides,than%2025%20percent%20since%201990.
+# Focus N2O emissions ... #https://www.statista.com/statistics/1351550/agriculture-nitrous-oxide-emissions-worldwide/#:~:text=Global%20emissions%20of%20nitrous%20oxides,than%2025%20percent%20since%201990.
 agriculture_2021_n2o_emissions = 2.31 * 1e3 / ClimateEcoDiscipline.GWP_100_default[GlossaryCore.N2O]  # Mt
 
-modeled_emissions_breakdown_n2o = {ft : dict_of_production_in_megatons_2021[ft] * n2o_emissions[ft] for ft in n2o_emissions.keys()}
+ft_wo_other = [ft for ft in n2o_emissions.keys() if ft != GlossaryCore.OtherFood]
+modeled_emissions_breakdown_n2o = {ft : dict_of_production_in_megatons_2021[ft] * n2o_emissions[ft] for ft in ft_wo_other}
 modeled_agriculture_n2o_emissions_2021_wo_other = sum(modeled_emissions_breakdown_n2o.values())
 missing_n2o_emissions = agriculture_2021_n2o_emissions - modeled_agriculture_n2o_emissions_2021_wo_other
+if missing_n2o_emissions < 0:
+    raise Exception("Error in tuning N2O emissions")
 print("Relative error on modeled agriculture N2O emissions in 2021:")
-print((modeled_agriculture_n2o_emissions_2021_wo_other - agriculture_2021_n2o_emissions) / agriculture_2021_n2o_emissions)
+n2o_emissions[GlossaryCore.OtherFood] = missing_n2o_emissions / dict_of_production_in_megatons_2021[GlossaryCore.OtherFood]
+modeled_emissions_breakdown_n2o[GlossaryCore.OtherFood] = dict_of_production_in_megatons_2021[GlossaryCore.OtherFood] * n2o_emissions[GlossaryCore.OtherFood]
+modeled_emissions_n2o = sum(modeled_emissions_breakdown_n2o.values())
+print((modeled_emissions_n2o - agriculture_2021_n2o_emissions) / agriculture_2021_n2o_emissions)
+
+
+modeled_emissions_co2 = sum(dict_of_production_in_megatons_2021[ft] * co2_emissions[ft] for ft in co2_emissions.keys())
+total_emissions_of_agri_excluding_land_use_change = 5.3 # GtCO2eq https://openknowledge.fao.org/bitstreams/487c7f4e-91ff-4d23-b1e4-f72dd867e939/download#:~:text=Of%20the%20three%20components%20that,change%20(3.1%20Gt%20CO2eq).
+
+total_ghg_eq_modeled = (modeled_emissions_co2 * ClimateEcoDiscipline.GWP_100_default[GlossaryCore.CO2] +
+                        modeled_emissions_ch4 * ClimateEcoDiscipline.GWP_100_default[GlossaryCore.CH4] +
+                        modeled_emissions_n2o * ClimateEcoDiscipline.GWP_100_default[GlossaryCore.N2O])\
+                       / 1e3
+
+print("Relative error on total agriculture emissions in 2021:")
+print((round((total_ghg_eq_modeled - total_emissions_of_agri_excluding_land_use_change) / total_emissions_of_agri_excluding_land_use_change, 2)))
+
+# Our crop discipline should not include emissions associated to land use change. However it is hard to know in every data found if it is included or not. It appears that most of the time it is.
+# Without any rescaling, the total of CO2Eq emissions is closer to total emissions (food + land use change (about 9-10 Gt https://openknowledge.fao.org/server/api/core/bitstreams/cc09fbbc-eb1d-436b-a88a-bed42a1f12f3/content) than only food (5.3 for 2021).
+# therefore we decided to rescale all unitary emissions prod by a factor so that the total emissions match the total emissions of agriculture excluding land use change.
+# By doing this we conserve the relative order of emissions between food types, which seemed very coherent.
+
+rescaling_factor = 0.5226  # found by hand
+new_total_emissions_co2eq = 0
+for ghg, dict_emissions in zip(
+        [GlossaryCore.CO2, GlossaryCore.CH4, GlossaryCore.N2O,],
+        [co2_emissions, ch4_emissions, n2o_emissions]):
+    for ft in dict_emissions.keys():
+        dict_emissions[ft] *= rescaling_factor
+        new_total_emissions_co2eq += dict_of_production_in_megatons_2021[ft] * dict_emissions[ft] * ClimateEcoDiscipline.GWP_100_default[ghg] / 1e3
+
+print("Relative error on total agriculture emissions in 2021 after rescaling:")
+print((new_total_emissions_co2eq - total_emissions_of_agri_excluding_land_use_change) / total_emissions_of_agri_excluding_land_use_change)
 
 
 to_export = {
