@@ -19,13 +19,23 @@ from typing import Union
 import numpy as np
 
 
-def solve_share_prod_waste(total_share_waste, share_waste):
+def solve_share_prod_and_distrib_waste(total_share_waste, share_waste_consumers):
     # total_share_waste / 100 = share prod waste / 100 + share consumers waste/ 100 - share prod waste * share consumers / 10000
     # total_share_waste = share prod waste + share consumers waste - share prod waste * share consumers / 100
     # share prod waste ( 1 - share consumers / 100) = total_share_waste - share consumers waste
     # share prod waste  = total_share_waste - share consumers waste / ( 1 - share consumers / 100)
-    share_prod_waste = (total_share_waste - share_waste) / (1 - share_waste / 100)
+    share_prod_waste = (total_share_waste - share_waste_consumers) / (1 - share_waste_consumers / 100)
     return int(share_prod_waste * 100) / 100
+
+def solve_share_consumers_waste(total_share_waste, share_waste_supply_chain):
+    # 1 - total_share_waste / 100 = (1 - share prod waste / 100) * (1 - share consumers / 100)
+    # 1 - total_share_waste / 100 = 1 - share prod waste / 100 - share consumers / 100 + share prod waste * share consumers / 10000
+    #  total_share_waste  = share prod waste + share consumers -  share prod waste * share consumers / 100
+    # share consumers ( 1 - share prod waste / 100) = total_share_waste - share prod waste
+    # share consumers  = total_share_waste - share prod waste / ( 1 - share prod waste / 100)
+    share_consumers = (total_share_waste - share_waste_supply_chain) / (1 - share_waste_supply_chain / 100)
+    return round(share_consumers, 2)
+
 
 class CalibrationData:
     def __init__(self,
@@ -78,6 +88,9 @@ class CalibrationData:
             link=self.link + ';' + other.link,
             unit=self.unit,
         )
+
+    def __repr__(self):
+        return f"CalibrationData({self.varname}, {self.key}, {self.year}, {self.value}, {self.source}, {self.unit}, {self.link})"
 
 
 
