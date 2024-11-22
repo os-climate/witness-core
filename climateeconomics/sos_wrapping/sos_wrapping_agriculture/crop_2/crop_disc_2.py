@@ -18,8 +18,8 @@ import copy
 import logging
 from typing import Union
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import plotly.colors
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -627,7 +627,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=invests,
-            charts_name=f"Investments",
+            charts_name="Investments",
             unit=GlossaryCore.FoodTypesInvestVar["unit"],
             df_total=None,
             column_total=None,
@@ -638,7 +638,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=capital,
-            charts_name=f"Capital",
+            charts_name="Capital",
             unit=GlossaryCore.FoodTypeCapitalVar["unit"],
             df_total=None,
             column_total=None,
@@ -650,7 +650,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=non_use_capital,
-            charts_name=f"Non used dapital",
+            charts_name="Non used dapital",
             unit=GlossaryCore.FoodTypeCapitalVar["unit"],
             df_total=None,
             column_total=None,
@@ -663,7 +663,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         capital_usage_ratio[GlossaryCore.Years] = years
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=capital_usage_ratio,
-            charts_name=f"Capital usage ratio",
+            charts_name="Capital usage ratio",
             unit="%",
             df_total=None,
             column_total=None,
@@ -677,7 +677,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         energy_attribution_per_capital[GlossaryCore.Years] = years
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=energy_attribution_per_capital,
-            charts_name=f"Energy attribution per capital unit",
+            charts_name="Energy attribution per capital unit",
             unit="PWh/G$",
             df_total=None,
             column_total=None,
@@ -692,7 +692,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=workorce_attribution_per_capital,
-            charts_name=f"Workforce attribution per capital unit",
+            charts_name="Workforce attribution per capital unit",
             unit="Million workers/G$",
             df_total=None,
             column_total=None,

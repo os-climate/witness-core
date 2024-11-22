@@ -18,11 +18,9 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-
-from climateeconomics.database import DatabaseWitnessCore
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.study_manager.study_manager import StudyManager
 
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
