@@ -17,6 +17,12 @@ limitations under the License.
 from climateeconomics.calibration.crop.tools import solve_share_prod_and_distrib_waste, solve_share_consumers_waste
 from climateeconomics.glossarycore import GlossaryCore
 
+# Methodology:
+# Most of the time FAO gives total production and total quantity wasted at supply chain
+# -> we can deduce share of waste at supply chain
+# Then if we are lucky we have the share of waste by consumers at home
+# Otherwise we can find or assume a total waste end to end and deduce the share of waste by consumers at home
+
 # FAO data food avalaible for consumption per pers per year
 # https://ourworldindata.org/agricultural-production
 food_waste_share_supply_chain = {

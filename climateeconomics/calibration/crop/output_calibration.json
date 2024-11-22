@@ -1,56 +1,4 @@
 {
-    "capital_start_food_type": {
-        "red meat": 565.0,
-        "white meat": 417.0,
-        "milk": 865.0,
-        "eggs": 97.0,
-        "rice": 122.0,
-        "maize": 32.0,
-        "cereals": 219.0,
-        "fruits and vegetables": 377.0,
-        "fish": 715.0,
-        "sugar cane": 19.0,
-        "other": 2774.0
-    },
-    "capital_intensity_food_type": {
-        "red meat": 0.19,
-        "white meat": 0.61,
-        "milk": 0.82,
-        "eggs": 0.89,
-        "rice": 5.5,
-        "maize": 5.53,
-        "cereals": 2.86,
-        "fruits and vegetables": 5.41,
-        "fish": 0.24,
-        "sugar cane": 2.98,
-        "other": 0.52
-    },
-    "invest_food_type_share_start": {
-        "red meat": 9.11,
-        "white meat": 6.73,
-        "milk": 13.95,
-        "eggs": 1.56,
-        "rice": 1.97,
-        "maize": 0.52,
-        "cereals": 3.53,
-        "fruits and vegetables": 6.08,
-        "fish": 11.53,
-        "sugar cane": 0.31,
-        "other": 44.74
-    },
-    "invest_food_type_start": {
-        "red meat": 5201.81,
-        "white meat": 3842.83,
-        "milk": 7965.45,
-        "eggs": 890.76,
-        "rice": 1124.87,
-        "maize": 296.92,
-        "cereals": 2015.63,
-        "fruits and vegetables": 3471.68,
-        "fish": 6583.63,
-        "sugar cane": 177.01,
-        "other": 25546.54
-    },
     "food_type_waste_at_supply_chain_share": {
         "fish": 6.78,
         "rice": 4.35,
@@ -193,5 +141,70 @@
         "rice": 0.0019569573462762365,
         "maize": 0.0015655658770209896,
         "sugar cane": 0.0025049054032335832
+    },
+    "food_type_prod_unit_land_use": {
+        "red meat": 277.02,
+        "white meat": 11.64,
+        "milk": 7.19,
+        "eggs": 5.03,
+        "rice": 1.69,
+        "maize": 1.37,
+        "cereals": 1.94,
+        "fruits and vegetables": 0.46,
+        "fish": 0.0,
+        "sugar cane": 0.11,
+        "other": 4.1
+    },
+    "capital_start_food_type": {
+        "red meat": 565.0,
+        "white meat": 417.0,
+        "milk": 865.0,
+        "eggs": 97.0,
+        "rice": 122.0,
+        "maize": 32.0,
+        "cereals": 219.0,
+        "fruits and vegetables": 377.0,
+        "fish": 715.0,
+        "sugar cane": 19.0,
+        "other": 2774.0
+    },
+    "capital_intensity_food_type": {
+        "red meat": 0.19,
+        "white meat": 0.61,
+        "milk": 0.82,
+        "eggs": 0.89,
+        "rice": 5.5,
+        "maize": 5.53,
+        "cereals": 2.86,
+        "fruits and vegetables": 5.41,
+        "fish": 0.24,
+        "sugar cane": 2.98,
+        "other": 0.52
+    },
+    "invest_food_type_share_start": {
+        "red meat": 9.11,
+        "white meat": 6.73,
+        "milk": 13.95,
+        "eggs": 1.56,
+        "rice": 1.97,
+        "maize": 0.52,
+        "cereals": 3.53,
+        "fruits and vegetables": 6.08,
+        "fish": 11.53,
+        "sugar cane": 0.31,
+        "other": 44.74
+    },
+    "invest_food_type_start": {
+        "red meat": 5201.81,
+        "white meat": 3842.83,
+        "milk": 7965.45,
+        "eggs": 890.76,
+        "rice": 1124.87,
+        "maize": 296.92,
+        "cereals": 2015.63,
+        "fruits and vegetables": 3471.68,
+        "fish": 6583.63,
+        "sugar cane": 177.01,
+        "other": 25546.54
     }
 }

@@ -161,7 +161,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.CropEnergyLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for energy production in first intention. That is "},
                     GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
                     GlossaryCore.FoodTypeFoodGWPEmissionsName: GlossaryCore.FoodTypeFoodGWPEmissionsVar,
-                    "non_used_capital_breakdown": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"}
+                    "non_used_capital_breakdown": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"},
+                    "food_per_capita_per_year": {"type": "dataframe", "unit": "kg/pers/year", "description": "Quantity of food available for consumption per capita by year"},
                 }
 
                 for stream in self.streams_energy_prod:
@@ -261,6 +262,17 @@ class CropDiscipline(ClimateEcoDiscipline):
                 unit=GlossaryCore.CaloriesPerCapitaBreakdown['unit'],
                 df_total=outputs[GlossaryCore.CaloriesPerCapitaValue],
                 column_total="kcal_pc",
+                post_proc_category="Production",
+            )
+            instanciated_charts.append(new_chart)
+
+        if "Production" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=outputs["food_per_capita_per_year"],
+                charts_name="Food per capita",
+                unit="kg/person",
+                df_total=None,
+                column_total=None,
                 post_proc_category="Production",
             )
             instanciated_charts.append(new_chart)

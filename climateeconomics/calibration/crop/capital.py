@@ -14,15 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import json
-
 import numpy as np
 from scipy.optimize import minimize
 
 from climateeconomics.calibration.crop.productions import dict_of_production_in_megatons_2021
-from climateeconomics.calibration.crop.shares_of_waste import to_export as to_export
-from climateeconomics.calibration.crop.productions import to_export as to_export_productions
-from climateeconomics.calibration.crop.emissions import to_export as to_export_emissions
 
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
@@ -31,12 +26,12 @@ from climateeconomics.glossarycore import GlossaryCore
 
 # We want the discipline to output a production for each food type, based on a capital.
 # We have the total capital for agriculture in 2021, and we want to distribute it among the food types.
-# We have the production in megatons for each food type in 2021.
+# We have the production in megatons for each food type in 2021. (from production calibration script)
 # Chat GPT gave the following estimation for capex intensity for each food type which makes sense
 # We want to find the capex per ton for each food type that will match the total capital for agriculture in 2021.
 # We will use a loss function that will be the relative difference between the total capital modeled and the actual capital for agriculture in 2021.
 # We will use the scipy minimize function to find the optimal capex per ton for each food type, in order to match the total capital for agriculture in 2021 AND production of each food type.
-# Then we will be able to obtain the capital of each food type : Actual produciton * deduced capex per ton
+# Then we will be able to obtain the capital of each food type : production * deduced capex per ton
 # We also have the investments for the agriculture sector in 2021, we will distribute it among the food types proportionally to the capital share of each food type, to deduce the investment for each food type.
 
 
@@ -120,15 +115,9 @@ capital_intensity_food_types = {food_type: np.round(dict_of_production_in_megato
 invest_food_type_share_start = {food_type: share_of_capital_sector_food_type[food_type] for food_type in GlossaryCore.DefaultFoodTypesV2}
 invest_food_type_start = {food_type: np.round(invest_food_type_share_start[food_type] * DatabaseWitnessCore.SectorAgricultureInvest2021.value * 1000, 2) for food_type in GlossaryCore.DefaultFoodTypesV2} # in billion $
 # Save the dictionaries to a JSON file
-data_to_save = {
+to_export = {
     "capital_start_food_type": capital_start_food_type_breakdown,
     "capital_intensity_food_type": capital_intensity_food_types,
     "invest_food_type_share_start": share_of_capital_sector_food_type, # at year start we invest in each food type proportionally to the capital share
     "invest_food_type_start": invest_food_type_start,
-    **to_export,
-    **to_export_productions,
-    **to_export_emissions
 }
-
-with open('output_calibration.json', 'w') as json_file:
-    json.dump(data_to_save, json_file, indent=4)
