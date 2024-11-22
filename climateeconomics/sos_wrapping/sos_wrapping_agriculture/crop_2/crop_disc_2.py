@@ -699,8 +699,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             post_proc_category="Investments and capital usage",
         )
         charts.append(new_chart)
-        for chart in charts:
-            chart.to_plotly().show()
+
         return charts
 
 
