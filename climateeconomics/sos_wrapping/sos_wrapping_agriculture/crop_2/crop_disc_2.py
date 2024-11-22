@@ -20,7 +20,6 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-import plotly.colors
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -293,6 +292,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         if "Investments and capital usage" in charts:
             charts = self.get_charts_capital_usages()
+            instanciated_charts.extend(charts)
 
 
 
@@ -701,24 +701,3 @@ class CropDiscipline(ClimateEcoDiscipline):
         charts.append(new_chart)
 
         return charts
-
-
-
-def generate_distinct_colors(labels: list[str]):
-    """
-    Generate a dictionary of distinct plotly colors for a given list of labels.
-
-    :param labels: List of string labels
-    :return: Dictionary mapping each label to a distinct plotly color
-    """
-    # Get a list of plotly colors
-    plotly_colors = plotly.colors.qualitative.Plotly
-
-    # Ensure we have enough colors for the labels
-    if len(labels) > len(plotly_colors):
-        raise ValueError("Not enough distinct colors available for the given labels")
-
-    # Create a dictionary mapping each label to a distinct color
-    color_dict = {label: plotly_colors[i % len(plotly_colors)] for i, label in enumerate(labels)}
-
-    return color_dict
