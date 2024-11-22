@@ -1939,27 +1939,14 @@ class GlossaryCore:
         #Sources:
         #[1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
         #[2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
-        "default": {
-            RedMeat: 345.,
-            WhiteMeat: 14.5,
-            Milk: 8.95,
-            Eggs: 6.27,
-            Fish: 0.,
-            OtherFood: 5.1041,
-            # using yield values of https://ourworldindata.org/agricultural-production :
-            FruitsAndVegetables: round(10 / ((13.70 * 922 + 20.5 * 1160) / (922 + 1160)), 2), # weighted average of fruits and vegetables
-            Rice: round(10 / 4.74, 2),
-            Maize: round(10 / 5.87, 2),
-            Cereals: round(10 / 4.15, 2),
-            SugarCane: round(10 / 72.24, 2),
-        }
+        "default": crop_calibration_data[FoodTypeLandUseByProdUnitName]
     }
 
     CropFoodLandUseName = "crop_for_food_land_use"
     CropFoodLandUseVar = {
         "var_name": CropFoodLandUseName,
         "type": "dataframe",
-        "unit": "(Gha)",
+        "unit": "Gha",
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
@@ -1969,7 +1956,7 @@ class GlossaryCore:
     CropEnergyLandUseVar = {
         "var_name": CropEnergyLandUseName,
         "type": "dataframe",
-        "unit": "(Gha)",
+        "unit": "Gha",
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",

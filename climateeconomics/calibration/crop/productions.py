@@ -15,10 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import copy
-from climateeconomics.calibration.crop.shares_of_waste import food_waste_share_supply_chain
+
+from energy_models.glossaryenergy import GlossaryEnergy
+
+from climateeconomics.calibration.crop.shares_of_waste import (
+    food_waste_share_supply_chain,
+)
 from climateeconomics.calibration.crop.tools import CalibrationData
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
+
+# Methodology:
+# - We use FAO data to get the food available for consumption per person per year in kg (Not always).
+# Available for consumption mean Net production - waste at supply chain. It does not include waste at home.
+# When kg per pers per year is not available on FAO, we use "Production allocated to human food" and divide it by population
+# We want to have the same kg per person per food type as in FAO in our model
+# We deduce the production for human food as food per pers / (1 - share of waste at supply chain) * population
 
 population_2021 = 7_954_448_391
 

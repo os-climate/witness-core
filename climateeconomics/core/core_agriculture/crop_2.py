@@ -92,10 +92,8 @@ class Crop:
     def get_params_food_type(self, food_type: str):
         params_food_type= {}
         for param in self.params_for_food_types:
-            try:
-                params_food_type[param] = self.inputs[param][food_type] if isinstance(self.inputs[param], dict) else self.inputs[param][food_type].values
-            except:
-                a = 1
+            params_food_type[param] = self.inputs[param][food_type] if isinstance(self.inputs[param], dict) else self.inputs[param][food_type].values
+
         return params_food_type
 
     def init_dataframes(self):
@@ -108,7 +106,8 @@ class Crop:
             GlossaryCore.FoodTypeWasteByClimateDamagesName,
             GlossaryCore.FoodTypeDeliveredToConsumersName,
             GlossaryCore.FoodTypeCapitalName,
-            GlossaryCore.FoodTypeFoodGWPEmissionsName
+            GlossaryCore.FoodTypeFoodGWPEmissionsName,
+            "food_per_capita_per_year"
         ]
 
         for stream in self.streams_energy_prod:
@@ -276,8 +275,8 @@ class Crop:
                 outputs[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream) + "_breakdown"] + \
                 outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] # Mt
 
+        outputs["food_per_capita_per_year"] = production_delivered_to_consumers / population * 1000  # Mt / (M person) * 1000 = kg / person
         kcal_produced_for_consumers = production_delivered_to_consumers * params[GlossaryCore.FoodTypeKcalByProdUnitName]  # Mt * kcal/ kg = 10^9 kg * kcal/kg = 10^9 kcal  = G kcal
-
         outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue] = kcal_produced_for_consumers / population / 365. * 1000  # Gkcal / (10^6 person) / (day) * 1000 = k kcal / person / day * 1000 = kcal / person / day
 
 

@@ -14,10 +14,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.calibration.crop.productions import dict_of_production_in_megatons_2021, \
-    per_capita_prod_other_red_meat
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.calibration.crop.productions import (
+    dict_of_production_in_megatons_2021,
+)
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.glossarycore import GlossaryCore
+
+# Methodology for emissions calibration :
+# Some site gives the emissions in co2 eq per kg of food produced.
+# But hard to find the breakdown on all ghg (co2, ch4, n2o) for each food type.
+# Some data on methane is available so we used it.
+# We also have to total N2O emissions of agriculture in 2021.
+# We use it as a reference to add some n2o emissions to food types that requires fertilizers (rice, maize, sugar cane).
+# We also have the total methane emissions of agriculture in 2021.
+# Problem was then than when multiplying the emissions of each food type by their production, the co2eq emissions were not matching the total co2eq emissions of agriculture in 2021.
+# An explanation could be that the emissions of land use change are included in the emissions of food types. Which is rarely indicated in the data we found.
+# We decided to rescale all emissions so that the total co2eq emissions of agriculture in 2021 match the total co2eq emissions of agriculture in 2021 excluding land use change.
+# This way we conserve the relative order of emissions between food types, which seemed very coherent.
+# We dont want to include land use change emissions in our crop discipline, because in Witness it will be modeled in a separate discipline (Forest).
 
 # existing data from capgemini sharepoint.
 # Need to update with rice and maize and sugar cane
