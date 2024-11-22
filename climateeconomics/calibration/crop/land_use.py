@@ -15,7 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.calibration.crop.productions import dict_of_production_in_megatons_2021
+from climateeconomics.calibration.crop.productions import (
+    dict_of_production_in_megatons_2021,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 # Methodology:

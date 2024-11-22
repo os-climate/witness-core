@@ -16,11 +16,15 @@ limitations under the License.
 '''
 import json
 
-from climateeconomics.calibration.crop.shares_of_waste import to_export as to_export_shares_of_waste
-from climateeconomics.calibration.crop.productions import to_export as to_export_productions
+from climateeconomics.calibration.crop.capital import to_export as to_export_capital
 from climateeconomics.calibration.crop.emissions import to_export as to_export_emissions
 from climateeconomics.calibration.crop.land_use import to_export as to_export_land_use
-from climateeconomics.calibration.crop.capital import to_export as to_export_capital
+from climateeconomics.calibration.crop.productions import (
+    to_export as to_export_productions,
+)
+from climateeconomics.calibration.crop.shares_of_waste import (
+    to_export as to_export_shares_of_waste,
+)
 
 # All calibration is done with 2021 data as we found all the data we needed for this year.
 

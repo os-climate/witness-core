@@ -17,8 +17,9 @@ limitations under the License.
 import numpy as np
 from scipy.optimize import minimize
 
-from climateeconomics.calibration.crop.productions import dict_of_production_in_megatons_2021
-
+from climateeconomics.calibration.crop.productions import (
+    dict_of_production_in_megatons_2021,
+)
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 

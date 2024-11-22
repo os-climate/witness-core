@@ -418,7 +418,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         if "Emissions" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.FoodTypeFoodGWPEmissionsName],
-                charts_name=f"Emissions of food production in CO2eq",
+                charts_name="Emissions of food production in CO2eq",
                 unit=GlossaryCore.FoodTypeFoodGWPEmissionsVar['unit'],
                 df_total=None,
                 column_total=None,

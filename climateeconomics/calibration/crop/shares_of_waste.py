@@ -14,7 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.calibration.crop.tools import solve_share_prod_and_distrib_waste, solve_share_consumers_waste
+from climateeconomics.calibration.crop.tools import (
+    solve_share_consumers_waste,
+    solve_share_prod_and_distrib_waste,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 # Methodology:

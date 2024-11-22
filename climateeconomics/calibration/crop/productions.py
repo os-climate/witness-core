@@ -15,10 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import copy
-from climateeconomics.calibration.crop.shares_of_waste import food_waste_share_supply_chain
+
+from energy_models.glossaryenergy import GlossaryEnergy
+
+from climateeconomics.calibration.crop.shares_of_waste import (
+    food_waste_share_supply_chain,
+)
 from climateeconomics.calibration.crop.tools import CalibrationData
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 
 # Methodology:
 # - We use FAO data to get the food available for consumption per person per year in kg (Not always).
