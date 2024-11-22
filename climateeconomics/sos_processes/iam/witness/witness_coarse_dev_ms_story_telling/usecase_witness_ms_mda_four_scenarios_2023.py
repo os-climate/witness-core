@@ -11,7 +11,7 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.
+a limitations under the License.
 '''
 import pandas as pd
 
@@ -24,23 +24,22 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_tell
 class Study(StudyMSmdaTippingPoint35):
 
     def __init__(self, run_usecase=False, execution_engine=None):
-        super().__init__(file_path=__file__, run_usecase=run_usecase, execution_engine=execution_engine)
+        super().__init__(file_path=__file__, run_usecase=run_usecase, execution_engine=execution_engine, year_start=2023)
+        self.test_post_procs = True
 
     def setup_usecase(self, study_folder_path=None):
 
         values_dict = super().setup_usecase()
+
+        varnames = self.get_fullname_in_values_dict(values_dict, GlossaryCore.YearStart)
+        for varname in varnames:
+            values_dict[varname] = 2023
         tipping_point_variable = 'Damage.tp_a3'
         values_dict.update({
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE2}.{tipping_point_variable}': 6.081,
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE2B}.{tipping_point_variable}': 6.081,
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4}.{tipping_point_variable}': 6.081,
             f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7}.{tipping_point_variable}': 6.081,
-        })
-        values_dict.update({
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE2}.{GlossaryCore.YearStart}': 2023,
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE2B}.{GlossaryCore.YearStart}': 2023,
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE4}.{GlossaryCore.YearStart}': 2023,
-            f'{self.study_name}.{self.scatter_scenario}.{self.USECASE7}.{GlossaryCore.YearStart}': 2023,
         })
 
         values_dict_2023 = {}
@@ -56,4 +55,5 @@ class Study(StudyMSmdaTippingPoint35):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

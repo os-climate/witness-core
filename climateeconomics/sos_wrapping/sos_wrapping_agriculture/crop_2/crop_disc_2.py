@@ -18,6 +18,7 @@ import copy
 import logging
 from typing import Union
 
+import numpy as np
 import pandas as pd
 import plotly.colors
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -222,6 +223,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         chart_list = [
             "Production",
             "Damages",
+            "Investments and capital usage",
             "Waste",
             'Land use',
             'Emissions',
@@ -288,6 +290,11 @@ class CropDiscipline(ClimateEcoDiscipline):
                 lines=False,
             )
             instanciated_charts.append(new_chart)
+
+        if "Investments and capital usage" in charts:
+            charts = self.get_charts_capital_usages()
+
+
 
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
@@ -612,6 +619,90 @@ class CropDiscipline(ClimateEcoDiscipline):
         if note is not None:
             new_chart.annotation_upper_left = note
         return new_chart
+
+    def get_charts_capital_usages(self):
+        charts = []
+
+        invests = self.get_sosdisc_inputs(GlossaryCore.FoodTypesInvestName)
+
+        new_chart = self.get_breakdown_charts_on_food_type(
+            df_all_food_types=invests,
+            charts_name="Investments",
+            unit=GlossaryCore.FoodTypesInvestVar["unit"],
+            df_total=None,
+            column_total=None,
+            post_proc_category="Investments and capital usage",
+        )
+        charts.append(new_chart)
+        capital = self.get_sosdisc_outputs(GlossaryCore.FoodTypeCapitalName)
+
+        new_chart = self.get_breakdown_charts_on_food_type(
+            df_all_food_types=capital,
+            charts_name="Capital",
+            unit=GlossaryCore.FoodTypeCapitalVar["unit"],
+            df_total=None,
+            column_total=None,
+            post_proc_category="Investments and capital usage",
+        )
+        charts.append(new_chart)
+
+        non_use_capital = self.get_sosdisc_outputs("non_used_capital_breakdown")
+
+        new_chart = self.get_breakdown_charts_on_food_type(
+            df_all_food_types=non_use_capital,
+            charts_name="Non used dapital",
+            unit=GlossaryCore.FoodTypeCapitalVar["unit"],
+            df_total=None,
+            column_total=None,
+            post_proc_category="Investments and capital usage",
+        )
+        charts.append(new_chart)
+
+        years = capital[GlossaryCore.Years].values
+        capital_usage_ratio = (1 - non_use_capital/ capital) * 100
+        capital_usage_ratio[GlossaryCore.Years] = years
+        new_chart = self.get_breakdown_charts_on_food_type(
+            df_all_food_types=capital_usage_ratio,
+            charts_name="Capital usage ratio",
+            unit="%",
+            df_total=None,
+            column_total=None,
+            post_proc_category="Investments and capital usage",
+            lines=True
+        )
+        charts.append(new_chart)
+
+        energy_agri = self.get_sosdisc_inputs(f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}')
+        energy_attribution_per_capital = energy_agri[GlossaryCore.TotalProductionValue].values[:, np.newaxis] / capital
+        energy_attribution_per_capital[GlossaryCore.Years] = years
+        new_chart = self.get_breakdown_charts_on_food_type(
+            df_all_food_types=energy_attribution_per_capital,
+            charts_name="Energy attribution per capital unit",
+            unit="PWh/G$",
+            df_total=None,
+            column_total=None,
+            post_proc_category="Investments and capital usage",
+        )
+        charts.append(new_chart)
+
+        workforce_agri = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
+        workforce_agri = workforce_agri[[GlossaryCore.Years, GlossaryCore.SectorAgriculture]]
+        workorce_attribution_per_capital = workforce_agri[GlossaryCore.SectorAgriculture].values[:, np.newaxis] / capital
+        workorce_attribution_per_capital[GlossaryCore.Years] = years
+
+        new_chart = self.get_breakdown_charts_on_food_type(
+            df_all_food_types=workorce_attribution_per_capital,
+            charts_name="Workforce attribution per capital unit",
+            unit="Million workers/G$",
+            df_total=None,
+            column_total=None,
+            post_proc_category="Investments and capital usage",
+        )
+        charts.append(new_chart)
+        for chart in charts:
+            chart.to_plotly().show()
+        return charts
+
 
 
 def generate_distinct_colors(labels: list[str]):

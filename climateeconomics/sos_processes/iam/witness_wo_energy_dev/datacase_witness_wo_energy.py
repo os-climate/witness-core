@@ -187,17 +187,17 @@ class DataStudy():
 
         # -- load data from resource
         dc_resource = datacase_resource(
-            self.year_start, self.year_end, main_study=False)
+            year_start=self.year_start, year_end=self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
 
         # -- load data from land use
         dc_landuse = datacase_landuse(
-            self.year_start, self.year_end, name='.Land_Use_V2', extra_name='.EnergyMix')
+            year_start=self.year_start, year_end=self.year_end, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
         # -- load data from agriculture
         dc_agriculture_mix = datacase_agriculture_mix(
-            self.year_start, self.year_end, agri_techno_list=self.techno_dict)
+            year_start=self.year_start, year_end=self.year_end, agri_techno_list=self.techno_dict)
         dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
         dc_agriculture_mix.study_name = self.study_name
 
