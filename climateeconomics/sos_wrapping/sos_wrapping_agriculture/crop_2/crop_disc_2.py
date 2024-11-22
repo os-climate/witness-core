@@ -101,7 +101,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 years = list(range(year_start, year_end + 1))
                 dataframes_descriptors = {
                     GlossaryCore.Years: ("int", [1900, GlossaryCore.YearEndDefault], False),
-                    **{ft: ("float", None, False) for ft in food_types}
+                    **{ft: ("float", None, True) for ft in food_types}
                 }
                 # inputs
                 dynamic_inputs.update({
@@ -291,10 +291,8 @@ class CropDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if "Investments and capital usage" in charts:
-            charts = self.get_charts_capital_usages()
-            instanciated_charts.extend(charts)
-
-
+            charts_capital_usage = self.get_charts_capital_usages()
+            instanciated_charts.extend(charts_capital_usage)
 
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
