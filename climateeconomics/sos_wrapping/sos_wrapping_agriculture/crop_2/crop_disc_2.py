@@ -309,18 +309,6 @@ class CropDiscipline(ClimateEcoDiscipline):
             )
             instanciated_charts.append(new_chart)
 
-        if "Production" in charts:
-            new_chart = self.get_breakdown_charts_on_food_type(
-                df_all_food_types=outputs["non_used_capital_breakdown"],
-                charts_name="Non used capital",
-                unit=GlossaryCore.FoodTypeCapitalStartVar['unit'],
-                df_total=outputs["non_used_capital"],
-                column_total="Total",
-                post_proc_category="Production",
-                note={"Non used capital": "due to missing workforce or energy attribution to agriculture sector"}
-            )
-            instanciated_charts.append(new_chart)
-
         if "Damages" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.FoodTypeNotProducedDueToClimateChangeName],
