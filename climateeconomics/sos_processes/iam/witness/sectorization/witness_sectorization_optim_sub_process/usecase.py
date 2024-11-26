@@ -45,7 +45,7 @@ EXTRA_NAME = "WITNESS"
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault,
-                 bspline=False, run_usecase=False,
+                 bspline=True, run_usecase=False,
                  execution_engine=None, techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.dspace_size: int = 0
