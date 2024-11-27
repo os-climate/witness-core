@@ -21,6 +21,9 @@ import numpy as np
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.electricity.wind_onshore.wind_onshore_disc import (
+    WindOnshoreDiscipline,
+)
 from sostrades_optimization_plugins.models.design_var.design_var_disc import (
     DesignVarDiscipline,
 )
@@ -57,9 +60,11 @@ IEA_DISC = IEADataPreparationDiscipline.IEA_NAME
 
 DATA_DIR = Path(__file__).parents[4] / "data"
 
+
 def create_df_from_csv(filename: str, data_dir=DATA_DIR, **kwargs):
     """Creates a pandas DataFrame from a given filename"""
     return pd.read_csv(str(data_dir / filename), **kwargs)
+
 
 # usecase of witness full to evaluate a design space with NZE investments
 class Study(ClimateEconomicsStudyManager):
@@ -166,10 +171,8 @@ class Study(ClimateEconomicsStudyManager):
 
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
-
         dspace_file_name = 'invest_design_space_NZE.csv'
         dspace_out = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', dspace_file_name))
-
 
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
 
@@ -205,15 +208,20 @@ class Study(ClimateEconomicsStudyManager):
 
         invest_mix_file = 'investment_mix.csv'
         invest_mix = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', invest_mix_file))
-        hydro_prod_IEA = pd.read_csv(join(dirname(__file__), '../../../../data','IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv'))
+        hydro_prod_IEA = pd.read_csv(join(dirname(__file__), '../../../../data', 'IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv'))
         models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "models")[0]
         df_prod_iea = pd.read_csv(
             os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'data',
                          'IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv'))
         forest_invest_file = 'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
-        #dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
+        # dspace_df.to_csv('dspace_invest_cleaned_2.csv', index=False)
         crop_investment_df_NZE = DatabaseWitnessCore.CropInvestmentNZE.value
+
+        # Update Wind Onshore initial capex
+        onshore_infos_dict = WindOnshoreDiscipline.techno_infos_dict_default
+        onshore_infos_dict["Capex_init"] = 1242.2223847891785  # from data_energy/fitting/windpower.py
+
         invest_before_year_start_anaerobicdigestion = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['AnaerobicDigestion'], self.year_start), GlossaryEnergy.InvestValue: [0., 1.54817207, 1.64611214]})
         invest_before_year_start_hydropower = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['Hydropower'], self.year_start), GlossaryEnergy.InvestValue: [0., 102.49276698, 98.17710767]})
         invest_before_year_start_windonshore = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['WindOnshore'], self.year_start), GlossaryEnergy.InvestValue: [0., 125.73068603, 125.73068603]})
@@ -225,18 +233,19 @@ class Study(ClimateEconomicsStudyManager):
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Crop.crop_investment': crop_investment_df_NZE,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.initial_production': 4444.3, # from data_energy/fitting/hydropower.py
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.initial_production': 507.47, # from data_energy/fitting/gaseous_bioenergy.py
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.initial_production': 4444.3,  # from data_energy/fitting/hydropower.py
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.initial_production': 507.47,  # from data_energy/fitting/gaseous_bioenergy.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.initial_production': 1555.51,  # from data_energy/fitting/windpower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.initial_production': 111.08,  # from data_energy/fitting/windpower.py
-                                 #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.2236,  #result from data_energy/fitting/hydropower.py
-                                 #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.0137,  # result from data_energy/fitting/gaseous_bioenergy.py
-                                 #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
-                                 #f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
+                                 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.2236,  #result from data_energy/fitting/hydropower.py
+                                 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.0137,  # result from data_energy/fitting/gaseous_bioenergy.py
+                                 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
+                                 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InitialPlantsAgeDistribFactor}': 1.3313,  # result from data_energy/fitting/windpower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_anaerobicdigestion,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_hydropower,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_windonshore,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOffshore.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_year_start_windoffshore,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.WindOnshore.techno_infos_dict': onshore_infos_dict,
 
                                  })
 
@@ -314,5 +323,3 @@ if '__main__' == __name__:
     for graph in graph_list:
         graph.to_plotly().show()
     '''
-
-
