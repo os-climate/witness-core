@@ -102,14 +102,14 @@ The share of production dedicated to food:
 $$\text{share\ dedicated\ to\ food}[t] = \prod_{\text{stream}} \left( 1 - \frac{\text{Share Dedicated to Stream Production}[stream][t]}{100} \right)$$
 
 Production dedicated to energy (streams $S$ which can be Dry biomass or Wet biomass):
-$$\text{production\ dedicated\ to\ energy}[stream][t] = \text{production\ net}[t] \times \frac{\text{Share Dedicated to Stream Production}[stream][t]}{100}$$
+$$\text{prod\ dedicated\ to\ energy}[stream][t] = \text{prod\ net}[t] \times \frac{\text{Share Dedicated to Stream Prod}[stream][t]}{100}$$
 
 Production dedicated to consumers:
 $$\text{production\ dedicated\ to\ human\ food}[t] = \text{production\ net}[t] \times \text{share\ dedicated\ to\ food}[t]$$
 
 #### 3.3.1 Waste for food production
 Production wasted in the supply chain:
-$$\text{production\ wasted\ supply\ chain}[t] = \text{production\ dedicated\ to\ human\ food}[t] \times \frac{\text{Food Type Waste Supply Chain Share}}{100}$$
+$$\text{prod\ wasted\ supply\ chain}[t] = \text{prod\ dedicated\ to\ human\ food}[t] \times \frac{\text{Food Type Waste Supply Chain Share}}{100}$$
 
 Production delivered to consumers:
 $$\text{production\ delivered}[t] = \text{production\ dedicated\ to\ human\ food}[t] - \text{production\ wasted\ supply\ chain}[t]$$
@@ -128,10 +128,10 @@ $$\text{calories\ per\ capita\ per\ day}[t] = \frac{\text{production\ delivered}
 #### 3.3.3 Wasted food reused for energy production
 
 Production wasted in the supply chain and reused for energy production:
-$$\text{production\ wasted\ supply\ chain\ used\ to\ energy}[stream][t] = \text{production\ wasted\ supply\ chain}[t] \times \frac{\text{Food Type Share Waste Supply Chain Used To Stream Production}[stream]}{100}$$
+$$\text{production\ wasted\ supply\ chain\ used\ to\ energy}[stream][t] = \text{production\ wasted\ supply\ chain}[t] \times \\\frac{\text{Food Type Share Waste Supply Chain Used To Stream Production}[stream]}{100}$$
 
 Production wasted at the consumer level and reused for energy production:
-$$\text{production\ wasted\ by\ consumers\ used\ to\ energy}[stream][t] = \text{production\ wasted\ by\ consumers}[t] \times \frac{\text{Food Type Share Waste Supply Chain Used To Stream Production}[stream]}{100}$$
+$$\text{production\ wasted\ by\ consumers\ used\ to\ energy}[stream][t] = \text{production\ wasted\ by\ consumers}[t] \times \\ \frac{\text{Food Type Share Waste Supply Chain Used To Stream Production}[stream]}{100}$$
 
 #### 3.3.4 Total production for energy
 Total production for energy (streams $S$ which can be Dry biomass or Wet biomass):
@@ -141,16 +141,16 @@ $$\text{production\ for\ energy}[stream][t] = \text{production\ dedicated\ to\ e
 ### 3.4 Emissions
 
 #### 3.4.1 Emissions from Food Production
-$$\text{emissions\ for\ food\ production}[ghg][t] = \text{production\ dedicated\ to\ human\ food}[t] \times \text{Emissions By Prod Unit}[ghg]$$
+$$\text{emissions\ for\ food\ prod}[ghg][t] = \text{prod\ dedicated\ to\ human\ food}[t] \times \text{Emissions By Prod Unit}[ghg]$$
 
 Total emissions from food production (CO2eq):
 $$\text{food\ production\ emissions}[t] = \sum_{\text{ghg}} \text{emissions\ for\ food\ production}[ghg][t] \times \text{GWP}_{100-year}[ghg]$$
 
 #### 3.4.2 Emissions from Energy Production
-$$\text{emissions\ for\ energy\ production}[stream][ghg][t] = \text{production\ dedicated\ to\ energy}[stream][t] \times \text{Emissions By Prod Unit}[ghg]$$
+$$\text{emissions\ for\ energy\ production}[stream][ghg][t] = \text{production\ dedicated\ to\ energy}[stream][t] \times \\ \text{Emissions By Prod Unit}[ghg]$$
 
 Total emissions from energy production (CO2eq):
-$$\text{energy\ production\ emissions}[t] = \sum_{\text{stream}} \sum_{\text{ghg}} \text{emissions\ for\ energy\ production}[stream][ghg][t] \times \text{GWP}_{100-year}[ghg]$$
+$$\text{energy\ prod\ emissions}[t] = \sum_{\text{stream}} \sum_{\text{ghg}} \text{emissions\ for\ energy\ prod}[stream][ghg][t] \times \text{GWP}_{100-year}[ghg]$$
 
 
 ### 3.5 Land Use
