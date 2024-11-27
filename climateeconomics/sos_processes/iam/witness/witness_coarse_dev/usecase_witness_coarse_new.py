@@ -65,7 +65,7 @@ class Study(ClimateEconomicsStudyManager):
         self.energy_list = DEFAULT_ENERGY_LIST
         self.ccs_list = DEFAULT_CCS_LIST
         self.dc_energy = datacase_energy(
-            self.year_start, self.year_end, bspline=self.bspline, execution_engine=execution_engine,
+            year_start=self.year_start, year_end=self.year_end, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline,
             techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
@@ -96,8 +96,7 @@ class Study(ClimateEconomicsStudyManager):
         self.energy_mda_usecase = self.dc_energy
 
         # -- load data from witness
-        dc_witness = datacase_witness(
-            self.year_start, self.year_end)
+        dc_witness = datacase_witness(year_start=self.year_start, year_end=self.year_end)
         dc_witness.study_name = self.study_name
 
         witness_input_list = dc_witness.setup_usecase()

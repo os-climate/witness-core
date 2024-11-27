@@ -47,7 +47,7 @@ class Study(ClimateEconomicsStudyManager):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        witness_uc = usecase_witness_mda()
+        witness_uc = usecase_witness_mda(year_start=self.year_start, year_end=self.year_end)
         witness_uc.study_name = self.study_name
         data_witness = witness_uc.setup_usecase()
 

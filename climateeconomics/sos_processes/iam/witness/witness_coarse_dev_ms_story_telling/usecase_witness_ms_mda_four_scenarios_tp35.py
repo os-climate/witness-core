@@ -20,6 +20,7 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import (
     Study as usecase_witness_mda,
 )
@@ -47,21 +48,23 @@ class Study(ClimateEconomicsStudyManager):
     USECASE4 = '+ damage - tax, fossil 40%'
     USECASE7 = '+ damage + tax, NZE'
 
-    def __init__(self, file_path=__file__, bspline=False, run_usecase=False, execution_engine=None):
+    def __init__(self, file_path=__file__, bspline=False, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault):
         super().__init__(file_path=file_path, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
         self.check_outputs = False
         self.test_post_procs = False
+        self.year_start = year_start
+        self.year_end = year_end
 
     def setup_usecase(self, study_folder_path=None):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {usecase_ms_mda.USECASE2: usecase2(execution_engine=self.execution_engine),
-                         usecase_ms_mda.USECASE2B: usecase2b(execution_engine=self.execution_engine),
-                         usecase_ms_mda.USECASE4: usecase4(execution_engine=self.execution_engine),
-                         usecase_ms_mda.USECASE7: usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {usecase_ms_mda.USECASE2: usecase2(execution_engine=self.execution_engine, year_start=self.year_start, year_end=self.year_end),
+                         usecase_ms_mda.USECASE2B: usecase2b(execution_engine=self.execution_engine, year_start=self.year_start, year_end=self.year_end),
+                         usecase_ms_mda.USECASE4: usecase4(execution_engine=self.execution_engine, year_start=self.year_start, year_end=self.year_end),
+                         usecase_ms_mda.USECASE7: usecase7(execution_engine=self.execution_engine, year_start=self.year_start, year_end=self.year_end),
                          }
 
         scenario_list = list(scenario_dict.keys())
@@ -72,7 +75,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
         # setup mda
-        uc_mda = usecase_witness_mda(execution_engine=self.execution_engine)
+        uc_mda = usecase_witness_mda(execution_engine=self.execution_engine, year_start=self.year_start, year_end=self.year_end)
         uc_mda.study_name = self.study_name  # mda settings on root coupling
         values_dict.update(uc_mda.setup_mda())
         # assumes max of 16 cores per computational node

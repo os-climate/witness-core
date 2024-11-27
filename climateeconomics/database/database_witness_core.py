@@ -532,6 +532,27 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 11, 13),
     )
 
+    SectorAgricultureCapital2021 = ColectedData(
+        value=6.2,
+        unit="T$",
+        description="Sector Agriculture capital",
+        year_value=2021,
+        link="https://openknowledge.fao.org/server/api/core/bitstreams/19617d9a-65a5-4c83-b7a6-3e6b7dc7cbf5/content",
+        critical_at_year_start=False,
+        source="",
+        last_update_date=date(2024, 11, 19),
+    )
+
+    SectorAgricultureInvest2021 = ColectedData(
+        year_value=2021,
+        value=0.571,
+        unit='T$',  # constant 2015 USD
+        source='FAO',
+        description="Investment in the agricultural sector in 2021",
+        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content",
+        last_update_date=date(2024, 11, 19),
+    )
+
     SectorAgricultureProductivityStart = ColectedData(
         value=1.31162,
         unit="-",
