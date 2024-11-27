@@ -167,20 +167,25 @@ class GlossaryCore:
     Milk = "milk"
     Eggs = 'eggs'
     RiceAndMaize = 'rice and maize'
+    Rice = 'rice'
+    Maize = 'maize'
+    SugarCane = 'sugar cane'
     Cereals = 'cereals'
     FruitsAndVegetables = 'fruits and vegetables'
     Fish = "fish"
     OtherFood = "other"
     
-    DefaultFoodTypes = [
+    DefaultFoodTypesV2 = [
         RedMeat,
         WhiteMeat,
         Milk,
         Eggs,
-        RiceAndMaize,
+        Rice,
+        Maize,
         Cereals,
         FruitsAndVegetables,
         Fish,
+        SugarCane,
         OtherFood,
     ]
     
@@ -1727,7 +1732,7 @@ class GlossaryCore:
         "var_name": FoodTypesName,
         'type': 'list', 'subtype_descriptor': {'list': 'string'},
         'namespace': NS_CROP,
-        'default': DefaultFoodTypes
+        'default': DefaultFoodTypesV2
     }
 
     FoodTypesInvestName = "invest_food_type"
@@ -1766,31 +1771,33 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
         "description": "Depreciation rate of capital each year for each food type",
-        "default": {food_type: 5.8 for food_type in DefaultFoodTypes}
+        "default": {food_type: 5.8 for food_type in DefaultFoodTypesV2}
     }
 
-    FoodTypeWasteAtProdAndDistribShareName = "food_type_waste_at_prod_and_distrib_share"
-    FoodTypeWasteAtProductionShareVar = {
-        "var_name": FoodTypeWasteAtProdAndDistribShareName,
-        "type": "dataframe",
+    FoodTypeWasteSupplyChainShareName = "food_type_waste_at_supply_chain_share"
+    FoodTypeWasteSupplyChainShareVar = {
+        "var_name": FoodTypeWasteSupplyChainShareName,
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
-        "description": "Indicates what percentage of the production is wasted between production and distribution for each food type",
+        "default": crop_calibration_data[FoodTypeWasteSupplyChainShareName],
+        "description": "Indicates what percentage of the production is wasted during supply chain. It does not include waste by consumers",
     }
 
     FoodTypeWasteByConsumersShareName = "food_type_waste_by_consumers_share"
     FoodTypeWasteByConsumersShareVar = {
         "var_name": FoodTypeWasteByConsumersShareName,
-        "type": "dataframe",
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
+        "default": crop_calibration_data[FoodTypeWasteByConsumersShareName],
         "description": "Indicates what percentage of the production is wasted by the consumers for each food type",
     }
 
-    FoodTypeWasteAtProductionDistributionName = "food_type_waste_at_production_and_distrib"
-    FoodTypeWasteAtProductionDistributionVar = {
-        "var_name": FoodTypeWasteAtProductionDistributionName,
+    FoodTypeWasteAtSupplyChainName = "food_type_waste_at_supply_chain"
+    FoodTypeWasteAtSupplyChainVar = {
+        "var_name": FoodTypeWasteAtSupplyChainName,
         "type": "dataframe",
         "unit": "Mt",
-        "description": "Production wasted at production and distribution level for each food type",
+        "description": "Production wasted at supply chain for each food type",
     }
 
     FoodTypeWasteByConsumersName = "food_type_waste_by_consumers"
@@ -1815,22 +1822,6 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Mt",
         "description": "Dedicated production", # for energy production
-    }
-
-    FoodTypeUserWasteShareForStreamName = "food_type_share_of_user_waste_for_stream_{}"
-    FoodTypeUserWasteShareForStreamVar = {
-        "var_name": FoodTypeUserWasteShareForStreamName,
-        "type": "dataframe",
-        "unit": "Mt",
-        "description": "Share of the user waste that goes back for {} stream production",
-    }
-
-    FoodTypeWasteBeforeDistribShareForStreamName = "food_type_share_of_waste_before_distrib_for_stream_{}"
-    FoodTypeWasteBeforeDistribShareForStreamVar = {
-        "var_name": FoodTypeWasteBeforeDistribShareForStreamName,
-        "type": "dataframe",
-        "unit": "Mt",
-        "description": "Share of the waste happening before distribution that is used for {} stream production",
     }
 
     FoodTypeWasteByClimateDamagesName = "food_type_waste_by_climate_change"
@@ -1858,12 +1849,12 @@ class GlossaryCore:
         "description": "Share of the user waste that is used for stream {} to produce energy",
     }
 
-    FoodTypeShareWasteBeforeDistribUsedToStreamProdName = "food_type_share_user_waste_before_distribution_used_for_stream_{}_prod"
-    FoodTypeShareWasteBeforeDistrbUsedToStreamProdVar = {
-        "var_name": FoodTypeShareWasteBeforeDistribUsedToStreamProdName,
+    FoodTypeShareWasteSupplyChainUsedToStreamProdName = "food_type_share_supply_chain_waste_used_for_stream_{}_prod"
+    FoodTypeShareWasteSupplyChainUsedToStreamProdVar = {
+        "var_name": FoodTypeShareWasteSupplyChainUsedToStreamProdName,
         "type": "dataframe",
         "unit": "%",
-        "description": "Share of user waste happening before distribution used for stream {} to produce energy",
+        "description": "Share of waste happening at supply chain used for stream {} to produce energy",
     }
 
     # Food stream production
@@ -1874,12 +1865,12 @@ class GlossaryCore:
         "unit": "Mt",
         "description": "Consumers waste reused",
     }
-    WasteBeforeDistribReusedForEnergyProdName = "waste_before_distribution_used_for_energy_prod_{}"
-    WasteBeforeDistribReusedForEnergyProdVar = {
-        "var_name": WasteBeforeDistribReusedForEnergyProdName,
+    WasteSupplyChainReusedForEnergyProdName = "waste_at_supply_chain_reused_for_energy_prod_{}"
+    WasteSupplyChainReusedForEnergyProdVar = {
+        "var_name": WasteSupplyChainReusedForEnergyProdName,
         "type": "dataframe",
         "unit": "Mt",
-        "description": "Waste between production and distribution reused",
+        "description": "Food waste at supply chain reused for energy production",
     }
     CropDedicatedProdForEnergyName = "crop_dedicated_prod_for_energy_{}"
     CropDedicatedProdForEnergyVar = {
@@ -1920,16 +1911,23 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kcal/kg",
         "description": "Kcal per kg for each food type",
+        # from capgemini sharepoint
         "default": {
-            RedMeat: 1551.05,
-            WhiteMeat: 2131.99,
-            Milk: 921.76,
-            Eggs: 1425.07,
-            RiceAndMaize: 2572.46,
-            Cereals: 2964.99,
-            FruitsAndVegetables: 559.65,
-            Fish: 609.17,
-            OtherFood: 3061.06,
+            RedMeat: 2880,  # https://www.fatsecret.com/calories-nutrition/generic/beef-cooked-ns-as-to-fat-eaten?portionid=50030&portionamount=100.000
+            #https://www.fatsecret.com/calories-nutrition/generic/pork-cooked-ns-as-to-fat-eaten?portionid=50101&portionamount=100.000
+            #https://www.fatsecret.com/calories-nutrition/generic/chicken-ns-as-to-skin-eaten
+            WhiteMeat: (237 * 16.96 + 271 * 13.89) / (16.96 + 13.89) * 10,  # weighted average for chicken and pork
+            Milk: 650,  # https://www.dudhsagardairy.coop/health-nutrition/nutritional-facts/#:~:text=The%20calorie%2Fenergy%20content%20of,fat)%20provides%2035kcals%20%2F100ml.
+            Eggs: 1470,  # https://www.fatsecret.com/calories-nutrition/usda/egg-(whole)?portionid=56523&portionamount=100.000
+            Rice: 1350, #https://www.fatsecret.com/calories-nutrition/generic/rice-cooked?portionid=53182&portionamount=1000.000
+            Maize: 960, #https://www.healthline.com/nutrition/foods/corn#:~:text=Here%20are%20the%20nutrition%20facts,Calories%3A%2096
+            Cereals: 3670, # https://www.fatsecret.com/calories-nutrition/generic/cereal?portionid=53258&portionamount=100.000
+            # 200 for vegetables https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
+            # 580 for fruits  https://www.fatsecret.co.in/calories-nutrition/generic/fruit?portionid=54046&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2058%20calories%20in%20100%20grams%20of%20Fruit.
+            FruitsAndVegetables: (580 * 86.40 + 147.04 * 200) / (86.40 + 147.04),
+            Fish: 840,  # https://www.fatsecret.com/calories-nutrition/generic/fish-raw?portionid=50616&portionamount=100.000
+            SugarCane: 3750, # https://www.terrafreshfoods.com/products/sugar-cane#:~:text=in%20Latin%20America.-,Nutritional%20Value,and%20to%20increase%20our%20energy.
+            OtherFood: 2000,  # assumed
         }
     }
 
@@ -1941,24 +1939,14 @@ class GlossaryCore:
         #Sources:
         #[1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
         #[2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
-        "default": {
-            RedMeat: 345.,
-            WhiteMeat: 14.5,
-            Milk: 8.95,
-            Eggs: 6.27,
-            RiceAndMaize: 2.89,
-            Cereals: 4.5,
-            FruitsAndVegetables: 0.8,
-            Fish: 0.,
-            OtherFood: 5.1041,
-        }
+        "default": crop_calibration_data[FoodTypeLandUseByProdUnitName]
     }
 
     CropFoodLandUseName = "crop_for_food_land_use"
     CropFoodLandUseVar = {
         "var_name": CropFoodLandUseName,
         "type": "dataframe",
-        "unit": "(Gha)",
+        "unit": "Gha",
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
@@ -1968,7 +1956,7 @@ class GlossaryCore:
     CropEnergyLandUseVar = {
         "var_name": CropEnergyLandUseName,
         "type": "dataframe",
-        "unit": "(Gha)",
+        "unit": "Gha",
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
@@ -1997,6 +1985,13 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Gt",
         "description": "Food type {} emissions by food type for food production",
+    }
+
+    FoodTypeFoodGWPEmissionsName = "food_type_gwp_emissions_for_food"
+    FoodTypeFoodGWPEmissionsVar = {
+        "type": "dataframe",
+        "unit": "GtCO2Eq",
+        "description": "Food type global warming potential (100-year scale) emissions by food type for food production",
     }
 
     FoodTypeEnergyEmissionsName = "food_type_{}_emissions_for_energy"
