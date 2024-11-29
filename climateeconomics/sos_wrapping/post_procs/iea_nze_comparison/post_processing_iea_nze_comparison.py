@@ -391,9 +391,9 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.add_series(new_series)
 
         df_historical_df = pd.read_csv(
-            join(Path(__file__).parents[3], "data", 'world_gdp_vs_net_energy_consumption.csv'))
+            join(Path(__file__).parents[3], "data", 'primary-energy-consumption_vs_gdp.csv'))
         years_historical = df_historical_df['years'].values.tolist()
-        x_historical = df_historical_df['Net energy consumption [PWh]']
+        x_historical = df_historical_df['Primary energy consumption [PWh]']
         y_historical = df_historical_df['World GDP [T$]']
         new_series = InstanciatedSeries(
             x_historical.values.tolist(),
