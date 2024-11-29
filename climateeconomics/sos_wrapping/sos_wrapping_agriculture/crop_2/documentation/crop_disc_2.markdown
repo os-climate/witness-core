@@ -1,135 +1,161 @@
-# Crop Model Documentation
+# Documentation for Crop discipline
 
-## Overview
-The `compute_food_type` function in the `crop_2.py` file is responsible for computing various metrics for a specific food type. This function takes into account several inputs related to investments, energy consumption, workforce, productivity, emissions, and more. The outputs of this function provide detailed information on land use, greenhouse gas emissions, food waste, and other relevant data.
+This document provides an overview of the Crop discipline, which is part of the Agriculture sector in the Climate Economics Model. The Crop discipline is responsible for calculating the production, waste, and emissions associated with food production. The discipline considers the impact of climate change on crop productivity and the allocation of resources between food and energy production.
 
-## Outputs and Formulas
+The Crop discipline handles a list of food types which currenyly includes:
+- Red meat (representing beef, buffalo, lamb, mutton, sheep, goat, horse)
+- White meat (representing poultry, pig, turkey, rabbit)
+- Fish
+- Milk
+- Eggs
+- Rice
+- Maize
+- Other cereals (than rice and maize)
+- Sugar cane
+- Fruits and vegetables
+- Other (what remains and is not modeled explicitly)
 
-### Land Use for Food Production (`land_use_food`)
-**Formula:**
-\[ \text{land\_use\_food} = \text{production\_raw} \times \left(1 - \frac{\text{share\_dedicated\_to\_biomass\_dry\_prod}}{100} + \frac{\text{share\_dedicated\_to\_biomass\_wet\_prod}}{100}\right) \times \frac{\text{land\_use\_by\_prod\_unit}}{10^5} \]
-**Explanation:**
-- `production_raw`: Raw production based on investment and capital expenditure.
-- `share_dedicated_to_biomass_dry_prod`: Share of production dedicated to dry biomass.
-- `share_dedicated_to_biomass_wet_prod`: Share of production dedicated to wet biomass.
-- `land_use_by_prod_unit`: Land use required per unit of the food type.
+>__For each one of these food type, the function `compute_food_type` is applied. The rest of the document describes the inputs, outputs, and computational methodology of the function.__
 
-### Food Waste Before Distribution (`food_waste_before_distribution`)
-**Formula:**
-\[ \text{food\_waste\_before\_distribution} = \text{production\_for\_consumers} \times \frac{\text{share\_food\_waste\_before\_distribution}}{100} \]
-**Explanation:**
-- `production_for_consumers`: Net production available for consumers after accounting for biomass production.
-- `share_food_waste_before_distribution`: Share of food waste occurring before distribution.
 
-### Food Waste by Consumers (`food_waste_by_consumers`)
-**Formula:**
-\[ \text{food\_waste\_by\_consumers} = \text{production\_delivered\_to\_consumers} \times \frac{\text{share\_food\_waste\_by\_consumers}}{100} \]
-**Explanation:**
-- `production_delivered_to_consumers`: Production delivered to consumers after accounting for food waste before distribution.
-- `share_food_waste_by_consumers`: Share of food waste occurring by consumers.
+## 1. **Inputs**
 
-### Production Delivered to Consumers (`production_delivered_to_consumers`)
-**Formula:**
-\[ \text{production\_delivered\_to\_consumers} = \text{production\_for\_consumers} - \text{food\_waste\_before\_distribution} \]
-**Explanation:**
-- `production_for_consumers`: Net production available for consumers after accounting for biomass production.
-- `food_waste_before_distribution`: Food waste occurring before distribution.
+Below is the list of inputs required by the function:
 
-### CO2 Emissions from Food Production (`co2_emissions_food`)
-**Formula:**
-\[ \text{co2\_emissions\_food} = \text{production\_before\_waste} \times \text{co2\_emissions\_per\_prod\_unit} \times \left(1 - \frac{\text{share\_dedicated\_to\_biomass\_dry\_prod}}{100} - \frac{\text{share\_dedicated\_to\_biomass\_wet\_prod}}{100}\right) \]
-**Explanation:**
-- `production_before_waste`: Production before accounting for waste.
-- `co2_emissions_per_prod_unit`: CO2 emissions produced per unit of the food type.
-- `share_dedicated_to_biomass_dry_prod`: Share of production dedicated to dry biomass.
-- `share_dedicated_to_biomass_wet_prod`: Share of production dedicated to wet biomass.
+| **Input Name**                    | **Description**                                                                 |
+|------------------------------------|---------------------------------------------------------------------------------|
+| `energy_allocated_to_agri`         | Energy allocated to agricultural production (array, GJ/year).                  |
+| `workforce_agri`                   | Workforce dedicated to agricultural production (array, millions of workers).   |
+| `damage_fraction`                  | Fraction of damage caused by climate impacts (array, %).                       |
+| `crop_productivity_reduction`      | Reduction in crop productivity due to environmental factors (array, %).        |
+| `population`                       | Population data over time (array, millions).                                   |
+| `invest_food_type`                 | Investment in food production infrastructure (array, G$).                      |
+| `params`                           | A dictionary of model parameters, including constants and conversion factors.  |
 
-### CH4 Emissions from Food Production (`ch4_emissions_food`)
-**Formula:**
-\[ \text{ch4\_emissions\_food} = \text{production\_before\_waste} \times \text{ch4\_emissions\_per\_prod\_unit} \times \left(1 - \frac{\text{share\_dedicated\_to\_biomass\_dry\_prod}}{100} - \frac{\text{share\_dedicated\_to\_biomass\_wet\_prod}}{100}\right) \]
-**Explanation:**
-- `production_before_waste`: Production before accounting for waste.
-- `ch4_emissions_per_prod_unit`: CH4 emissions produced per unit of the food type.
-- `share_dedicated_to_biomass_dry_prod`: Share of production dedicated to dry biomass.
-- `share_dedicated_to_biomass_wet_prod`: Share of production dedicated to wet biomass.
+### Parameters in `params`
+- **Capital Parameters**:
+  - `FoodTypeCapitalStartName`: Initial capital for food type (G$).
+  - `FoodTypeCapitalDepreciationRateName`: Annual depreciation rate of capital (%).
+  - `FoodTypeCapitalIntensityName`: Production intensity per unit of capital (Mt/G$).
 
-### N2O Emissions from Food Production (`n2o_emissions_food`)
-**Formula:**
-\[ \text{n2o\_emissions\_food} = \text{production\_before\_waste} \times \text{n2o\_emissions\_per\_prod\_unit} \times \left(1 - \frac{\text{share\_dedicated\_to\_biomass\_dry\_prod}}{100} - \frac{\text{share\_dedicated\_to\_biomass\_wet\_prod}}{100}\right) \]
-**Explanation:**
-- `production_before_waste`: Production before accounting for waste.
-- `n2o_emissions_per_prod_unit`: N2O emissions produced per unit of the food type.
-- `share_dedicated_to_biomass_dry_prod`: Share of production dedicated to dry biomass.
-- `share_dedicated_to_biomass_wet_prod`: Share of production dedicated to wet biomass.
+- **Land Use and Emissions**:
+  - `FoodTypeLandUseByProdUnitName`: Land required per production unit (m²/kg).
+  - `FoodTypeEmissionsByProdUnitName.format(ghg)`: Emissions per production unit for each greenhouse gas (kgCO₂eq/kg).
+  - `FoodTypeShareDedicatedToStreamProdName.format(stream)`: Share of production dedicated to specific streams (%).
 
-### Production Wasted Due to Productivity Loss (`production_wasted_by_productivity_loss`)
-**Formula:**
-\[ \text{production\_wasted\_by\_productivity\_loss} = \text{production\_raw} \times \frac{\text{crop\_productivity\_reduction}}{100} \]
-**Explanation:**
-- `production_raw`: Raw production based on investment and capital expenditure.
-- `crop_productivity_reduction`: Reduction in crop productivity.
+- **Waste and Efficiency**:
+  - `FoodTypeWasteByConsumersShareName`: Fraction of consumer waste (%).
+  - `FoodTypeWasteSupplyChainShareName`: Fraction of supply chain waste (%).
+  - `FoodTypeShareWasteSupplyChainUsedToStreamProdName.format(stream)`: Share of supply chain waste reused in energy streams (%).
 
-### Production Wasted Due to Immediate Damages (`production_wasted_by_immediate_damages`)
-**Formula:**
-\[ \text{production\_wasted\_by\_immediate\_damages} = \text{production\_wasted\_by\_productivity\_loss} \times \text{damage\_fraction} \]
-**Explanation:**
-- `production_wasted_by_productivity_loss`: Production wasted due to productivity loss.
-- `damage_fraction`: Fraction of production lost due to damages.
+---
 
-### Production Dedicated to Dry Biomass (`production_dedicated_to_biomass_dry`)
-**Formula:**
-\[ \text{production\_dedicated\_to\_biomass\_dry} = \text{net\_production} \times \frac{\text{share\_dedicated\_to\_biomass\_dry\_prod}}{100} \]
-**Explanation:**
-- `net_production`: Net production after accounting for productivity loss and immediate damages.
-- `share_dedicated_to_biomass_dry_prod`: Share of production dedicated to dry biomass.
+## 2. **Outputs**
 
-### Production Dedicated to Wet Biomass (`production_dedicated_to_biomass_wet`)
-**Formula:**
-\[ \text{production\_dedicated\_to\_biomass\_wet} = \text{net\_production} \times \frac{\text{share\_dedicated\_to\_biomass\_wet\_prod}}{100} \]
-**Explanation:**
-- `net_production`: Net production after accounting for productivity loss and immediate damages.
-- `share_dedicated_to_biomass_wet_prod`: Share of production dedicated to wet biomass.
+Below are the outputs generated by the function:
 
-### Total Dry Biomass Production Available (`total_biomass_dry_prod_available`)
-**Formula:**
-\[ \text{total\_biomass\_dry\_prod\_available} = \text{production\_dedicated\_to\_biomass\_dry} + \text{food\_waste\_before\_distribution\_reused\_for\_energy\_prod\_biomass\_dry} + \text{consumers\_waste\_reused\_for\_energy\_prod\_biomass\_dry} \]
-**Explanation:**
-- `production_dedicated_to_biomass_dry`: Production dedicated to dry biomass.
-- `food_waste_before_distribution_reused_for_energy_prod_biomass_dry`: Food waste before distribution reused for dry biomass energy production.
-- `consumers_waste_reused_for_energy_prod_biomass_dry`: Consumers' waste reused for dry biomass energy production.
+| **Output Name**                           | **Description**                                                          |
+|-------------------------------------------|--------------------------------------------------------------------------|
+| `non_used_capital`              | Capital not utilized due to energy or workforce limitations (array, G$). |
+| `FoodTypeWasteByClimateDamagesName`       | Waste caused by climate damages (array, Mt).                             |
+| `FoodTypeFoodEmissionsName`               | Greenhouse gas emissions from food production (CO2, CH4 and N2O).        |
+| `CropFoodLandUseName`      | Land use for food production (array, Gha).                               |
+| `CropEnergyLandUseName`    | Land use for energy production (array, Gha).                             |
+| `food_per_capita_per_year`                | Food delivered per capita per year (array, kg/person/year).              |
+| `CaloriesPerCapitaBreakdownValue`         | Daily caloric supply per capita (array, kcal/person/day).                |
+| `FoodTypeProductionName`                  | Total production for consumers (array, Mt).                              |
+| `FoodTypeWasteAtSupplyChainName`          | Waste occurring in supply chain (array, Mt).                             |
+| `FoodTypeDeliveredToConsumersName`        | Food delivered to consumers after waste (array, Mt).                     |
+| `FoodTypeNotProducedDueToClimateChangeName` | Food production loss due to climate change (array, Mt).                  |
 
-### Total Wet Biomass Production Available (`total_biomass_wet_prod_available`)
-**Formula:**
-\[ \text{total\_biomass\_wet\_prod\_available} = \text{production\_dedicated\_to\_biomass\_wet} + \text{food\_waste\_before\_distribution\_reused\_for\_energy\_prod\_biomass\_wet} + \text{consumers\_waste\_reused\_for\_energy\_prod\_biomass\_wet} \]
-**Explanation:**
-- `production_dedicated_to_biomass_wet`: Production dedicated to wet biomass.
-- `food_waste_before_distribution_reused_for_energy_prod_biomass_wet`: Food waste before distribution reused for wet biomass energy production.
-- `consumers_waste_reused_for_energy_prod_biomass_wet`: Consumers' waste reused for wet biomass energy production.
+---
 
-### Calories Produced for Consumers (`kcal_produced_for_consumers`)
-**Formula:**
-\[ \text{kcal\_produced\_for\_consumers} = \text{production\_delivered\_to\_consumers} \times \text{kcal\_per\_prod\_unit} \]
-**Explanation:**
-- `production_delivered_to_consumers`: Production delivered to consumers after accounting for food waste before distribution.
-- `kcal_per_prod_unit`: Calories provided per unit of the food type.
+## 3. **Computational Methodology**
 
-### Calories per Person per Day (`kcal_per_pers_per_day`)
-**Formula:**
-\[ \text{kcal\_per\_pers\_per\_day} = \frac{\text{kcal\_produced\_for\_consumers}}{\text{population} \times 365} \times 1000 \]
-**Explanation:**
-- `kcal_produced_for_consumers`: Total calories produced for consumers.
-- `population`: Population data used for calculations.
+The function computes the outputs through a series of calculations. Below, the methodology for each output is described using LaTeX formulas.
 
-## Computation Steps
-1. **Investment, Energy, and Workforce Allocation**: Calculate the investment, energy, and workforce allocated to the specific food type.
-2. **Raw Production Calculation**: Compute the raw production based on investment and capital expenditure.
-3. **Limiting Ratio Calculation**: Determine the limiting ratio based on energy and workforce needs and availability.
-4. **Production Adjustments**: Adjust the raw production based on the limiting ratio, productivity loss, and immediate damages.
-5. **Emissions Calculation**: Compute the CO2, CH4, and N2O emissions based on production before waste and emissions per unit.
-6. **Net Production Calculation**: Calculate the net production after accounting for productivity loss and immediate damages.
-7. **Biomass Production Calculation**: Determine the production dedicated to dry and wet biomass.
-8. **Food Waste Calculation**: Compute the food waste before distribution and by consumers.
-9. **Energy Production from Waste**: Calculate the food waste reused for energy production.
-10. **Total Biomass Production Calculation**: Compute the total biomass production available for energy.
-11. **Calorie Calculation**: Determine the calories produced for consumers and the daily calories per person.
-12. **Land Use Calculation**: Compute the land use for food production based on raw production and land use per unit.
+### 3.1 Capital Computation
+Capital evolves based on depreciation and new investments:
+$$\text{capital\ food\ type}[t] = \text{capital\ food\ type}[t-1] \times \left( 1 - \frac{\text{Depreciation Rate}}{100} \right) + \text{invest\ food\ type}[t]$$
+
+The usable capital is limited by energy and workforce availability:
+$$\text{usable\ capital}[t] = \text{capital\ food\ type}[t] \times \min\left(1, \frac{\text{energy\ per\ capital}[t]}{\text{initial\ energy\ per\ capital}}, \frac{\text{workforce\ per\ capital}[t]}{\text{initial\ workforce\ per\ capital}}\right)$$
+
+### 3.2 Production Computation
+Production is based on usable capital and capital intensity:
+$$\text{production\ raw}[t] = \text{usable\ capital}[t] \times \text{Capital Intensity}$$
+
+Missing production to to productivity loss (climate change):
+$$\text{production\ wasted}[t] = \text{production\ raw}[t] \times \frac{\text{crop\ productivity\ reduction}[t]}{100}$$
+
+Production before waste:
+$$\text{production\ before\ waste}[t] = \text{production\ raw}[t] - \text{production\ wasted}[t]$$
+
+Production waste due to immediate climate damages (fires, droughts, etc.):
+$$\text{production\ wasted\ climate\ damages}[t] = \text{production\ before\ waste}[t] * \frac{\text{damage\ fraction}[t]}{100}$$
+
+Net production after climate damages:
+$$\text{production\ net}[t] = \text{production\ before\ waste}[t] - \text{production\ wasted\ climate\ damages}[t]$$
+
+### 3.3 Food and Energy Allocation
+The share of production dedicated to food:
+$$\text{share\ dedicated\ to\ food}[t] = \prod_{\text{stream}} \left( 1 - \frac{\text{Share Dedicated to Stream Production}[stream][t]}{100} \right)$$
+
+Production dedicated to energy (streams $S$ which can be Dry biomass or Wet biomass):
+$$\text{prod\ dedicated\ to\ energy}[stream][t] = \text{prod\ net}[t] \times \frac{\text{Share Dedicated to Stream Prod}[stream][t]}{100}$$
+
+Production dedicated to consumers:
+$$\text{production\ dedicated\ to\ human\ food}[t] = \text{production\ net}[t] \times \text{share\ dedicated\ to\ food}[t]$$
+
+#### 3.3.1 Waste for food production
+Production wasted in the supply chain:
+$$\text{prod\ wasted\ supply\ chain}[t] = \text{prod\ dedicated\ to\ human\ food}[t] \times \frac{\text{Food Type Waste Supply Chain Share}}{100}$$
+
+Production delivered to consumers:
+$$\text{production\ delivered}[t] = \text{production\ dedicated\ to\ human\ food}[t] - \text{production\ wasted\ supply\ chain}[t]$$
+
+Production wasted by consumers:
+$$\text{production\ wasted\ by\ consumers}[t] = \text{production\ delivered}[t] \times \frac{\text{Food Type Waste By Consumers Share}}{100}$$
+
+#### 3.3.2 Food per capita
+
+Food quantity per capita per year (kg/person):
+$$\text{food\ per\ capita\ per\ year}[t] = \frac{\text{production\ delivered}[t]}{\text{population}[t]}$$
+
+Caloric intake per capita per day (kcal/person/day):
+$$\text{calories\ per\ capita\ per\ day}[t] = \frac{\text{production\ delivered}[t] \times \text{Kcal Per Unit}}{\text{population}[t] \times 365}$$
+
+#### 3.3.3 Wasted food reused for energy production
+
+Production wasted in the supply chain and reused for energy production:
+$$\text{production\ wasted\ supply\ chain\ used\ to\ energy}[stream][t] = \text{production\ wasted\ supply\ chain}[t] \times \\\frac{\text{Food Type Share Waste Supply Chain Used To Stream Production}[stream]}{100}$$
+
+Production wasted at the consumer level and reused for energy production:
+$$\text{production\ wasted\ by\ consumers\ used\ to\ energy}[stream][t] = \text{production\ wasted\ by\ consumers}[t] \times \\ \frac{\text{Food Type Share Waste Supply Chain Used To Stream Production}[stream]}{100}$$
+
+#### 3.3.4 Total production for energy
+Total production for energy (streams $S$ which can be Dry biomass or Wet biomass):
+$$\text{production\ for\ energy}[stream][t] = \text{production\ dedicated\ to\ energy}[stream][t] + \text{production\ wasted\ supply\ chain\ used\ to\ energy}[stream][t] + \text{production\ wasted\ by\ consumers\ used\ to\ energy}[stream][t]$$
+
+
+### 3.4 Emissions
+
+#### 3.4.1 Emissions from Food Production
+$$\text{emissions\ for\ food\ prod}[ghg][t] = \text{prod\ dedicated\ to\ human\ food}[t] \times \text{Emissions By Prod Unit}[ghg]$$
+
+Total emissions from food production (CO2eq):
+$$\text{food\ production\ emissions}[t] = \sum_{\text{ghg}} \text{emissions\ for\ food\ production}[ghg][t] \times \text{GWP}_{100-year}[ghg]$$
+
+#### 3.4.2 Emissions from Energy Production
+$$\text{emissions\ for\ energy\ production}[stream][ghg][t] = \text{production\ dedicated\ to\ energy}[stream][t] \times \\ \text{Emissions By Prod Unit}[ghg]$$
+
+Total emissions from energy production (CO2eq):
+$$\text{energy\ prod\ emissions}[t] = \sum_{\text{stream}} \sum_{\text{ghg}} \text{emissions\ for\ energy\ prod}[stream][ghg][t] \times \text{GWP}_{100-year}[ghg]$$
+
+
+### 3.5 Land Use
+Land required for food production (Gha):
+$$\text{land\ use\ food}[t] = \text{share\ dedicated\ to\ food}[t] \times \text{production\ raw}[t] \times \frac{\text{Land Use Per Unit}}{10^4}$$
+
+Land required for energy production (Gha):
+$$\text{land\ use\ energy}[t] = (1 - \text{share\ dedicated\ to\ food}[t]) \times \text{production\ raw}[t] \times \frac{\text{Land Use Per Unit}}{10^4}$$
