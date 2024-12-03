@@ -144,6 +144,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             #graph.to_plotly().show()
             pass
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         #self.override_dump_jacobian = 1
         self.check_jacobian(location=dirname(__file__), filename='jacobian_crop_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
