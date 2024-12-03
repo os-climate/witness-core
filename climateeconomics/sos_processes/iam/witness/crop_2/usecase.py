@@ -71,10 +71,16 @@ class Study(StudyManager):
             GlossaryCore.TotalProductionValue: 2591. /1000.,  # PWh, 2020 value
         })
 
+        energy_mean_price = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.EnergyPriceValue: 100,
+        })
+
 
         inputs_dict = {
             f'{ns_study}.{GlossaryCore.YearStart}': self.year_start,
             f'{ns_study}.{GlossaryCore.YearEnd}': self.year_end,
+            f'{ns_study}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
             f'{ns_study}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
             f'{ns_study}.{GlossaryCore.WorkforceDfValue}': workforce_df,
             f'{ns_study}.{GlossaryCore.PopulationDfValue}': population_df,
@@ -89,5 +95,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

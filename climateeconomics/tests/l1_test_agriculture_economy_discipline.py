@@ -48,10 +48,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
-        self.crop_productivity_reduction = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(0, 12, year_range),  # fake
-        })
+
 
         self.damage_fraction = pd.DataFrame({
             GlossaryCore.Years: self.years,
