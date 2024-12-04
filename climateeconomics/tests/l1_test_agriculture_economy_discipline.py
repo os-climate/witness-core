@@ -30,7 +30,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2 i
 )
 
 
-class Crop2JacobianTestCase(AbstractJacobianUnittest):
+class JacobianTestCaseAgricultureEconomy(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return []
@@ -41,51 +41,57 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.name = 'Test'
-        self.model_name = 'crop_food'
+        self.model_name = f'model'
 
         self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
-        year_range = self.year_end - self.year_start + 1
 
-        self.crop_productivity_reduction = pd.DataFrame({
+        energy_mean_price = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(0, 12, year_range),  # fake
-        })
-
-        self.damage_fraction = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range), # 2020 value
+            GlossaryCore.EnergyPriceValue: 50.
         })
 
-        self.investments_food_types = pd.DataFrame({
-            GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
-            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest2021.value * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
-        })
-        self.workforce_df = pd.DataFrame({
+        ft_waste_by_prod_loss = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 1.2, year_range),  # millions of people (2020 value)
-        })
-        population_2021 = 7_954_448_391
-        self.population_df = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.PopulationValue: np.linspace(population_2021 / 1e6, 7870 * 1.2, year_range),  # millions of people (2021 value)
+            **{ft: 2.5 for ft in GlossaryCore.DefaultFoodTypesV2}
         })
 
-        self.enegy_agri = pd.DataFrame({
+        food_type_waste_by_climate_change = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: 2591. /1000.,  # PWh, 2020 value
+            **{ft: 4.5 for ft in GlossaryCore.DefaultFoodTypesV2}
+        })
+
+        food_type_delivered_to_consumers = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            **{ft: 60.5 for ft in GlossaryCore.DefaultFoodTypesV2}
+        })
+
+        crop_prod_for_all_streams = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            **{ft: 60.5 for ft in GlossaryCore.DefaultFoodTypesV2}
+        })
+
+        food_type_capital_breakdown = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            **{ft: 400. for ft in GlossaryCore.DefaultFoodTypesV2}
+        })
+
+        food_type_invest_breakdown = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            **{ft: 400. * 0.1 for ft in GlossaryCore.DefaultFoodTypesV2}
         })
 
         inputs_dict = {
             f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-            f'{self.name}.{GlossaryCore.CropProductivityReductionName}': self.crop_productivity_reduction,
-            f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
-            f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-            f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': self.enegy_agri,
-            f'{self.name}.{GlossaryCore.FoodTypesInvestName}': self.investments_food_types,
+            f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
+            f'{self.name}.{GlossaryCore.FoodTypeDeliveredToConsumersName}': food_type_delivered_to_consumers,
+            f'{self.name}.{GlossaryCore.CropProdForAllStreamName}': crop_prod_for_all_streams,
+            f'{self.name}.{GlossaryCore.FoodTypeNotProducedDueToClimateChangeName}': ft_waste_by_prod_loss,
+            f'{self.name}.{GlossaryCore.FoodTypeWasteByClimateDamagesName}': food_type_waste_by_climate_change,
+            f'{self.name}.{GlossaryCore.FoodTypeCapitalName}': food_type_capital_breakdown,
+            f'{self.name}.{GlossaryCore.FoodTypesInvestName}': food_type_invest_breakdown,
         }
 
         self.inputs_dict = inputs_dict
@@ -96,11 +102,12 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             GlossaryCore.NS_WITNESS: self.name,
             GlossaryCore.NS_CROP: f'{self.name}',
             'ns_sectors': f'{self.name}',
+            GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
         }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_economy_discipline.AgricultureEconomyDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -109,26 +116,21 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         self.coupling_inputs = [
-            f'{self.name}.{GlossaryCore.CropProductivityReductionName}',
-            f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-            f'{self.name}.{GlossaryCore.PopulationDfValue}',
-            f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
+            f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
+            f'{self.name}.{GlossaryCore.FoodTypeDeliveredToConsumersName}',
+            f'{self.name}.{GlossaryCore.CropProdForAllStreamName}',
+            f'{self.name}.{GlossaryCore.FoodTypeNotProducedDueToClimateChangeName}',
+            f'{self.name}.{GlossaryCore.FoodTypeWasteByClimateDamagesName}',
+            f'{self.name}.{GlossaryCore.FoodTypeCapitalName}',
             f'{self.name}.{GlossaryCore.FoodTypesInvestName}',
         ]
         self.coupling_outputs = [
-            f"{self.name}.{GlossaryCore.CropFoodLandUseName}",
-            f"{self.name}.{GlossaryCore.CropFoodEmissionsName}",
-            f"{self.name}.{GlossaryCore.CaloriesPerCapitaValue}",
-            f"{self.name}.{self.model_name}.non_used_capital",
-            f"{self.name}.{GlossaryCore.FoodTypeDeliveredToConsumersName}",
-            f"{self.name}.{GlossaryCore.FoodTypeCapitalName}",
+            f"{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}",
+            f"{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}",
         ]
-        self.coupling_outputs.extend(
-            [f'{self.name}.{GlossaryCore.CropProdForStreamName.format(stream)}' for stream in CropDiscipline.streams_energy_prod]
-        )
 
-    def test_crop_discipline_2(self):
+
+    def test_agriculture_economy_discipline(self):
         '''
         Check discipline setup and run
         '''
@@ -145,7 +147,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             pass
         #self.override_dump_jacobian = 1
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_crop_discipline_2.pkl',
+        self.check_jacobian(location=dirname(__file__), filename='jacobianc_agriculture_economy_disc.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=self.coupling_inputs,
                             outputs=self.coupling_outputs)
