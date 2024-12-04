@@ -33,19 +33,19 @@ class ProcessBuilder(EnergyProcessBuilder):
     def get_builders(self):
 
         ns_study = self.ee.study_name
-        model_name = 'Crop2'
+        model_name = 'AgricultureMix.Crop'
         ns_dict = {
             'ns_public': ns_study,
             GlossaryCore.NS_WITNESS: ns_study,
             'ns_crop': f'{ns_study}.{model_name}',
-            'ns_sectors': f'{ns_study}',
+            'ns_sectors': f'{ns_study}.Macroeconomics',
             GlossaryCore.NS_ENERGY_MIX: f'{ns_study}',
         }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mods_dict = {
-            'Crop2': 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline',
+            model_name: 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline',
             f'Macroeconomics.{GlossaryCore.SectorAgriculture}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_economy_discipline.AgricultureEconomyDiscipline',
                      }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
