@@ -1754,7 +1754,7 @@ class GlossaryCore:
 
     FoodTypesPriceName = "food_type_price"
     FoodTypesPriceVar = {
-        "type": "dict",
+        "type": "dataframe",
         "unit": "$/kg",
         "description": "Price of different food price",
     }
@@ -2004,21 +2004,34 @@ class GlossaryCore:
     FoodTypeCapitalMaintenanceCostName = "food_type_capital_maintenance_cost"
     FoodTypeCapitalMaintenanceCostVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
-        "unit": "-",
+        "unit": "$/ton",
         "description": "Cost of capital maintenance",
         # TODO
+        "default":  {key: 0.4 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+    }
+
+    FoodTypeCapitalAmortizationCostName = "food_type_capital_amortization_cost"
+    FoodTypeCapitalAmortizationCostVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "description": "Cost of capital amortization",
+        # TODO
+        "default": {key: 0.3 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+    }
+
+    FoodTypeFeedingCostsName = "food_type_feeding_costs"
+    FoodTypeFeedingCostsVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "description": "Feeding costs for food type",
+        # TODO
         "default": {
-            RedMeat: 0,  # High due to feed production, transport, and low feed-to-meat conversion efficiency.
-            WhiteMeat: 0,  # Lower than red meat; poultry has a better feed conversion ratio.
-            Milk: 0,  # Includes energy for milking systems, feed, and water use.
-            Eggs: 0,  # Energy includes feed production and poultry farm operation.
-            Rice: 0,  # High irrigation energy, fertilizer needs; varies by water management.
-            Maize: 0,  # Moderate; efficient large-scale production, but fertilizer-intensive.
-            Cereals: 0,  # Includes wheat, barley; slightly higher energy than maize.
-            FruitsAndVegetables: 0,  # Highly variable; greenhouse cultivation can increase energy significantly.
-            Fish: 0,  # For aquaculture; includes feed production, water circulation, and operations.
-            SugarCane: 0,  # Relatively low due to efficient growth in tropical climates.
-            OtherFood: 0,  # Varies widely depending on type (e.g., processed foods, specialty crops).
+            **{key: 0 for key in DefaultFoodTypesV2},
+            **{RedMeat: 1.5 },
+            **{WhiteMeat: 0.3 },
+            **{Fish: 0.2 },
+            **{Eggs: 0.1 },
+            **{Milk: 0.15 },
         }
     }
 

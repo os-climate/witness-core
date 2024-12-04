@@ -38,10 +38,7 @@ class AgricultureEconomyModel:
         self.outputs = {}
 
         # couplings
-        self.coupling_dataframes_not_totalized = [
-            GlossaryCore.FoodTypeDeliveredToConsumersName,
-            GlossaryCore.FoodTypeCapitalName,
-        ]
+        self.coupling_dataframes_not_totalized = []
         self.dataframes_to_totalize_by_food_type_couplings = {
             GlossaryCore.Damages + "_breakdown": (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
             GlossaryCore.EstimatedDamages + "_breakdown": (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
@@ -55,6 +52,9 @@ class AgricultureEconomyModel:
         self.dataframes_to_totalize_by_food_type.update({
             GlossaryCore.CropFoodNetGdpName + "_breakdown": (GlossaryCore.CropFoodNetGdpName, "Total"),
             GlossaryCore.CropEnergyNetGdpName + "_breakdown": (GlossaryCore.CropEnergyNetGdpName, "Total"),
+
+            GlossaryCore.DamagesFromProductivityLoss + "_breakdown": (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.DamagesFromProductivityLoss),
+            GlossaryCore.DamagesFromClimate + "_breakdown": (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.DamagesFromClimate),
         })
 
         # these are the parameters that are required to compute each food type
@@ -63,6 +63,8 @@ class AgricultureEconomyModel:
             GlossaryCore.FoodTypeLaborIntensityByProdUnitName,
             GlossaryCore.FoodTypeCapitalMaintenanceCostName,
             GlossaryCore.FoodTypesPriceMarginShareName,
+            GlossaryCore.FoodTypeCapitalAmortizationCostName,
+            GlossaryCore.FoodTypeFeedingCostsName
         ]
         # mapping of the coupling inputs to the compute function, used for the gradients with autograd
         self.mapping_coupling_inputs_argument_number_food_types = {
@@ -147,7 +149,7 @@ class AgricultureEconomyModel:
         gradients = {}
 
         # jacobians to sum on all food types
-        for index, (ci_varname, ci_colomn_name) in enumerate(self.mapping_coupling_inputs_argument_number_food_types.values()):
+        for index, (ci_varname, ci_colomn_name) in self.mapping_coupling_inputs_argument_number.items():
             gradients[ci_varname] = {ci_colomn_name: {}}
             for food_type in self.inputs[GlossaryCore.FoodTypesName]:
                 args = self.get_args(food_type)
@@ -162,21 +164,22 @@ class AgricultureEconomyModel:
                         gradients[ci_varname][ci_colomn_name][co_varname][co_colname] = self._null_derivative()
                     gradients[ci_varname][ci_colomn_name][co_varname][co_colname] += value
 
+
         # gradients wrt invest food type
-        ci_varname = GlossaryCore.FoodTypesInvestName
-        gradients[ci_varname] = {}
-        for food_type in self.inputs[GlossaryCore.FoodTypesName]:
-            ci_colomn_name = food_type
-            gradients[ci_varname][ci_colomn_name] = {}
-            args = self.get_args(food_type)
-            jac_coupling_input_food_type = jacobian(lambda *args: self.wrap_outputs_to_arrays(self.compute_food_type(*args))[0], 5)
-            gradient_food_type = jac_coupling_input_food_type(*args)
-            dict_jacobians_of_food_type = self.unwrap_arrays_to_outputs(gradient_food_type)
-            for varname, value in dict_jacobians_of_food_type.items():
-                co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname] if varname in self.dataframes_to_totalize_by_food_type_couplings else (varname, food_type)
-                if co_varname not in gradients[ci_varname][ci_colomn_name]:
-                    gradients[ci_varname][ci_colomn_name][co_varname] = {}
-                gradients[ci_varname][ci_colomn_name][co_varname][co_colname] = value
+        for index_ci, ci_varname in self.mapping_coupling_inputs_argument_number_food_types.items():
+            gradients[ci_varname] = {}
+            for food_type in self.inputs[GlossaryCore.FoodTypesName]:
+                ci_colomn_name = food_type
+                gradients[ci_varname][ci_colomn_name] = {}
+                args = self.get_args(food_type)
+                jac_coupling_input_food_type = jacobian(lambda *args: self.wrap_outputs_to_arrays(self.compute_food_type(*args)[0]), index_ci)
+                gradient_food_type = jac_coupling_input_food_type(*args)
+                dict_jacobians_of_food_type = self.unwrap_arrays_to_outputs(gradient_food_type)
+                for varname, value in dict_jacobians_of_food_type.items():
+                    co_varname, co_colname = self.dataframes_to_totalize_by_food_type_couplings[varname] if varname in self.dataframes_to_totalize_by_food_type_couplings else (varname, food_type)
+                    if co_varname not in gradients[ci_varname][ci_colomn_name]:
+                        gradients[ci_varname][ci_colomn_name][co_varname] = {}
+                    gradients[ci_varname][ci_colomn_name][co_varname][co_colname] = value
 
         return gradients
 
@@ -208,11 +211,11 @@ class AgricultureEconomyModel:
         # compute unitary price
         labor_cost = params[GlossaryCore.FoodTypeLaborIntensityByProdUnitName] / 1000 # $/ton to $/kg
         energy_cost = params[GlossaryCore.FoodTypeEnergyIntensityByProdUnitName] * energy_price / 1e6 # kWh/ton * $/MWh = kWh/ton * $/kkWh = $/(k ton) =$/(Mkg) then /1e6 to $/kg
-        capital_maintenance_cost = capital_food_type * params[GlossaryCore.FoodTypeCapitalMaintenanceCostName]
+        capital_maintenance_cost = params[GlossaryCore.FoodTypeCapitalMaintenanceCostName]
+        capex_amortization_cost = params[GlossaryCore.FoodTypeCapitalAmortizationCostName]
+        feeding_costs = params[GlossaryCore.FoodTypeFeedingCostsName] / 1000  # $/ton to $/kg
 
-        capex_amortization_cost = 0.
-
-        price_wo_margin = labor_cost + energy_cost + capital_maintenance_cost + capex_amortization_cost
+        price_wo_margin = labor_cost + energy_cost + capital_maintenance_cost + capex_amortization_cost + feeding_costs
 
         margin_share_of_final_price = params[GlossaryCore.FoodTypesPriceMarginShareName]
         margin = margin_share_of_final_price / 100 * price_wo_margin / (1 - margin_share_of_final_price / 100)
@@ -222,7 +225,7 @@ class AgricultureEconomyModel:
         # compute gross output for crop:
         damages_prod_loss = production_loss_from_prod_loss * final_price / 1e3 # Mt * $ / kg = G kg * $ / kg so divide by 1e3 to get T$
         damages_immediate_climate_damages = production_loss_from_immediate_climate_damages * final_price / 1e3
-        damages = damages_prod_loss + damages_immediate_climate_damages / 1e3
+        damages = damages_prod_loss + damages_immediate_climate_damages
 
         # gdp for energy
         net_gdp_energy = production_for_all_streams * final_price / 1e3
@@ -239,7 +242,8 @@ class AgricultureEconomyModel:
             "Energy": energy_cost,
             "Capital maintenance": capital_maintenance_cost,
             "Capital amortization": capex_amortization_cost,
-            "Margin": margin
+            "Feeding costs": feeding_costs,
+            "Margin": margin,
         })
 
 
@@ -247,6 +251,9 @@ class AgricultureEconomyModel:
         outputs.update({
             GlossaryCore.Damages + "_breakdown": damages,
             GlossaryCore.EstimatedDamages + "_breakdown": damages,
+
+            GlossaryCore.DamagesFromClimate + "_breakdown": damages_immediate_climate_damages,
+            GlossaryCore.DamagesFromProductivityLoss + "_breakdown": damages_prod_loss,
 
             GlossaryCore.GrossOutput + "_breakdown": gross_output,
             GlossaryCore.OutputNetOfDamage + "_breakdown": net_gdp,

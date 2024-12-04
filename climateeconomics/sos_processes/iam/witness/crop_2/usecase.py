@@ -41,12 +41,12 @@ class Study(StudyManager):
 
         crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.CropProductivityReductionName: 1.2,  # fake
+            GlossaryCore.CropProductivityReductionName: np.linspace(1.2, 4.5, len(years)),  # fake
         })
 
         damage_fraction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.DamageFractionOutput: 0.43, # 2020 value
+            GlossaryCore.DamageFractionOutput: np.linspace(0.0043, 0.032, len(years)), # 2020 value
         })
 
         investments = pd.DataFrame({
@@ -73,7 +73,7 @@ class Study(StudyManager):
 
         energy_mean_price = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.EnergyPriceValue: 100,
+            GlossaryCore.EnergyPriceValue: 50.,
         })
 
 

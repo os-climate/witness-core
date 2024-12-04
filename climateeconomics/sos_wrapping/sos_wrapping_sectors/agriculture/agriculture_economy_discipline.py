@@ -55,11 +55,9 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.get_dynamic_variable(GlossaryCore.YearEndVar),
-        GlossaryCore.WorkforceDfValue: GlossaryCore.WorkforceDf,
         GlossaryCore.FoodTypesName: GlossaryCore.FoodTypesVar,
         GlossaryCore.EnergyMeanPriceValue: GlossaryCore.EnergyMeanPrice,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
-        GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
     }
 
     DESC_OUT = {
@@ -100,8 +98,9 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.FoodTypeEnergyIntensityByProdUnitName: GlossaryCore.FoodTypeEnergyIntensityByProdUnitVar,
                     GlossaryCore.FoodTypeLaborIntensityByProdUnitName: GlossaryCore.FoodTypeLaborCostByProdUnitVar,
                     GlossaryCore.FoodTypeCapitalMaintenanceCostName: GlossaryCore.FoodTypeCapitalMaintenanceCostVar,
+                    GlossaryCore.FoodTypeCapitalAmortizationCostName: GlossaryCore.FoodTypeCapitalAmortizationCostVar,
                     GlossaryCore.FoodTypesPriceMarginShareName: GlossaryCore.FoodTypesPriceMarginShareVar,
-
+                    GlossaryCore.FoodTypeFeedingCostsName: GlossaryCore.FoodTypeFeedingCostsVar
                 }
                 dataframes_inputs = {
                     # economic data
@@ -131,7 +130,9 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.OutputNetOfDamage + "_breakdown" : {"type": "dataframe", "unit": "T$", "description": "Output net of damage for each food type",},
                     GlossaryCore.CropFoodNetGdpName + "_breakdown" : {"type": "dataframe", "unit": "T$", "description": "Output net of damage for each food type (from food production)", },
                     GlossaryCore.CropEnergyNetGdpName + "_breakdown" : {"type": "dataframe", "unit": "T$", "description": "Output net of damage for each food type (from food production)", },
-                    GlossaryCore.FoodTypesPriceName:GlossaryCore.FoodTypesPriceVar
+                    GlossaryCore.DamagesFromClimate + "_breakdown" : {"type": "dataframe", "unit": "T$", "description": "Damages due to extreme climate events breakdown", },
+                    GlossaryCore.DamagesFromProductivityLoss + "_breakdown" : {"type": "dataframe", "unit": "T$", "description": "Damages due to productivity loss breakdown", },
+                    GlossaryCore.FoodTypesPriceName:GlossaryCore.FoodTypesPriceVar,
                 }
 
                 for varname, df_output in dataframes_outputs.items():
@@ -168,8 +169,11 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
     def get_chart_filter_list(self):
         chart_list = [
+            "Capital",
+            "Investments",
             "Prices",
             "Output",
+            "Damages",
             # Gdp net of damage
             # Capital
             # Invests
@@ -193,9 +197,13 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'food_types_selected':
                     selected_food_types = chart_filter.selected_values
 
+        inputs = self.get_sosdisc_inputs()
         outputs = self.get_sosdisc_outputs()
         self.food_types_colors = CropDiscipline.food_types_colors
         if "Output" in charts:
+            new_chart = self.chart_gross_and_net_output(outputs)
+            instanciated_charts.append(new_chart)
+
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.OutputNetOfDamage + "_breakdown"],
                 charts_name=f"Agriculture sector net output breakdown",
@@ -209,12 +217,36 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
             new_chart = self.chart_net_gdp_food_energy_breakdown(outputs)
             instanciated_charts.append(new_chart)
 
+        if "Capital" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=inputs[GlossaryCore.FoodTypeCapitalName],
+                charts_name=f"Capital",
+                unit=GlossaryCore.FoodTypeCapitalVar['unit'],
+                df_total=None,
+                column_total=None,
+                post_proc_category="Capital & Investments"
+            )
+            instanciated_charts.append(new_chart)
 
+        if "Investments" in charts:
+            new_chart = self.get_breakdown_charts_on_food_type(
+                df_all_food_types=inputs[GlossaryCore.FoodTypesInvestName],
+                charts_name="Investments",
+                unit=GlossaryCore.FoodTypeCapitalVar['unit'],
+                df_total=None,
+                column_total=None,
+                post_proc_category="Capital & Investments"
+            )
+            instanciated_charts.append(new_chart)
+
+        if "Damages" in charts:
+            new_chart = self.get_chart_damages(outputs)
+            instanciated_charts.append(new_chart)
 
         if "Prices" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.FoodTypesPriceName],
-                charts_name=f"Food prices",
+                charts_name="Prices",
                 unit=GlossaryCore.FoodTypesPriceVar['unit'],
                 df_total=None,
                 column_total=None,
@@ -230,11 +262,13 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                     df_total=outputs[GlossaryCore.FoodTypesPriceName],
                     column_total=food_type,
                     post_proc_category="Prices",
+                    note={"Price": "Price of selling to distributors."}
                 )
                 instanciated_charts.append(new_chart)
 
         for chart in instanciated_charts:
-            chart.to_plotly().show()
+            #chart.to_plotly().show()
+            pass
         return instanciated_charts
 
     def get_breakdown_charts_on_food_type(self,
@@ -292,4 +326,38 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
         return new_chart
 
+    def get_chart_damages(self, outputs):
+        damage_detailed_df = outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDetailedDfValue}"]
+        damage_df = outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"]
+        years = damage_detailed_df[GlossaryCore.Years]
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Damages", y_min_zero=True)
+        variables_bar_plot = {
+            "Extreme climate events": GlossaryCore.DamagesFromClimate,
+            "Productivity loss": GlossaryCore.DamagesFromProductivityLoss,
+        }
+        for key, colname  in variables_bar_plot.items():
+            new_series = InstanciatedSeries(years, damage_detailed_df[colname], key, 'bar', True)
+            new_chart.add_series(new_series)
 
+        new_series = InstanciatedSeries(years, damage_df[GlossaryCore.Damages], "Damages", 'lines', True)
+        new_chart.add_series(new_series)
+        new_chart.post_processing_section_name = "Output"
+        return new_chart
+
+    def chart_gross_and_net_output(self, outputs):
+        production_df = outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}"]
+        damage_df = outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"]
+        years = production_df[GlossaryCore.Years]
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Gross and net output of Agriculture sector", y_min_zero=True)
+        variables_bar_plot = {
+            "Gross output": GlossaryCore.GrossOutput,
+            "Output net of damages": GlossaryCore.OutputNetOfDamage,
+        }
+        for key, colname  in variables_bar_plot.items():
+            new_series = InstanciatedSeries(years, production_df[colname], key, 'lines', True)
+            new_chart.add_series(new_series)
+
+        new_series = InstanciatedSeries(years, -damage_df[GlossaryCore.Damages], "Damages", 'bar', True)
+        new_chart.add_series(new_series)
+        new_chart.post_processing_section_name = "Output"
+        return new_chart
