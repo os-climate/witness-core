@@ -1732,6 +1732,7 @@ class GlossaryCore:
         "var_name": FoodTypesName,
         'type': 'list', 'subtype_descriptor': {'list': 'string'},
         'namespace': NS_CROP,
+        "user_level": 3,
         'default': DefaultFoodTypesV2
     }
 
@@ -1740,6 +1741,7 @@ class GlossaryCore:
         "type": "dataframe",
         "namespace": NS_CROP,
         "unit": "G$",
+        "user_level": 2,
         "visibility": "Shared",
         "description": "Investments in each food type (Billion $)",
     }
@@ -1748,6 +1750,7 @@ class GlossaryCore:
     FoodTypesPriceMarginShareVar = {
         "type": "dict",
         "unit": "%",
+        "user_level": 3,
         "description": "Share of the final price that is margin",
         "default": {ft: 20 for ft in DefaultFoodTypesV2}
     }
@@ -1767,6 +1770,7 @@ class GlossaryCore:
         "var_name": FoodTypeCapitalStartName,
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "G$",
+        "user_level": 3,
         "description": "Capital start for each food type, in billion dollars",
         "default": crop_calibration_data["capital_start_food_type"]
     }
@@ -1776,6 +1780,7 @@ class GlossaryCore:
         "var_name": FoodTypeCapitalIntensityName,
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "ton/k$ or kg/$",
+        "user_level": 3,
         "description": "Capital intensity: metric tons produced by k$ of capital",
         "default": crop_calibration_data["capital_intensity_food_type"]
     }
@@ -1785,6 +1790,7 @@ class GlossaryCore:
         "var_name": FoodTypeCapitalDepreciationRateName,
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
+        "user_level": 3,
         "description": "Depreciation rate of capital each year for each food type",
         "default": {food_type: 5.8 for food_type in DefaultFoodTypesV2}
     }
@@ -1794,6 +1800,7 @@ class GlossaryCore:
         "var_name": FoodTypeWasteSupplyChainShareName,
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
+        "user_level": 3,
         "default": crop_calibration_data[FoodTypeWasteSupplyChainShareName],
         "description": "Indicates what percentage of the production is wasted during supply chain. It does not include waste by consumers",
     }
@@ -1803,6 +1810,7 @@ class GlossaryCore:
         "var_name": FoodTypeWasteByConsumersShareName,
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
+        "user_level": 3,
         "default": crop_calibration_data[FoodTypeWasteByConsumersShareName],
         "description": "Indicates what percentage of the production is wasted by the consumers for each food type",
     }
@@ -1812,6 +1820,7 @@ class GlossaryCore:
         "var_name": FoodTypeWasteAtSupplyChainName,
         "type": "dataframe",
         "unit": "Mt",
+        "user_level": 3,
         "description": "Production wasted at supply chain for each food type",
     }
 
@@ -1820,6 +1829,7 @@ class GlossaryCore:
         "var_name": FoodTypeWasteByConsumersName,
         "type": "dataframe",
         "unit": "Mt",
+        "user_level": 3,
         "description": "Production wasted by consumers for each food type",
     }
 
@@ -1857,6 +1867,7 @@ class GlossaryCore:
         "var_name": FoodTypeShareDedicatedToStreamProdName,
         "type": "dataframe",
         "unit": "%",
+        "user_level": 3,
         "description": "Share of the production that is dedicated to a stream {} for energy production",
     }
 
@@ -1865,6 +1876,7 @@ class GlossaryCore:
         "var_name": FoodTypeShareUserWasteUsedToStreamProdName,
         "type": "dataframe",
         "unit": "%",
+        "user_level": 3,
         "description": "Share of the user waste that is used for stream {} to produce energy",
     }
 
@@ -1873,6 +1885,7 @@ class GlossaryCore:
         "var_name": FoodTypeShareWasteSupplyChainUsedToStreamProdName,
         "type": "dataframe",
         "unit": "%",
+        "user_level": 3,
         "description": "Share of waste happening at supply chain used for stream {} to produce energy",
     }
 
@@ -1882,6 +1895,7 @@ class GlossaryCore:
         "var_name": ConsumerWasteUsedForEnergyName,
         "type": "dataframe",
         "unit": "Mt",
+        "user_level": 3,
         "description": "Consumers waste reused",
     }
     WasteSupplyChainReusedForEnergyProdName = "waste_at_supply_chain_reused_for_energy_prod_{}"
@@ -1889,6 +1903,7 @@ class GlossaryCore:
         "var_name": WasteSupplyChainReusedForEnergyProdName,
         "type": "dataframe",
         "unit": "Mt",
+        "user_level": 3,
         "description": "Food waste at supply chain reused for energy production",
     }
     CropDedicatedProdForEnergyName = "crop_dedicated_prod_for_energy_{}"
@@ -1913,6 +1928,7 @@ class GlossaryCore:
         "var_name": CropProdForAllStreamName,
         "type": "dataframe",
         "unit": "Mt",
+        "user_level": 3,
         "namespace": NS_CROP,
         "visibility": "Shared",
         "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
@@ -1932,6 +1948,7 @@ class GlossaryCore:
     FoodTypeEmissionsByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kg{}/kg produced",
+        "user_level": 3,
         "description": "Food type {} emissions by production unit for each food type",
     }
 
@@ -1939,6 +1956,7 @@ class GlossaryCore:
     FoodTypeKcalByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kcal/kg",
+        "user_level": 3,
         "description": "Kcal per kg for each food type",
         # from capgemini sharepoint
         "default": {
@@ -1963,6 +1981,7 @@ class GlossaryCore:
     FoodTypeEnergyIntensityByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "kWh/ton",
+        "user_level": 3,
         "description": "kwh consumed per ton produced",
         # TODO
         "default": {
@@ -1985,6 +2004,7 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "$/ton",
         "description": "Labor cost per ton of food produced",
+        "user_level": 3,
         # TODO
         "default": {
             RedMeat: 800.0,  # Median of $400 - $1,200; labor-intensive due to feeding, herding, slaughtering, and processing.
@@ -2005,6 +2025,7 @@ class GlossaryCore:
     FoodTypeCapitalMaintenanceCostVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "$/ton",
+        "user_level": 3,
         "description": "Cost of capital maintenance",
         # TODO
         "default":  {key: 0.4 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
@@ -2014,6 +2035,7 @@ class GlossaryCore:
     FoodTypeCapitalAmortizationCostVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "$/ton",
+        "user_level": 3,
         "description": "Cost of capital amortization",
         # TODO
         "default": {key: 0.3 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
@@ -2023,6 +2045,7 @@ class GlossaryCore:
     FoodTypeFeedingCostsVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "$/ton",
+        "user_level": 3,
         "description": "Feeding costs for food type",
         # TODO
         "default": {
@@ -2039,6 +2062,7 @@ class GlossaryCore:
     FoodTypeLandUseByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "m²/kg produced",
+        "user_level": 3,
         "description": "Land used by kg produced for each food type",
         #Sources:
         #[1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
@@ -2061,6 +2085,7 @@ class GlossaryCore:
         "var_name": CropFoodNetGdpName,
         "type": "dataframe",
         "unit": "T$",
+        "user_level": 3,
         "description": "GDP of food selling",
     }
 
@@ -2069,6 +2094,7 @@ class GlossaryCore:
         "var_name": CropEnergyNetGdpName,
         "type": "dataframe",
         "unit": "T$",
+        "user_level": 3,
         "description": "GDP of crop for energy",
     }
 
@@ -2077,6 +2103,7 @@ class GlossaryCore:
         "var_name": CropEnergyLandUseName,
         "type": "dataframe",
         "unit": "Gha",
+        "user_level": 3,
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
@@ -2127,6 +2154,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Gt",
         "visibility": "Shared",
+        "user_level": 3,
         "namespace": NS_CROP,
         "description": "Crop for food emissions for each GHG",
         "dataframe_descriptor": {
@@ -2142,6 +2170,7 @@ class GlossaryCore:
         "var_name": CropEnergyEmissionsName,
         "type": "dataframe",
         "unit": "Gt",
+        "user_level": 3,
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Crop for energy emissions for each GHG",
