@@ -18,7 +18,6 @@ import copy
 import logging
 from typing import Union
 
-import numpy as np
 import pandas as pd
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -26,12 +25,16 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from climateeconomics.core.core_sectorization.agriculture_economy_model import AgricultureEconomyModel
+from climateeconomics.core.core_sectorization.agriculture_economy_model import (
+    AgricultureEconomyModel,
+)
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2 import CropDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2 import (
+    CropDiscipline,
+)
 
 
 class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
@@ -206,7 +209,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.OutputNetOfDamage + "_breakdown"],
-                charts_name=f"Agriculture sector net output breakdown",
+                charts_name="Agriculture sector net output breakdown",
                 unit=GlossaryCore.ProductionDf['unit'],
                 df_total=outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}"],
                 column_total=GlossaryCore.OutputNetOfDamage,
@@ -220,7 +223,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
         if "Capital" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=inputs[GlossaryCore.FoodTypeCapitalName],
-                charts_name=f"Capital",
+                charts_name="Capital",
                 unit=GlossaryCore.FoodTypeCapitalVar['unit'],
                 df_total=None,
                 column_total=None,
