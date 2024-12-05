@@ -52,6 +52,20 @@ class CropDiscipline(ClimateEcoDiscipline):
     invest_df = copy.deepcopy(GlossaryCore.InvestDf)
     invest_df['namespace'] = GlossaryCore.NS_CROP
 
+    food_types_colors = {
+        GlossaryCore.RedMeat: 'crimson',
+        GlossaryCore.WhiteMeat: 'burlywood',
+        GlossaryCore.Milk: 'sienna',
+        GlossaryCore.Eggs: 'yellow',
+        GlossaryCore.Rice: 'mediumseagreen',
+        GlossaryCore.Maize: 'greenyellow',
+        GlossaryCore.Cereals: 'olive',
+        GlossaryCore.FruitsAndVegetables: 'green',
+        GlossaryCore.Fish: 'cornflowerblue',
+        GlossaryCore.OtherFood: 'lightslategrey',
+        GlossaryCore.SugarCane: 'orange'
+    }
+
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.get_dynamic_variable(GlossaryCore.YearEndVar),
@@ -78,7 +92,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         GlossaryCore.FoodTypeDedicatedToProductionForStreamName: GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
         GlossaryCore.WasteSupplyChainReusedForEnergyProdName: GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
         GlossaryCore.ConsumerWasteUsedForEnergyName: GlossaryCore.ConsumerWasteUsedForEnergyVar,
-        GlossaryCore.CropProdForEnergyName: GlossaryCore.CropProdForEnergyVar,
+        GlossaryCore.CropProdForStreamName: GlossaryCore.CropProdForStreamVar,
     }
     for stream in streams_energy_prod:
         for df_name, df_var_descr in df_output_streams.items():
@@ -88,7 +102,6 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
-        self.food_types_colors = {}
         self.crop_model = Crop()
 
     def setup_sos_disciplines(self):
@@ -161,6 +174,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.CropEnergyLandUseName + "_breakdown": {"type": "dataframe", "unit": "(Gha)", "description": "Land used by each food type for energy production in first intention. That is "},
                     GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
                     GlossaryCore.FoodTypeFoodGWPEmissionsName: GlossaryCore.FoodTypeFoodGWPEmissionsVar,
+                    GlossaryCore.CropProdForAllStreamName: GlossaryCore.CropProdForAllStreamVar,
                     "non_used_capital_breakdown": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"},
                     "food_per_capita_per_year": {"type": "dataframe", "unit": "kg/pers/year", "description": "Quantity of food available for consumption per capita by year"},
                 }
@@ -173,7 +187,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.FoodTypeDedicatedToProductionForStreamName: GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
                         GlossaryCore.WasteSupplyChainReusedForEnergyProdName: GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
                         GlossaryCore.ConsumerWasteUsedForEnergyName: GlossaryCore.ConsumerWasteUsedForEnergyVar,
-                        GlossaryCore.CropProdForEnergyName: GlossaryCore.CropProdForEnergyVar,
+                        GlossaryCore.CropProdForStreamName: GlossaryCore.CropProdForStreamVar,
                     }
                     for df_name, df_var in df_output_streams.items():
                         df_out = copy.deepcopy(df_var)
@@ -243,19 +257,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                     charts = chart_filter.selected_values
 
         outputs = self.get_sosdisc_outputs()
-        self.food_types_colors = {
-            GlossaryCore.RedMeat: 'crimson',
-            GlossaryCore.WhiteMeat: 'burlywood',
-            GlossaryCore.Milk: 'sienna',
-            GlossaryCore.Eggs: 'yellow',
-            GlossaryCore.Rice: 'mediumseagreen',
-            GlossaryCore.Maize: 'greenyellow',
-            GlossaryCore.Cereals: 'olive',
-            GlossaryCore.FruitsAndVegetables: 'green',
-            GlossaryCore.Fish: 'cornflowerblue',
-            GlossaryCore.OtherFood: 'lightslategrey',
-            GlossaryCore.SugarCane: 'orange'
-        }
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue],
@@ -450,10 +451,10 @@ class CropDiscipline(ClimateEcoDiscipline):
                 stream_nicer = stream.replace('_', ' ')
                 stream_nicer = stream_nicer.capitalize()
                 new_chart = self.get_breakdown_charts_on_food_type(
-                    df_all_food_types=outputs[GlossaryCore.CropProdForEnergyName.format(stream) + '_breakdown'],
+                    df_all_food_types=outputs[GlossaryCore.CropProdForStreamName.format(stream) + '_breakdown'],
                     charts_name=f"Total crop production for {stream_nicer} stream (dedicated + waste reused)",
-                    unit=GlossaryCore.CropProdForEnergyVar['unit'],
-                    df_total=outputs[GlossaryCore.CropProdForEnergyName.format(stream)],
+                    unit=GlossaryCore.CropProdForStreamVar['unit'],
+                    df_total=outputs[GlossaryCore.CropProdForStreamName.format(stream)],
                     column_total="Total",
                     post_proc_category="Energy production",
                 )
@@ -565,10 +566,10 @@ class CropDiscipline(ClimateEcoDiscipline):
             GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream): GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
             GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream): GlossaryCore.ConsumerWasteUsedForEnergyVar,
         }
-        df_total = self.get_sosdisc_outputs(GlossaryCore.CropProdForEnergyName.format(stream))
+        df_total = self.get_sosdisc_outputs(GlossaryCore.CropProdForStreamName.format(stream))
 
         years = df_total[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.CropProdForEnergyVar['unit'], stacked_bar=True,
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.CropProdForStreamVar['unit'], stacked_bar=True,
                                              chart_name=f"{stream_nicer} for energy production: breakdown of production")
 
         for df_name, df_var_descr in dfs_to_sum.items():

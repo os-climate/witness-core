@@ -1744,6 +1744,21 @@ class GlossaryCore:
         "description": "Investments in each food type (Billion $)",
     }
 
+    FoodTypesPriceMarginShareName = "food_type_margin_share"
+    FoodTypesPriceMarginShareVar = {
+        "type": "dict",
+        "unit": "%",
+        "description": "Share of the final price that is margin",
+        "default": {ft: 20 for ft in DefaultFoodTypesV2}
+    }
+
+    FoodTypesPriceName = "food_type_price"
+    FoodTypesPriceVar = {
+        "type": "dataframe",
+        "unit": "$/kg",
+        "description": "Price of different food price",
+    }
+
     with open(path.join(path.dirname(__file__), "calibration", "crop", "output_calibration.json"), 'r') as json_file:
         crop_calibration_data = json.load(json_file)
 
@@ -1812,6 +1827,8 @@ class GlossaryCore:
     FoodTypeNotProducedDueToClimateChangeVar = {
         "var_name": FoodTypeNotProducedDueToClimateChangeName,
         "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
         "unit": "Mt",
         "description": "Food that is not produced due to loss of productivity (caused by climate change)",
     }
@@ -1829,6 +1846,8 @@ class GlossaryCore:
         "var_name": FoodTypeWasteByClimateDamagesName,
         "type": "dataframe",
         "unit": "Mt",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
         "description": "Production wasted due to immediate climate change",
     }
 
@@ -1879,9 +1898,19 @@ class GlossaryCore:
         "unit": "Mt",
         "description": "Crop dedicated production of {}",
     }
-    CropProdForEnergyName = "crop_prod_for_energy_{}"
-    CropProdForEnergyVar = {
-        "var_name": CropProdForEnergyName,
+    CropProdForStreamName = "crop_prod_for_stream_{}"
+    CropProdForStreamVar = {
+        "var_name": CropProdForStreamName,
+        "type": "dataframe",
+        "unit": "Mt",
+        "namespace": NS_CROP,
+        "visibility": "Shared",
+        "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
+    }
+
+    CropProdForAllStreamName = "crop_prod_for_all_streams"
+    CropProdForAllStreamVar = {
+        "var_name": CropProdForAllStreamName,
         "type": "dataframe",
         "unit": "Mt",
         "namespace": NS_CROP,
@@ -1930,6 +1959,81 @@ class GlossaryCore:
             OtherFood: 2000,  # assumed
         }
     }
+    FoodTypeEnergyIntensityByProdUnitName = "food_type_energy_intensity_by_prod_unit"
+    FoodTypeEnergyIntensityByProdUnitVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "kWh/ton",
+        "description": "kwh consumed per ton produced",
+        # TODO
+        "default": {
+            RedMeat: 15000,  # High due to feed production, transport, and low feed-to-meat conversion efficiency.
+            WhiteMeat: 8000,  # Lower than red meat; poultry has a better feed conversion ratio.
+            Milk: 500,  # Includes energy for milking systems, feed, and water use.
+            Eggs: 3500,  # Energy includes feed production and poultry farm operation.
+            Rice: 2000,  # High irrigation energy, fertilizer needs; varies by water management.
+            Maize: 1000,  # Moderate; efficient large-scale production, but fertilizer-intensive.
+            Cereals: 1200,  # Includes wheat, barley; slightly higher energy than maize.
+            FruitsAndVegetables: 500,  # Highly variable; greenhouse cultivation can increase energy significantly.
+            Fish: 6000,  # For aquaculture; includes feed production, water circulation, and operations.
+            SugarCane: 500,  # Relatively low due to efficient growth in tropical climates.
+            OtherFood: 1500,  # Varies widely depending on type (e.g., processed foods, specialty crops).
+        }
+    }
+
+    FoodTypeLaborIntensityByProdUnitName = "food_type_labor_cost_by_prod_unit"
+    FoodTypeLaborCostByProdUnitVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "description": "Labor cost per ton of food produced",
+        # TODO
+        "default": {
+            RedMeat: 800.0,  # Median of $400 - $1,200; labor-intensive due to feeding, herding, slaughtering, and processing.
+            WhiteMeat: 525.0,  # Median of $250 - $800; poultry production is generally more industrialized, reducing costs.
+            Milk: 125.0,  # Median of $50 - $200; lower labor requirements with automation in milking processes.
+            Eggs: 165.0,  # Median of $80 - $250; cage-free systems tend to have higher costs than automated systems.
+            Rice: 175.0,  # Median of $50 - $300; costs vary based on manual vs. mechanized planting and harvesting.
+            Maize: 65.0,  # Median of $30 - $100; mechanized systems result in lower labor input per ton.
+            Cereals: 65.0,  # Median of $30 - $100; includes wheat, barley, and oats with typically low labor costs in mechanized systems.
+            FruitsAndVegetables: 850.0,  # Median of $200 - $1,500; high variability, labor-intensive crops like berries are more costly.
+            Fish: 600.0,  # Median of $200 - $1,000; costs depend on aquaculture (lower) vs. wild catch (higher).
+            SugarCane: 175.0,  # Median of $50 - $300; mechanized harvesting reduces costs compared to manual cutting.
+            OtherFood: 550.0,  # Median of $100 - $1,000; varies widely based on product type, including specialty or processed foods.
+        }
+    }
+
+    FoodTypeCapitalMaintenanceCostName = "food_type_capital_maintenance_cost"
+    FoodTypeCapitalMaintenanceCostVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "description": "Cost of capital maintenance",
+        # TODO
+        "default":  {key: 0.4 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+    }
+
+    FoodTypeCapitalAmortizationCostName = "food_type_capital_amortization_cost"
+    FoodTypeCapitalAmortizationCostVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "description": "Cost of capital amortization",
+        # TODO
+        "default": {key: 0.3 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+    }
+
+    FoodTypeFeedingCostsName = "food_type_feeding_costs"
+    FoodTypeFeedingCostsVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "description": "Feeding costs for food type",
+        # TODO
+        "default": {
+            **{key: 0 for key in DefaultFoodTypesV2},
+            **{RedMeat: 1.5 },
+            **{WhiteMeat: 0.3 },
+            **{Fish: 0.2 },
+            **{Eggs: 0.1 },
+            **{Milk: 0.15 },
+        }
+    }
 
     FoodTypeLandUseByProdUnitName = "food_type_prod_unit_land_use"
     FoodTypeLandUseByProdUnitVar = {
@@ -1950,6 +2054,22 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
+    }
+
+    CropFoodNetGdpName = "crop_for_food_gdp"
+    CropFoodGdpVar = {
+        "var_name": CropFoodNetGdpName,
+        "type": "dataframe",
+        "unit": "T$",
+        "description": "GDP of food selling",
+    }
+
+    CropEnergyNetGdpName = "crop_for_energy_gdp"
+    CropEnergyGdpVar = {
+        "var_name": CropEnergyNetGdpName,
+        "type": "dataframe",
+        "unit": "T$",
+        "description": "GDP of crop for energy",
     }
 
     CropEnergyLandUseName = "crop_for_energy_land_use"
