@@ -23,11 +23,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
     AbstractJacobianUnittest,
 )
 
-from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2 import (
-    CropDiscipline,
-)
 
 
 class JacobianTestCaseAgricultureEconomy(AbstractJacobianUnittest):
@@ -41,7 +37,7 @@ class JacobianTestCaseAgricultureEconomy(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.name = 'Test'
-        self.model_name = f'model'
+        self.model_name = 'model'
 
         self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest

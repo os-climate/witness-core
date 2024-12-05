@@ -19,9 +19,6 @@ import pandas as pd
 from autograd import jacobian
 from energy_models.glossaryenergy import GlossaryEnergy
 
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
 from climateeconomics.glossarycore import GlossaryCore
 
 
