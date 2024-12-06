@@ -105,8 +105,8 @@ class IEADataPreparationDiscipline(SoSWrapp):
                                    }
     # list of dictionaries to update
     l_dict_to_update = [co2_emissions_dict_variable, gdp_dict_variable, population_dict_variable, co2_tax_dict_value,
-                        energy_production_dict_value, temperature_dict_value, land_use_surface_dict_value,
-                        energy_consumption_dict_value
+                        energy_production_dict_value, energy_consumption_dict_value, temperature_dict_value,
+                        land_use_surface_dict_value,
                         ]
     # compute the updated dictionaries to be used in both desc_in and desc_out
     desc_in_updated, desc_out_updated = update_variable_name(l_dict_to_update, SUFFIX_VAR_INTERPOLATED)
@@ -140,7 +140,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
     # store list of input variables for later use
     variables_to_store = list(desc_in_updated.keys())
     # create list of units by hand as very generic in Glossary TODO use glossary later
-    list_units = ['Gt', 'T$', 'millions of people', '$/tCO2Eq', 'TWh', '°C', 'Gha', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', '$/MWh', '$/MWh']
+    list_units = ['Gt', 'T$', 'millions of people', '$/tCO2Eq', 'TWh', 'TWh', '°C', 'Gha', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', 'TWh', '$/MWh', '$/MWh']
     variables_to_store_with_units = dict(zip(variables_to_store, list_units))
 
     DESC_IN = {
