@@ -2058,6 +2058,16 @@ class GlossaryCore:
         }
     }
 
+    FoodTypeFertilizationAndPesticidesCostsName = "food_type_fertilization_and_pesticides_costs"
+    FoodTypeFertilizationAndPesticidesCostsVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "user_level": 3,
+        "description": "Fertilization and pesticides costs for food type",
+        # TODO
+        "default": {key: 0 for key in DefaultFoodTypesV2}
+    }
+
     FoodTypeLandUseByProdUnitName = "food_type_prod_unit_land_use"
     FoodTypeLandUseByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
