@@ -35,18 +35,18 @@ class Study(StudyManager):
         if self.data is not None:
             return self.data
         ns_study = self.ee.study_name
-        model_name = 'Crop2'
+        model_name = 'AgricultureMix.Crop'
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
         crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.CropProductivityReductionName: 1.2,  # fake
+            GlossaryCore.CropProductivityReductionName: np.linspace(1.2, 4.5, len(years)),  # fake
         })
 
         damage_fraction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.DamageFractionOutput: 0.43, # 2020 value
+            GlossaryCore.DamageFractionOutput: np.linspace(0.0043, 0.032, len(years)), # 2020 value
         })
 
         investments = pd.DataFrame({
@@ -71,16 +71,21 @@ class Study(StudyManager):
             GlossaryCore.TotalProductionValue: 2591. /1000.,  # PWh, 2020 value
         })
 
+        energy_mean_price = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.EnergyPriceValue: 50.,
+        })
+
 
         inputs_dict = {
             f'{ns_study}.{GlossaryCore.YearStart}': self.year_start,
             f'{ns_study}.{GlossaryCore.YearEnd}': self.year_end,
+            f'{ns_study}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
             f'{ns_study}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
             f'{ns_study}.{GlossaryCore.WorkforceDfValue}': workforce_df,
             f'{ns_study}.{GlossaryCore.PopulationDfValue}': population_df,
             f'{ns_study}.{GlossaryCore.DamageFractionDfValue}': damage_fraction,
-            f'{ns_study}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': enegy_agri,
-
+            f'{ns_study}.Macroeconomics.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': enegy_agri,
             f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesInvestName}': investments,
         }
 
@@ -89,5 +94,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()
