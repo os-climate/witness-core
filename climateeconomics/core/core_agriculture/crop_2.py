@@ -41,19 +41,21 @@ class Crop:
         self.coupling_dataframes_not_totalized = [
             GlossaryCore.FoodTypeDeliveredToConsumersName,
             GlossaryCore.FoodTypeCapitalName,
+            GlossaryCore.CropProdForAllStreamName
         ]
         self.dataframes_to_totalize_by_food_type_couplings = {
             GlossaryCore.CropFoodLandUseName + "_breakdown": (GlossaryCore.CropFoodLandUseName, "Total"),
             GlossaryCore.CropEnergyLandUseName + "_breakdown": (GlossaryCore.CropEnergyLandUseName, "Total"),
             GlossaryCore.CaloriesPerCapitaBreakdownValue: (GlossaryCore.CaloriesPerCapitaValue, "kcal_pc"),
             "non_used_capital" + "_breakdown": ("non_used_capital", "Total"),
+
         }
         for ghg in GlossaryCore.GreenHouseGases:
             self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] = (GlossaryCore.CropFoodEmissionsName, ghg)
             self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = (GlossaryCore.CropEnergyEmissionsName, ghg)
 
         for stream in self.streams_energy_prod:
-            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.CropProdForEnergyName.format(stream) + "_breakdown"] = (GlossaryCore.CropProdForEnergyName.format(stream), "Total")
+            self.dataframes_to_totalize_by_food_type_couplings[GlossaryCore.CropProdForStreamName.format(stream) + "_breakdown"] = (GlossaryCore.CropProdForStreamName.format(stream), "Total")
 
         # non couplings + couplings
         self.dataframes_to_totalize_by_food_type = self.dataframes_to_totalize_by_food_type_couplings
@@ -84,8 +86,8 @@ class Crop:
         self.mapping_coupling_inputs_argument_number = {
             0: (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}", GlossaryCore.TotalProductionValue),
             1: (GlossaryCore.WorkforceDfValue, GlossaryCore.SectorAgriculture),
-            2: (GlossaryCore.CropProductivityReductionName, GlossaryCore.CropProductivityReductionName),
-            3: (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            2: (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            3: (GlossaryCore.CropProductivityReductionName, GlossaryCore.CropProductivityReductionName),
             4: (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
         }
 
@@ -107,14 +109,15 @@ class Crop:
             GlossaryCore.FoodTypeDeliveredToConsumersName,
             GlossaryCore.FoodTypeCapitalName,
             GlossaryCore.FoodTypeFoodGWPEmissionsName,
-            "food_per_capita_per_year"
+            "food_per_capita_per_year",
+            GlossaryCore.CropProdForAllStreamName
         ]
 
         for stream in self.streams_energy_prod:
             for var in [
                 GlossaryCore.FoodTypeDedicatedToProductionForStreamName,
                 GlossaryCore.WasteSupplyChainReusedForEnergyProdName,
-                GlossaryCore.CropProdForEnergyName
+                GlossaryCore.CropProdForStreamName
             ]:
 
                 dataframe_to_init.append(var.format(stream))
@@ -237,7 +240,7 @@ class Crop:
         production_raw = usable_capital_food_type * params[GlossaryCore.FoodTypeCapitalIntensityName]  # G$ * t/k$ = 10^9 $ * t/k$ = 10^6 t = Mt
 
         production_wasted_by_productivity_loss = production_raw * crop_productivity_reduction / 100. # Mt
-        outputs[GlossaryCore.FoodTypeWasteByClimateDamagesName] = production_wasted_by_productivity_loss * damage_fraction # Mt
+        outputs[GlossaryCore.FoodTypeWasteByClimateDamagesName] = (production_raw - production_wasted_by_productivity_loss) * damage_fraction # Mt
         production_before_waste = production_raw - production_wasted_by_productivity_loss  # Mt
 
         # split energy and food production land use and emissions
@@ -268,12 +271,14 @@ class Crop:
         production_delivered_to_consumers = production_for_consumers - food_waste_at_prod_and_distrib  # Mt
         outputs[GlossaryCore.FoodTypeWasteByConsumersName] = production_delivered_to_consumers * params[GlossaryCore.FoodTypeWasteByConsumersShareName] / 100. # Mt
 
+        outputs[GlossaryCore.CropProdForAllStreamName] = 0.
         for stream in Crop.streams_energy_prod:
             outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] = outputs[GlossaryCore.FoodTypeWasteByConsumersName] * params[GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(stream)] / 100. # Mt
-            outputs[GlossaryCore.CropProdForEnergyName.format(stream) + "_breakdown"] = \
+            outputs[GlossaryCore.CropProdForStreamName.format(stream) + "_breakdown"] = \
                 outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] + \
                 outputs[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream) + "_breakdown"] + \
                 outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream) + "_breakdown"] # Mt
+            outputs[GlossaryCore.CropProdForAllStreamName] += outputs[GlossaryCore.CropProdForStreamName.format(stream) + "_breakdown"]
 
         outputs["food_per_capita_per_year"] = production_delivered_to_consumers / population * 1000  # Mt / (M person) * 1000 = kg / person
         kcal_produced_for_consumers = production_delivered_to_consumers * params[GlossaryCore.FoodTypeKcalByProdUnitName]  # Mt * kcal/ kg = 10^9 kg * kcal/kg = 10^9 kcal  = G kcal

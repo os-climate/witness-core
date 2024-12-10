@@ -35,7 +35,8 @@ class Study(StudyOptimInvestDistrib):
                          year_end=year_end,
                          file_path=__file__,
                          run_usecase=run_usecase,
-                         execution_engine=execution_engine)
+                         execution_engine=execution_engine,
+                         bspline=True)
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
