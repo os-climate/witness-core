@@ -61,8 +61,7 @@ class AgricultureEconomyModel:
             GlossaryCore.FoodTypeCapitalMaintenanceCostName,
             GlossaryCore.FoodTypesPriceMarginShareName,
             GlossaryCore.FoodTypeCapitalAmortizationCostName,
-            GlossaryCore.FoodTypeFeedingCostsName,
-            GlossaryCore.FoodTypeFertilizationAndPesticidesCostsName
+            GlossaryCore.FoodTypeFeedingCostsName
         ]
         # mapping of the coupling inputs to the compute function, used for the gradients with autograd
         self.mapping_coupling_inputs_argument_number_food_types = {
@@ -212,7 +211,6 @@ class AgricultureEconomyModel:
         capital_maintenance_cost = params[GlossaryCore.FoodTypeCapitalMaintenanceCostName]
         capex_amortization_cost = params[GlossaryCore.FoodTypeCapitalAmortizationCostName]
         feeding_costs = params[GlossaryCore.FoodTypeFeedingCostsName] / 1000  # $/ton to $/kg
-        fertilization_and_pesticides = params[GlossaryCore.FoodTypeFertilizationAndPesticidesCostsName] / 1000  # $/ton to $/kg
 
         price_wo_margin = labor_cost + energy_cost + capital_maintenance_cost + capex_amortization_cost + feeding_costs
 
@@ -242,7 +240,6 @@ class AgricultureEconomyModel:
             "Capital maintenance": capital_maintenance_cost,
             "Capital amortization": capex_amortization_cost,
             "Feeding costs": feeding_costs,
-            "Fertilization and pesticides": fertilization_and_pesticides,
             "Margin": margin,
         })
 

@@ -103,8 +103,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.FoodTypeCapitalMaintenanceCostName: GlossaryCore.FoodTypeCapitalMaintenanceCostVar,
                     GlossaryCore.FoodTypeCapitalAmortizationCostName: GlossaryCore.FoodTypeCapitalAmortizationCostVar,
                     GlossaryCore.FoodTypesPriceMarginShareName: GlossaryCore.FoodTypesPriceMarginShareVar,
-                    GlossaryCore.FoodTypeFeedingCostsName: GlossaryCore.FoodTypeFeedingCostsVar,
-                    GlossaryCore.FoodTypeFertilizationAndPesticidesCostsName: GlossaryCore.FoodTypeFertilizationAndPesticidesCostsVar,
+                    GlossaryCore.FoodTypeFeedingCostsName: GlossaryCore.FoodTypeFeedingCostsVar
                 }
                 dataframes_inputs = {
                     # economic data
