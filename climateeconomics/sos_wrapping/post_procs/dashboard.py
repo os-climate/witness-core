@@ -780,6 +780,10 @@ def create_xy_chart(execution_engine, chart_name, x_axis_name,
     )
 
     for data_name, data in data_dict.items():
+
+        x_data_df = None
+        y_data_df = None
+
         if data["data_type"] == "variable":
             x_data_df = get_scenario_value(execution_engine, data["x_var_name"], data["scenario_name"], split_scenario_name=False)
             y_data_df = get_scenario_value(execution_engine, data["y_var_name"], data["scenario_name"], split_scenario_name=False)
@@ -787,14 +791,15 @@ def create_xy_chart(execution_engine, chart_name, x_axis_name,
             data_df = pd.read_csv(data["filename"])
             x_data_df = y_data_df = data_df
 
-        new_series = InstanciatedSeries(
-            x_data_df[data["x_column_name"]] * data.get("x_data_scale", 1.0),
-            y_data_df[data["y_column_name"]] * data.get("y_data_scale", 1.0),
-            data_name, display_type="scatter",
-            marker_symbol=data.get("marker_symbol", "circle"),
-            text=y_data_df[data["text_column"]].values.tolist(),
-            **data.get("kwargs", {})
-        )
-        new_chart.add_series(new_series)
+        if x_data_df and y_data_df:
+            new_series = InstanciatedSeries(
+                x_data_df[data["x_column_name"]] * data.get("x_data_scale", 1.0),
+                y_data_df[data["y_column_name"]] * data.get("y_data_scale", 1.0),
+                data_name, display_type="scatter",
+                marker_symbol=data.get("marker_symbol", "circle"),
+                text=y_data_df[data["text_column"]].values.tolist(),
+                **data.get("kwargs", {})
+            )
+            new_chart.add_series(new_series)
 
     return new_chart
