@@ -183,61 +183,6 @@ def post_processings(execution_engine, namespace, filters):
             '__ . __': 'with damage',
             }
 
-    if "GDP vs Energy":
-
-        raw_data_dict = {scenario_name: {
-                "data_type": "variable",
-                "scenario_name": scenario_name,
-                "x_var_name": "EnergyMix.energy_production_brut",
-                "x_column_name": GlossaryCore.TotalProductionValue,
-                "x_data_scale": 1e-3,
-                "y_var_name": "Macroeconomics.economics_detail_df",
-                "y_column_name": "output_net_of_d",
-                "text_column": GlossaryCore.Years,
-            }
-            for scenario_name in scenario_list
-        }
-        raw_data_dict["Historical Data"] = {
-                "data_type": "csv",
-                "filename": join(Path(__file__).parents[3], "data", 'primary-energy-consumption_vs_gdp.csv'),
-                "x_column_name": 'Primary energy consumption [PWh]',
-                "y_column_name": 'World GDP [T$]',
-                "marker_symbol": "triangle-up",
-                "text_column": "years",
-            }
-
-        net_data_dict = {
-            scenario_name: {
-                "data_type": "variable",
-                "scenario_name": scenario_name,
-                "x_var_name": f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}",
-                "x_column_name": GlossaryCore.TotalProductionValue,
-                "y_var_name": "Macroeconomics.economics_detail_df",
-                "y_column_name": "output_net_of_d",
-                "text_column": GlossaryCore.Years,
-            }
-            for scenario_name in scenario_list
-        }
-
-        net_data_dict["Historical Data"] = {
-                "data_type": "csv",
-                "filename": join(Path(__file__).parents[3], "data", 'world_gdp_vs_net_energy_consumption.csv'),
-                "x_column_name": 'Net energy consumption [PWh]',
-                "y_column_name": 'World GDP [T$]',
-                "marker_symbol": "triangle-up",
-                "text_column": "years",
-            }
-
-        new_chart = create_xy_chart(execution_engine, chart_name="GDP vs Raw energy production",
-                                    x_axis_name="World's raw energy production (PWh)",
-                                    y_axis_name="World's GDP net of damage (T$)", data_dict=raw_data_dict)
-        instanciated_charts.append(new_chart)
-
-        new_chart = create_xy_chart(execution_engine, chart_name="GDP vs Net energy production",
-                                    x_axis_name="World's net energy production (PWh)",
-                                    y_axis_name="World's GDP net of damage (T$)", data_dict=net_data_dict)
-        instanciated_charts.append(new_chart)
-
     if 'Temperature' in graphs_list:
 
         x_axis_name = 'Years'
@@ -678,6 +623,61 @@ def post_processings(execution_engine, namespace, filters):
 
             new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
+
+    if "GDP vs Energy":
+
+        raw_data_dict = {scenario_name: {
+                "data_type": "variable",
+                "scenario_name": scenario_name,
+                "x_var_name": "EnergyMix.energy_production_brut",
+                "x_column_name": GlossaryCore.TotalProductionValue,
+                "x_data_scale": 1e-3,
+                "y_var_name": "Macroeconomics.economics_detail_df",
+                "y_column_name": "output_net_of_d",
+                "text_column": GlossaryCore.Years,
+            }
+            for scenario_name in scenario_list
+        }
+        raw_data_dict["Historical Data"] = {
+                "data_type": "csv",
+                "filename": join(Path(__file__).parents[3], "data", 'primary-energy-consumption_vs_gdp.csv'),
+                "x_column_name": 'Primary energy consumption [PWh]',
+                "y_column_name": 'World GDP [T$]',
+                "marker_symbol": "triangle-up",
+                "text_column": "years",
+            }
+
+        net_data_dict = {
+            scenario_name: {
+                "data_type": "variable",
+                "scenario_name": scenario_name,
+                "x_var_name": f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}",
+                "x_column_name": GlossaryCore.TotalProductionValue,
+                "y_var_name": "Macroeconomics.economics_detail_df",
+                "y_column_name": "output_net_of_d",
+                "text_column": GlossaryCore.Years,
+            }
+            for scenario_name in scenario_list
+        }
+
+        net_data_dict["Historical Data"] = {
+                "data_type": "csv",
+                "filename": join(Path(__file__).parents[3], "data", 'world_gdp_vs_net_energy_consumption.csv'),
+                "x_column_name": 'Net energy consumption [PWh]',
+                "y_column_name": 'World GDP [T$]',
+                "marker_symbol": "triangle-up",
+                "text_column": "years",
+            }
+
+        new_chart = create_xy_chart(execution_engine, chart_name="GDP vs Raw energy production",
+                                    x_axis_name="World's raw energy production (PWh)",
+                                    y_axis_name="World's GDP net of damage (T$)", data_dict=raw_data_dict)
+        instanciated_charts.append(new_chart)
+
+        new_chart = create_xy_chart(execution_engine, chart_name="GDP vs Net energy production",
+                                    x_axis_name="World's net energy production (PWh)",
+                                    y_axis_name="World's GDP net of damage (T$)", data_dict=net_data_dict)
+        instanciated_charts.append(new_chart)
 
     return instanciated_charts
 
