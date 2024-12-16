@@ -15,16 +15,16 @@ limitations under the License.
 '''
 
 
-def get_scenario_value(execution_engine, var_name, scenario_name):
+def get_scenario_value(execution_engine, var_name, scenario_name, split_scenario_name: bool = True):
     """returns the value of a variable for the specified scenario"""
     all_scenario_varnames = execution_engine.dm.get_all_namespaces_from_var_name(var_name)
     if len(all_scenario_varnames) > 1:
         # multiscenario case
-        scenario_name = scenario_name.split('.')[2]
+        if split_scenario_name:
+            scenario_name = scenario_name.split('.')[2]
         selected_scenario_varname = list(filter(lambda x: scenario_name in x, all_scenario_varnames))[0]
     else:
         # not multiscenario case
-         selected_scenario_varname = all_scenario_varnames[0]
+        selected_scenario_varname = all_scenario_varnames[0]
     value_selected_scenario = execution_engine.dm.get_value(selected_scenario_varname)
     return value_selected_scenario
-
