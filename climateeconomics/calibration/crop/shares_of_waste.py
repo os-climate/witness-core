@@ -53,7 +53,7 @@ food_waste_share_supply_chain = {
         #Waste supply chain for milk.
         #(waste supply chain) / (total production)
     GlossaryCore.Milk: round(26.187 / 940.6 * 100, 2),
-    GlossaryCore.OtherFood: 5.00,  #Assumed, based on values for other food types.
+    GlossaryCore.OtherFood: 2.5,  #Assumed, based on values for other food types.
 }
 
 # Most of the time there are numbers for the total waste of a certain food type (supply chain + consumers)

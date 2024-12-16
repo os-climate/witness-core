@@ -60,7 +60,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
 
         self.investments_food_types = pd.DataFrame({
             GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
-            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest2021.value * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
+            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest.get_value_at_year(2021) * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
         })
         self.workforce_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -143,7 +143,6 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         for graph in graph_list:
             #graph.to_plotly().show()
             pass
-        #self.override_dump_jacobian = 1
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_crop_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,

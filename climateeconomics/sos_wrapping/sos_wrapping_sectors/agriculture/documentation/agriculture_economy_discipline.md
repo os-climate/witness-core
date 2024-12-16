@@ -37,7 +37,6 @@ The discipline handles a list of food types which currenyly includes:
 |                                                  | - Feeding costs (`$/ton`).                                                            |
 |                                                  | - Fertilization and pesticides (`$/ton`).                                             |
 |                                                  | - Margin share of the final price.                                                    |
-|                                                  | - Simulation years (`YearStart`, `YearEnd`).                                          |
 
   
 
