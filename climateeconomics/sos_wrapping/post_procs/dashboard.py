@@ -791,7 +791,7 @@ def create_xy_chart(execution_engine, chart_name, x_axis_name,
             data_df = pd.read_csv(data["filename"])
             x_data_df = y_data_df = data_df
 
-        if x_data_df and y_data_df:
+        if x_data_df is not None and y_data_df is not None:
             new_series = InstanciatedSeries(
                 x_data_df[data["x_column_name"]] * data.get("x_data_scale", 1.0),
                 y_data_df[data["y_column_name"]] * data.get("y_data_scale", 1.0),
