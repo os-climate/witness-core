@@ -370,5 +370,5 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
         new_series = InstanciatedSeries(years, -damage_df[GlossaryCore.Damages], "Damages", 'bar', True)
         new_chart.add_series(new_series)
         new_chart.post_processing_section_name = "Output"
-        new_chart.annotation_upper_left = {"Note: does not include Forestry activities output."}
+        new_chart.annotation_upper_left = {"Note": "does not include Forestry activities output."}
         return new_chart
