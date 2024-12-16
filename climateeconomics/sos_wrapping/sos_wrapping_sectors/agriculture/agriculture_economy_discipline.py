@@ -243,9 +243,10 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
             )
             food_types = inputs[GlossaryCore.FoodTypesName]
             years = inputs[GlossaryCore.FoodTypesInvestName][GlossaryCore.Years]
-            total_invests = inputs[GlossaryCore.FoodTypesInvestName][food_types].sum(axis=0)
+            total_invests = inputs[GlossaryCore.FoodTypesInvestName][food_types].sum(axis=1)
             new_chart.add_series(InstanciatedSeries(years, total_invests, 'Total', 'lines', True, line={'color': 'gray'}))
             instanciated_charts.append(new_chart)
+            new_chart.to_plotly().show()
 
         if "Damages" in charts:
             new_chart = self.get_chart_damages(outputs)
