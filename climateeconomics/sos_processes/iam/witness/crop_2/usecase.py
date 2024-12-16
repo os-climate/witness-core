@@ -41,7 +41,7 @@ class Study(StudyManager):
 
         crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(1.2, 4.5, len(years)),  # fake
+            GlossaryCore.CropProductivityReductionName: np.linspace(0., 4.5, len(years)) * 0,  # fake
         })
 
         damage_fraction = pd.DataFrame({
@@ -49,15 +49,21 @@ class Study(StudyManager):
             GlossaryCore.DamageFractionOutput: np.linspace(0.0043, 0.032, len(years)), # 2020 value
         })
 
+        true_invests_agri_df = DatabaseWitnessCore.SectorAgricultureInvest.value
+        true_invests_agri_df = true_invests_agri_df.loc[true_invests_agri_df[GlossaryCore.Years] >= self.year_start]
+        last_year_invest = true_invests_agri_df[GlossaryCore.Years].max()
+        n_missing_years = self.year_end - last_year_invest
+        invest_agri = np.array(list(true_invests_agri_df['investment']) + [true_invests_agri_df['investment'].values[-1]] * n_missing_years)
+
         investments = pd.DataFrame({
             GlossaryCore.Years: years,
-            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest2021.value *
+            **{food_type: invest_agri *
                           GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000.
                for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
         })
         workforce_df = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.SectorAgriculture: 935.,  # millions of people (2020 value)
+            GlossaryCore.SectorAgriculture: np.linspace(935., 935*50, year_range)  # millions of people (2020 value)
         })
 
         population_2021 = 7_954_448_391
@@ -68,12 +74,12 @@ class Study(StudyManager):
 
         enegy_agri = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.TotalProductionValue: 2591. /1000.,  # PWh, 2020 value
+            GlossaryCore.TotalProductionValue: np.linspace(2591. /1000., 2591. /1000. * 50, year_range)  # PWh, 2020 value
         })
 
         energy_mean_price = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.EnergyPriceValue: 50.,
+            GlossaryCore.EnergyPriceValue: np.linspace(70, 120, year_range)
         })
 
 

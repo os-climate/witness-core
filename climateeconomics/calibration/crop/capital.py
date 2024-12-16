@@ -18,7 +18,7 @@ import numpy as np
 from scipy.optimize import minimize
 
 from climateeconomics.calibration.crop.productions import (
-    dict_of_production_in_megatons_2021,
+    dict_of_raw_production_in_megatons_2021,
 )
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
@@ -35,6 +35,9 @@ from climateeconomics.glossarycore import GlossaryCore
 # Then we will be able to obtain the capital of each food type : production * deduced capex per ton
 # We also have the investments for the agriculture sector in 2021, we will distribute it among the food types proportionally to the capital share of each food type, to deduce the investment for each food type.
 
+# TODO : capital is taken from FAO for Agriculture, Forestry and fishing report. However we should find the forestry capital and exclude as we only deal with crop and fishing here. Same for invest, we should include investments in forestry
+
+calibration_year = 2021
 
 capex_per_ton_value_rangechat_gpt = { # initial value, min value, max value
     GlossaryCore.RedMeat: (5250.0, 4000, 6500),
@@ -72,13 +75,13 @@ constraints = [LinearConstraint(constraints_matrix, lb=constraint_vector)] # 1% 
 
 
 def loss_function(x: np.ndarray):
-    actual_capital_agriculture_2021 = DatabaseWitnessCore.SectorAgricultureCapital2021.value
+    actual_capital_agriculture_2021 = DatabaseWitnessCore.SectorAgricultureCapital.get_value_at_year(2021)
     total_capital_modeled = 0
     for i, food_type_design_value_capex_per_ton in enumerate(x):
         food_type = mapper_index_food_type[i]
         # ($/ton) * (Mt) = $ * 10^6 = M$
         # so divide by 1000 to get B$
-        capital_dict_food_type = food_type_design_value_capex_per_ton * dict_of_production_in_megatons_2021[food_type] / 1000.
+        capital_dict_food_type = food_type_design_value_capex_per_ton * dict_of_raw_production_in_megatons_2021[food_type] / 1000.
         total_capital_modeled += capital_dict_food_type / 1000 # divide by 1000 to get Trillion $
     loss = abs(((total_capital_modeled - actual_capital_agriculture_2021) / actual_capital_agriculture_2021))
     #print("loss", loss)
@@ -96,29 +99,42 @@ sorted(resulting_capex_per_ton.items(), key=lambda x: x[1])
 
 capital_start_food_type_breakdown = {}
 for food_type, capex_per_ton_optimal in resulting_capex_per_ton.items():
-    capital_dict_food_type = capex_per_ton_optimal * dict_of_production_in_megatons_2021[food_type] / 1000.
+    capital_dict_food_type = capex_per_ton_optimal * dict_of_raw_production_in_megatons_2021[food_type] / 1000.
     capital_start_food_type_breakdown[food_type] = np.round(capital_dict_food_type)
-
-share_of_capital_sector_food_type = {food_type: np.round(capital_dict_food_type / 1000 / DatabaseWitnessCore.SectorAgricultureCapital2021.value * 100, 2) for food_type, capital_dict_food_type in capital_start_food_type_breakdown.items()}
-#print("Agricultre capital breakdown by food type (%):")
-#print(sorted(share_of_capital_sector_food_type.items(), key=lambda x: x[1], reverse=True))
-
-#print("Agricultre capital start by food type (B$):")
-#print(sorted(capital_start_food_type_breakdown.items(), key=lambda x: x[1], reverse=True))
 
 # capital * capital intensity = production => capital intensity = production (Mt) / capital (B$)
 # Mt / B$ = 10^6 / 10^9 = 10^-3 t / $ = kg / $ = t / k$
-capital_intensity_food_types = {food_type: np.round(dict_of_production_in_megatons_2021[food_type] / capital_start_food_type_breakdown[food_type], 2) for food_type in GlossaryCore.DefaultFoodTypesV2}
+capital_intensity_food_types = {food_type: np.round(dict_of_raw_production_in_megatons_2021[food_type] / capital_start_food_type_breakdown[food_type], 2) for food_type in GlossaryCore.DefaultFoodTypesV2}
 
-#print("Capital intensity by food types (t / k$):")
-##print(sorted(capital_intensity_food_types.items(), key=lambda x: x[1], reverse=True))
+
+#print("Agricultre capital breakdown by food type (%):")
+#print(sorted(share_of_capital_sector_food_type.items(), key=lambda x: x[1], reverse=True))
+
+print("Agricultre capital start by food type (B$):")
+print(sorted(capital_start_food_type_breakdown.items(), key=lambda x: x[1], reverse=True))
+
+print("\nCapital intensity by food types (t / k$):")
+capital_intensity_food_types = dict(sorted(capital_intensity_food_types.items(), key=lambda item: item[1], reverse=True))
+for key, val in capital_intensity_food_types.items():
+    print('\t',key.capitalize(),':', val)
+
+
+# We estimates capital of each food type for others years assuming the same distribution as for calibration year 2021
+share_of_capital_sector_food_type = {food_type: np.round(capital_dict_food_type / 1000 / DatabaseWitnessCore.SectorAgricultureCapital.get_value_at_year(2021) * 100, 2) for food_type, capital_dict_food_type in capital_start_food_type_breakdown.items()}
+others_years = [2020, 2021, 2022]
+
+breakdown_capital_other_years, breakdown_invests_years = {}, {}
+for year in others_years:
+    # T$ to G$
+    breakdown_capital_other_years[year] = {ft: round(share_of_capital_sector_food_type[ft] /100 * DatabaseWitnessCore.SectorAgricultureCapital.get_value_at_year(year) * 1e3, 2) for ft in GlossaryCore.DefaultFoodTypesV2}
+    breakdown_invests_years[year] = {ft: round(share_of_capital_sector_food_type[ft] /100 * DatabaseWitnessCore.SectorAgricultureInvest.get_value_at_year(year) * 1e3, 2) for ft in GlossaryCore.DefaultFoodTypesV2}
+
 
 invest_food_type_share_start = {food_type: share_of_capital_sector_food_type[food_type] for food_type in GlossaryCore.DefaultFoodTypesV2}
-invest_food_type_start = {food_type: np.round(invest_food_type_share_start[food_type] * DatabaseWitnessCore.SectorAgricultureInvest2021.value * 1000, 2) for food_type in GlossaryCore.DefaultFoodTypesV2} # in billion $
 # Save the dictionaries to a JSON file
 to_export = {
-    "capital_start_food_type": capital_start_food_type_breakdown,
+    "capital_start_food_type": breakdown_capital_other_years,
     "capital_intensity_food_type": capital_intensity_food_types,
     "invest_food_type_share_start": share_of_capital_sector_food_type, # at year start we invest in each food type proportionally to the capital share
-    "invest_food_type_start": invest_food_type_start,
+    "invest_food_type_start": breakdown_invests_years,
 }
