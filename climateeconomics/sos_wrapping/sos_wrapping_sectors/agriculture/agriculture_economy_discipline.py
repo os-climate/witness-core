@@ -231,6 +231,11 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 column_total=None,
                 post_proc_category="Capital & Investments"
             )
+            food_types = inputs[GlossaryCore.FoodTypesName]
+            years = inputs[GlossaryCore.FoodTypeCapitalName][GlossaryCore.Years]
+            total_capital = inputs[GlossaryCore.FoodTypeCapitalName][food_types].sum(axis=1)
+            new_chart.add_series(
+                InstanciatedSeries(years, total_capital, 'Total', 'lines', True, line={'color': 'gray'}))
             instanciated_charts.append(new_chart)
 
         if "Food products costs data" in charts:
