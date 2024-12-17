@@ -354,7 +354,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
         new_series = InstanciatedSeries(years, total_df[GlossaryCore.OutputNetOfDamage], "Agriculture sector output net of damages", 'lines', True)
         new_chart.add_series(new_series)
-        new_chart.post_processing_section_name = "Output"
+        new_chart.post_processing_section_name = "Economical output"
 
         return new_chart
 
@@ -373,7 +373,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
         new_series = InstanciatedSeries(years, damage_df[GlossaryCore.Damages], "Damages", 'lines', True)
         new_chart.add_series(new_series)
-        new_chart.post_processing_section_name = "Output"
+        new_chart.post_processing_section_name = "Economical output"
         return new_chart
 
     def chart_gross_and_net_output(self, outputs):
@@ -391,7 +391,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
         new_series = InstanciatedSeries(years, -damage_df[GlossaryCore.Damages], "Damages", 'bar', True)
         new_chart.add_series(new_series)
-        new_chart.post_processing_section_name = "Output"
+        new_chart.post_processing_section_name = "Economical output"
         new_chart.annotation_upper_left = {"Note": "does not include Forestry activities output."}
         return new_chart
 
