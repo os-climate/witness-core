@@ -594,7 +594,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                           post_proc_category: Union[None, str],
                           note: Union[dict, None] = None):
 
-        new_chart = TwoAxesInstanciatedChart('', unit, stacked_bar=True, chart_name=charts_name)
+        new_chart = TwoAxesInstanciatedChart('', unit, stacked_bar=True, chart_name=charts_name, show_legend=False)
 
         for key, value in dict_values.items():
             if key != GlossaryCore.Years:
