@@ -72,22 +72,33 @@ share_usage_for_biomass_dry.update({
 
 # deduce production from what is available for consumption by person by year according to FAO.
 # deduced production for human food (Mt) = available for consumption per person per year (kg) * population / (1 - share waste supply chain) / 1e9
-dict_of_production_in_megatons_2021 = {food_type: dict_of_available_food_type_per_capita_2021[food_type] * population_2021 / 1e9 /
-                                       (1 - food_waste_share_supply_chain[food_type] / 100.) /
-                                       (1 - share_usage_for_biomass_dry[food_type] / 100.) for food_type in dict_of_available_food_type_per_capita_2021.keys()}
+damage_fraction_2021 =  0.46 / 100 # according to story telling usecase with tipping point of 3.5°C
+dict_of_raw_production_in_megatons_2021 = {food_type: dict_of_available_food_type_per_capita_2021[food_type] * population_2021 / 1e9 /
+                                                      (1 - damage_fraction_2021) /
+                                                      (1 - food_waste_share_supply_chain[food_type] / 100.) /
+                                                      (1 - share_usage_for_biomass_dry[food_type] / 100.) for food_type in dict_of_available_food_type_per_capita_2021.keys()}
 
 # from capgemini sharepoint
 kcal_by_kg_produced = GlossaryCore.FoodTypeKcalByProdUnitVar["default"]
 
 # deducing production for category "Other" by deducing the missing calories from the other categories
-kg_per_pers_per_year_2021_per_food_type_available_for_consumption = {food_type: dict_of_production_in_megatons_2021[food_type] * 1e9 / population_2021 * (1 - food_waste_share_supply_chain[food_type] / 100) for food_type in dict_of_production_in_megatons_2021.keys()}
-total_kcal_pc_available_wo_other_2021 = sum(kg_per_pers_per_year_2021_per_food_type_available_for_consumption[food_type] * kcal_by_kg_produced[food_type] for food_type in dict_of_production_in_megatons_2021.keys())
+kg_per_pers_per_year_2021_per_food_type_available_for_consumption = {food_type: dict_of_raw_production_in_megatons_2021[food_type] * 1e9 / population_2021 * (1 - food_waste_share_supply_chain[food_type] / 100) * (1 - damage_fraction_2021) for food_type in dict_of_raw_production_in_megatons_2021.keys()}
+total_kcal_pc_available_wo_other_2021 = sum(kg_per_pers_per_year_2021_per_food_type_available_for_consumption[food_type] * kcal_by_kg_produced[food_type] for food_type in dict_of_raw_production_in_megatons_2021.keys())
 calories_per_capita_per_day_wo_other_2021 = total_kcal_pc_available_wo_other_2021 / 365  # kcal/person/day * days in a year
 missing_kcals_per_day_per_person = actual_calories_per_capita_per_day_2021.value - calories_per_capita_per_day_wo_other_2021
 if missing_kcals_per_day_per_person < 0 :
     raise ValueError("There is more food available for consumption than needed.")
-missing_prod_other = missing_kcals_per_day_per_person / kcal_by_kg_produced[GlossaryCore.OtherFood] * 365 * population_2021 / 1e9  # Megatons
-dict_of_production_in_megatons_2021[GlossaryCore.OtherFood] = missing_prod_other
+missing_prod_other = missing_kcals_per_day_per_person / kcal_by_kg_produced[GlossaryCore.OtherFood] * 365 * population_2021 / 1e9 / (1 - damage_fraction_2021) /  (1 - food_waste_share_supply_chain[GlossaryCore.OtherFood] / 100)  # Megatons
+dict_of_raw_production_in_megatons_2021[GlossaryCore.OtherFood] = missing_prod_other
+
+# the production that has been sold is the
+dict_of_production_delivered_sold_2021 = {food_type: raw_prod * (1 - damage_fraction_2021) * (1 - food_waste_share_supply_chain[food_type] / 100.) for food_type, raw_prod in dict_of_raw_production_in_megatons_2021.items()}
+dict_of_production_delivered_sold_2021 = dict(sorted(dict_of_production_delivered_sold_2021.items(), key=lambda item: item[1], reverse=True))
+
+print('\nFood available per capita for year 2021 (kg/person):')
+for key, val in kg_per_pers_per_year_2021_per_food_type_available_for_consumption.items():
+    print('\t', key.capitalize(),':', val, "kg/person")
+
 
 to_export = {
     GlossaryCore.FoodTypeShareDedicatedToStreamProdName.format(GlossaryEnergy.biomass_dry): share_usage_for_biomass_dry,
@@ -101,7 +112,7 @@ to_export = {
 }
 
 if __name__ == '__main__':
-    for food_type, food_prod in dict_of_production_in_megatons_2021.items():
+    for food_type, food_prod in dict_of_raw_production_in_megatons_2021.items():
         per_capita_available = food_prod * 1e9 / population_2021 * (1 - food_waste_share_supply_chain[food_type] / 100)
         print(f"Per capita available for {food_type} : {round(per_capita_available, 2)} kg (modeled)")
 

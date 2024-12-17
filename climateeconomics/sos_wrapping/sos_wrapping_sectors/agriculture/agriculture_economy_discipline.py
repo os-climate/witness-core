@@ -99,7 +99,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs = {
                     # data used for price computation
                     GlossaryCore.FoodTypeEnergyIntensityByProdUnitName: GlossaryCore.FoodTypeEnergyIntensityByProdUnitVar,
-                    GlossaryCore.FoodTypeLaborIntensityByProdUnitName: GlossaryCore.FoodTypeLaborCostByProdUnitVar,
+                    GlossaryCore.FoodTypeLaborCostByProdUnitName: GlossaryCore.FoodTypeLaborCostByProdUnitVar,
                     GlossaryCore.FoodTypeCapitalMaintenanceCostName: GlossaryCore.FoodTypeCapitalMaintenanceCostVar,
                     GlossaryCore.FoodTypeCapitalAmortizationCostName: GlossaryCore.FoodTypeCapitalAmortizationCostVar,
                     GlossaryCore.FoodTypesPriceMarginShareName: GlossaryCore.FoodTypesPriceMarginShareVar,
@@ -184,7 +184,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
             # Waste in dollars
         ]
         food_types_list = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
-        selected_food_types = [food_types_list[0]]
+        selected_food_types = food_types_list[:3]
         return [
             ChartFilter("Charts", chart_list, chart_list, "charts"),
             ChartFilter("Food types", filter_values=food_types_list, selected_values=selected_food_types, filter_key="food_types_selected"),
@@ -241,7 +241,12 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 column_total=None,
                 post_proc_category="Capital & Investments"
             )
+            food_types = inputs[GlossaryCore.FoodTypesName]
+            years = inputs[GlossaryCore.FoodTypesInvestName][GlossaryCore.Years]
+            total_invests = inputs[GlossaryCore.FoodTypesInvestName][food_types].sum(axis=1)
+            new_chart.add_series(InstanciatedSeries(years, total_invests, 'Total', 'lines', True, line={'color': 'gray'}))
             instanciated_charts.append(new_chart)
+            new_chart.to_plotly().show()
 
         if "Damages" in charts:
             new_chart = self.get_chart_damages(outputs)
@@ -297,8 +302,10 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
         for col in list_food_types:
             dict_color = {'color': self.food_types_colors[col]} if col in self.food_types_colors else None
             kwargs = {'line': dict_color} if lines else {'marker': dict_color}
-            new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
-            new_chart.add_series(new_series)
+            values = df_all_food_types[col].values
+            if not min(values) == max(values) == 0:
+                new_series = InstanciatedSeries(years, values, str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
+                new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
             new_series = InstanciatedSeries(years, df_total[column_total], 'Total', 'lines', True, line={'color': 'gray'})
@@ -364,4 +371,5 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
         new_series = InstanciatedSeries(years, -damage_df[GlossaryCore.Damages], "Damages", 'bar', True)
         new_chart.add_series(new_series)
         new_chart.post_processing_section_name = "Output"
+        new_chart.annotation_upper_left = {"Note": "does not include Forestry activities output."}
         return new_chart

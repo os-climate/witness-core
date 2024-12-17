@@ -14,6 +14,8 @@ limitations under the License.
 '''
 import logging
 from math import floor
+from os.path import join
+from pathlib import Path
 
 import numpy as np
 from energy_models.core.ccus.ccus import CCUS
@@ -42,6 +44,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_tell
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
     Study as usecase_ms_mda_tipping_point,
 )
+from climateeconomics.sos_wrapping.post_procs.dashboard import create_xy_chart
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
@@ -57,7 +60,8 @@ TIPPING_POINT = usecase_ms_mda_tipping_point.TIPPING_POINT
 SEP = usecase_ms_mda_tipping_point.SEP
 UNIT = usecase_ms_mda_tipping_point.UNIT
 # list of graphs to be plotted and filtered
-graphs_list = ['Temperature',
+graphs_list = ['GDP vs Energy',
+               'Temperature',
                'CO2 emissions',
                'Population',
                'Cumulative climate deaths',
@@ -73,16 +77,19 @@ graphs_list = ['Temperature',
                'Consumption'
                ]
 
+
 def get_shared_value(execution_engine, short_name_var: str):
     """returns the value of a variables common to all scenarios"""
     var_full_name = execution_engine.dm.get_all_namespaces_from_var_name(short_name_var)[0]
     value = execution_engine.dm.get_value(var_full_name)
     return value, var_full_name
 
+
 def get_all_scenarios_values(execution_engine, short_name_var: str):
     var_full_names = execution_engine.dm.get_all_namespaces_from_var_name(short_name_var)
     values = {var_full_name: execution_engine.dm.get_value(var_full_name) for var_full_name in var_full_names}
     return values
+
 
 def post_processing_filters(execution_engine, namespace):
 
@@ -97,13 +104,13 @@ def post_processing_filters(execution_engine, namespace):
     years_list = np.arange(year_start, year_end + 1).tolist()
 
     filters.append(ChartFilter(CHART_NAME, graphs_list, graphs_list, CHART_NAME))
-    filters.append(ChartFilter(END_YEAR_NAME, years_list, year_end, END_YEAR_NAME, multiple_selection=False)) # by default shows all years
+    filters.append(ChartFilter(END_YEAR_NAME, years_list, year_end, END_YEAR_NAME, multiple_selection=False))  # by default shows all years
     # filter on effects applies on the list of scenarios already filtered (ie it's a logical AND between the filters)
     filters.append(ChartFilter(SCENARIO_NAME, scenario_list,
                                scenario_list, SCENARIO_NAME))
     filters.append(ChartFilter(EFFECT_NAME, effects_list,
-                               ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False)) # by default shows all studies, ie does not apply any filter
-    #specific case of tipping point study => filter will apply if at least one scenario has TIPPING_POINT in its name
+                               ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False))  # by default shows all studies, ie does not apply any filter
+    # specific case of tipping point study => filter will apply if at least one scenario has TIPPING_POINT in its name
     if True in [TIPPING_POINT in scenario for scenario in scenario_list]:
         # recover the values of tipping points:
         tp_dict = get_all_scenarios_values(execution_engine, 'Damage.tp_a3')
@@ -129,7 +136,7 @@ def post_processings(execution_engine, namespace, filters):
     damage_tax_activation_status_dict = get_scenario_damage_tax_activation_status(execution_engine, scenario_list)
     graphs_list = []
     if filters is not None:
-        for chart_filter in filters: # filter on "scenarios" must occur before filter on "Effects" otherwise filter "Effects" does not work
+        for chart_filter in filters:  # filter on "scenarios" must occur before filter on "Effects" otherwise filter "Effects" does not work
             if chart_filter.filter_key == CHART_NAME:
                 graphs_list = chart_filter.selected_values
             if chart_filter.filter_key == END_YEAR_NAME:
@@ -143,7 +150,7 @@ def post_processings(execution_engine, namespace, filters):
                 if effect != ALL_SCENARIOS:
                     if effect == DAMAGE_AND_TAX_NAME:
                         selected_scenarios = [scenario for scenario in selected_scenarios
-                                                    if (damage_tax_activation_status_dict[scenario][TAX_NAME] and \
+                                                    if (damage_tax_activation_status_dict[scenario][TAX_NAME] and
                                                         damage_tax_activation_status_dict[scenario][DAMAGE_NAME])]
                     else:
                         selected_scenarios = [scenario for scenario in selected_scenarios
@@ -182,7 +189,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            f'Temperature change.{GlossaryCore.TemperatureDetailedDfValue}','tp_a3' ]
+            f'Temperature change.{GlossaryCore.TemperatureDetailedDfValue}', 'tp_a3']
         (temperature_detail_df_dict, tipping_points_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         tipping_ptt_title_msg = ""
@@ -199,7 +206,6 @@ def post_processings(execution_engine, namespace, filters):
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name,
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
-
 
         new_chart.annotation_upper_left = note
 
@@ -252,7 +258,6 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
-
 
     if 'Population' in graphs_list:
 
@@ -325,8 +330,6 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-
-
     if 'Investements in energy' in graphs_list:
 
         chart_name = 'Energy investments without tax'
@@ -389,7 +392,6 @@ def post_processings(execution_engine, namespace, filters):
 
             new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
-
 
     if 'CO2 tax' in graphs_list:
 
@@ -469,8 +471,6 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
-
-
     if 'ppm' in graphs_list:
 
         chart_name = 'CO2 Atmospheric concentrations'
@@ -531,8 +531,6 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
-
-
 
     if 'Fossil production' in graphs_list:
 
@@ -626,6 +624,61 @@ def post_processings(execution_engine, namespace, filters):
             new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
 
+    if "GDP vs Energy":
+
+        raw_data_dict = {scenario_name: {
+                "data_type": "variable",
+                "scenario_name": scenario_name,
+                "x_var_name": "EnergyMix.energy_production_brut",
+                "x_column_name": GlossaryCore.TotalProductionValue,
+                "x_data_scale": 1e-3,
+                "y_var_name": "Macroeconomics.economics_detail_df",
+                "y_column_name": "output_net_of_d",
+                "text_column": GlossaryCore.Years,
+            }
+            for scenario_name in scenario_list
+        }
+        raw_data_dict["Historical Data"] = {
+                "data_type": "csv",
+                "filename": join(Path(__file__).parents[3], "data", 'primary-energy-consumption_vs_gdp.csv'),
+                "x_column_name": 'Primary energy consumption [PWh]',
+                "y_column_name": 'World GDP [T$]',
+                "marker_symbol": "triangle-up",
+                "text_column": "years",
+            }
+
+        net_data_dict = {
+            scenario_name: {
+                "data_type": "variable",
+                "scenario_name": scenario_name,
+                "x_var_name": f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}",
+                "x_column_name": GlossaryCore.TotalProductionValue,
+                "y_var_name": "Macroeconomics.economics_detail_df",
+                "y_column_name": "output_net_of_d",
+                "text_column": GlossaryCore.Years,
+            }
+            for scenario_name in scenario_list
+        }
+
+        net_data_dict["Historical Data"] = {
+                "data_type": "csv",
+                "filename": join(Path(__file__).parents[3], "data", 'world_gdp_vs_net_energy_consumption.csv'),
+                "x_column_name": 'Net energy consumption [PWh]',
+                "y_column_name": 'World GDP [T$]',
+                "marker_symbol": "triangle-up",
+                "text_column": "years",
+            }
+
+        new_chart = create_xy_chart(execution_engine, chart_name="GDP vs Raw energy production",
+                                    x_axis_name="World's raw energy production (PWh)",
+                                    y_axis_name="World's GDP net of damage (T$)", data_dict=raw_data_dict)
+        instanciated_charts.append(new_chart)
+
+        new_chart = create_xy_chart(execution_engine, chart_name="GDP vs Net energy production",
+                                    x_axis_name="World's net energy production (PWh)",
+                                    y_axis_name="World's GDP net of damage (T$)", data_dict=net_data_dict)
+        instanciated_charts.append(new_chart)
+
     return instanciated_charts
 
 
@@ -654,13 +707,14 @@ def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
         status_dict[scenario][DAMAGE_NAME] = damage_to_productivity_dict[scenario] and \
                                           assumption_dict[scenario]['compute_climate_impact_on_gdp'] and \
                                           assumption_dict[scenario]['activate_climate_effect_population']
-        status_dict[scenario][TAX_NAME] = ccs_price_dict[scenario] > 25. or (co2_damage_price_dict[scenario] > 0  and status_dict[scenario][DAMAGE_NAME])
+        status_dict[scenario][TAX_NAME] = ccs_price_dict[scenario] > 25. or (co2_damage_price_dict[scenario] > 0 and status_dict[scenario][DAMAGE_NAME])
 
     return status_dict
 
+
 def get_shade_of_color(color, weight):
     '''
-    gives the rgb and hex codes for a color interpolated between a dark and light shade of a color 
+    gives the rgb and hex codes for a color interpolated between a dark and light shade of a color
     Args:
         color: [str] color to chose from
         weight: [float] between 0 and 1. 0 => the light color. 1 => the dark color
@@ -684,6 +738,7 @@ def get_shade_of_color(color, weight):
     hex_code = '#{:02x}{:02x}{:02x}'.format(rgb[0], rgb[1], rgb[2])
 
     return [rgb, hex_code]
+
 
 def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios, status_dict=None):
     min_x = min(x_list)

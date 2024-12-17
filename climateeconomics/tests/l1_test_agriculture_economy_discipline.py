@@ -141,7 +141,6 @@ class JacobianTestCaseAgricultureEconomy(AbstractJacobianUnittest):
         for graph in graph_list:
             #graph.to_plotly().show()
             pass
-        #self.override_dump_jacobian = 1
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobianc_agriculture_economy_disc.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
