@@ -37,6 +37,26 @@ from climateeconomics.glossarycore import GlossaryCore
 # And given that we already have the quantities, we need to find the prices that will get us back on GDP.
 # Remark : We need to exclude the revenus from forestry activities from the agriculture GDP.
 
+# The methodology has been determined by what data was available online :
+# There were no data for global selling price from productor to distributor for each food type.
+# However, global market size values were easily found online.
+# So I went like this :
+# Compiled all market values (except food type category other)
+# estimate "other" market value as Total GDP of crop - all other market sizes
+# Then the price of food type F was given by : Final Price F  ($/ton)= Market value (F) / Quantity sold (F)
+# Where quantity sold is available in the production calibration script.
+
+# Then for detailing the price composition for each food type, i proceeding like this :
+# final price F = production cost F + (margin share of F * final price F)
+# I asked ChatGPT for the margin share of each food type.
+# Then for the detail of the production cost, i asked chat gpt for giving me a percentage breakdown for the production cost between :
+# energy share
+# labor share
+# feeding share
+# capital maintenance share
+# capital amortization share
+# energy share
+
 agri_gdp_ppp_2021 = DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(2021) * DatabaseWitnessCore.ShareGlobalGDPAgriculture2021.value /100
 agri_gdp_ppp_2021_except_forestry = agri_gdp_ppp_2021 - forestry_gdp_ppp_2021
 print("agriculture gdp 2021", agri_gdp_ppp_2021, "T$")
