@@ -30,6 +30,13 @@ from climateeconomics.glossarycore import GlossaryCore
 
 #https://fred.stlouisfed.org/series/PFISHUSDM
 
+
+############## READ ME ##############
+# In this script, we calibrate the prices and their composition for each food type produced in the Crop model.
+# As the GDP of the Agriculture will be computed as GPD = (Sum over food types) Quantity food types X Price food type
+# And given that we already have the quantities, we need to find the prices that will get us back on GDP.
+# Remark : We need to exclude the revenus from forestry activities from the agriculture GDP.
+
 agri_gdp_ppp_2021 = DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(2021) * DatabaseWitnessCore.ShareGlobalGDPAgriculture2021.value /100
 agri_gdp_ppp_2021_except_forestry = agri_gdp_ppp_2021 - forestry_gdp_ppp_2021
 print("agriculture gdp 2021", agri_gdp_ppp_2021, "T$")
