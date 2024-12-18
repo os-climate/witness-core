@@ -60,8 +60,8 @@ class WitnessCoarseDesynchro(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 2
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        inner_mda_name_list = ['MDAJacobi', 'MDAGaussSeidel', 'MDANewtonRaphson', 'GSNewtonMDA',
-                               'GSNewtonMDA', 'GSorNewtonMDA']
+        inner_mda_name_list = ['MDAJacobi', 'MDAGaussSeidel', 'MDANewtonRaphson', 'MDAGSNewton',
+                               'MDAGSNewton', 'GSorNewtonMDA']
 
         for inner_mda_name in inner_mda_name_list:
 

@@ -406,7 +406,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'GSNewtonMDA'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 2
         full_values_dict[f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.carbon_capture.flue_gas_effect'] = False
 
@@ -456,7 +456,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         #                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
         #         values_dict_step = {}
-        #         values_dict_step[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'GSNewtonMDA'
+        #         values_dict_step[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
         #         values_dict_step[f'{self.name}.{usecase.coupling_name}.max_mda_iter_gs'] = 2
         #         values_dict_step[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = step + 2
         #         self.ee.load_study_from_input_dict(values_dict_step)
