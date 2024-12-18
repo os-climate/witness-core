@@ -54,7 +54,7 @@ class EnergyMix_co2emissions_nonreg_test():
         # load and run usecase
         usecase.load_data()
         inputs_dict = {}
-        inputs_dict[usecase.ee.dm.get_all_namespaces_from_var_name('sub_mda_class')[
+        inputs_dict[usecase.ee.dm.get_all_namespaces_from_var_name('inner_mda_name')[
             0]] = 'MDAGaussSeidel'
         usecase.ee.load_study_from_input_dict(inputs_dict)
         usecase.run(for_test=False)

@@ -88,7 +88,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         values_dict[f'{self.name}.linearization_mode'] = 'adjoint'
         # dict_v[f'{self.name}.warm_start'] = True
         values_dict[f'{self.name}.tolerance'] = 1.0e-10
-        values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         values_dict[f'{self.name}.{GlossaryCore.TemperatureDfValue}'] = temperature_df_y
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()

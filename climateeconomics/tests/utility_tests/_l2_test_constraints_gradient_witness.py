@@ -112,7 +112,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.tolerance'] = 1.0e-12
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.max_mda_iter'] = 200
-        full_values_dict[f'{usecase.study_name}.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
 
         input_full_names = []
         nb_poles = 8

@@ -58,7 +58,7 @@ class WitnessCoarseCache(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = False
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 1
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 1
 
         # execute optim without cache and retrieve dm
@@ -134,7 +134,7 @@ class WitnessCoarseCache(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = False
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 2
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 10
 
         # execute optim without cache and retrieve dm

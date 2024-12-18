@@ -112,7 +112,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc = self.ee.root_process.proxy_disciplines[0]
@@ -180,7 +180,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc = self.ee.root_process.proxy_disciplines[0]
@@ -254,7 +254,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.warm_start'] = False
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-10
         full_values_dict[f'{self.name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'GSNewtonMDA'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
 
@@ -262,7 +262,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict = {}
         full_values_dict[f'{self.name}.CCUS.ccs_percentage'] = pd.DataFrame(
             {GlossaryCore.Years: np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1), 'ccs_percentage': 25})
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'GSNewtonMDA'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
         disc = self.ee.root_process.proxy_disciplines[0]
@@ -382,7 +382,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.warm_start'] = False
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-10
         full_values_dict[f'{self.name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.WITNESS_Eval.sub_mda_class'] = 'GSNewtonMDA'
+        full_values_dict[f'{self.name}.WITNESS_Eval.inner_mda_name'] = 'GSNewtonMDA'
         full_values_dict[f'{self.name}.WITNESS_Eval.max_mda_iter'] = 2
         self.ee.load_study_from_input_dict(full_values_dict)
 

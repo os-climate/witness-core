@@ -201,7 +201,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'GSNewtonMDA'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
