@@ -133,7 +133,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # Do not use a gradient method to validate gradient is better, Gauss Seidel works
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[
@@ -225,7 +225,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
             # Do not use a gradient method to validate gradient is better, Gauss Seidel works
             full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-15
-            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
             full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
             full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
             # same hypothesis as uc1
@@ -402,7 +402,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # Do not use a gradient method to validate gradient is better, Gauss Seidel works
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[

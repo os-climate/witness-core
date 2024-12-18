@@ -68,7 +68,7 @@ class WitnessFullGradient(AbstractJacobianUnittest):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
-        values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        values_dict['Test.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
         # values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
         values_dict['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.{GlossaryEnergy.FossilGas}.methane_FossilGas_array_mix'] = 81 * [30.]
         self.ee.load_study_from_input_dict(values_dict)

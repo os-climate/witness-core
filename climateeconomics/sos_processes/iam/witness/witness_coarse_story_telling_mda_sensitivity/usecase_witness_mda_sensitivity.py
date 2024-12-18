@@ -93,7 +93,7 @@ class Study(ClimateEconomicsStudyManager):
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
             # NB: switch to MDAGaussSeidel so it won't crash with the l1 tests, GSNewton diverges.
-            values_dict[f'{self.study_name}.{self.driver_name}.{scenario}.sub_mda_class'] = 'MDAGaussSeidel'
+            values_dict[f'{self.study_name}.{self.driver_name}.{scenario}.inner_mda_name'] = 'MDAGaussSeidel'
             values_dict[f'{self.study_name}.{self.driver_name}.{scenario}.max_mda_iter'] = 2
         return values_dict
 
