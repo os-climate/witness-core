@@ -215,7 +215,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 unit=GlossaryCore.ProductionDf['unit'],
                 df_total=outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}"],
                 column_total=GlossaryCore.OutputNetOfDamage,
-                post_proc_category="Output"
+                post_proc_category="Economical output"
             )
             instanciated_charts.append(new_chart)
 
