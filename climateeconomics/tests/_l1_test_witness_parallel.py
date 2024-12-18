@@ -57,7 +57,7 @@ class WITNESSParallelTest(unittest.TestCase):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
-        values_dict[f'{self.name}.inner_mda_name'] = "GSNewtonMDA"
+        values_dict[f'{self.name}.inner_mda_name'] = "MDAGSNewton"
         values_dict[f'{self.name}.max_mda_iter'] = 50
         values_dict[f'{self.name}.n_processes'] = n_proc
 
@@ -84,7 +84,7 @@ class WITNESSParallelTest(unittest.TestCase):
 
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
-        values_dict[f'{self.name}.inner_mda_name'] = "GSNewtonMDA"
+        values_dict[f'{self.name}.inner_mda_name'] = "MDAGSNewton"
         values_dict[f'{self.name}.max_mda_iter'] = 50
         values_dict[f'{self.name}.n_processes'] = n_proc
 

@@ -118,7 +118,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
-        values_dict[f'{self.name}.inner_mda_name'] = "GSNewtonMDA"
+        values_dict[f'{self.name}.inner_mda_name'] = "MDAGSNewton"
         values_dict[f'{self.name}.n_processes'] = n_proc
         values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = self.co2_emissions_ccus_Gt
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources
@@ -152,7 +152,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
-        values_dict[f'{self.name}.inner_mda_name'] = "GSNewtonMDA"
+        values_dict[f'{self.name}.inner_mda_name'] = "MDAGSNewton"
         values_dict[f'{self.name}.n_processes'] = n_proc
         values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = self.co2_emissions_ccus_Gt
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources

@@ -67,7 +67,7 @@ class TestComparisonNR_GS(unittest.TestCase):
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
-        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'GSNewtonMDA'
+        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'MDAGSNewton'
         full_values_dict[f'{usecase.study_name}.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.tolerance'] = 1e-7
         full_values_dict[f'{usecase.study_name}.relax_factor'] = 0.99
@@ -126,7 +126,7 @@ class TestComparisonNR_GS(unittest.TestCase):
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
-        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'GSNewtonMDA'
+        full_values_dict[f'{usecase.study_name}.inner_mda_name'] = 'MDAGSNewton'
         full_values_dict[f'{usecase.study_name}.max_mda_iter'] = 200
         full_values_dict[f'{usecase.study_name}.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.tolerance'] = 1e-7
