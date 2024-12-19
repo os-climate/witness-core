@@ -12,6 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 import logging
 from math import floor
 from os.path import join
@@ -45,6 +46,9 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_tell
     Study as usecase_ms_mda_tipping_point,
 )
 from climateeconomics.sos_wrapping.post_procs.dashboard import create_xy_chart
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2023_with_nze import Study as usecase_ms_mdo_with_nze
+
+
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
@@ -785,6 +789,10 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         usecase_ms_mdo_iamc.UC4_tp2: dict(color='#0047AB'),  # Dark blue
         usecase_ms_mdo_iamc.UC_NZE_tp1: dict(color='#7FFF00'),  # Light green
         usecase_ms_mdo_iamc.UC_NZE_tp2: dict(color='#2E8B57'),  # Dark Green
+
+        usecase_ms_mdo_with_nze.NO_CCUS: dict(color='#FFD633'),  # Light Orange
+        usecase_ms_mdo_with_nze.ALL_TECHNOS: dict(color='#0047AB'),  # Dark blue
+        usecase_ms_mdo_with_nze.ALL_TECHNOS_NZE: dict(color='#7FFF00'),  # Light green
     }
     line_color = None
 
