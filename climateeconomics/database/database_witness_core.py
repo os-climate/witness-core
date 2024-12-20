@@ -521,36 +521,26 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 7, 26),
     )
 
-    SectorAgricultureCapital2022 = ColectedData(
-        value=6.5,
-        unit="T$",
-        description="Sector Agriculture capital",
-        year_value=2022,
-        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content",
-        critical_at_year_start=False,
-        source="",
-        last_update_date=date(2024, 11, 13),
+    SectorAgricultureCapital = HeavyCollectedData(
+        value=join(data_folder, "agriculture_sector_capital.csv"),
+        unit="Trillion US$ 2015",
+        description="Sector of Agriculture, forestry and fishing",
+        link="https://www.fao.org/statistics/highlights-archive/highlights-detail/agricultural-investments-and-capital-stock.-global-and-regional-trends-(2012-2022)/en",
+        critical_at_year_start=True,
+        source="FAO annual global reports",
+        last_update_date=date(2024, 12, 13),
+        column_to_pick="capital"
     )
 
-    SectorAgricultureCapital2021 = ColectedData(
-        value=6.2,
-        unit="T$",
-        description="Sector Agriculture capital",
-        year_value=2021,
-        link="https://openknowledge.fao.org/server/api/core/bitstreams/19617d9a-65a5-4c83-b7a6-3e6b7dc7cbf5/content",
-        critical_at_year_start=False,
-        source="",
-        last_update_date=date(2024, 11, 19),
-    )
-
-    SectorAgricultureInvest2021 = ColectedData(
-        year_value=2021,
-        value=0.571,
-        unit='T$',  # constant 2015 USD
-        source='FAO',
-        description="Investment in the agricultural sector in 2021",
-        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content",
-        last_update_date=date(2024, 11, 19),
+    SectorAgricultureInvest = HeavyCollectedData(
+        value=join(data_folder, "agriculture_sector_investments.csv"),
+        unit="Trillion US$ 2015",
+        description="Sector of Agriculture, forestry and fishing",
+        link="https://www.fao.org/statistics/highlights-archive/highlights-detail/agricultural-investments-and-capital-stock.-global-and-regional-trends-(2012-2022)/en",
+        critical_at_year_start=True,
+        source="FAO annual global reports",
+        last_update_date=date(2024, 12, 13),
+        column_to_pick="investment"
     )
 
     SectorAgricultureProductivityStart = ColectedData(

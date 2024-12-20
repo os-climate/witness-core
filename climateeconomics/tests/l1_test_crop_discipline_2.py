@@ -60,7 +60,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
 
         self.investments_food_types = pd.DataFrame({
             GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
-            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest2021.value * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
+            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest.get_value_at_year(2021) * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
         })
         self.workforce_df = pd.DataFrame({
             GlossaryCore.Years: self.years,

@@ -67,7 +67,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_IN = {
-        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearStart: {'type': 'int', 'default': GlossaryCore.YearStartDefault, 'structuring': True,'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950, 2080]},
         GlossaryCore.YearEnd: GlossaryCore.get_dynamic_variable(GlossaryCore.YearEndVar),
         GlossaryCore.WorkforceDfValue: GlossaryCore.WorkforceDf,
         GlossaryCore.CropProductivityReductionName: GlossaryCore.CropProductivityReductionDf,
@@ -292,8 +292,8 @@ class CropDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if "Investments and capital usage" in charts:
-            charts_capital_usage = self.get_charts_capital_usages()
-            instanciated_charts.extend(charts_capital_usage)
+            charts_capital = self.get_charts_capital_usages()
+            instanciated_charts.extend(charts_capital)
 
         if "Production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
@@ -592,7 +592,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                           post_proc_category: Union[None, str],
                           note: Union[dict, None] = None):
 
-        new_chart = TwoAxesInstanciatedChart('', unit, stacked_bar=True, chart_name=charts_name)
+        new_chart = TwoAxesInstanciatedChart('', unit, stacked_bar=True, chart_name=charts_name, show_legend=False)
 
         for key, value in dict_values.items():
             if key != GlossaryCore.Years:
@@ -612,6 +612,24 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         invests = self.get_sosdisc_inputs(GlossaryCore.FoodTypesInvestName)
 
+        capital = self.get_sosdisc_outputs(GlossaryCore.FoodTypeCapitalName)
+        non_use_capital = self.get_sosdisc_outputs("non_used_capital_breakdown")
+        food_types = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
+        years = capital[GlossaryCore.Years]
+        total_capital = capital[food_types].values.sum(axis=1)
+        total_non_use_capital = non_use_capital[food_types].values.sum(axis=1)
+        total_invests = invests[food_types].values.sum(axis=1)
+
+        new_chart = TwoAxesInstanciatedChart('Years', "T$", stacked_bar=True, chart_name="Crop capital stock")
+
+        new_series = InstanciatedSeries(years, total_capital / 1e3, 'Capital stock', 'lines', True)
+        new_chart.add_series(new_series)
+        new_series = InstanciatedSeries(years, total_non_use_capital / 1e3, 'Unused capital', 'bar', True)
+        new_chart.add_series(new_series)
+
+        new_chart.post_processing_section_name = "Investments and capital usage"
+        charts.append(new_chart)
+
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=invests,
             charts_name="Investments",
@@ -620,8 +638,8 @@ class CropDiscipline(ClimateEcoDiscipline):
             column_total=None,
             post_proc_category="Investments and capital usage",
         )
+        new_chart.add_series(InstanciatedSeries(years, total_invests, 'Total', 'lines', True, line={'color': 'gray'}))
         charts.append(new_chart)
-        capital = self.get_sosdisc_outputs(GlossaryCore.FoodTypeCapitalName)
 
         new_chart = self.get_breakdown_charts_on_food_type(
             df_all_food_types=capital,

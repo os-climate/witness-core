@@ -99,7 +99,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs = {
                     # data used for price computation
                     GlossaryCore.FoodTypeEnergyIntensityByProdUnitName: GlossaryCore.FoodTypeEnergyIntensityByProdUnitVar,
-                    GlossaryCore.FoodTypeLaborIntensityByProdUnitName: GlossaryCore.FoodTypeLaborCostByProdUnitVar,
+                    GlossaryCore.FoodTypeLaborCostByProdUnitName: GlossaryCore.FoodTypeLaborCostByProdUnitVar,
                     GlossaryCore.FoodTypeCapitalMaintenanceCostName: GlossaryCore.FoodTypeCapitalMaintenanceCostVar,
                     GlossaryCore.FoodTypeCapitalAmortizationCostName: GlossaryCore.FoodTypeCapitalAmortizationCostVar,
                     GlossaryCore.FoodTypesPriceMarginShareName: GlossaryCore.FoodTypesPriceMarginShareVar,
@@ -177,13 +177,14 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
             "Prices",
             "Output",
             "Damages",
+            "Food products costs data"
             # Gdp net of damage
             # Capital
             # Invests
             # Waste in dollars
         ]
         food_types_list = self.get_sosdisc_inputs(GlossaryCore.FoodTypesName)
-        selected_food_types = [food_types_list[0]]
+        selected_food_types = food_types_list[:3]
         return [
             ChartFilter("Charts", chart_list, chart_list, "charts"),
             ChartFilter("Food types", filter_values=food_types_list, selected_values=selected_food_types, filter_key="food_types_selected"),
@@ -213,7 +214,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 unit=GlossaryCore.ProductionDf['unit'],
                 df_total=outputs[f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}"],
                 column_total=GlossaryCore.OutputNetOfDamage,
-                post_proc_category="Output"
+                post_proc_category="Economical output"
             )
             instanciated_charts.append(new_chart)
 
@@ -229,7 +230,31 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 column_total=None,
                 post_proc_category="Capital & Investments"
             )
+            food_types = inputs[GlossaryCore.FoodTypesName]
+            years = inputs[GlossaryCore.FoodTypeCapitalName][GlossaryCore.Years]
+            total_capital = inputs[GlossaryCore.FoodTypeCapitalName][food_types].sum(axis=1)
+            new_chart.add_series(
+                InstanciatedSeries(years, total_capital, 'Total', 'lines', True, line={'color': 'gray'}))
             instanciated_charts.append(new_chart)
+
+        if "Food products costs data" in charts:
+            plots = {
+                "Labor": (GlossaryCore.FoodTypeLaborCostByProdUnitName, GlossaryCore.FoodTypeLaborCostByProdUnitVar),
+                "Energy intensity": (GlossaryCore.FoodTypeEnergyIntensityByProdUnitName, GlossaryCore.FoodTypeEnergyIntensityByProdUnitVar),
+                "Fertilization and pesticides": (GlossaryCore.FoodTypeFertilizationAndPesticidesCostsName, GlossaryCore.FoodTypeFertilizationAndPesticidesCostsVar),
+                "Feeding": (GlossaryCore.FoodTypeFeedingCostsName, GlossaryCore.FoodTypeFeedingCostsVar),
+                "Capital maintenance": (GlossaryCore.FoodTypeCapitalMaintenanceCostName, GlossaryCore.FoodTypeCapitalMaintenanceCostVar),
+                "Capital amortization": (GlossaryCore.FoodTypeCapitalAmortizationCostName, GlossaryCore.FoodTypeCapitalAmortizationCostVar),
+            }
+            for chart_name, (inputname, input_var_descr) in plots.items():
+                dict_values = dict(sorted(inputs[inputname].items(), key=lambda item: item[1], reverse=True))
+                new_chart = self.get_dict_bar_plot(
+                        dict_values=dict_values,
+                        charts_name=chart_name,
+                        unit=input_var_descr['unit'],
+                        post_proc_category="Food products data",
+                    )
+                instanciated_charts.append(new_chart)
 
         if "Investments" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
@@ -240,6 +265,10 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 column_total=None,
                 post_proc_category="Capital & Investments"
             )
+            food_types = inputs[GlossaryCore.FoodTypesName]
+            years = inputs[GlossaryCore.FoodTypesInvestName][GlossaryCore.Years]
+            total_invests = inputs[GlossaryCore.FoodTypesInvestName][food_types].sum(axis=1)
+            new_chart.add_series(InstanciatedSeries(years, total_invests, 'Total', 'lines', True, line={'color': 'gray'}))
             instanciated_charts.append(new_chart)
 
         if "Damages" in charts:
@@ -269,9 +298,6 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
                 )
                 instanciated_charts.append(new_chart)
 
-        for chart in instanciated_charts:
-            #chart.to_plotly().show()
-            pass
         return instanciated_charts
 
     def get_breakdown_charts_on_food_type(self,
@@ -296,8 +322,10 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
         for col in list_food_types:
             dict_color = {'color': self.food_types_colors[col]} if col in self.food_types_colors else None
             kwargs = {'line': dict_color} if lines else {'marker': dict_color}
-            new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
-            new_chart.add_series(new_series)
+            values = df_all_food_types[col].values
+            if not min(values) == max(values) == 0:
+                new_series = InstanciatedSeries(years, values, str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
+                new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
             new_series = InstanciatedSeries(years, df_total[column_total], 'Total', 'lines', True, line={'color': 'gray'})
@@ -325,7 +353,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
         new_series = InstanciatedSeries(years, total_df[GlossaryCore.OutputNetOfDamage], "Agriculture sector output net of damages", 'lines', True)
         new_chart.add_series(new_series)
-        new_chart.post_processing_section_name = "Output"
+        new_chart.post_processing_section_name = "Economical output"
 
         return new_chart
 
@@ -344,7 +372,7 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
         new_series = InstanciatedSeries(years, damage_df[GlossaryCore.Damages], "Damages", 'lines', True)
         new_chart.add_series(new_series)
-        new_chart.post_processing_section_name = "Output"
+        new_chart.post_processing_section_name = "Economical output"
         return new_chart
 
     def chart_gross_and_net_output(self, outputs):
@@ -362,5 +390,29 @@ class AgricultureEconomyDiscipline(ClimateEcoDiscipline):
 
         new_series = InstanciatedSeries(years, -damage_df[GlossaryCore.Damages], "Damages", 'bar', True)
         new_chart.add_series(new_series)
-        new_chart.post_processing_section_name = "Output"
+        new_chart.post_processing_section_name = "Economical output"
+        new_chart.annotation_upper_left = {"Note": "does not include Forestry activities output."}
+        return new_chart
+
+    def get_dict_bar_plot(self,
+                          dict_values: dict,
+                          charts_name: str,
+                          unit: str,
+                          post_proc_category: Union[None, str],
+                          note: Union[dict, None] = None):
+
+        new_chart = TwoAxesInstanciatedChart('', unit, stacked_bar=True, chart_name=charts_name, show_legend=False)
+
+        for key, value in dict_values.items():
+            if key != GlossaryCore.Years:
+                dict_color = {'color': self.food_types_colors[key]} if key in self.food_types_colors else None
+                if value != 0.0:
+                    new_series = InstanciatedSeries([str(key).capitalize()], [value], '', 'bar', True, marker=dict_color)
+                    new_chart.add_series(new_series)
+
+        if post_proc_category is not None:
+            new_chart.post_processing_section_name = post_proc_category
+
+        if note is not None:
+            new_chart.annotation_upper_left = note
         return new_chart

@@ -16,6 +16,9 @@ limitations under the License.
 '''
 import json
 
+from climateeconomics.calibration.agriculture_economy.prices import (
+    to_export as to_export_prices,
+)
 from climateeconomics.calibration.crop.capital import to_export as to_export_capital
 from climateeconomics.calibration.crop.emissions import to_export as to_export_emissions
 from climateeconomics.calibration.crop.land_use import to_export as to_export_land_use
@@ -34,6 +37,7 @@ from climateeconomics.calibration.crop.shares_of_waste import (
 # 3. Emissions
 # 4. Land use
 # 5. Capital
+# 6. Prices
 
 # you will find details on methodology in the corresponding files
 
@@ -44,7 +48,8 @@ data_to_save = {
     **to_export_emissions,
     **to_export_land_use,
     **to_export_capital,
+    **to_export_prices,
 }
 
-with open('output_calibration.json', 'w') as json_file:
+with open('output_calibration_agriculture.json', 'w') as json_file:
     json.dump(data_to_save, json_file, indent=4)

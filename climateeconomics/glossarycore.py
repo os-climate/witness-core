@@ -1746,14 +1746,6 @@ class GlossaryCore:
         "description": "Investments in each food type (Billion $)",
     }
 
-    FoodTypesPriceMarginShareName = "food_type_margin_share"
-    FoodTypesPriceMarginShareVar = {
-        "type": "dict",
-        "unit": "%",
-        "user_level": 3,
-        "description": "Share of the final price that is margin",
-        "default": {ft: 20 for ft in DefaultFoodTypesV2}
-    }
 
     FoodTypesPriceName = "food_type_price"
     FoodTypesPriceVar = {
@@ -1762,8 +1754,17 @@ class GlossaryCore:
         "description": "Price of different food price",
     }
 
-    with open(path.join(path.dirname(__file__), "calibration", "crop", "output_calibration.json"), 'r') as json_file:
+    with open(path.join(path.dirname(__file__), "calibration", "output_calibration_agriculture.json"), 'r') as json_file:
         crop_calibration_data = json.load(json_file)
+
+    FoodTypesPriceMarginShareName = "food_type_margin_share"
+    FoodTypesPriceMarginShareVar = {
+        "type": "dict",
+        "unit": "%",
+        "user_level": 3,
+        "description": "Share of the final price that is margin",
+        "default": crop_calibration_data[FoodTypesPriceMarginShareName] if FoodTypesPriceMarginShareName in crop_calibration_data else None,
+    }
 
     FoodTypeCapitalStartName = "food_type_capital_start"
     FoodTypeCapitalStartVar = {
@@ -1772,7 +1773,7 @@ class GlossaryCore:
         "unit": "G$",
         "user_level": 3,
         "description": "Capital start for each food type, in billion dollars",
-        "default": crop_calibration_data["capital_start_food_type"]
+        "default": crop_calibration_data["capital_start_food_type"][str(YearStartDefault)] if "capital_start_food_type" in crop_calibration_data else None
     }
 
     FoodTypeCapitalIntensityName = "food_type_capital_intensity"
@@ -1782,7 +1783,7 @@ class GlossaryCore:
         "unit": "ton/k$ or kg/$",
         "user_level": 3,
         "description": "Capital intensity: metric tons produced by k$ of capital",
-        "default": crop_calibration_data["capital_intensity_food_type"]
+        "default": crop_calibration_data["capital_intensity_food_type"] if "capital_intensity_food_type" in crop_calibration_data else None
     }
 
     FoodTypeCapitalDepreciationRateName = "food_type_capital_depreciation_rate"
@@ -1792,7 +1793,7 @@ class GlossaryCore:
         "unit": "%",
         "user_level": 3,
         "description": "Depreciation rate of capital each year for each food type",
-        "default": {food_type: 5.8 for food_type in DefaultFoodTypesV2}
+        "default": {food_type: 8.2 for food_type in DefaultFoodTypesV2}
     }
 
     FoodTypeWasteSupplyChainShareName = "food_type_waste_at_supply_chain_share"
@@ -1801,7 +1802,7 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
         "user_level": 3,
-        "default": crop_calibration_data[FoodTypeWasteSupplyChainShareName],
+        "default": crop_calibration_data[FoodTypeWasteSupplyChainShareName] if FoodTypeWasteSupplyChainShareName in crop_calibration_data else None,
         "description": "Indicates what percentage of the production is wasted during supply chain. It does not include waste by consumers",
     }
 
@@ -1811,7 +1812,7 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
         "user_level": 3,
-        "default": crop_calibration_data[FoodTypeWasteByConsumersShareName],
+        "default": crop_calibration_data[FoodTypeWasteByConsumersShareName] if FoodTypeWasteByConsumersShareName in crop_calibration_data else None,
         "description": "Indicates what percentage of the production is wasted by the consumers for each food type",
     }
 
@@ -1983,42 +1984,16 @@ class GlossaryCore:
         "unit": "kWh/ton",
         "user_level": 3,
         "description": "kwh consumed per ton produced",
-        # TODO
-        "default": {
-            RedMeat: 15000,  # High due to feed production, transport, and low feed-to-meat conversion efficiency.
-            WhiteMeat: 8000,  # Lower than red meat; poultry has a better feed conversion ratio.
-            Milk: 500,  # Includes energy for milking systems, feed, and water use.
-            Eggs: 3500,  # Energy includes feed production and poultry farm operation.
-            Rice: 2000,  # High irrigation energy, fertilizer needs; varies by water management.
-            Maize: 1000,  # Moderate; efficient large-scale production, but fertilizer-intensive.
-            Cereals: 1200,  # Includes wheat, barley; slightly higher energy than maize.
-            FruitsAndVegetables: 500,  # Highly variable; greenhouse cultivation can increase energy significantly.
-            Fish: 6000,  # For aquaculture; includes feed production, water circulation, and operations.
-            SugarCane: 500,  # Relatively low due to efficient growth in tropical climates.
-            OtherFood: 1500,  # Varies widely depending on type (e.g., processed foods, specialty crops).
-        }
+        "default": crop_calibration_data[FoodTypeEnergyIntensityByProdUnitName] if FoodTypeEnergyIntensityByProdUnitName in crop_calibration_data else None
     }
 
-    FoodTypeLaborIntensityByProdUnitName = "food_type_labor_cost_by_prod_unit"
+    FoodTypeLaborCostByProdUnitName = "food_type_labor_cost_by_prod_unit"
     FoodTypeLaborCostByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "$/ton",
         "description": "Labor cost per ton of food produced",
         "user_level": 3,
-        # TODO
-        "default": {
-            RedMeat: 800.0,  # Median of $400 - $1,200; labor-intensive due to feeding, herding, slaughtering, and processing.
-            WhiteMeat: 525.0,  # Median of $250 - $800; poultry production is generally more industrialized, reducing costs.
-            Milk: 125.0,  # Median of $50 - $200; lower labor requirements with automation in milking processes.
-            Eggs: 165.0,  # Median of $80 - $250; cage-free systems tend to have higher costs than automated systems.
-            Rice: 175.0,  # Median of $50 - $300; costs vary based on manual vs. mechanized planting and harvesting.
-            Maize: 65.0,  # Median of $30 - $100; mechanized systems result in lower labor input per ton.
-            Cereals: 65.0,  # Median of $30 - $100; includes wheat, barley, and oats with typically low labor costs in mechanized systems.
-            FruitsAndVegetables: 850.0,  # Median of $200 - $1,500; high variability, labor-intensive crops like berries are more costly.
-            Fish: 600.0,  # Median of $200 - $1,000; costs depend on aquaculture (lower) vs. wild catch (higher).
-            SugarCane: 175.0,  # Median of $50 - $300; mechanized harvesting reduces costs compared to manual cutting.
-            OtherFood: 550.0,  # Median of $100 - $1,000; varies widely based on product type, including specialty or processed foods.
-        }
+        "default": crop_calibration_data[FoodTypeLaborCostByProdUnitName] if FoodTypeLaborCostByProdUnitName in crop_calibration_data else None
     }
 
     FoodTypeCapitalMaintenanceCostName = "food_type_capital_maintenance_cost"
@@ -2027,8 +2002,7 @@ class GlossaryCore:
         "unit": "$/ton",
         "user_level": 3,
         "description": "Cost of capital maintenance",
-        # TODO
-        "default":  {key: 0.4 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+        "default": crop_calibration_data[FoodTypeCapitalMaintenanceCostName] if FoodTypeCapitalMaintenanceCostName in crop_calibration_data else None
     }
 
     FoodTypeCapitalAmortizationCostName = "food_type_capital_amortization_cost"
@@ -2037,8 +2011,7 @@ class GlossaryCore:
         "unit": "$/ton",
         "user_level": 3,
         "description": "Cost of capital amortization",
-        # TODO
-        "default": {key: 0.3 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+        "default": crop_calibration_data[FoodTypeCapitalAmortizationCostName] if FoodTypeCapitalAmortizationCostName in crop_calibration_data else None
     }
 
     FoodTypeFeedingCostsName = "food_type_feeding_costs"
@@ -2047,15 +2020,16 @@ class GlossaryCore:
         "unit": "$/ton",
         "user_level": 3,
         "description": "Feeding costs for food type",
-        # TODO
-        "default": {
-            **{key: 0 for key in DefaultFoodTypesV2},
-            **{RedMeat: 1.5 },
-            **{WhiteMeat: 0.3 },
-            **{Fish: 0.2 },
-            **{Eggs: 0.1 },
-            **{Milk: 0.15 },
-        }
+        "default": crop_calibration_data[FoodTypeFeedingCostsName] if FoodTypeFeedingCostsName in crop_calibration_data else None
+    }
+
+    FoodTypeFertilizationAndPesticidesCostsName = "food_type_fertilization_and_pesticides_costs"
+    FoodTypeFertilizationAndPesticidesCostsVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "user_level": 3,
+        "description": "Fertilization and pesticides costs for food type",
+        "default": crop_calibration_data[FoodTypeFertilizationAndPesticidesCostsName] if FoodTypeFertilizationAndPesticidesCostsName in crop_calibration_data else None
     }
 
     FoodTypeLandUseByProdUnitName = "food_type_prod_unit_land_use"
@@ -2064,10 +2038,10 @@ class GlossaryCore:
         "unit": "m²/kg produced",
         "user_level": 3,
         "description": "Land used by kg produced for each food type",
-        #Sources:
-        #[1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
-        #[2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
-        "default": crop_calibration_data[FoodTypeLandUseByProdUnitName]
+        # Sources:
+        # [1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+        # [2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
+        "default": crop_calibration_data[FoodTypeLandUseByProdUnitName] if FoodTypeLandUseByProdUnitName in crop_calibration_data else None
     }
 
     CropFoodLandUseName = "crop_for_food_land_use"

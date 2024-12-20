@@ -77,10 +77,7 @@ class Study(ClimateEconomicsStudyManager):
             scenarioUseCase = studyClass(execution_engine=self.execution_engine, year_start=self.year_start)
             scenarioUseCase.study_name = f'{self.study_name}.{scatter_scenario}.{scenario_name}'
             scenarioData = scenarioUseCase.setup_usecase()
-            scenarioDatadict = {}
-            for data in scenarioData:
-                scenarioDatadict.update(data)
-            values_dict.update(scenarioDatadict)
+            values_dict.update(scenarioData)
 
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 100 for scenario_name in scenario_dict.keys()})
         values_dict.update(

@@ -57,7 +57,7 @@ class AgricultureEconomyModel:
         # these are the parameters that are required to compute each food type
         self.params_for_food_types = [
             GlossaryCore.FoodTypeEnergyIntensityByProdUnitName,
-            GlossaryCore.FoodTypeLaborIntensityByProdUnitName,
+            GlossaryCore.FoodTypeLaborCostByProdUnitName,
             GlossaryCore.FoodTypeCapitalMaintenanceCostName,
             GlossaryCore.FoodTypesPriceMarginShareName,
             GlossaryCore.FoodTypeCapitalAmortizationCostName,
@@ -206,18 +206,17 @@ class AgricultureEconomyModel:
         outputs = {}
 
         # compute unitary price
-        labor_cost = params[GlossaryCore.FoodTypeLaborIntensityByProdUnitName] / 1000 # $/ton to $/kg
-        energy_cost = params[GlossaryCore.FoodTypeEnergyIntensityByProdUnitName] * energy_price / 1e6 # kWh/ton * $/MWh = kWh/ton * $/kkWh = $/(k ton) =$/(Mkg) then /1e6 to $/kg
-        capital_maintenance_cost = params[GlossaryCore.FoodTypeCapitalMaintenanceCostName]
-        capex_amortization_cost = params[GlossaryCore.FoodTypeCapitalAmortizationCostName]
+        labor_cost = params[GlossaryCore.FoodTypeLaborCostByProdUnitName] / 1000 # $/ton to $/kg
+        energy_cost = params[GlossaryCore.FoodTypeEnergyIntensityByProdUnitName] * energy_price / 1e6 # kWh/ton * $/MWh = kWh/ton * $/(kkWh) = $/(k ton) =$/(Mkg) then /1e6 to $/kg
+        capital_maintenance_cost = params[GlossaryCore.FoodTypeCapitalMaintenanceCostName] / 1000 # $/ton to $/kg
+        capex_amortization_cost = params[GlossaryCore.FoodTypeCapitalAmortizationCostName] / 1000 # $/ton to $/kg
         feeding_costs = params[GlossaryCore.FoodTypeFeedingCostsName] / 1000  # $/ton to $/kg
 
-        price_wo_margin = labor_cost + energy_cost + capital_maintenance_cost + capex_amortization_cost + feeding_costs
+        price_wo_margin = labor_cost + energy_cost + capital_maintenance_cost + capex_amortization_cost + feeding_costs + fertilization_and_pesticides
 
         margin_share_of_final_price = params[GlossaryCore.FoodTypesPriceMarginShareName]
         margin = margin_share_of_final_price / 100 * price_wo_margin / (1 - margin_share_of_final_price / 100)
         final_price = price_wo_margin + margin # $/kg
-
 
         # compute gross output for crop:
         damages_prod_loss = production_loss_from_prod_loss * final_price / 1e3 # Mt * $ / kg = G kg * $ / kg so divide by 1e3 to get T$
