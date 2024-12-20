@@ -136,7 +136,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.inner_mda_name': 'MDAGSNewton',
             f'{self.study_name}.cache_type': 'SimpleCache', }
         # f'{self.study_name}.gauss_seidel_execution': True}
         return numerical_values_dict

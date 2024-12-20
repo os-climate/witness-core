@@ -39,6 +39,9 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_proc
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2_tipping_point_2023 import (
     Study as usecase_ms_mdo_iamc,
 )
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2023_with_nze import (
+    Study as usecase_ms_mdo_with_nze,
+)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
     Study as usecase_ms_mda,
 )
@@ -46,9 +49,6 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_tell
     Study as usecase_ms_mda_tipping_point,
 )
 from climateeconomics.sos_wrapping.post_procs.dashboard import create_xy_chart
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2023_with_nze import Study as usecase_ms_mdo_with_nze
-
-
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'

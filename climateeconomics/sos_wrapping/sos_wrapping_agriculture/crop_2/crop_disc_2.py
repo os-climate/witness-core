@@ -543,10 +543,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         for col in list_food_types:
             dict_color = {'color': self.food_types_colors[col]} if col in self.food_types_colors else None
             kwargs = {'line': dict_color} if lines else {'marker': dict_color}
-            serie = df_all_food_types[col].values
-            if not(min(serie) == max(serie) == 0):
-                new_series = InstanciatedSeries(years, serie, str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
-                new_chart.add_series(new_series)
+            new_series = InstanciatedSeries(years, df_all_food_types[col], str(col).capitalize(), 'bar' if not lines else "lines", True, **kwargs)
+            new_chart.add_series(new_series)
 
         if df_total is not None and column_total is not None:
             new_series = InstanciatedSeries(years, df_total[column_total], 'Total', 'lines', True, line={'color': 'gray'})

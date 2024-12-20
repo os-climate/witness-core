@@ -60,22 +60,22 @@ class WitnessCoarseDesynchro(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 2
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        sub_mda_class_list = ['MDAJacobi', 'MDAGaussSeidel', 'MDANewtonRaphson', 'GSNewtonMDA',
-                              'GSPureNewtonMDA', 'GSorNewtonMDA']
+        inner_mda_name_list = ['MDAJacobi', 'MDAGaussSeidel', 'MDANewtonRaphson', 'MDAGSNewton',
+                               'MDAGSNewton', 'GSorNewtonMDA']
 
-        for sub_mda_class in sub_mda_class_list:
+        for inner_mda_name in inner_mda_name_list:
 
             dict_values = {}
-            dict_values['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = sub_mda_class
+            dict_values['Test.WITNESS_MDO.WITNESS_Eval.inner_mda_name'] = inner_mda_name
 
-            if sub_mda_class == 'MDAJacobi':
+            if inner_mda_name == 'MDAJacobi':
                 dict_values['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 20
             else:
                 dict_values['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
 
             self.ee.load_study_from_input_dict(dict_values)
 
-            # execute process with sub_mda_class
+            # execute process with inner_mda_name
             self.ee.execute()
 
             df_coupled = self.ee.dm.get_value(

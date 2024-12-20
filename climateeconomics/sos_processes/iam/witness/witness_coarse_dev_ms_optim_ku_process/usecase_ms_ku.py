@@ -67,7 +67,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict.update({f"{self.study_name}.{self.scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in self.scenario_dict.keys()})
         values_dict.update(
-            {f"{self.study_name}.{self.scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
+            {f"{self.study_name}.{self.scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.inner_mda_name": "MDAGaussSeidel" for scenario_name in
              self.scenario_dict.keys()})
 
         values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)

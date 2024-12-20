@@ -60,9 +60,6 @@ class IEADataPreparationTest(unittest.TestCase):
         energy_production_df = pd.DataFrame({Glossary.Years: years,
                                              Glossary.TotalProductionValue: [40, 70, 80, 10]})
 
-        energy_consumption_df = pd.DataFrame({Glossary.Years: years,
-                                             Glossary.FinalConsumptionValue: [40, 70, 80, 10]})
-
         population_df = pd.DataFrame({Glossary.Years: years,
                                       Glossary.PopulationValue: [8, 8.2, 8.3, 8]})
 
@@ -94,7 +91,6 @@ class IEADataPreparationTest(unittest.TestCase):
             f'{self.name}.{self.model_name}.{Glossary.EconomicsDfValue}': GDP_df,
             f'{self.name}.{self.model_name}.{Glossary.CO2TaxesValue}': CO2_tax_df,
             f'{self.name}.{self.model_name}.{Glossary.EnergyProductionValue}': energy_production_df,
-            f'{self.name}.{self.model_name}.{Glossary.EnergyFinalConsumptionName}': energy_consumption_df,
             f'{self.name}.{self.model_name}.{Glossary.TemperatureDfValue}': temperature_df,
             f'{self.name}.{self.model_name}.{Glossary.PopulationDfValue}': population_df,
             f'{self.name}.{self.model_name}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
@@ -125,11 +121,11 @@ class IEADataPreparationTest(unittest.TestCase):
         assert gdp_interpolated.loc[
                    gdp_interpolated[Glossary.Years].isin(years), f"{Glossary.OutputNetOfDamage} [T$]"].tolist() == GDP_values
         # check that the value at 2035 is the expected : 2030 : 140, 2040: 145 => 2035 should be equal to (140+145)/2
-        expected_value_2035 = (140 + 145) / 2
+        expected_value_2035 = (140+145)/2
         assert gdp_interpolated.loc[gdp_interpolated[Glossary.Years] == 2035, f"{Glossary.OutputNetOfDamage} [T$]"].values[0] == expected_value_2035
 
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass

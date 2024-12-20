@@ -97,12 +97,17 @@ class SectorizedUtilityJacobianDiscTest(AbstractJacobianUnittest):
         """
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        # self.override_dump_jacobian = True
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
+
         self.check_jacobian(location=dirname(__file__), filename='jacobian_sectorized_utility_discipline_sectors_obj.pkl',
                             discipline=disc_techno, step=1e-15, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorizedConsumptionDfValue}'],
-                            outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjectiveName}' for sector in self.sector_list] + [f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}',],
+                            outputs=[f'{self.name}.{sector}.{GlossaryCore.UtilityObjectiveName}' for sector in
+                                     self.sector_list] + [
+                                        f'{self.name}.{GlossaryCore.DecreasingGdpIncrementsObjectiveValue}', ],
                             derr_approx='complex_step')

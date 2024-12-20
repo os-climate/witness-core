@@ -103,7 +103,7 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         #np.set_printoptions(threshold=np.inf)
         self.check_jacobian(location=dirname(__file__), filename='jacobian_land_use_v2_discipline.pkl',

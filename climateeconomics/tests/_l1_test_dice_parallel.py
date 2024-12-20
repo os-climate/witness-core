@@ -23,11 +23,11 @@ import pandas as pd
 from energy_models.core.stream_type.resources_models.resource_glossary import (
     ResourceGlossary,
 )
-from gemseo.utils.compare_data_manager_tooling import (
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.compare_data_manager_tooling import (
     compare_dict,
     delete_keys_from_dict,
 )
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import (
@@ -118,7 +118,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
-        values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
+        values_dict[f'{self.name}.inner_mda_name'] = "MDAGSNewton"
         values_dict[f'{self.name}.n_processes'] = n_proc
         values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = self.co2_emissions_ccus_Gt
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources
@@ -130,7 +130,7 @@ class DICEParallelTest(unittest.TestCase):
         self.ee.configure()
         self.ee.execute()
         dm_dict_1 = deepcopy(self.ee.get_anonimated_data_dict())
-        residual_history = self.ee.root_process.mdo_discipline_wrapp.mdo_discipline.sub_mda_list[0].residual_history
+        residual_history = self.ee.root_process.discipline_wrapp.discipline.sub_mda_list[0].residual_history
         """
         8 proc
         """
@@ -152,7 +152,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
-        values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
+        values_dict[f'{self.name}.inner_mda_name'] = "MDAGSNewton"
         values_dict[f'{self.name}.n_processes'] = n_proc
         values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = self.co2_emissions_ccus_Gt
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources
@@ -174,7 +174,7 @@ class DICEParallelTest(unittest.TestCase):
         compare_dict(dm_dict_1,
                      dm_dict_8, '', dict_error)
 
-        residual_history8 = self.ee8.root_process.mdo_discipline_wrapp.mdo_discipline.sub_mda_list[0].residual_history
+        residual_history8 = self.ee8.root_process.discipline_wrapp.discipline.sub_mda_list[0].residual_history
         self.assertListEqual(residual_history, residual_history8)
 
         # The only different value is n_processes

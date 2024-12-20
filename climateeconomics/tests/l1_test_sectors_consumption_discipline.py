@@ -132,7 +132,7 @@ class SectorsConsumptionDiscipline(AbstractJacobianUnittest):
 
         output_checked = [f"{name}.{GlossaryCore.SectorizedConsumptionDfValue}"]
 
-        disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(
             location=dirname(__file__),

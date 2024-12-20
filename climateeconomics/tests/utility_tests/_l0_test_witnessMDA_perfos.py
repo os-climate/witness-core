@@ -87,12 +87,12 @@ class TestScatter(unittest.TestCase):
 
         input_dict_to_load[f'{self.name}.n_processes'] = 1
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        input_dict_to_load[f'{self.name}.inner_mda_name'] = 'MDAGSNewton'
         self.ee.load_study_from_input_dict(input_dict_to_load)
         profil = cProfile.Profile()
         profil.enable()
         self.ee.execute()
-        mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+        mda_class = self.ee.dm.get_value(f'{self.name}.inner_mda_name')
         n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
         profil.disable()
         result = StringIO()
@@ -203,12 +203,12 @@ class TestScatter(unittest.TestCase):
 
         input_dict_to_load[f'{self.name}.n_processes'] = 1
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
+        input_dict_to_load[f'{self.name}.inner_mda_name'] = 'MDAGSNewton'
         self.ee.load_study_from_input_dict(input_dict_to_load)
         profil = cProfile.Profile()
         profil.enable()
         self.ee.execute()
-        mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+        mda_class = self.ee.dm.get_value(f'{self.name}.inner_mda_name')
         n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
         profil.disable()
         result = StringIO()
@@ -313,12 +313,12 @@ class TestScatter(unittest.TestCase):
 
         input_dict_to_load[f'{self.name}.n_processes'] = 1
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        input_dict_to_load[f'{self.name}.inner_mda_name'] = 'MDAGSNewton'
         self.ee.load_study_from_input_dict(input_dict_to_load)
         profil = cProfile.Profile()
         profil.enable()
         self.ee.execute()
-        mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+        mda_class = self.ee.dm.get_value(f'{self.name}.inner_mda_name')
         n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
         profil.disable()
         result = StringIO()
@@ -419,12 +419,12 @@ class TestScatter(unittest.TestCase):
 
             input_dict_to_load[f'{self.name}.n_processes'] = n_proc
             input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-            input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+            input_dict_to_load[f'{self.name}.inner_mda_name'] = 'MDAGSNewton'
             self.ee.load_study_from_input_dict(input_dict_to_load)
             profil = cProfile.Profile()
             profil.enable()
             self.ee.execute()
-            mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+            mda_class = self.ee.dm.get_value(f'{self.name}.inner_mda_name')
             n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
             profil.disable()
             result = StringIO()
@@ -527,12 +527,12 @@ class TestScatter(unittest.TestCase):
 
             input_dict_to_load[f'{self.name}.n_processes'] = n_proc
             input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-            input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+            input_dict_to_load[f'{self.name}.inner_mda_name'] = 'MDAGSNewton'
             self.ee.load_study_from_input_dict(input_dict_to_load)
             profil = cProfile.Profile()
             profil.enable()
             self.ee.execute()
-            mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+            mda_class = self.ee.dm.get_value(f'{self.name}.inner_mda_name')
             n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
             profil.disable()
             result = StringIO()
@@ -646,7 +646,7 @@ class TestScatter(unittest.TestCase):
 
             input_dict_to_load[f'{self.name}.n_processes'] = n_processes
             input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-            input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+            input_dict_to_load[f'{self.name}.inner_mda_name'] = 'MDAGSNewton'
             self.ee.load_study_from_input_dict(input_dict_to_load)
             profil = cProfile.Profile()
             profil.enable()
@@ -858,7 +858,7 @@ class TestScatter(unittest.TestCase):
         # input_dict_to_load[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
 
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        input_dict_to_load[f'{self.name}.inner_mda_name'] = 'MDAGSNewton'
         self.ee.load_study_from_input_dict(input_dict_to_load)
 
         import tracemalloc
@@ -974,7 +974,7 @@ class TestScatter(unittest.TestCase):
 
             input_dict_to_load[f'{self.name}.n_processes'] = n_proc
             input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-            input_dict_to_load[f'{self.name}.sub_mda_class'] = mda_type
+            input_dict_to_load[f'{self.name}.inner_mda_name'] = mda_type
             self.ee.load_study_from_input_dict(input_dict_to_load)
 
             profil = cProfile.Profile()
@@ -1063,8 +1063,8 @@ class TestScatter(unittest.TestCase):
                 fig.savefig(join(dirname(__file__), f'perfo_dir/{filename}.jpg'))
             return fig
 
-        case_dict = {'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-10core': [10, 'GSNewtonMDA'],
-                     'GSNR-64core': [64, 'GSNewtonMDA']}
+        case_dict = {'GSNR-sequential': [1, 'MDAGSNewton'], 'GSNR-10core': [10, 'MDAGSNewton'],
+                     'GSNR-64core': [64, 'MDAGSNewton']}
 
         operations_dict = {
             'Total': None,
@@ -1148,7 +1148,7 @@ class TestScatter(unittest.TestCase):
 
             input_dict_to_load[f'{self.name}.n_processes'] = n_proc
             input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-            input_dict_to_load[f'{self.name}.sub_mda_class'] = mda_type
+            input_dict_to_load[f'{self.name}.inner_mda_name'] = mda_type
             self.ee.load_study_from_input_dict(input_dict_to_load)
 
             profil = cProfile.Profile()
@@ -1238,8 +1238,8 @@ class TestScatter(unittest.TestCase):
             return fig
 
         case_dict = {
-            'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-10thread': [10, 'GSNewtonMDA'],
-            'GSNR-64thread': [64, 'GSNewtonMDA']
+            'GSNR-sequential': [1, 'MDAGSNewton'], 'GSNR-10thread': [10, 'MDAGSNewton'],
+            'GSNR-64thread': [64, 'MDAGSNewton']
         }
         operations_dict = {
             'Total': None,

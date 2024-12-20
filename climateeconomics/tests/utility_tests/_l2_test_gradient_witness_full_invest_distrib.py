@@ -88,7 +88,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'GSNewtonMDA'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
 

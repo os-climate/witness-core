@@ -50,7 +50,7 @@ class TestIPCCSSPComparison(unittest.TestCase):
 
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
-        self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
+        self.ee.load_study_from_input_dict({f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel',
                                             f'{self.study_name}.max_mda_iter': 2})
 
     def test_ssps_scenario_plots(self):

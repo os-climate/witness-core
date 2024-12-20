@@ -174,7 +174,7 @@ class GlossaryCore:
     FruitsAndVegetables = 'fruits and vegetables'
     Fish = "fish"
     OtherFood = "other"
-
+    
     DefaultFoodTypesV2 = [
         RedMeat,
         WhiteMeat,
@@ -188,7 +188,7 @@ class GlossaryCore:
         SugarCane,
         OtherFood,
     ]
-
+    
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
@@ -925,20 +925,6 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", [0, 1e30], False),
-        },
-    }
-
-    FinalConsumptionValue = "Final Consumption"
-    EnergyFinalConsumptionName = "energy_final_consumption_df"
-    EnergyFinalConsumptionDf = {
-        "var_name": EnergyFinalConsumptionName,
-        "type": "dataframe",
-        "visibility": "Shared",
-        "unit": "PWh",
-        "namespace": NS_ENERGY_MIX,
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            FinalConsumptionValue: ("float", [0, 1e30], False),
         },
     }
 
@@ -1863,7 +1849,7 @@ class GlossaryCore:
         "var_name": FoodTypeNotProducedDueToClimateChangeName,
         "type": "dataframe",
         "unit": "Mt",
-        "description": "Dedicated production",  # for energy production
+        "description": "Dedicated production", # for energy production
     }
 
     FoodTypeWasteByClimateDamagesName = "food_type_waste_by_climate_change"
@@ -1976,19 +1962,19 @@ class GlossaryCore:
         # from capgemini sharepoint
         "default": {
             RedMeat: 2880,  # https://www.fatsecret.com/calories-nutrition/generic/beef-cooked-ns-as-to-fat-eaten?portionid=50030&portionamount=100.000
-            # https://www.fatsecret.com/calories-nutrition/generic/pork-cooked-ns-as-to-fat-eaten?portionid=50101&portionamount=100.000
-            # https://www.fatsecret.com/calories-nutrition/generic/chicken-ns-as-to-skin-eaten
+            #https://www.fatsecret.com/calories-nutrition/generic/pork-cooked-ns-as-to-fat-eaten?portionid=50101&portionamount=100.000
+            #https://www.fatsecret.com/calories-nutrition/generic/chicken-ns-as-to-skin-eaten
             WhiteMeat: (237 * 16.96 + 271 * 13.89) / (16.96 + 13.89) * 10,  # weighted average for chicken and pork
             Milk: 650,  # https://www.dudhsagardairy.coop/health-nutrition/nutritional-facts/#:~:text=The%20calorie%2Fenergy%20content%20of,fat)%20provides%2035kcals%20%2F100ml.
             Eggs: 1470,  # https://www.fatsecret.com/calories-nutrition/usda/egg-(whole)?portionid=56523&portionamount=100.000
-            Rice: 1350,  # https://www.fatsecret.com/calories-nutrition/generic/rice-cooked?portionid=53182&portionamount=1000.000
-            Maize: 960,  # https://www.healthline.com/nutrition/foods/corn#:~:text=Here%20are%20the%20nutrition%20facts,Calories%3A%2096
-            Cereals: 3670,  # https://www.fatsecret.com/calories-nutrition/generic/cereal?portionid=53258&portionamount=100.000
+            Rice: 1350, #https://www.fatsecret.com/calories-nutrition/generic/rice-cooked?portionid=53182&portionamount=1000.000
+            Maize: 960, #https://www.healthline.com/nutrition/foods/corn#:~:text=Here%20are%20the%20nutrition%20facts,Calories%3A%2096
+            Cereals: 3670, # https://www.fatsecret.com/calories-nutrition/generic/cereal?portionid=53258&portionamount=100.000
             # 200 for vegetables https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
             # 580 for fruits  https://www.fatsecret.co.in/calories-nutrition/generic/fruit?portionid=54046&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2058%20calories%20in%20100%20grams%20of%20Fruit.
             FruitsAndVegetables: (580 * 86.40 + 147.04 * 200) / (86.40 + 147.04),
             Fish: 840,  # https://www.fatsecret.com/calories-nutrition/generic/fish-raw?portionid=50616&portionamount=100.000
-            SugarCane: 3750,  # https://www.terrafreshfoods.com/products/sugar-cane#:~:text=in%20Latin%20America.-,Nutritional%20Value,and%20to%20increase%20our%20energy.
+            SugarCane: 3750, # https://www.terrafreshfoods.com/products/sugar-cane#:~:text=in%20Latin%20America.-,Nutritional%20Value,and%20to%20increase%20our%20energy.
             OtherFood: 2000,  # assumed
         }
     }

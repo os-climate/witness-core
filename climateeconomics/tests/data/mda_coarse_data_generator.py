@@ -47,7 +47,7 @@ def launch_data_pickle_generation(directory=''):
 
     full_values_dict[f'{name}.epsilon0'] = 1.0
     full_values_dict[f'{name}.tolerance'] = 1.0e-8
-    full_values_dict[f'{name}.sub_mda_class'] = 'MDAGaussSeidel'
+    full_values_dict[f'{name}.inner_mda_name'] = 'MDAGaussSeidel'
     full_values_dict[f'{name}.max_mda_iter'] = 200
 
     ee.load_study_from_input_dict(full_values_dict)

@@ -26,7 +26,7 @@ import pandas as pd
 from sostrades_core.sos_processes.processes_factory import SoSProcessFactory
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 
-NUMERICAL_KEYS = ['<study_ph>.sub_mda_class', '<study_ph>.max_mda_iter', '<study_ph>.n_processes',
+NUMERICAL_KEYS = ['<study_ph>.inner_mda_name', '<study_ph>.max_mda_iter', '<study_ph>.n_processes',
                   '<study_ph>.chain_linearize',
                   '<study_ph>.tolerance', '<study_ph>.use_lu_fact', '<study_ph>.warm_start', '<study_ph>.acceleration',
                   '<study_ph>.warm_start_threshold', '<study_ph>.n_subcouplings_parallel', '<study_ph>.tolerance_gs',

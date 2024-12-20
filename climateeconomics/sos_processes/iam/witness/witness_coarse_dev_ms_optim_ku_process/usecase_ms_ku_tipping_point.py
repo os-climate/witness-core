@@ -81,7 +81,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 100 for scenario_name in scenario_dict.keys()})
         values_dict.update(
-            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
+            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.inner_mda_name": "MDAGaussSeidel" for scenario_name in
              scenario_dict.keys()})
         # update the tipping point value
         values_dict.update({

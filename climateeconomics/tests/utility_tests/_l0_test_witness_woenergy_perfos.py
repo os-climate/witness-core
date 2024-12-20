@@ -98,13 +98,13 @@ class TestScatter(unittest.TestCase):
         input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
         input_dict_to_load[f'{self.name}.CCS_price'] = CCS_price
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"
+        input_dict_to_load[f'{self.name}.inner_mda_name'] = "MDANewtonRaphson"
         input_dict_to_load[f'{self.name}.n_processes'] = 1
         self.ee.load_study_from_input_dict(input_dict_to_load)
         profil = cProfile.Profile()
         profil.enable()
         self.ee.execute()
-        mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+        mda_class = self.ee.dm.get_value(f'{self.name}.inner_mda_name')
         n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
         profil.disable()
         result = StringIO()

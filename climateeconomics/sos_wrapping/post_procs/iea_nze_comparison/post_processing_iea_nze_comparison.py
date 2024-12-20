@@ -44,9 +44,6 @@ SUFFIX_VAR_IEA = ''  # IEADataPreparationDiscipline.SUFFIX_VAR_INTERPOLATED
 WITNESS_RAW_ENERGY_DF_NAME = "EnergyMix.energy_production_brut"
 WITNESS_RAW_ENERGY_COL_NAME = f"{GlossaryCore.TotalProductionValue}"
 
-WITNESS_NET_ENERGY_DF_NAME = f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}"
-WITNESS_NET_ENERGY_COL_NAME = f"{GlossaryCore.TotalProductionValue}"
-
 
 def get_shared_value(execution_engine, short_name_var: str):
     """returns the value of a variables common to all scenarios"""
@@ -356,16 +353,15 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
     if "Energy_production" in chart_list:
-        # GDP net of damage vs  raw energy for IEA, witness and historical data
+        # GDP vs energy for IEA, witness and historical data
         new_chart = TwoAxesInstanciatedChart(
-            "World's raw energy production (PWh)",
-            "World's GDP net of damage (T$)",
+            "World Raw energy production (PWh)",
+            "World GDP net of damage (T$)",
             chart_name="GDP vs energy production evolution",
         )
         x_witness_df, _ = get_shared_value(execution_engine, WITNESS_RAW_ENERGY_DF_NAME)
         y_witness_df, _ = get_shared_value(execution_engine, "WITNESS.Macroeconomics.economics_detail_df")
-        x_witness = x_witness_df.loc[x_witness_df[GlossaryCore.Years] <= year_end][
-                        WITNESS_RAW_ENERGY_COL_NAME] / 1e3  # Value is in TWh, plot in PWh
+        x_witness = x_witness_df.loc[x_witness_df[GlossaryCore.Years] <= year_end][WITNESS_RAW_ENERGY_COL_NAME] / 1e3  # Value is in TWh, plot in PWh
         y_witness = y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end]["output_net_of_d"]
         new_series = InstanciatedSeries(
             x_witness.values.tolist(),
@@ -379,22 +375,17 @@ def post_processings(execution_engine, namespace, filters):
                                        f"{IEA_NAME}.{GlossaryEnergy.EnergyProductionValue}{SUFFIX_VAR_IEA}")
         y_iea_df, _ = get_shared_value(execution_engine,
                                        f"{IEA_NAME}.{GlossaryEnergy.EconomicsDfValue}{SUFFIX_VAR_IEA}")
-        # IEA Data is not always provided at the same years for different quantities
-        # =>
-        # only keep the data for the common years for gdp and energy production.
-        # Witness data are provided for the same years
-
+        # iea Data are not always provided at the same years for different quantities => only keep the data for the common
+        # years for gdp and energy production. Witness data are provided for the same years
         years_x = x_iea_df.loc[x_iea_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years]
         years_y = y_iea_df.loc[y_iea_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years]
         common_years = sorted(list(set(years_x).intersection(set(years_y))))
         x_iea = x_iea_df.loc[x_iea_df[GlossaryCore.Years].isin(common_years)][GlossaryCore.TotalProductionValue]
         y_iea = y_iea_df.loc[y_iea_df[GlossaryCore.Years].isin(common_years)]["output_net_of_d"]
-
         new_series = InstanciatedSeries(
             x_iea.values.tolist(),
             y_iea.values.tolist(),
             "IEA", display_type="scatter",
-            marker_symbol="square",
             text=common_years,
         )
         new_chart.add_series(new_series)
@@ -408,65 +399,6 @@ def post_processings(execution_engine, namespace, filters):
             x_historical.values.tolist(),
             y_historical.values.tolist(),
             "Historical", display_type="scatter",
-            marker_symbol="triangle-up",
-            text=years_historical,
-        )
-        new_chart.add_series(new_series)
-        instanciated_charts.append(new_chart)
-
-        # GDP net of damage vs  net energy for IEA, witness and historical data
-        new_chart = TwoAxesInstanciatedChart(
-            "World's net energy production (PWh)",
-            "World's GDP net of damage (T$)",
-            chart_name="GDP vs energy production evolution",
-        )
-        x_witness_df, _ = get_shared_value(execution_engine, WITNESS_NET_ENERGY_DF_NAME)
-        y_witness_df, _ = get_shared_value(execution_engine, "WITNESS.Macroeconomics.economics_detail_df")
-        x_witness = x_witness_df.loc[x_witness_df[GlossaryCore.Years] <= year_end][
-                        WITNESS_NET_ENERGY_COL_NAME]
-        y_witness = y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end]["output_net_of_d"]
-        new_series = InstanciatedSeries(
-            x_witness.values.tolist(),
-            y_witness.values.tolist(),
-            "WITNESS", display_type="scatter",
-            text=y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years].values.tolist(),
-        )
-        new_chart.add_series(new_series)
-
-        x_iea_df, _ = get_shared_value(execution_engine,
-                                       f"{IEA_NAME}.{GlossaryEnergy.EnergyFinalConsumptionName}{SUFFIX_VAR_IEA}")
-        y_iea_df, _ = get_shared_value(execution_engine,
-                                       f"{IEA_NAME}.{GlossaryEnergy.EconomicsDfValue}{SUFFIX_VAR_IEA}")
-        # IEA Data is not always provided at the same years for different quantities
-        # =>
-        # only keep the data for the common years for gdp and energy production.
-        # Witness data are provided for the same years
-
-        years_x = x_iea_df.loc[x_iea_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years]
-        years_y = y_iea_df.loc[y_iea_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years]
-        common_years = sorted(list(set(years_x).intersection(set(years_y))))
-        x_iea = x_iea_df.loc[x_iea_df[GlossaryCore.Years].isin(common_years)][GlossaryCore.FinalConsumptionValue]
-        y_iea = y_iea_df.loc[y_iea_df[GlossaryCore.Years].isin(common_years)]["output_net_of_d"]
-
-        new_series = InstanciatedSeries(
-            x_iea.values.tolist(),
-            y_iea.values.tolist(),
-            "IEA", display_type="scatter",
-            marker_symbol="square",
-            text=common_years,
-        )
-        new_chart.add_series(new_series)
-
-        df_historical_df = pd.read_csv(
-            join(Path(__file__).parents[3], "data", 'world_gdp_vs_net_energy_consumption.csv'))
-        years_historical = df_historical_df['years'].values.tolist()
-        x_historical = df_historical_df['Net energy consumption [PWh]']
-        y_historical = df_historical_df['World GDP [T$]']
-        new_series = InstanciatedSeries(
-            x_historical.values.tolist(),
-            y_historical.values.tolist(),
-            "Historical", display_type="scatter",
-            marker_symbol="triangle-up",
             text=years_historical,
         )
         new_chart.add_series(new_series)
