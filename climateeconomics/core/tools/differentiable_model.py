@@ -1,18 +1,4 @@
-'''
-Copyright 2024 Capgemini
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
+from __future__ import annotations
 
 import functools
 import time
@@ -21,11 +7,19 @@ from copy import deepcopy
 from statistics import mean
 from typing import Any, Callable, Union
 
-import autograd.numpy as np
+try:
+    import jax
+    import jax.numpy as jnp
+
+    HAS_JAX = True
+except ImportError:
+    HAS_JAX = False
+
+import autograd
+import autograd.numpy as anp
+import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from autograd import grad, jacobian
-from autograd.builtins import dict, isinstance
 from tqdm import tqdm
 
 ArrayLike = Union[list[float], npt.NDArray[np.float64]]
@@ -61,10 +55,36 @@ class TimerContext(ContextDecorator):
             self.execution_times.append(end_time - start_time)
         return result
 
+
 timer = TimerContext
 
 
 def time_function(runs: int = 5) -> Callable:
+    """Decorate a function to measure the execution time.
+
+    The function is run multiple times and the statistics of the
+    execution times are printed to the console.
+
+    Parameters
+    ----------
+    runs : int
+        The number of times to run the function. Defaults to 5.
+
+    Returns
+    -------
+    A decorator that runs the function multiple times and prints the execution
+    time statistics.
+
+    Example
+    -------
+    @time_function()
+    def my_function(x):
+        # Do something
+        return x
+
+    my_function(5)
+    """
+
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -92,16 +112,17 @@ def time_function(runs: int = 5) -> Callable:
             return results[0]  # Return the result of the first run
 
         return wrapper
+
     return decorator
+
 
 @contextmanager
 def timer_context(name: str = "Operation"):
-    """
-    Context manager for timing a block of code.
-    
+    """Context manager for timing a block of code.
+
     Args:
         name: Description of the operation being timed
-        
+
     Yields:
         None
     """
@@ -128,103 +149,181 @@ class DifferentiableModel:
         output_types (dict): A dictionary to store output types.
     """
 
-    def __init__(self, flatten_dfs: bool = True):
-        """
-        Initialize the model.
+    def __init__(
+            self,
+            flatten_dfs: bool = True,
+            ad_backend: str = "autograd",
+            overload_numpy: bool = True,
+            numpy_ns: str = "np",
+    ) -> None:
+        """Initialize the model.
 
         Args:
             flatten_dfs: If True, DataFrames will be flattened into separate arrays
                         with keys as 'dataframe_name:column_name'.
                         If False, DataFrames will be converted to dictionaries of arrays.
+            ad_backend: The backend to use for automatic differentiation. Defaults to "autograd".
+            overload_numpy: If True, the numpy namespace will be replaced with the
+                            appropriate namespace for the backend. Defaults to True.
+            numpy_ns: The namespace to use for numpy if overload_numpy is True. Defaults to 'np'.
+
         """
+        if ad_backend == "jax" and not HAS_JAX:
+            error_msg = "JAX not installed. Please install JAX to use JAX backend."
+            raise ValueError(error_msg)
+
+        self._ad_backend = ad_backend
+
+        # Overload numpy namespace if required / requested
+        if overload_numpy:
+            self.numpy_ns = numpy_ns
+            self.np = anp if self._ad_backend == "autograd" else jnp
+        else:
+            self.np = np
+
+        # Prepare ad_backend functions
+        if ad_backend == "autograd":
+            self.__grad = autograd.grad
+            self.__jacobian = autograd.jacobian
+        elif ad_backend == "jax":
+            self.__grad = jax.grad
+            self.__jacobian = jax.jacobian
+
         self.inputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
         self.outputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
+
+        self._params = {}
+        self._output_types = {}
+
         self.flatten_dfs = flatten_dfs
 
-    def set_parameters(self, params: dict[str, float, np.ndarray]) -> None:
-        """Sets the parameters of the model.
+        # Default methods
+        self.compute_partial = self.compute_partial_bwd
 
-        Args:
-            params (dict): A dictionary of parameter names and their values.
-        """
-        self.parameters = params
-
-    def get_parameters(self) -> dict[str, float, np.ndarray]:
-        """Retrieves the current parameters of the model.
+    @property
+    def parameters(self) -> dict[str, float, np.ndarray, dict]:
+        """Get the current parameters of the model.
 
         Returns:
             dict: A dictionary of parameter names and their values.
-        """
-        return self.parameters
 
-    def set_inputs(self, inputs: dict[str, InputType]) -> None:
-        """Sets the input values for the model.
+        """
+        return self.get_parameters()
+
+    @parameters.setter
+    def parameters(self, value: dict[str, float, np.ndarray, dict]) -> None:
+        """Set the parameters of the model.
 
         Args:
-            inputs (dict): A dictionary containing input names and their values.
+            value (dict): A dictionary of parameter names and their values.
+
+        """
+        self.set_parameters(value)
+
+    def set_parameters(self, params: dict[str, float, np.ndarray]) -> None:
+        """Set the parameters of the model.
+
+        Args:
+            params (dict): A dictionary of parameter names and their values.
+
+        """
+        self._params = params
+
+    def get_parameters(self) -> dict[str, float, np.ndarray]:
+        """Retrieve the current parameters of the model.
+
+        Returns:
+            dict: A dictionary of parameter names and their values.
+
+        """
+        return self._params
+
+    def set_inputs(self, inputs_in: dict[str, InputType]) -> None:
+        """Set the input values for the model.
+
+        Args:
+            inputs_in (dict): A dictionary containing input names and their values.
 
         Raises:
             TypeError: If a DataFrame input contains non-numeric data.
             ValueError: If an input array has more than 2 dimensions.
-        """
 
-        for key, value in inputs.items():
+        """
+        inputs = {}
+
+        for key, value in inputs_in.items():
             if isinstance(value, pd.DataFrame):
                 if not all(np.issubdtype(dtype, np.number) for dtype in value.dtypes):
-                    msg = f"DataFrame '{key}' contains non-numeric data, which is not supported."
+                    msg = f"DataFrame '{key}' contains non-numeric data."
                     raise TypeError(msg)
                 if self.flatten_dfs:
                     for col in value.columns:
-                        self.inputs[f"{key}:{col}"] = value[col].to_numpy()
+                        inputs[f"{key}:{col}"] = value[col].to_numpy()
                 else:
-                    self.inputs[key] = {
-                        col: value[col].to_numpy() for col in value.columns
-                    }
+                    inputs[key] = {col: value[col].to_numpy() for col in value.columns}
             elif isinstance(value, pd.Series):
-                self.inputs[key] = value.to_numpy()
+                inputs[key] = value.to_numpy()
 
             elif isinstance(value, (list, np.ndarray)):
                 if len(np.array(value).shape) > 2:
-                    msg = f"Input '{key}' has too many dimensions; only 1D or 2D arrays are allowed."
+                    msg = f"Input '{key}' has too many dimensions; only 1D or 2D arrays allowed."
                     raise ValueError(msg)
-                self.inputs[key] = np.array(value)
+                inputs[key] = np.array(value)
             else:
-                self.inputs[key] = value
+                inputs[key] = value
+
+        self.inputs = inputs
 
     def set_output_types(self, output_types: dict[str, str]) -> None:
-        """Sets the types of the output variables.
+        """Set the types of the output variables.
 
         Args:
             output_types (dict): A dictionary of output names and their types.
+
         """
         self.output_types = output_types
 
-    def get_dataframe(self, name: str):
-        """
-        Retrieve a specific DataFrame from outputs based on its name.
+    def get_dataframe(
+            self,
+            name: str,
+            get_from: str = "outputs",
+    ) -> pd.DataFrame | None:
+        """Retrieve a specific DataFrame from outputs or inputs based on its name.
+
         Works with both dictionary outputs and flattened outputs.
 
         Args:
             name: Name of the DataFrame to retrieve
+            get_from: Source of the DataFrame, either "outputs" or "inputs"
 
         Returns:
-            DataFrame if it can be constructed from outputs, None otherwise
+            DataFrame if it can be constructed from outputs or inputs, None otherwise
+
         """
+        if get_from == "inputs":
+            source = self.inputs
+        elif get_from == "outputs":
+            source = self.outputs
+        else:
+            source = self.outputs
+
         # First check if there's a direct dictionary output with this name
-        if name in self.outputs and isinstance(self.outputs[name], dict):
-            # Check if all values are arrays
-            if all(isinstance(v, np.ndarray) for v in self.outputs[name].values()):
-                return pd.DataFrame(self.outputs[name])
+        if (
+                name in source
+                and isinstance(source[name], dict)
+                and all(isinstance(v, np.ndarray) for v in source[name].values())
+        ):
+            return pd.DataFrame(source[name])
 
         # If using flatten_dfs, check for columns with this base name
         if self.flatten_dfs:
             prefix = f"{name}:"
             columns = {}
-            for key, value in self.outputs.items():
+            for key, value in source.items():
                 if key.startswith(prefix) and isinstance(value, np.ndarray):
                     col_name = key[
-                        len(prefix) :
-                    ]  # Remove the prefix to get column name
+                               len(prefix):
+                               ]  # Remove the prefix to get column name
                     columns[col_name] = value
 
             if columns:  # Only create DataFrame if we found matching columns
@@ -232,27 +331,36 @@ class DifferentiableModel:
 
         return None
 
-    def get_dataframes(self) -> dict[str, pd.DataFrame]:
-        """
-        Convert all suitable outputs to pandas DataFrames.
+    def get_dataframes(self, get_from: str = "outputs") -> dict[str, pd.DataFrame]:
+        """Convert all suitable outputs or inputs to pandas DataFrames.
+
+        Args:
+            get_from: Source of the DataFrame, either "outputs" or "inputs".
+                Defaults to "outputs".
 
         Returns:
             Dictionary of DataFrames reconstructed from outputs
+
         """
         result = {}
 
+        if get_from == "inputs":
+            source = self.inputs
+        elif get_from == "outputs":
+            source = self.outputs
+        else:
+            source = self.outputs
+
         if self.flatten_dfs:
             # Find all unique base names in flattened outputs
-            base_names = set(
-                key.split(":", 1)[0] for key in self.outputs.keys() if ":" in key
-            )
+            base_names = {key.split(":", 1)[0] for key in source if ":" in key}
             for base_name in base_names:
                 df = self.get_dataframe(base_name)
                 if df is not None:
                     result[base_name] = df
 
         # Check for dictionary outputs
-        for key, value in self.outputs.items():
+        for key, value in source.items():
             if isinstance(value, dict):
                 df = self.get_dataframe(key)
                 if df is not None:
@@ -261,7 +369,12 @@ class DifferentiableModel:
         return result
 
     def compute(self, *args: InputType) -> OutputType:
-        """Computes the model outputs based on inputs passed as arguments.
+        """Compute the model outputs based on inputs passed as arguments."""
+        self._compute(*args)
+
+    def _compute(self, *args: InputType) -> OutputType:
+        """Compute the model outputs based on inputs passed as arguments.
+
         This method should be overridden by subclasses.
 
         Args:
@@ -272,304 +385,114 @@ class DifferentiableModel:
 
         Raises:
             NotImplementedError: If not implemented in a subclass.
+
         """
         msg = "Subclasses must implement the compute method."
         raise NotImplementedError(msg)
 
     def get_outputs(self) -> dict[str, OutputType]:
-        """Retrieves the computed outputs.
+        """Retrieve the computed outputs.
 
         Returns:
             dict: A dictionary of output names and their computed values.
+
         """
         return self.outputs
 
-    def _wrap_compute_for_autograd(self, output_name: str, input_name: str) -> tuple[Callable, bool, list[str]]:
-        """
-        Wraps the compute method to work with autograd for a single input.
-        For dictionary inputs, creates a wrapper that takes individual arguments for each key.
+    def _create_wapped_compute_bwd(
+            self,
+            output_name: str,
+            input_names: Union[str, list] = None,
+            all_inputs: bool = False,
+    ) -> Callable | list[Callable]:
+        """Create wrapped compute functions for a specific output and inputs.
 
         Args:
-            output_name: Name of the output to differentiate
-            input_name: Name of the input to differentiate with respect to
+            output_name (str): The name of the output.
+            input_names (str, list): The name of the input. Can be a list of inputs.
+            all_inputs (bool): Whether to compute the derivative with respect to all
+            inputs.
 
         Returns:
-            Tuple of:
-            - Wrapped compute function
-            - Boolean indicating if input is dictionary
-            - List of input component names (for dictionaries) or [input_name] (for non-dictionaries)
+            (Callable, list[Callable]): A single wrapped compute function or a list of
+            the wrapped compute functions for each input.
+
         """
-        original_input = self.inputs[input_name]
-        is_dict_input = isinstance(original_input, dict)
+        # Make sure either input_names or all_inputs is provided
+        if input_names is None and all_inputs is False:
+            msg = "Either input_names or all_inputs must be provided."
+            raise ValueError(msg)
 
-        if is_dict_input:
-            input_components = list(original_input.keys())
+        # Ensure input_names is a list
+        if isinstance(input_names, str):
+            input_names = [input_names]
 
-            def wrapped_compute(*args):
-                # Store original inputs
-                original_inputs = deepcopy(self.inputs)
+        wrapped_computes = None
 
-                try:
-                    # Update inputs with the arguments
-                    temp_inputs = deepcopy(original_inputs)
+        if all_inputs:
 
-                    # Create dictionary from individual arguments
-                    temp_inputs[input_name] = {
-                        key: np.array(value)
-                        for key, value in zip(input_components, args)
-                    }
+            def wrapped_compute(args: InputType) -> OutputType:
+                temp_inputs = deepcopy(self.inputs)
+                self.inputs = args
+                self.compute()
+                self.inputs = temp_inputs
+                return self.outputs[output_name]
 
-                    # Set temporary inputs
-                    self.inputs = temp_inputs
-
-                    # Compute
-                    self.compute()
-
-                    # Get the output we want to differentiate
-                    result = self.outputs[output_name]
-
-                    if isinstance(result, dict):
-                        result = {k: np.array(v) for k, v in result.items()}
-                    else:
-                        result = np.array(result)
-
-                    return result
-
-                finally:
-                    # Restore original inputs
-                    self.inputs = original_inputs
-
-            return wrapped_compute, True, input_components
+            wrapped_computes = wrapped_compute
 
         else:
-            def wrapped_compute(x):
-                # Store original inputs
-                original_inputs = deepcopy(self.inputs)
+            wrapped_computes = []
 
-                try:
-                    # Update inputs with the argument
-                    temp_inputs = deepcopy(original_inputs)
-                    temp_inputs[input_name] = np.array(x)
+            for input_name in input_names:
+                if isinstance(self.inputs[input_name], dict):
 
-                    # Set temporary inputs
-                    self.inputs = temp_inputs
-
-                    # Compute
-                    self.compute()
-
-                    # Get the output we want to differentiate
-                    result = self.outputs[output_name]
-
-                    if isinstance(result, dict):
-                        result = {k: np.array(v) for k, v in result.items()}
-                    else:
-                        result = np.array(result)
-
-                    return result
-
-                finally:
-                    # Restore original inputs
-                    self.inputs = original_inputs
-
-            return wrapped_compute, False, [input_name]
-
-    def compute_partial_2(self, output_name: str, input_names: list[str]) -> dict[str, Any]:
-        """
-        Compute partial derivatives of specified output with respect to specified inputs.
-        Uses Jacobian for array outputs and gradient for scalar outputs.
-
-        Args:
-            output_name: Name of the output to differentiate
-            input_names: List of input names to differentiate with respect to
-
-        Returns:
-            Dictionary mapping input names to their gradients/jacobians
-        """
-        # pylint: disable=E1120
-
-        result = {}
-
-        # Check if output is scalar or array
-        test_output = self.outputs[output_name]
-        is_scalar = np.isscalar(test_output) if not isinstance(test_output, dict) else False
-
-        for input_name in input_names:
-            wrapped_function, is_dict_input, input_components = self._wrap_compute_for_autograd(
-                output_name, input_name
-            )
-
-            # Use appropriate differentiation function
-            if is_scalar:
-                # For scalar outputs, use grad
-                diff_function = grad(wrapped_function)
-            else:
-                # For array outputs, use jacobian
-                diff_function = jacobian(wrapped_function)
-
-            # Prepare input values for gradient computation
-            if is_dict_input:
-                input_values = [np.array(self.inputs[input_name][k]) for k in input_components]
-                # Compute gradient/jacobian for each component
-                grads = diff_function(*input_values)
-
-                # Package results into dictionary
-                if isinstance(grads, tuple):
-                    result[input_name] = {
-                        component: grad for component, grad in zip(input_components, grads)
-                    }
+                    def wrapped_compute(
+                            *args: InputType,
+                            input_name: str = input_name,
+                    ) -> OutputType:
+                        temp_inputs = deepcopy(self.inputs)
+                        for i, col in enumerate(self.inputs[input_name].keys()):
+                            self.inputs[input_name][col] = args[i]
+                        self.compute()
+                        self.inputs = temp_inputs
+                        return self.outputs[output_name]
                 else:
-                    # Handle case where there's only one component
-                    result[input_name] = {input_components[0]: grads}
-            else:
-                input_value = np.array(self.inputs[input_name])
-                result[input_name] = diff_function(input_value)
 
-        return result
+                    def wrapped_compute(
+                            arg: InputType,
+                            input_name: str = input_name,
+                    ) -> OutputType:
+                        temp_inputs = deepcopy(self.inputs)
+                        self.inputs[input_name] = arg
+                        self.compute()
+                        self.inputs = temp_inputs
+                        return self.outputs[output_name]
 
-    def _inputs_to_array(self, keys):
-        """
-        Convert selected inputs items into a 1D numpy array.
+                wrapped_computes.append(wrapped_compute)
 
-        Args:
-            keys (list): List of keys to include in the array
+        return wrapped_computes
 
-        Returns:
-            tuple: (concatenated array, list of shapes, total length)
-        """
-        arrays = []
-        shapes = []
-        total_length = 0
-
-        for key in keys:
-            if isinstance(self.inputs[key], float):
-                arr = np.array([self.inputs[key]])
-                shapes.append(arr.shape)
-            else:
-                arr = self.inputs[key].reshape(-1)  # Flatten the array
-                shapes.append(self.inputs[key].shape)
-
-            total_length += len(arr)
-            arrays.append(arr)
-
-        return np.concatenate(arrays), shapes, total_length
-
-    def _array_to_dict(self, array, keys, shapes):
-        """
-        Convert 1D array back to dictionary with original shapes.
+    def compute_partial_bwd(
+            self, output_name: str, input_names: str | list, all_inputs: bool = False
+    ) -> (
+            npt.NDArray[np.float64]
+            | dict[str, npt.NDArray[np.float64] | dict[str, npt.NDArray[np.float64]]]
+    ):
+        """Compute the partial derivative of an output with respect to an input or all inputs.
 
         Args:
-            array (np.ndarray): 1D array containing all values
-            keys (list): List of keys in the same order as dict_to_array
-            shapes (list): Original shapes of arrays from dict_to_array
+            output_name (str): The name of the output to compute the derivative for.
+            input_names (Union[str, list]): The name or list of names of the input(s)
+                                            with respect to which the derivative is computed.
+            all_inputs (bool): Flag indicating whether to compute the derivative with respect
+                               to all inputs at once.
 
         Returns:
-            dict: Dictionary with reshaped arrays
-        """
-        result = {}
-        start_idx = 0
+            Union[npt.NDArray[np.float64], dict[str, Union[npt.NDArray[np.float64], dict[str, npt.NDArray[np.float64]]]]]:
+                The computed partial derivative(s) as a NumPy ndarray or a dictionary of arrays.
 
-        for key, shape in zip(keys, shapes):
-            size = np.prod(shape)
-            arr = array[start_idx : start_idx + size]
-            result[key] = arr.reshape(shape)
-            start_idx += size
-
-        return result
-
-    def _create_wrapped_compute_array(
-        self, output_name: str, input_names: list[str] = None
-    ) -> Callable:
-        """Creates a wrapped compute function that accepts a single array for multiple inputs.
-
-        Args:
-            output_name (str): The name of the output.
-            input_names (List[str]): List of input names to include in the wrapper.
-                If None, all inputs are used.
-
-        Returns:
-            Callable: A wrapped compute function that accepts a single 1D numpy array.
-        """
-        if input_names is None:
-            input_names = list(self.inputs.keys())
-
-        # Get the shapes once to avoid repeated calls
-        _, shapes, _ = self._inputs_to_array(input_names)
-
-        def wrapped_compute(flat_array: np.ndarray):
-            # Store original state
-            temp_inputs = deepcopy(self.inputs)
-            #temp_outputs = deepcopy(self.outputs)
-
-            # Convert flat array back to dictionary and update inputs
-            restored_dict = self._array_to_dict(flat_array, input_names, shapes)
-            for key, value in restored_dict.items():
-                self.inputs[key] = value
-
-            # Compute and get result
-            self.compute()
-            return_value = self.outputs[output_name]
-
-            # Restore original state
-            self.inputs = temp_inputs
-            #self.outputs = temp_outputs
-
-            return return_value
-
-        return wrapped_compute
-
-    def _create_wrapped_compute(self, output_name: str, input_name: str) -> Callable:
-        """Creates a wrapped compute function for a specific output and input.
-
-        Args:
-            output_name (str): The name of the output.
-            input_name (str): The name of the input. If empty, all inputs are used.
-
-        Returns:
-            Callable: A wrapped compute function.
-        """
-
-        
-        # Create a function that handles a specific input
-        if isinstance(self.inputs[input_name], dict):
-            def wrapped_compute(*args):
-                temp_inputs = deepcopy(self.inputs)
-                for i, col in enumerate(self.inputs[input_name].keys()):
-                    self.inputs[input_name][col] = args[i]
-                self.compute()
-                self.inputs = temp_inputs
-                return self.outputs[output_name]
-        else:
-
-            def wrapped_compute(arg):
-                temp_inputs = deepcopy(self.inputs)
-                self.inputs[input_name] = arg
-                self.compute()
-                self.inputs = temp_inputs
-                return self.outputs[output_name]
-
-        return wrapped_compute
-
-    def compute_partial(
-        self, output_name: str, input_names: Union[str, list]
-    ) -> Union[
-        npt.NDArray[np.float64],
-        dict[str, Union[npt.NDArray[np.float64], dict[str, npt.NDArray[np.float64]]]],
-    ]:
-        """Computes the partial derivative of an output with respect to an input or all inputs.
-
-        Args:
-            output_name (str): The name of the output.
-            input_names (str): The name of the input.
-
-        Returns:
-            Union[npt.NDArray[np.float64], Dict[str, Union[npt.NDArray[np.float64], Dict[str, npt.NDArray[np.float64]]]]]:
-                The computed partial derivative(s).
         """
         # pylint: disable=E1120
-
-        # go to compute_partial_2 if given a list of input_names
-        # if isinstance(input_names, list):
-        #     return self.compute_partial_2(output_name, input_names)
 
         is_single = False
         if isinstance(input_names, str):
@@ -577,102 +500,94 @@ class DifferentiableModel:
             input_names = [input_names]
 
         result = {}
-        for input_name in input_names:
-            wrapped_compute = self._create_wrapped_compute(output_name, input_name)
 
-            if isinstance(self.inputs[input_name], dict):  # For DataFrame inputs
-                jacobians = {}
-                for col in self.inputs[input_name]:
-                    jacobian_func = jacobian(
-                        wrapped_compute,
-                        argnum=list(self.inputs[input_name].keys()).index(col),
+        # Create wrapped compute functions making sure only asking for all inputs if using jax
+        wrapped_computes = self._create_wapped_compute_bwd(
+            output_name,
+            input_names,
+            all_inputs=all_inputs if self._ad_backend == "jax" else False,
+        )
+
+        # If all_inputs is True, compute the jacobian using all inputs at once
+        if all_inputs:
+            wrapped_compute = wrapped_computes
+            jacobian_func = self.__jacobian(wrapped_compute)
+            result = jacobian_func(self.inputs)
+
+        else:  # If not, compute the jacobian for each input
+            for wrapped_compute, input_name in zip(wrapped_computes, input_names):
+                if isinstance(self.inputs[input_name], dict):  # For DataFrame inputs
+                    jacobians = {}
+                    argnum_kword = (
+                        "argnum" if self._ad_backend == "autograd" else "argnums"
                     )
-                    jacobians[col] = jacobian_func(*self.inputs[input_name].values())
-                return jacobians
+                    for col in self.inputs[input_name]:
+                        jacobian_func = self.__jacobian(
+                            wrapped_compute,
+                            **{
+                                argnum_kword: list(
+                                    self.inputs[input_name].keys()
+                                ).index(
+                                    col,
+                                ),
+                            },
+                        )
+                        jacobians[col] = jacobian_func(
+                            *self.inputs[input_name].values()
+                        )
 
-            jacobian_func = jacobian(wrapped_compute)
-            result[input_name] = jacobian_func(self.inputs[input_name])
+                    result[input_name] = jacobians
 
-        if is_single:
-            return result[input_names[0]]
+                else:  # For other inputs
+                    jacobian_func = self.__jacobian(wrapped_compute)
+                    result[input_name] = jacobian_func(self.inputs[input_name])
+
+            if is_single:
+                return result[input_names[0]]
 
         return result
 
-    def compute_partial_multiple(
-        self, output_name: str, input_names: Union[str, list]
-    ) -> Union[
-        npt.NDArray[np.float64],
-        dict[str, Union[npt.NDArray[np.float64], dict[str, npt.NDArray[np.float64]]]],
-    ]:
-        """Computes the partial derivative of an output with respect to an input or all inputs.
+    def compute_partial_all_inputs(self, output_name: str) -> dict:
+        """Compute the Jacobian of the model output with respect to all inputs.
+
+        Computes the Jacobian of the model output with respect to all inputs. This
+        is useful for computing the Jacobian when the model has multiple inputs and
+        you want to get the Jacobian with respect to all of them at once.
 
         Args:
-            output_name (str): The name of the output.
-            input_names (str): The name of the input.
+            output_name (str):The name of the output of the model for which to compute
+            the Jacobian.
 
         Returns:
-            Union[npt.NDArray[np.float64], Dict[str, Union[npt.NDArray[np.float64], Dict[str, npt.NDArray[np.float64]]]]]:
-                The computed partial derivative(s).
+            result (dict): A dictionary where the keys are the names of the inputs and
+            the values are the Jacobians of the output with respect to the inputs.
+
         """
-        # pylint: disable=E1120
-
-        wrapped_compute = self._create_wrapped_compute_array(output_name, input_names)
-
-        inputs_array, shapes, _ = self._inputs_to_array(input_names)
-
-        jacobian_func = jacobian(wrapped_compute)
-        jac_array = jacobian_func(inputs_array)
-        
-        # Convert Jacobian array back to dictionary format
-        output_shape = self.outputs[output_name].shape
-        result = {}
-        start_idx = 0
-        
-        for key, shape in zip(input_names, shapes):
-            size = np.prod(shape)
-            # Reshape the Jacobian slice for this input
-            # Combine output shape with input shape
-            full_shape = output_shape + shape
-            jac_slice = jac_array[:, start_idx:start_idx + size].reshape(full_shape)
-            result[key] = jac_slice
-            start_idx += size
+        if self._ad_backend == "autograd":
+            result = {}
+            for key in self.inputs:
+                partial = self.compute_partial(output_name, key)
+                result[key] = partial
+        else:  # JAX
+            result = self.compute_partial(
+                output_name, list(self.inputs.keys()), all_inputs=True
+            )
 
         return result
 
-    def compute_partial_all_inputs(self, output_name: str):
-        # Compute gradients for all inputs
-        result = {}
-        for key in self.inputs:
-            partial = self.compute_partial(output_name, key)
-            result[key] = partial
-        return result
-        # return self.compute_partial_2(output_name, self.inputs.keys())
-
-    def check_partial(
-        self,
-        output_name: str,
-        input_name: str,
-        method: str = "complex_step",
-        epsilon: float = 1e-8,
-        rtol: float = 1e-5,
-        atol: float = 1e-8,
+    def compute_partial_numeric(
+            self,
+            output_name: str,
+            input_name: str,
+            method: str = "complex_step",
+            epsilon: float = 1e-8,
     ) -> dict[str, Union[np.ndarray, float, bool]]:
-        """
-        Compares the partial derivative computed by compute_partial with a numerical approximation
-        for a specific input-output pair, handling array inputs correctly.
+        """Compute the partial derivative of an output with respect to an input using a numerical method.
 
         Args:
-            output_name (str): The name of the output.
-            input_name (str): The name of the input.
+            output_name (str): The name of the output to compute the derivative for.
+            input_name (str): The name of the input with respect to which the derivative is computed.
             method (Literal["finite_differences", "complex_step"]): The numerical method to use.
-            epsilon (float): Step size for numerical approximation.
-            rtol (float): Relative tolerance for comparison.
-            atol (float): Absolute tolerance for comparison.
-
-        Returns:
-            Dict[str, Union[np.ndarray, float, bool]]: A dictionary containing the analytical derivative,
-            numerical approximation, maximum absolute error, maximum relative error, and whether the
-            results are within tolerance.
         """
 
         def finite_difference(f, x, i, eps=epsilon):
@@ -685,18 +600,15 @@ class DifferentiableModel:
             x_complex[i] += 1j * eps
             return np.imag(f(x_complex)) / eps
 
-        # Get the analytical partial derivative
-        analytical = self.compute_partial(output_name, input_name)
-
         # Prepare for numerical approximation
-        wrapped_compute = self._create_wrapped_compute(output_name, input_name)
+        wrapped_compute = self._create_wapped_compute_bwd(output_name, input_name)[0]
 
         if isinstance(self.inputs[input_name], dict):
             numerical = {}
             for col, value in self.inputs[input_name].items():
                 if np.isscalar(value):
 
-                    def f(x):
+                    def f(x, col: str = col) -> Callable:
                         temp_inputs = self.inputs[input_name].copy()
                         temp_inputs[col] = x
                         return wrapped_compute(*temp_inputs.values())
@@ -711,7 +623,7 @@ class DifferentiableModel:
                     )
                     for i in np.ndindex(value.shape):
 
-                        def f(x):
+                        def f(x, col: str = col) -> Callable:
                             temp_inputs = self.inputs[input_name].copy()
                             temp_inputs[col] = x
                             return wrapped_compute(*temp_inputs.values())
@@ -734,6 +646,43 @@ class DifferentiableModel:
                         numerical[i] = finite_difference(wrapped_compute, value, i)
                     else:  # complex_step
                         numerical[i] = complex_step(wrapped_compute, value, i)
+
+        return numerical
+
+    def check_partial(
+            self,
+            output_name: str,
+            input_name: str,
+            method: str = "complex_step",
+            epsilon: float = 1e-8,
+            rtol: float = 1e-5,
+            atol: float = 1e-8,
+    ) -> dict[str, Union[np.ndarray, float, bool]]:
+        """Compare the partial derivative computed by compute_partial with a numerical approximation
+        for a specific input-output pair, handling array inputs correctly.
+
+        Args:
+            output_name (str): The name of the output.
+            input_name (str): The name of the input.
+            method (Literal["finite_differences", "complex_step"]): The numerical method to use.
+            epsilon (float): Step size for numerical approximation.
+            rtol (float): Relative tolerance for comparison.
+            atol (float): Absolute tolerance for comparison.
+
+        Returns:
+            Dict[str, Union[np.ndarray, float, bool]]: A dictionary containing the analytical derivative,
+            numerical approximation, maximum absolute error, maximum relative error, and whether the
+            results are within tolerance.
+
+        """
+
+        # Get the analytical partial derivative
+        analytical = self.compute_partial(output_name, input_name)
+
+        # Get the numerical partial derivative
+        numerical = self.compute_partial_numeric(
+            output_name, input_name, method=method, epsilon=epsilon
+        )
 
         # Ensure analytical and numerical have the same shape
         if isinstance(analytical, dict):
@@ -781,29 +730,28 @@ class DifferentiableModel:
 
 
 if __name__ == "__main__":
-
-    import functools
-    import time
     from contextlib import contextmanager
     from typing import Any, Callable
-
 
     class MyModel(DifferentiableModel):
         def compute(self) -> None:
             x = self.inputs["x"]
             y = self.inputs["y"]
 
-            y_a = np.array(y["a"]) ** 3
-            y_b = np.array(y["b"]) ** 3
+            y_a = y["a"] ** 3
+            y_b = y["b"] ** 3
 
-            result = np.sum(x**2)
-            result = result + np.sum(y_a)
-            result = result + np.sum(y_b**3)
+            result = self.np.sum(x ** 2)
+            result = result + self.np.sum(y_a)
+            result = result + self.np.sum(y_b ** 3)
 
-            self.outputs["result"] = np.array([result])
+            self.outputs["result"] = result
+
+    def replace_namespace_instance(instance, new_namespace):
+        instance.__dict__["np"] = new_namespace
 
     # Usage example
-    model = MyModel(flatten_dfs=False)
+    model = MyModel(flatten_dfs=False, ad_backend="autograd")
 
     # Set inputs
     inputs: dict[str, InputType] = {
@@ -828,6 +776,13 @@ if __name__ == "__main__":
     jacobian_y = model.compute_partial_all_inputs("result")
     print("Jacobian all:", jacobian_y)
 
+    result = model.check_partial("result", "x", method="complex_step")
+    print(f"Analytical: {result['analytical']}")
+    print(f"Numerical: {result['numerical']}")
+    print(f"Max absolute error: {result['max_absolute_error']}")
+    print(f"Max relative error: {result['max_relative_error']}")
+    print(f"Within tolerance: {result['within_tolerance']}")
+
     result = model.check_partial("result", "y", method="complex_step")
     print(f"Analytical: {result['analytical']}")
     print(f"Numerical: {result['numerical']}")
@@ -842,21 +797,14 @@ if __name__ == "__main__":
             y = self.inputs["data:feature2"]
 
             # Create flattened outputs
-            self.outputs["result:squared"] = x**2
+            self.outputs["result:squared"] = x ** 2
             self.outputs["result:sum"] = x + y
             self.outputs["other:value"] = x * y
 
     model = FlatModule(flatten_dfs=True)
-    df = pd.DataFrame({"feature1": [1, 2, 3], "feature2": [4, 5, 6]})
+    df = pd.DataFrame({"feature1": [1.0, 2.0, 3.0], "feature2": [4.0, 5.0, 6.0]})
     model.set_inputs({"data": df})
     model.compute()
-
-    with timer_context("MULTIPLE"):
-        for i in range(100):
-            jacobian_y = model.compute_partial_multiple(
-                "other:value", ["data:feature1", "data:feature2"]
-            )
-        print("Jacobian multiple:", jacobian_y)
 
     with timer_context("SINGLE ALL"):
         for i in range(100):
@@ -867,12 +815,14 @@ if __name__ == "__main__":
         jacobian_y = model.compute_partial_all_inputs(o)
         print(f"Jacobian ({o}):", jacobian_y)
 
-    # # Get a specific DataFrame
-    # result_df = model.get_dataframe('result')  # DataFrame with 'squared' and 'sum' columns
-    # other_df = model.get_dataframe('other')   # DataFrame with 'value' column
+    # Get a specific DataFrame
+    result_df = model.get_dataframe(
+        "result"
+    )  # DataFrame with 'squared' and 'sum' columns
+    other_df = model.get_dataframe("other")  # DataFrame with 'value' column
 
-    # # Get all DataFrames
-    # all_dfs = model.get_dataframes()  # Dictionary with 'result' and 'other' keys
+    # Get all DataFrames
+    all_dfs = model.get_dataframes()  # Dictionary with 'result' and 'other' keys
 
     # Example with flatten_dfs=False
     class DictModule(DifferentiableModel):
@@ -881,7 +831,7 @@ if __name__ == "__main__":
             y = self.inputs["data"]["feature2"]
 
             # Create dictionary outputs
-            self.outputs["result:squared"] = x**2
+            self.outputs["result:squared"] = x ** 2
             self.outputs["result:sum"] = x + y
             self.outputs["single_value"] = (
                 x.mean()
@@ -898,9 +848,245 @@ if __name__ == "__main__":
     j = model.compute_partial("result:sum", "data")
     print("Jacobian (result:sum):", j)
 
-    # # Get a specific DataFrame
-    # result_df = model.get_dataframe('result')  # DataFrame with 'squared' and 'sum' columns
-    # single_value_df = model.get_dataframe('single_value')  # Returns None
+    # Get a specific DataFrame
+    result_df = model.get_dataframe(
+        "result"
+    )  # DataFrame with 'squared' and 'sum' columns
+    single_value_df = model.get_dataframe("single_value")  # Returns None
 
-    # # Get all DataFrames
-    # all_dfs = model.get_dataframes()  # Dictionary with only 'result' key
+    # Get all DataFrames
+    all_dfs = model.get_dataframes()  # Dictionary with only 'result' key
+
+    # %%
+    class MyModel(DifferentiableModel):
+        def compute(self) -> None:
+            x = self.inputs["x"]
+            y = self.inputs["y"]
+
+            y_a = y["a"] ** 3
+            y_b = y["b"] ** 3
+
+            result = self.np.sum(x ** 2)
+            result = result + self.np.sum(y_a)
+            result = result + self.np.sum(y_b ** 3)
+
+            self.outputs["result"] = result
+
+    # %%
+    # Usage example
+    model = MyModel(flatten_dfs=False, ad_backend="autograd")
+
+    # Set inputs
+    inputs: dict[str, InputType] = {
+        "x": np.array([1.0, 2.0, 3.0]),
+        "y": pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [4.0, 5.0, 6.0]}),
+    }
+    model.set_inputs(inputs)
+
+    # Compute the model
+    model.compute()
+
+    # Get outputs
+    outputs: dict[str, OutputType] = model.get_outputs()
+
+    # Compute Jacobian
+    jacobian_x = model.compute_partial("result", ["x", "y"])
+    print("Jacobian_x:", jacobian_x)
+
+    jacobian_y = model.compute_partial("result", "y")
+    print("Jacobian_y:", jacobian_y)
+
+    jacobian_y = model.compute_partial_all_inputs("result")
+    print("Jacobian all:", jacobian_y)
+
+    result = model.check_partial("result", "x", method="complex_step")
+    print(f"Analytical: {result['analytical']}")
+    print(f"Numerical: {result['numerical']}")
+    print(f"Max absolute error: {result['max_absolute_error']}")
+    print(f"Max relative error: {result['max_relative_error']}")
+    print(f"Within tolerance: {result['within_tolerance']}")
+
+    result = model.check_partial("result", "y", method="complex_step")
+    print(f"Analytical: {result['analytical']}")
+    print(f"Numerical: {result['numerical']}")
+    print(f"Max absolute error: {result['max_absolute_error']}")
+    print(f"Max relative error: {result['max_relative_error']}")
+    print(f"Within tolerance: {result['within_tolerance']}")
+
+    # %%
+    # Example with flatten_dfs=True
+    class FlatModule(DifferentiableModel):
+        def _compute(self):
+            x = self.inputs["data:feature1"]
+            y = self.inputs["data:feature2"]
+
+            # Create flattened outputs
+            self.outputs["result:squared"] = x ** 2
+            self.outputs["result:sum"] = x + y
+            self.outputs["other:value"] = x * y
+
+    model = FlatModule(flatten_dfs=True)
+    df = pd.DataFrame({"feature1": [1.0, 2.0, 3.0], "feature2": [4.0, 5.0, 6.0]})
+    model.set_inputs({"data": df})
+    model.compute()
+
+    with timer_context("SINGLE ALL"):
+        for i in range(100):
+            jacobian_y = model.compute_partial_all_inputs("other:value")
+        print("Jacobian multiple:", jacobian_y)
+
+    for o in model.outputs:
+        jacobian_y = model.compute_partial_all_inputs(o)
+        print(f"Jacobian ({o}):", jacobian_y)
+
+    # Get a specific DataFrame
+    result_df = model.get_dataframe("result")  # DataFrame with 'squared' and 'sum' columns
+    other_df = model.get_dataframe("other")  # DataFrame with 'value' column
+
+    # Get all DataFrames
+    all_dfs = model.get_dataframes()  # Dictionary with 'result' and 'other' keys
+
+    # %%
+    # Example with flatten_dfs=False
+    class DictModule(DifferentiableModel):
+        def _compute(self):
+            x = self.inputs["data"]["feature1"]
+            y = self.inputs["data"]["feature2"]
+
+            # Create dictionary outputs
+            self.outputs["result:squared"] = x ** 2
+            self.outputs["result:sum"] = x + y
+            self.outputs["single_value"] = x.mean()  # This won't be converted to DataFrame
+
+    model = DictModule(flatten_dfs=False)
+    model.set_inputs({"data": df})
+    model.compute()
+
+    for o in model.outputs:
+        j = model.compute_partial_all_inputs(o)
+        print(f"Jacobian ({o}):", j)
+
+    j = model.compute_partial("result:sum", "data")
+    print("Jacobian (result:sum):", j)
+
+    # Get a specific DataFrame
+    result_df = model.get_dataframe("result")  # DataFrame with 'squared' and 'sum' columns
+    single_value_df = model.get_dataframe("single_value")  # Returns None
+
+    # Get all DataFrames
+    all_dfs = model.get_dataframes()  # Dictionary with only 'result' key
+
+    # %%
+    class DictModule(DifferentiableModel):
+        def _compute(self):
+            # Extract inputs
+            pollution_concentration = self.inputs["data:pollution_concentration"]
+            emission_rate = self.inputs["data:emission_rate"]
+            region_area = self.inputs["data:region_area"]
+
+            # Validate inputs
+            if (
+                    pollution_concentration is None
+                    or emission_rate is None
+                    or region_area is None
+            ):
+                raise ValueError(
+                    "All inputs (pollution_concentration, emission_rate, region_area) must be provided."
+                )
+
+            if self.np.any(region_area <= 0):
+                raise ValueError("Region area must be positive for all elements.")
+
+            # Step 1: Calculate pollution density
+            pollution_density = self.calculate_pollution_density(
+                pollution_concentration, region_area
+            )
+
+            # Step 2: Calculate radiative forcing for each density
+            radiative_forcing = self.calculate_radiative_forcing(pollution_density)
+
+            # Step 3: Compute temperature change based on thresholds
+            temperature_change = self.calculate_temperature_change(radiative_forcing)
+
+            # Step 4: Adjust for emission rate
+            adjusted_temperature_change = self.adjust_for_emission_rate(
+                temperature_change, emission_rate
+            )
+
+            # Store results in the outputs dictionary
+            self.outputs["pollution_density"] = pollution_density
+            self.outputs["radiative_forcing"] = radiative_forcing
+            self.outputs["temperature_change"] = adjusted_temperature_change
+
+        def calculate_pollution_density(self, concentration, area):
+            """Calculates pollution density per unit area."""
+            return concentration / area
+
+        def calculate_radiative_forcing(self, pollution_density):
+            """Calculates radiative forcing based on pollution density."""
+            return self.np.where(
+                pollution_density < 10,
+                5.35 * self.np.log1p(pollution_density),
+                6.0 * self.np.log1p(pollution_density),
+            )
+
+        def calculate_temperature_change(self, radiative_forcing):
+            """Calculates temperature change using climate sensitivity and a threshold."""
+            climate_sensitivity = 0.8  # K per W/m²
+            temperature_change = radiative_forcing * climate_sensitivity
+
+            # Apply temperature caps for extreme forcing
+            temperature_cap = 5.0  # Max temperature increase in K
+            return self.np.minimum(temperature_change, temperature_cap)
+
+        def adjust_for_emission_rate(self, temperature_change, emission_rate):
+            """Adjusts temperature change based on emission rate."""
+            return self.np.where(
+                emission_rate > 0.5, temperature_change * 1.2, temperature_change * 0.9
+            )
+
+    # %%
+    inputs = {}
+
+    # Provide input values
+    inputs["pollution_concentration"] = np.array([10.0, 20.0, 50.0])  # μg/m³
+    inputs["emission_rate"] = np.array([1.0, 6.0, 3.0])  # tons per year
+    inputs["region_area"] = np.array([100.0, 200.0, 300.0])  # km²
+
+    data_df = pd.DataFrame(inputs)
+
+    # %%
+    model = DictModule(flatten_dfs=True, ad_backend="autograd")
+    model.set_inputs({"data": data_df})
+    model.compute()
+
+    # %%
+    model.outputs
+
+    ic = print
+
+    # %%
+    for o in model.outputs:
+        j = model.compute_partial_all_inputs(o)
+        print(f"Jacobian ({o}):")
+        ic(j)
+        print("")
+
+    # %%
+    for o in model.outputs:
+        j = model.compute_partial(o, [f"data:{i}" for i in inputs])
+        print(f"Jacobian ({o}):")
+        ic(j)
+        print("")
+
+    # %%
+    for o in model.outputs:
+        with timer_context(f"CHECK PARTIAL {o}"):
+            result = model.check_partial(
+                o, "data:pollution_concentration", method="complex_step"
+            )
+            ic(f"Analytical: {result['analytical']}")
+            ic(f"Numerical: {result['numerical']}")
+            print(f"Max absolute error: {result['max_absolute_error']}")
+            print(f"Max relative error: {result['max_relative_error']}")
+            print(f"Within tolerance: {result['within_tolerance']}")

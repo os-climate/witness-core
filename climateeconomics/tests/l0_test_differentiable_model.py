@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import unittest
 
-import autograd.numpy as agnp
 import numpy as np
 import pandas as pd
 
@@ -30,8 +29,8 @@ class ComplexTestModel(DifferentiableModel):
         z = self.inputs["z"]
         matrix = self.inputs["matrix"]
 
-        self.outputs["output1"] = agnp.sin(x) * agnp.cos(y) + z**2
-        self.outputs["output2"] = agnp.dot(matrix, agnp.array([x, y, z]))
+        self.outputs["output1"] = self.np.sin(x) * self.np.cos(y) + z**2
+        self.outputs["output2"] = self.np.dot(matrix, self.np.array([x, y, z]))
         self.outputs["output3"] = {"a": x * y, "b": y * z, "c": x * z}
 
 
@@ -69,9 +68,10 @@ class TestComplexDifferentiableModel(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             self.model.outputs["output2"], expected_output2
         )
-        for key in expected_output3:
+        for key, val in expected_output3.items():
             np.testing.assert_almost_equal(
-                self.model.outputs["output3"][key], expected_output3[key]
+                self.model.outputs["output3"][key],
+                val,
             )
 
     def test_compute_partial(self):
@@ -129,7 +129,7 @@ class TestComplexDifferentiableModel(unittest.TestCase):
 
     def test_compute_partial_multiple(self):
         self.model.compute()
-        partials = self.model.compute_partial_multiple("output1", ["x", "y", "z"])
+        partials = self.model.compute_partial("output1", ["x", "y", "z"])
 
         x, y, z = self.inputs["x"], self.inputs["y"], self.inputs["z"]
         expected_partial_x = np.cos(x) * np.cos(y)
@@ -143,4 +143,5 @@ class TestComplexDifferentiableModel(unittest.TestCase):
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])
