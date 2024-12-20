@@ -20,11 +20,11 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import (
-    Study as Study4,
-)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_3_no_ccs_damage_high_tax import (
     Study as Study3,
+)
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_4_all_in_damage_high_tax import (
+    Study as Study4,
 )
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_2023_nze_2050 import (
     Study as StudyNZE,
