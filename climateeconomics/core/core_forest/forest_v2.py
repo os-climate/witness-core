@@ -173,50 +173,16 @@ class Forest():
         # sum up global CO2 data
         self.compute_global_CO2_production()
 
-        # compute biomass dry production
         self.compute_biomass_dry_production()
-
-        # compute outputs:
 
         # compute land_use for energy
         self.land_use_required['Forest (Gha)'] = self.managed_wood_df['cumulative_surface']
 
-        # compute forest constrain evolution: reforestation + deforestation
-        self.forest_surface_df['forest_constraint_evolution'] = self.forest_surface_df['reforestation_surface'] + \
-                                                                self.forest_surface_df['deforestation_surface']
-
-        # techno production in TWh
-        self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = (self.managed_wood_df[
-                                                                                'wood_production_for_energy (Mt)'] + \
-                                                                            self.biomass_dry_df[
-                                                                                'deforestation_for_energy']) * self.biomass_dry_calorific_value + \
-                                                                           self.managed_wood_df[
-                                                                               'residues_production_for_energy (Mt)'] * \
-                                                                           self.techno_wood_info[
-                                                                               'residue_calorific_value']
-        # price in $/MWh
-        self.techno_prices['Forest'] = self.biomass_dry_df['price_per_MWh']
-
-        if 'CO2_taxes_factory' in self.biomass_dry_df:
-            self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh'] - \
-                                                   self.biomass_dry_df['CO2_taxes_factory']
-        else:
-            self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh']
-
-        # CO2 emissions
+        self.compute_forest_constraint_evolution()
+        self.compute_production_for_energy()
+        self.compute_price_in_d_per_mwh()
         self.compute_carbon_emissions()
-
-        # CO2 consumed
-        self.techno_consumption[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_wood_info['CO2_from_production'] / \
-                                                                    self.biomass_dry_high_calorific_value * \
-                                                                    self.techno_production[
-                                                                        f'{BiomassDry.name} ({BiomassDry.unit})']
-
-        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_wood_info[
-            'CO2_from_production'] / \
-                                                                            self.biomass_dry_high_calorific_value * \
-                                                                            self.techno_production[
-                                                                                f'{BiomassDry.name} ({BiomassDry.unit})']
+        self.compute_carbon_consumption()
 
     def compute_managed_wood_surface(self):
         """
@@ -517,6 +483,7 @@ class Forest():
         Compute the carbon emissions from the technology taking into account 
         CO2 from production + CO2 from primary resources 
         '''
+        # CO2 emissions
         if 'CO2_from_production' not in self.techno_wood_info:
             self.CO2_emissions['production'] = self.get_theoretical_co2_prod(
                 unit='kg/kWh')
@@ -846,3 +813,38 @@ class Forest():
             if i > 0:
                 d_cum[i] += d_cum[i - 1]
         return d_cum
+
+    def compute_production_for_energy(self):
+        # techno production in TWh
+        self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] =  (
+            self.managed_wood_df['wood_production_for_energy (Mt)'] + self.biomass_dry_df['deforestation_for_energy']) *\
+        self.biomass_dry_calorific_value + self.managed_wood_df['residues_production_for_energy (Mt)'] * self.techno_wood_info['residue_calorific_value']
+
+    def compute_carbon_consumption(self):
+        # CO2 consumed
+        self.techno_consumption[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_wood_info[
+            'CO2_from_production'] / \
+                                                                                         self.biomass_dry_high_calorific_value * \
+                                                                                         self.techno_production[
+                                                                                             f'{BiomassDry.name} ({BiomassDry.unit})']
+
+        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_wood_info[
+            'CO2_from_production'] / \
+                                                                                                 self.biomass_dry_high_calorific_value * \
+                                                                                                 self.techno_production[
+                                                                                                     f'{BiomassDry.name} ({BiomassDry.unit})']
+
+    def compute_forest_constraint_evolution(self):
+        # compute forest constrain evolution: reforestation + deforestation
+        self.forest_surface_df['forest_constraint_evolution'] = self.forest_surface_df['reforestation_surface'] + \
+                                                                self.forest_surface_df['deforestation_surface']
+
+    def compute_price_in_d_per_mwh(self):
+        # Prices in $/MWh
+        self.techno_prices['Forest'] = self.biomass_dry_df['price_per_MWh']
+
+        if 'CO2_taxes_factory' in self.biomass_dry_df:
+            self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh'] - \
+                                                   self.biomass_dry_df['CO2_taxes_factory']
+        else:
+            self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh']

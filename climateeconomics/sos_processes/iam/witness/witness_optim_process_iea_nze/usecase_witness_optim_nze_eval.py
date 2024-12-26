@@ -226,6 +226,8 @@ class Study(ClimateEconomicsStudyManager):
         invest_before_year_start_hydropower = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['Hydropower'], self.year_start), GlossaryEnergy.InvestValue: [0., 102.49276698, 98.17710767]})
         invest_before_year_start_windonshore = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['WindOnshore'], self.year_start), GlossaryEnergy.InvestValue: [0., 125.73068603, 125.73068603]})
         invest_before_year_start_windoffshore = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['WindOffshore'], self.year_start), GlossaryEnergy.InvestValue: [0., 34.26931397, 34.26931397]})
+        invest_mix[f'{GlossaryEnergy.methane}.{GlossaryEnergy.Methanation}'] = 0.
+        invest_mix[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.{GlossaryEnergy.BiomassFermentation}'] = 0.
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
