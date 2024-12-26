@@ -188,7 +188,6 @@ class Study(ClimateEconomicsStudyManager):
 
         func_df = self.witness_uc.func_df
         func_df = func_df[~func_df['variable'].isin(['non_use_capital_cons', 'forest_lost_capital_cons'])]
-        func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'calories_per_day_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'total_prod_minus_min_prod_constraint_df', 'weight'] = 0.
 

@@ -157,7 +157,7 @@ class Study(ClimateEconomicsStudyManager):
 
         setup_data_list.append(witness_input)
 
-        self.func_df = pd.concat([self.setup_constraint_land_use(), self.setup_objectives()])
+        self.func_df = self.setup_objectives()
 
         return setup_data_list
 
@@ -181,64 +181,6 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type.extend(
             [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
-
-        return func_df
-
-    def setup_constraints(self):
-        func_df = pd.DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-
-        """
-        list_var.append('non_use_capital_cons')
-        list_parent.append('invests_constraints')
-        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
-
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
-
-        """
-
-        return func_df
-
-
-
-    def setup_constraint_land_use(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            ['land_demand_constraint', 'calories_per_day_constraint'])
-        list_parent.extend(['agriculture_constraint', 'agriculture_constraint'])
-        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([-1.0, -3.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype

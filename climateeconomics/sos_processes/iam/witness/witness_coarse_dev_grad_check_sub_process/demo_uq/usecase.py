@@ -20,7 +20,7 @@ from numpy import array
 from pandas import DataFrame
 from sostrades_core.study_manager.study_manager import StudyManager
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_grad_check_sub_process.usecase_2_fossil_only_damage_high_tax import (
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_grad_check_sub_process._usecase_2_fossil_only_damage_high_tax import (
     Study as WitnessStudy,
 )
 
@@ -129,6 +129,4 @@ class Study(StudyManager):
 
 if "__main__" == __name__:
     usecase = Study()
-    usecase.load_data()
-    usecase.execution_engine.display_treeview_nodes(display_variables=True)
-    usecase.run()
+    usecase.test()

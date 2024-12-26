@@ -19,7 +19,6 @@ import cProfile
 import pstats
 from io import StringIO
 
-import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
@@ -74,19 +73,6 @@ class Study(ClimateEconomicsStudyManager):
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
         self.test_post_procs = False
 
-    def setup_constraint_land_use(self):
-
-        func_df = pd.DataFrame({
-            'variable': ['land_demand_constraint'],
-            'parent': ['agriculture_constraint'],
-            'ftype': [INEQ_CONSTRAINT],
-            'weight': [-1.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS]
-        })
-
-        return func_df
-
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
@@ -112,14 +98,12 @@ class Study(ClimateEconomicsStudyManager):
 
         self.merge_design_spaces([dspace_energy, dc_witness.dspace])
 
-        # constraint land use
-        land_use_df_constraint = self.setup_constraint_land_use()
 
         # WITNESS
         # setup objectives
         self.func_df = concat(
             [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(),
-             self.dc_energy.setup_objectives(), land_use_df_constraint])
+             self.dc_energy.setup_objectives()])
 
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
