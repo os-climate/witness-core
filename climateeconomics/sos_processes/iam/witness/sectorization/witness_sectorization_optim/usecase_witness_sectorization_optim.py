@@ -72,6 +72,7 @@ class Study(ClimateEconomicsStudyManager):
              f'{ns}.{self.optim_name}.max_iter': 1500,
              f'{ns}.warm_start': True,
              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
+             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': 'SimpleCache',
              # SLSQP, NLOPT_SLSQP
              f'{ns}.{self.optim_name}.algo': "L-BFGS-B",
              f'{ns}.{self.optim_name}.formulation': 'DisciplinaryOpt',
