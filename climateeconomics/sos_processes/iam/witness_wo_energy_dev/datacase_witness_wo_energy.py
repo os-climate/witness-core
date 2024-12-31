@@ -73,8 +73,8 @@ class DataStudy():
         years = arange(self.year_start, self.year_end + 1)
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -91,7 +91,7 @@ class DataStudy():
         # Relax constraint for 15 first years
         witness_input[f"{self.study_name}.{'Damage'}.{'damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
-        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.{'forest_investment'}"] = self.forest_invest_df
+        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.{'reforestation_investment'}"] = self.reforestation_investment_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')
@@ -182,8 +182,8 @@ class DataStudy():
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(

@@ -111,6 +111,12 @@ class Study(StudyManager):
                               GlossaryCore.Fish: 609.17,
                               GlossaryCore.OtherFood: 3061.06,
                               }
+
+        crop_productivity_reduction = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.CropProductivityReductionName: np.linspace(0., 4.5, len(years)) * 0,  # fake
+        })
+
         red_meat_average_ca_daily_intake = default_kg_to_kcal[GlossaryCore.RedMeat] * diet_df_default[GlossaryCore.RedMeat].values[0] / 365
         milk_eggs_average_ca_daily_intake = default_kg_to_kcal[GlossaryCore.Eggs] * diet_df_default[GlossaryCore.Eggs].values[0] / 365 + \
                                             default_kg_to_kcal[GlossaryCore.Milk] * diet_df_default[GlossaryCore.Milk].values[0] / 365
@@ -163,8 +169,8 @@ class Study(StudyManager):
 
         forest_invest = np.linspace(5, 8, year_range)
 
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
 
         if 'CropEnergy' in self.techno_list:
             crop_invest = np.linspace(0.5, 0.25, year_range)
@@ -233,13 +239,14 @@ class Study(StudyManager):
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.{GlossaryCore.OtherDailyCal}': self.other_ca_per_day,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.crop_investment': self.crop_investment,
-            f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
+            f'{self.study_name + self.additional_ns}.reforestation_investment': self.reforestation_investment_df,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.managed_wood_investment': self.mw_invest_df,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.deforestation_investment': deforest_invest_df,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.techno_capital': techno_capital,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.techno_capital': techno_capital,
             f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
-            f'{self.study_name}.{GlossaryCore.TemperatureDfValue}': temperature_df
+            f'{self.study_name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
+            f'{self.study_name}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
         }
 
         red_meat_percentage_ctrl = np.linspace(600, 900, self.nb_poles)
@@ -250,7 +257,7 @@ class Study(StudyManager):
         other_calories_per_day_ctrl = np.linspace(900, 900, self.nb_poles)
 
         deforestation_investment_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
-        forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
+        reforestation_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
         crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
         managed_wood_investment_array_mix = np.linspace(
             2.0, 3.0, self.nb_poles)
@@ -264,7 +271,7 @@ class Study(StudyManager):
             'vegetables_and_carbs_calories_per_day_ctrl'] = vegetables_and_carbs_calories_per_day_ctrl
         design_space_ctrl_dict['milk_and_eggs_calories_per_day_ctrl'] = milk_and_eggs_calories_per_day_ctrl
         design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl
-        design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
+        design_space_ctrl_dict['reforestation_investment_array_mix'] = reforestation_investment_array_mix
 
         if 'CropEnergy' in self.techno_list:
             design_space_ctrl_dict['crop_investment_array_mix'] = crop_investment_array_mix
@@ -304,8 +311,8 @@ class Study(StudyManager):
                                 [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         # -----------------------------------------
         # Invests
-        update_dspace_dict_with(ddict, 'forest_investment_array_mix',
-                                self.design_space_ctrl['forest_investment_array_mix'].values,
+        update_dspace_dict_with(ddict, 'reforestation_investment_array_mix',
+                                self.design_space_ctrl['reforestation_investment_array_mix'].values,
                                 [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
                                 activated_elem=[True] * self.nb_poles)
         if 'CropEnergy' in self.techno_list:
@@ -324,18 +331,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test_jacobians_of_each_disc()
-    """
-    uc_cls.load_data()
-    uc_cls.run()
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        filters = ppf.get_post_processing_filters_by_discipline(
-            disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
-
-        for graph in graph_list:
-            graph.to_plotly().show()
-
-"""
+    uc_cls.test()

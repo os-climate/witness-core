@@ -74,8 +74,8 @@ class Study(StudyManager):
         years = arange(self.year_start, self.year_end + 1)
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -92,7 +92,7 @@ class Study(StudyManager):
         # Relax constraint for 15 first years
         witness_input[f"{self.study_name}.{'Damage'}.{'damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
-        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.{'forest_investment'}"] = self.forest_invest_df
+        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.{'reforestation_investment'}"] = self.reforestation_investment_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')
@@ -179,8 +179,8 @@ class Study(StudyManager):
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(
@@ -295,7 +295,7 @@ class Study(StudyManager):
 
         forest_invest = pd.DataFrame({
             GlossaryCore.Years: years,
-            "forest_investment": np.linspace(40, 60, len(years))
+            "reforestation_investment": np.linspace(40, 60, len(years))
         })
 
         data_energy = {
@@ -303,7 +303,7 @@ class Study(StudyManager):
             f"{self.study_name}.{GlossaryCore.EnergyCapitalDfValue}": energy_capital,
             f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}": energy_mean_price,
             f"{self.study_name}.CCS_price": ccs_price,
-            f"{self.study_name}.forest_investment": forest_invest,
+            f"{self.study_name}.reforestation_investment": forest_invest,
             f"{self.study_name}.max_mda_iter": 70,
             f"{self.study_name}.tolerance": 1e-12,
         }

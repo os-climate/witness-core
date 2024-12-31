@@ -101,11 +101,11 @@ class Study(ClimateEconomicsStudyManager):
 
 
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = \
-            dspace_df['forest_investment_array_mix']['value']
-        design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
+        dv_arrays_dict[f'{self.witness_uc.study_name}.reforestation_investment_array_mix'] = \
+            dspace_df['reforestation_investment_array_mix']['value']
+        design_var_descriptor['reforestation_investment_array_mix'] = {'out_name': 'reforestation_investment',
                                                                 'out_type': 'dataframe',
-                                                                'key': 'forest_investment',
+                                                                'key': 'reforestation_investment',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
                                                                 'namespace_in': GlossaryCore.NS_WITNESS,
