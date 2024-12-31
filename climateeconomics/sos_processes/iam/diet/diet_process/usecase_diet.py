@@ -67,9 +67,9 @@ class Study(ClimateEconomicsStudyManager):
         nb_per = self.year_end - self.year_start + 1
         years = arange(self.year_start, self.year_end + 1)
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
         self.reforestation_investment_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
 
         # private values economics operator model
         witness_input = {}
@@ -117,9 +117,9 @@ class Study(ClimateEconomicsStudyManager):
         self.CO2_tax = np.asarray([50.] * len(years))
 
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
         self.reforestation_investment_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
         intermediate_point = 30
         # CO2 taxes related inputs
         CO2_tax_efficiency = np.concatenate(

@@ -148,7 +148,7 @@ class ForestDiscipline(AutodifferentiedDisc):
 
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
-    invest_before_year_start = DatabaseWitnessCore.get_forest_invest_before_year_start(year_start=GlossaryCore.YearStartDefault, construction_delay=construction_delay)[0]
+    invest_before_year_start = DatabaseWitnessCore.get_reforestation_invest_before_year_start(year_start=GlossaryCore.YearStartDefault, construction_delay=construction_delay)[0]
 
     # protected forest are 21% of total forest
     # https://research.wri.org/gfr/forest-designation-indicators/protected-forests
@@ -392,13 +392,13 @@ class ForestDiscipline(AutodifferentiedDisc):
             instanciated_charts.append(new_chart)
 
         if "Investments" in chart_list:
-            forest_investment_df = self.get_sosdisc_inputs('reforestation_investment')
+            reforestation_investment_df = self.get_sosdisc_inputs('reforestation_investment')
             managed_wood_investment_df = self.get_sosdisc_inputs('managed_wood_investment')
             deforestation_investment_df = self.get_sosdisc_inputs('deforestation_investment')
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Investments [G$]',
                                                  chart_name='Investments in forests activities', stacked_bar=True)
 
-            new_chart.add_series(InstanciatedSeries(years, forest_investment_df['reforestation_investment'], 'Reforestation invests', 'bar'))
+            new_chart.add_series(InstanciatedSeries(years, reforestation_investment_df['reforestation_investment'], 'Reforestation invests', 'bar'))
             new_chart.add_series(InstanciatedSeries(years, managed_wood_investment_df[GlossaryCore.InvestmentsValue], 'Managed wood invests', 'bar'))
             new_chart.add_series(InstanciatedSeries(years, deforestation_investment_df[GlossaryCore.InvestmentsValue], 'Deforestation invests', 'bar'))
             new_chart.post_processing_section_name = "Investments & Capital"

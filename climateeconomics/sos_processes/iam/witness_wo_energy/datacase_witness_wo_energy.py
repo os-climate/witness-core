@@ -68,9 +68,9 @@ class DataStudy():
         nb_per = self.year_end - self.year_start + 1
         years = arange(self.year_start, self.year_end + 1)
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
         self.reforestation_investment_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -158,9 +158,9 @@ class DataStudy():
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
         self.reforestation_investment_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(self.year_start, self.year_end, main_study=False)

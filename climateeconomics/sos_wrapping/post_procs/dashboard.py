@@ -275,8 +275,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'investment distribution' in chart_list:
-        forest_investment = get_scenario_value(execution_engine, GlossaryEnergy.ReforestationInvestmentValue, scenario_name)
-        years = forest_investment[GlossaryEnergy.Years]
+        reforestation_investment = get_scenario_value(execution_engine, GlossaryEnergy.ReforestationInvestmentValue, scenario_name)
+        years = reforestation_investment[GlossaryEnergy.Years]
 
         chart_name_energy = 'Distribution of investments on each energy '
 
