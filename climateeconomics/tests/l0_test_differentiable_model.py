@@ -30,7 +30,7 @@ class ComplexTestModel(DifferentiableModel):
         z = self.inputs["z"]
         matrix = self.inputs["matrix"]
 
-        self.outputs["output1"] = agnp.sin(x) * agnp.cos(y) + z**2
+        self.outputs["output1"] = agnp.sin(x) * agnp.cos(y) + z ** 2
         self.outputs["output2"] = agnp.dot(matrix, agnp.array([x, y, z]))
         self.outputs["output3"] = {"a": x * y, "b": y * z, "c": x * z}
 

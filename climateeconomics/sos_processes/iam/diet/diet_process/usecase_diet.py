@@ -67,9 +67,9 @@ class Study(ClimateEconomicsStudyManager):
         nb_per = self.year_end - self.year_start + 1
         years = arange(self.year_start, self.year_end + 1)
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
 
         # private values economics operator model
         witness_input = {}
@@ -78,7 +78,7 @@ class Study(ClimateEconomicsStudyManager):
         
 
         # Relax constraint for 15 first years
-        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.forest_investment"] = self.forest_invest_df
+        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.reforestation_investment"] = self.reforestation_investment_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[4], 'data')
@@ -117,9 +117,9 @@ class Study(ClimateEconomicsStudyManager):
         self.CO2_tax = np.asarray([50.] * len(years))
 
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
         intermediate_point = 30
         # CO2 taxes related inputs
         CO2_tax_efficiency = np.concatenate(

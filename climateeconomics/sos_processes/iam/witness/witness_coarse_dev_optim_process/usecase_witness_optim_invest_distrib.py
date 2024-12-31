@@ -163,7 +163,7 @@ class Study(ClimateEconomicsStudyManager):
         dspace = out[f'{self.study_name}.{self.optim_name}.design_space']
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl',
                                     'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl',
-                                    'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix',
+                                    'milk_and_eggs_calories_per_day_ctrl', 'reforestation_investment_array_mix',
                                     'deforestation_investment_ctrl']
 
         # clean dspace

@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import functools
-import time
 from contextlib import ContextDecorator, contextmanager
 from copy import deepcopy
 from statistics import mean
@@ -27,6 +25,8 @@ import pandas as pd
 from autograd import grad, jacobian
 from autograd.builtins import dict, isinstance
 from tqdm import tqdm
+
+from climateeconomics.glossarycore import GlossaryCore
 
 ArrayLike = Union[list[float], npt.NDArray[np.float64]]
 InputType = Union[float, int, ArrayLike, pd.DataFrame]
@@ -137,6 +137,8 @@ class DifferentiableModel:
                         with keys as 'dataframe_name:column_name'.
                         If False, DataFrames will be converted to dictionaries of arrays.
         """
+        self.dataframes_outputs_colnames: dict[str: list[str]] = {}
+        self.dataframes_inputs_colnames: dict[str: list[str]] = {}
         self.inputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
         self.outputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
         self.flatten_dfs = flatten_dfs
@@ -168,12 +170,14 @@ class DifferentiableModel:
             ValueError: If an input array has more than 2 dimensions.
         """
 
+        self.dataframes_inputs_colnames = {}
         for key, value in inputs.items():
             if isinstance(value, pd.DataFrame):
                 if not all(np.issubdtype(dtype, np.number) for dtype in value.dtypes):
                     msg = f"DataFrame '{key}' contains non-numeric data, which is not supported."
                     raise TypeError(msg)
                 if self.flatten_dfs:
+                    self.dataframes_inputs_colnames[key] = list(value.columns)
                     for col in value.columns:
                         self.inputs[f"{key}:{col}"] = value[col].to_numpy()
                 else:
@@ -240,7 +244,7 @@ class DifferentiableModel:
             Dictionary of DataFrames reconstructed from outputs
         """
         result = {}
-
+        self.dataframes_outputs_colnames = {}
         if self.flatten_dfs:
             # Find all unique base names in flattened outputs
             base_names = set(
@@ -250,6 +254,7 @@ class DifferentiableModel:
                 df = self.get_dataframe(base_name)
                 if df is not None:
                     result[base_name] = df
+                    self.dataframes_outputs_colnames[base_name] = list(df.columns)
 
         # Check for dictionary outputs
         for key, value in self.outputs.items():
@@ -779,6 +784,37 @@ class DifferentiableModel:
             "within_tolerance": within_tolerance,
         }
 
+    def compute_jacobians_custom(self, outputs: list[str], inputs: list[str]) -> dict[str: dict[str: dict[str: dict[str: np.ndarray]]]]:
+        """
+        Returns a dictionnary 'gradients' containing gradients for SoSwrapp disciplines, with structure :
+        gradients[output df name][output column name][input df name][input column name] = value
+        """
+        gradients = {}
+        all_inputs_paths = []
+        for input_df_name in inputs:
+            all_inputs_paths.extend(self.get_df_input_dotpaths(input_df_name))
+        all_inputs_paths = list(filter(lambda x: not (str(x).endswith(f':{GlossaryCore.Years}')), all_inputs_paths))
+        for i, output in enumerate(outputs):
+            gradients[output] = {}
+            output_columns_paths = list(filter(lambda x: not (str(x).endswith(f':{GlossaryCore.Years}')), self.get_df_output_dotpaths(output)))
+            for output_path in output_columns_paths:
+                gradients_output_path = self.compute_partial_multiple(output_name=output_path, input_names=all_inputs_paths)
+                output_colname = output_path.split(f'{output}:')[1]
+                gradients[output][output_colname] = {}
+                for ip, value_grad in gradients_output_path.items():
+                    input_varname, input_varname_colname = ip.split(':')
+                    if input_varname in gradients[output][output_colname]:
+                        gradients[output][output_colname][input_varname][input_varname_colname] = value_grad
+                    else:
+                        gradients[output][output_colname][input_varname] = {input_varname_colname: value_grad}
+
+        return gradients
+    def get_df_input_dotpaths(self, df_inputname: str) -> dict[str: list[str]]:
+        return [f'{df_inputname}:{colname}' for colname in self.dataframes_inputs_colnames[df_inputname]]
+
+    def get_df_output_dotpaths(self, df_outputname: str) -> dict[str: list[str]]:
+        return [f'{df_outputname}:{colname}' for colname in self.dataframes_outputs_colnames[df_outputname]]
+
 
 if __name__ == "__main__":
 
@@ -842,7 +878,7 @@ if __name__ == "__main__":
             y = self.inputs["data:feature2"]
 
             # Create flattened outputs
-            self.outputs["result:squared"] = x**2
+            self.outputs["result:squared"] = x ** 2
             self.outputs["result:sum"] = x + y
             self.outputs["other:value"] = x * y
 
@@ -881,7 +917,7 @@ if __name__ == "__main__":
             y = self.inputs["data"]["feature2"]
 
             # Create dictionary outputs
-            self.outputs["result:squared"] = x**2
+            self.outputs["result:squared"] = x ** 2
             self.outputs["result:sum"] = x + y
             self.outputs["single_value"] = (
                 x.mean()
