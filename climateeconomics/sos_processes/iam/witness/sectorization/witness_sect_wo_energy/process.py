@@ -75,9 +75,6 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
 
-        '''
-        Add emissions disciplines
-        '''
         mods_dict = {
             AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',
         }

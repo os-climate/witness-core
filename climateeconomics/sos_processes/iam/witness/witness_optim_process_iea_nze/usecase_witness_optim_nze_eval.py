@@ -161,7 +161,7 @@ class Study(ClimateEconomicsStudyManager):
 
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl',
                                     'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl',
-                                    'forest_investment_array_mix', 'crop_investment_array_mix']
+                                    'reforestation_investment_array_mix', 'crop_investment_array_mix']
         diet_mortality_df = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', 'diet_mortality.csv'))
 
         # clean dspace
@@ -232,7 +232,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.forest_investment': forest_invest,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.reforestation_investment': forest_invest,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Crop.crop_investment': crop_investment_df_NZE,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
