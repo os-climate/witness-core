@@ -123,6 +123,7 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.eval_mode': True,
                              f'{ns}.warm_start': True,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': 'SimpleCache',
                              # SLSQP, NLOPT_SLSQP
                              f'{ns}.{self.optim_name}.algo': "L-BFGS-B",
                              f'{ns}.{self.optim_name}.formulation': 'DisciplinaryOpt',
@@ -209,9 +210,9 @@ class Study(ClimateEconomicsStudyManager):
         invest_mix_file = 'investment_mix.csv'
         invest_mix = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', invest_mix_file))
         hydro_prod_IEA = pd.read_csv(join(dirname(__file__), '../../../../data', 'IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv'))
-        models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "models")[0]
+        models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "witness-core")[0]
         df_prod_iea = pd.read_csv(
-            os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'data',
+            os.path.join(models_path_abs, 'witness-core', 'climateeconomics', 'data',
                          'IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv'))
         forest_invest_file = 'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
