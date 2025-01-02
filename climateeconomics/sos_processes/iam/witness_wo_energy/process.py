@@ -42,7 +42,7 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_agriculture': ns_scatter,
-                   GlossaryCore.NS_MACRO: ns_scatter,
+                   GlossaryCore.NS_MACRO: f'{self.ee.study_name}.Macroeconomics',
                    'ns_forest': ns_scatter}
 
         mods_dict = {
