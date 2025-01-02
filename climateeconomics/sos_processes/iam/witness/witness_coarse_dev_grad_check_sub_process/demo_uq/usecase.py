@@ -102,7 +102,7 @@ class Study(StudyManager):
         # DOE sampling
         sampling_params = {
             "sampling_method": "doe_algo",
-            "sampling_algo": "fullfact",
+            "sampling_algo": "PYDOE_FULLFACT",
             "design_space": design_space_uq,
             "algo_options": {"n_samples": 5},
             "eval_inputs": input_selection,

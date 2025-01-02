@@ -41,7 +41,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {GlossaryCore.NS_WITNESS: self.ee.study_name,
                    GlossaryCore.NS_ENERGY_MIX: self.ee.study_name,
-                   GlossaryCore.NS_MACRO: self.ee.study_name,
+                   GlossaryCore.NS_MACRO: f'{self.ee.study_name}.Macroeconomics',
                    f'ns_{GlossaryCore.Households.lower()}_emissions':f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}",
                    'ns_agriculture': self.ee.study_name,
                    'ns_dashboard': self.ee.study_name,
