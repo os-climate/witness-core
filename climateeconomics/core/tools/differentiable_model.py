@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import functools  # do not remove this grey imports otherwise pylint fails
+import time  # do not remove this grey imports otherwise pylint fails
 from contextlib import ContextDecorator, contextmanager
 from copy import deepcopy
 from statistics import mean
