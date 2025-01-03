@@ -54,7 +54,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             if chart_filter.filter_key == 'Charts':
                 chart_list = chart_filter.selected_values
 
-    total_gdp_macro = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
+    total_gdp_macro = get_scenario_value(execution_engine, f'Macroeconomics.{GlossaryCore.EconomicsDetailDfValue}', scenario_name)
     years = list(total_gdp_macro[GlossaryCore.Years].values)
 
     gdp_all_sectors = get_scenario_value(execution_engine, GlossaryCore.SectorGdpDfValue, scenario_name)
