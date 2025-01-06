@@ -11,6 +11,24 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
+DataComparisonConfigName = "data_comparison_config_df"
+DataComparisonConfigDf = {
+    "var_name": DataComparisonConfigName,
+    "type": "dataframe",
+    "dataframe_descriptor": {
+        "source_ns": ("string", None, True),
+        "variable_name": ("string", None, True),
+        "column_name": ("string", None, True),
+        "local_var": ("string", None, True),
+        "local_column": ("string", None, True),
+        "common_column": ("string", None, True),
+        "error_metric": ("string", None, True),
+        "weight": ("float", None, True),
+        "interpolation_method": ("string", None, True),
+    },
+    "structuring": True,
+}
+
 
 class DataComparisonDiscipline(SoSWrapp):
     _ontology_data = {
@@ -18,8 +36,7 @@ class DataComparisonDiscipline(SoSWrapp):
         "type": "Research",
         "source": "",
         "version": "0.1",
-        "icon": "fa-solid fa-minimize"
-
+        "icon": "fa-solid fa-minimize",
     }
 
     DESC_IN = {
@@ -28,21 +45,7 @@ class DataComparisonDiscipline(SoSWrapp):
             "default": "none",
             "possible_values": ["none", "linear"],
         },
-        "config_df": {
-            "type": "dataframe",
-            "dataframe_descriptor": {
-                "source_ns": ("string", None, True),
-                "variable_name": ("string", None, True),
-                "column_name": ("string", None, True),
-                "local_var": ("string", None, True),
-                "local_column": ("string", None, True),
-                "common_column": ("string", None, True),
-                "error_metric": ("string", None, True),
-                "weight": ("float", None, True),
-                "interpolation_method": ("string", None, True),
-            },
-            "structuring": True,
-        },
+        DataComparisonConfigName: DataComparisonConfigDf,
         "default_error_metric": {
             "type": "string",
             "default": "mse",
@@ -74,7 +77,7 @@ class DataComparisonDiscipline(SoSWrapp):
 
     def setup_sos_disciplines(self):
         """
-        Dynamically add input dataframes based on configuration
+        Dynamically add input dataframes based on configuration.
         """
         if "config_df" not in self.get_data_in():
             return
@@ -112,8 +115,8 @@ class DataComparisonDiscipline(SoSWrapp):
         self.add_inputs(dynamic_inputs)
 
     def run(self):
-        config_df = self.get_sosdisc_inputs('config_df')
-        error_metric = self.get_sosdisc_inputs('default_error_metric')
+        config_df = self.get_sosdisc_inputs("config_df")
+        error_metric = self.get_sosdisc_inputs("default_error_metric")
         input_dict = self.get_sosdisc_inputs()
 
         errors = []
@@ -128,22 +131,30 @@ class DataComparisonDiscipline(SoSWrapp):
             source_df = input_dict[source_input_name]
             local_df = input_dict[local_input_name]
 
-            common_col = row['common_column']
-            source_col = row['column_name']
-            local_col = row['local_column']
+            common_col = row["common_column"]
+            source_col = row["column_name"]
+            local_col = row["local_column"]
 
             source_df_sorted = source_df.sort_values(by=common_col)
             local_df_sorted = local_df.sort_values(by=common_col)
 
             # Find common x range
-            x_min = max(source_df_sorted[common_col].min(), local_df_sorted[common_col].min())
-            x_max = min(source_df_sorted[common_col].max(), local_df_sorted[common_col].max())
+            x_min = max(
+                source_df_sorted[common_col].min(), local_df_sorted[common_col].min()
+            )
+            x_max = min(
+                source_df_sorted[common_col].max(), local_df_sorted[common_col].max()
+            )
 
             # Filter data within common range
             source_df_filtered = source_df_sorted[
-                (source_df_sorted[common_col] >= x_min) & (source_df_sorted[common_col] <= x_max)]
+                (source_df_sorted[common_col] >= x_min)
+                & (source_df_sorted[common_col] <= x_max)
+            ]
             local_df_filtered = local_df_sorted[
-                (local_df_sorted[common_col] >= x_min) & (local_df_sorted[common_col] <= x_max)]
+                (local_df_sorted[common_col] >= x_min)
+                & (local_df_sorted[common_col] <= x_max)
+            ]
 
             x1 = anp.array(source_df_filtered[common_col].values)
             y1 = anp.array(source_df_filtered[source_col].values)
@@ -154,8 +165,8 @@ class DataComparisonDiscipline(SoSWrapp):
             x1_full = anp.array(source_df_sorted[common_col].values)
             y1_full = anp.array(source_df_sorted[source_col].values)
 
-            interpolation_method = row.get('interpolation_method', 'linear')
-            if interpolation_method.lower() != 'none':
+            interpolation_method = row.get("interpolation_method", "linear")
+            if interpolation_method.lower() != "none":
                 # Interpolation is on
                 def interpolation_wrapper(y1_var):
                     return self.interpolate_data_autograd(x1, y1_var, x2)
@@ -171,11 +182,13 @@ class DataComparisonDiscipline(SoSWrapp):
                 y_pred = y1
 
             def error_wrapper(y_var):
-                if interpolation_method.lower() != 'none':
+                if interpolation_method.lower() != "none":
                     interpolated = interpolation_wrapper(y_var)
                 else:
                     interpolated = y_var
-                return self.compute_error_autograd(y_true, interpolated, metric=error_metric)
+                return self.compute_error_autograd(
+                    y_true, interpolated, metric=error_metric
+                )
 
             error = error_wrapper(y1)
 
@@ -189,25 +202,27 @@ class DataComparisonDiscipline(SoSWrapp):
 
             errors.append(float(error))
             jacobians[idx] = {
-                'jacobian': error_jacobian,
-                'common_column_values': x1_full.tolist()
+                "jacobian": error_jacobian,
+                "common_column_values": x1_full.tolist(),
             }
 
             comparison_details[idx] = {
-                'error': float(error),
-                'source_columns': source_col,
-                'x_range': (float(x_min), float(x_max)),
-                'filtered_indices': source_df_sorted.index[
-                    (source_df_sorted[common_col] >= x_min) & (source_df_sorted[common_col] <= x_max)].tolist()
+                "error": float(error),
+                "source_columns": source_col,
+                "x_range": (float(x_min), float(x_max)),
+                "filtered_indices": source_df_sorted.index[
+                    (source_df_sorted[common_col] >= x_min)
+                    & (source_df_sorted[common_col] <= x_max)
+                ].tolist(),
             }
 
         overall_error = np.nanmean(errors)
 
         dict_values = {
-            'individual_errors': np.array(errors),
-            'overall_error': overall_error,
-            'comparison_details': comparison_details,
-            'jacobians': jacobians
+            "individual_errors": np.array(errors),
+            "overall_error": overall_error,
+            "comparison_details": comparison_details,
+            "jacobians": jacobians,
         }
 
         self.store_sos_outputs_values(dict_values)
@@ -331,9 +346,7 @@ class DataComparisonDiscipline(SoSWrapp):
         pass
 
     def get_chart_filter_list(self):
-        chart_list = [
-            "Comparisons"
-        ]
+        chart_list = ["Comparisons"]
 
         return [ChartFilter("Charts", chart_list, chart_list, "charts")]
 
@@ -343,7 +356,7 @@ class DataComparisonDiscipline(SoSWrapp):
 
         if filters is not None:
             for chart_filter in filters:
-                if chart_filter.filter_key == 'charts':
+                if chart_filter.filter_key == "charts":
                     charts = chart_filter.selected_values
 
         for _, row in comparison_config.iterrows():
@@ -431,7 +444,9 @@ class DataComparisonDiscipline(SoSWrapp):
             return linear_interpolate(x1, y1, x2)
 
     @staticmethod
-    def compute_error_autograd(y_true: np.ndarray, y_pred: np.ndarray, metric: str = "mse"):
+    def compute_error_autograd(
+        y_true: np.ndarray, y_pred: np.ndarray, metric: str = "mse"
+    ):
         """
         Autograd-compatible error computation
 
@@ -485,7 +500,11 @@ class DataComparisonDiscipline(SoSWrapp):
             "local_column",
             "common_column",
         ]
-        optional_keys = {"weight": 1.0, "interpolation_method": "none", "error_metric": "mse"}
+        optional_keys = {
+            "weight": 1.0,
+            "interpolation_method": "none",
+            "error_metric": "mse",
+        }
 
         config_data = []
 

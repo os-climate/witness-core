@@ -23,10 +23,10 @@ from climateeconomics.glossarycore import GlossaryCore
 class ProcessBuilder(EnergyProcessBuilder):
     # ontology information
     _ontology_data = {
-        "label": "Crop 2 process Comparison",
-        "description": "",
+        "label": "Data Comparison Process",
+        "description": "Process to Compare WITNESS data to input data",
         "category": "",
-        "version": "",
+        "version": "0.0.1",
     }
 
     def get_builders(self):
@@ -42,7 +42,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mods_dict = {
-            "Crop2": "climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline",
+            "Population": "climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline",
             "Data Comparison": "climateeconomics.sos_wrapping.data_comparison_disc.DataComparisonDiscipline",
         }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
