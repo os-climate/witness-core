@@ -159,14 +159,14 @@ CSS3_NAMES_TO_HEX: dict[str, str] = {
 }
 
 
-class EnhancedColorMap:
+class ColorPalette:
     """
-    An enhanced colormap with flexible configuration options and various color manipulation methods.
+    A color palette with flexible configuration options and various color manipulation methods.
 
     Attributes:
-        name (str): Name of the colormap.
-        main_colors (list[str]): list of main colors in the colormap.
-        highlight_colors (list[str]): list of highlight colors in the colormap.
+        name (str): Name of the palette.
+        main_colors (list[str]): list of main colors in the palette.
+        highlight_colors (list[str]): list of highlight colors in the palette.
         color_tags (list[str]): list of tags associated with colors.
         predefined_shades (dict[str, list[str]]): dictionary of predefined color shades.
         colorscale (list[list[float]]): Plotly colorscale representation.
@@ -322,7 +322,7 @@ class EnhancedColorMap:
 
     def __init__(
         self,
-        name: str = "custom_colormap",
+        name: str = "custom_palette",
         palette: Optional[str] = None,
         main_colors: Optional[list[str]] = None,
         highlight_colors: Optional[list[str]] = None,
@@ -331,10 +331,10 @@ class EnhancedColorMap:
         custom_palette: Optional[dict[str, list[str]]] = None,
     ):
         """
-        Initialize an enhanced colormap with flexible configuration options.
+        Initialize an enhanced palette with flexible configuration options.
 
         Args:
-            name (str): Name of the colormap.
+            name (str): Name of the palette.
             palette (Optional[str]): Preset palette name.
             main_colors (Optional[list[str]]): Custom main colors.
             highlight_colors (Optional[list[str]]): Custom highlight colors.
@@ -343,9 +343,9 @@ class EnhancedColorMap:
             custom_palette (Optional[dict[str, list[str]]]): Completely custom palette definition.
 
         Example:
-            >>> cm = EnhancedColorMap(name="My Colormap", palette="data_science")
+            >>> cm = ColorPalette(name="My palette", palette="data_science")
             >>> print(cm.name)
-            My Colormap
+            My palette
         """
         # Determine color sources with priority
         if custom_palette:
@@ -398,7 +398,7 @@ class EnhancedColorMap:
             ValueError: If the color tag is not found in the color map.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> print(cm.get_color_by_tag("primary_blue"))
             #1696D2
         """
@@ -417,7 +417,7 @@ class EnhancedColorMap:
             dict[str, str]: dictionary of complementary colors.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> print(cm.generate_complementary_palette("#FF0000"))
             {'base': '#FF0000', 'complementary': '#00FFFF', 'analogous_1': '#FF8000', 'analogous_2': '#FF0080', 'triadic_1': '#80FF00', 'triadic_2': '#0080FF'}
         """
@@ -450,7 +450,7 @@ class EnhancedColorMap:
             list[str]: list of accessible colors.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> print(cm.generate_accessible_palette())
             ['#1696D2', '#FDBF11', '#000000', '#55B748', '#EC008B']
         """
@@ -495,7 +495,7 @@ class EnhancedColorMap:
             str: Interpolated color.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> print(cm.get_color(0.5))
             #8B4513
         """
@@ -506,7 +506,7 @@ class EnhancedColorMap:
         return find_intermediate_color(self.main_colors[0], self.main_colors[-1], value)
 
     def get_shades(
-        self, color: str, n_colors: int, force_generate: bool = False, **kwargs
+        self, color: str, n_colors: int = 5, force_generate: bool = False, **kwargs
     ) -> list[str]:
         """
         Get n_colors from shades of a color either from a predefined shade or generated it.
@@ -521,7 +521,7 @@ class EnhancedColorMap:
             list[str]: list of color shades.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> print(cm.get_shades("primary_blue", 3))
             ['#A2D4EC', '#1696D2', '#0A4C6A']
 
@@ -558,7 +558,7 @@ class EnhancedColorMap:
             list[str]: A list of shades.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> print(cm.generate_shades("#FF0000", num_darker=2, num_lighter=2))
             ['#FF8080', '#FF4040', '#FF0000', '#BF0000', '#800000']
 
@@ -596,7 +596,8 @@ class EnhancedColorMap:
 
         return colors
 
-    def select_colors_from_list(self, colors, n) -> list:
+    @staticmethod
+    def select_colors_from_list(colors, n) -> list:
         """
         Select n colors maximizing the distance between them.
 
@@ -608,14 +609,14 @@ class EnhancedColorMap:
             list[str]: Selected colors.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"]
             >>> print(cm.select_colors_from_list(colors, 3))
             ['#FF0000', '#00FF00', '#0000FF']
 
         """
         # Convert colors to LAB color space
-        lab_colors = [self._rgb_to_lab(color) for color in colors]
+        lab_colors = [ColorPalette._rgb_to_lab(color) for color in colors]
 
         # Start with the first color and build the selected list
         selected_colors = [lab_colors[0]]
@@ -629,7 +630,7 @@ class EnhancedColorMap:
                     continue
                 # Compute minimum distance to the already selected colors
                 min_dist = min(
-                    self._calculate_distance(candidate, selected)
+                    ColorPalette._calculate_distance(candidate, selected)
                     for selected in selected_colors
                 )
 
@@ -657,7 +658,7 @@ class EnhancedColorMap:
             list[str]: list of generated colors.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> print(cm.generate_color_palette(5, "sequential"))
             ['#1696D2', '#46ABDB', '#73BFE2', '#A2D4EC', '#CFE8F3']
 
@@ -682,7 +683,7 @@ class EnhancedColorMap:
             dict[str, list[str]]: dictionary of suggested palettes.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> suggested = cm.suggest_additional_palettes()
             >>> print(list(suggested.keys())[:2])  # Print first two suggested palette names
             ['Monochromatic_DeepSkyBlue', 'Monochromatic_LightGray']
@@ -717,7 +718,7 @@ class EnhancedColorMap:
             go.Figure: Plotly Figure object.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> fig = cm.visualize_palette()
             >>> fig.show()  # This will display the palette visualization
 
@@ -826,7 +827,7 @@ class EnhancedColorMap:
             LabColor: Color in LAB color space.
 
         Example:
-            >>> EnhancedColorMap._rgb_to_lab((255, 0, 0))
+            >>> ColorPalette._rgb_to_lab((255, 0, 0))
             <colormath.color_objects.LabColor object at ...>
         """
         srgb = sRGBColor(rgb[0] / 255.0, rgb[1] / 255.0, rgb[2] / 255.0)
@@ -845,9 +846,9 @@ class EnhancedColorMap:
             float: Perceptual distance between colors.
 
         Example:
-            >>> lab1 = EnhancedColorMap._rgb_to_lab((255, 0, 0))
-            >>> lab2 = EnhancedColorMap._rgb_to_lab((0, 255, 0))
-            >>> distance = EnhancedColorMap._calculate_distance(lab1, lab2)
+            >>> lab1 = ColorPalette._rgb_to_lab((255, 0, 0))
+            >>> lab2 = ColorPalette._rgb_to_lab((0, 255, 0))
+            >>> distance = ColorPalette._calculate_distance(lab1, lab2)
             >>> print(f"{distance:.2f}")
             86.60
         """
@@ -866,7 +867,7 @@ class EnhancedColorMap:
             str: Hex color code.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> print(cm._hls_to_hex(0.0, 0.5, 1.0))
             #FF0000
 
@@ -885,7 +886,7 @@ class EnhancedColorMap:
             list[list[float]]: Plotly colorscale.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> scale = cm._create_colorscale(["#FF0000", "#00FF00", "#0000FF"])
             >>> print(scale[:2])  # Print first two entries of the colorscale
             [[0.0, 'rgb(255,0,0)'], [0.5, 'rgb(0,255,0)']]
@@ -904,7 +905,7 @@ class EnhancedColorMap:
             list[str]: list of interpolated color hex codes.
 
         Example:
-            >>> cm = EnhancedColorMap(main_colors=["#FF0000", "#0000FF"])
+            >>> cm = ColorPalette(main_colors=["#FF0000", "#0000FF"])
             >>> print(cm._interpolate_colors(3))
             ['#FF0000', '#800080', '#0000FF']
 
@@ -931,7 +932,7 @@ class EnhancedColorMap:
             list[str]: list of generated color hex codes.
 
         Example:
-            >>> cm = EnhancedColorMap(palette="data_science")
+            >>> cm = ColorPalette(palette="data_science")
             >>> print(cm._generate_categorical_colors(3))
             ['#1696D2', '#EC008B', '#55B748']
 
@@ -951,7 +952,7 @@ class EnhancedColorMap:
             list[str]: list of generated color hex codes.
 
         Example:
-            >>> cm = EnhancedColorMap(main_colors=["#FF0000", "#FFFFFF", "#0000FF"])
+            >>> cm = ColorPalette(main_colors=["#FF0000", "#FFFFFF", "#0000FF"])
             >>> print(cm._generate_diverging_colors(5, "#FFFFFF"))
             ['#FF0000', '#FF8080', '#FFFFFF', '#8080FF', '#0000FF']
 
@@ -979,7 +980,7 @@ class EnhancedColorMap:
             list[str]: list of interpolated color hex codes.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> print(cm._interpolate_between_colors("#FF0000", "#0000FF", 3))
             ['#FF0000', '#800080', '#0000FF']
 
@@ -1007,7 +1008,7 @@ class EnhancedColorMap:
             list[str]: list of generated color hex codes.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> print(cm._generate_color_variations("#FF0000", 2))
             ['#800000', '#FF0000', '#FF8080']
 
@@ -1038,7 +1039,7 @@ class EnhancedColorMap:
             tuple[int, int, int]: RGB color tuple.
 
         Example:
-            >>> EnhancedColorMap._hex_to_rgb("#FF0000")
+            >>> ColorPalette._hex_to_rgb("#FF0000")
             (255, 0, 0)
 
         """
@@ -1060,7 +1061,7 @@ class EnhancedColorMap:
             ValueError: If the input is not a valid RGB tuple.
 
         Example:
-            >>> EnhancedColorMap._rgb_to_hex((255, 0, 0))
+            >>> ColorPalette._rgb_to_hex((255, 0, 0))
             '#FF0000'
 
         """
@@ -1073,7 +1074,7 @@ class EnhancedColorMap:
     @staticmethod
     def _adjust_color_brightness(
         rgb_color: tuple[int, int, int], factor: float
-    ) -> tuple[int, int, int]:
+    ) -> tuple[int, ...]:
         """
         Adjust color brightness.
 
@@ -1085,7 +1086,7 @@ class EnhancedColorMap:
             tuple[int, int, int]: Adjusted RGB color tuple.
 
         Example:
-            >>> EnhancedColorMap._adjust_color_brightness((100, 150, 200), 0.2)
+            >>> ColorPalette._adjust_color_brightness((100, 150, 200), 0.2)
             (131, 170, 211)
 
         """
@@ -1117,7 +1118,7 @@ class EnhancedColorMap:
             tuple[int, int, int]: Adjusted RGB color tuple.
 
         Example:
-            >>> EnhancedColorMap._adjust_color_intensity((100, 150, 200), 0.2)
+            >>> ColorPalette._adjust_color_intensity((100, 150, 200), 0.2)
             (100, 160, 220)
         """
         # Convert RGB to HSV
@@ -1173,7 +1174,7 @@ class EnhancedColorMap:
             str: Closest color name.
 
         Example:
-            >>> cm = EnhancedColorMap()
+            >>> cm = ColorPalette()
             >>> cm._get_closest_color_name("#FF0000")
             'red'
 
@@ -1200,16 +1201,16 @@ class EnhancedColorMap:
 if __name__ == "__main__":
     # Example usage
     def main():
-        # Create colormap using a preset palette
-        for pal in EnhancedColorMap.PRESET_PALETTES:
-            cm = EnhancedColorMap(name=pal, palette=pal)
+        # Create palette using a preset palette
+        for pal in ColorPalette.PRESET_PALETTES:
+            cm = ColorPalette(name=pal, palette=pal)
 
             # Visualize the palette
             fig = cm.visualize_palette()
             fig.show()
 
-        # Create colormap using a color-blind friendly palette
-        color_blind_palette = EnhancedColorMap(
+        # Create palette using a color-blind friendly palette
+        color_blind_palette = ColorPalette(
             name="Color Blind Safe Palette", palette="color_blind_safe"
         )
 
@@ -1236,7 +1237,7 @@ if __name__ == "__main__":
 
     # import json
 
-    # PRESET_PALETTES = EnhancedColorMap.PRESET_PALETTES
+    # PRESET_PALETTES = ColorPalette.PRESET_PALETTES
 
     # for palette_name, palette_data in PRESET_PALETTES.items():
     #     filename = f"colormaps/{palette_name}_palette.json"
