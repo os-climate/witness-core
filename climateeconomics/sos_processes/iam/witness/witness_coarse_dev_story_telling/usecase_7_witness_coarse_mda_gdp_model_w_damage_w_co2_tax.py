@@ -44,7 +44,7 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.test_post_procs = False
+        self.test_post_procs = True
 
     def setup_usecase(self, study_folder_path=None):
         witness_uc = usecase_witness_mda()

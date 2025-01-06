@@ -218,3 +218,13 @@ class ClimateEcoDiscipline(SoSWrapp):
                     # If the variable type is not supported, raise a TypeError
                     else:
                         raise TypeError(f"Unsupported type for variable '{key}'")
+
+    def set_gradients_from_autodiff(self, gradients: dict[str: dict[str: dict[str: dict[str: np.ndarray]]]]):
+        for output_name in gradients:
+            for output_col in gradients[output_name]:
+                for input_name in gradients[output_name][output_col]:
+                    for input_col, value in gradients[output_name][output_col][input_name].items():
+                        self.set_partial_derivative_for_other_types(
+                            (output_name, output_col),
+                            (input_name, input_col),
+                            value)

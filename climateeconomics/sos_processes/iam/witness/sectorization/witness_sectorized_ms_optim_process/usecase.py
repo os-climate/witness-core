@@ -31,7 +31,7 @@ class Study(ClimateEconomicsStudyManager):
     UC3 = "+ Damage, + Tax, No CCUS"
     UC4 = "+ Damage, + Tax, All technos"
 
-    def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
+    def __init__(self, bspline=True, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
@@ -103,5 +103,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
     uc_cls.test()

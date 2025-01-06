@@ -209,7 +209,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                                                                                      instanciated_charts)
 
     if 'gdp breakdown' in chart_list:
-        economics_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
+        economics_df = get_scenario_value(execution_engine, f'Macroeconomics.{GlossaryCore.EconomicsDetailDfValue}', scenario_name)
 
         compute_climate_impact_on_gdp = get_scenario_value(execution_engine, 'assumptions_dict', scenario_name)[
             'compute_climate_impact_on_gdp']
@@ -226,7 +226,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             economics_df = complete_economics_df_for_sectorization(economics_df, df_non_energy_invest, df_energy_invest,
                                                                    df_consumption)
         else:
-            damage_df = get_scenario_value(execution_engine, GlossaryCore.DamageDetailedDfValue, scenario_name)
+            damage_df = get_scenario_value(execution_engine, f"Macroeconomics.{GlossaryCore.DamageDetailedDfValue}", scenario_name)
         new_chart = MacroEconomics.breakdown_gdp(economics_df, damage_df, compute_climate_impact_on_gdp,
                                                  damages_to_productivity)
         instanciated_charts.append(new_chart)
@@ -275,8 +275,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'investment distribution' in chart_list:
-        forest_investment = get_scenario_value(execution_engine, GlossaryEnergy.ForestInvestmentValue, scenario_name)
-        years = forest_investment[GlossaryEnergy.Years]
+        reforestation_investment = get_scenario_value(execution_engine, GlossaryEnergy.ReforestationInvestmentValue, scenario_name)
+        years = reforestation_investment[GlossaryEnergy.Years]
 
         chart_name_energy = 'Distribution of investments on each energy '
 
@@ -643,7 +643,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
     if 'KPI5' in chart_list:
         # KPI5 is the return on investment, ie GDPVariation/Investment
-        economics_detailed_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
+        economics_detailed_df = get_scenario_value(execution_engine, f'Macroeconomics.{GlossaryCore.EconomicsDetailDfValue}', scenario_name)
         if sectorization:
             df_non_energy_invest = get_scenario_value(execution_engine, GlossaryCore.RedistributionInvestmentsDfValue,
                                                       scenario_name)

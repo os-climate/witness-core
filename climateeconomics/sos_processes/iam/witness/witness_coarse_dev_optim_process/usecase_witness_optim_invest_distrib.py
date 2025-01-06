@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_optimization_plugins.models.design_var.design_var_disc import (
@@ -51,7 +50,7 @@ WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=True, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT,
                  agri_techno_list=COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
@@ -106,7 +105,7 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
                              # optimization parameters:
-                             f'{ns}.{self.optim_name}.max_iter': 1500,
+                             f'{ns}.{self.optim_name}.max_iter': 2,
                              f'{ns}.warm_start': True,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
                              # SLSQP, NLOPT_SLSQP
@@ -157,13 +156,14 @@ class Study(ClimateEconomicsStudyManager):
 
         out = {}
         out.update(values_dict)
+        self.remove_all_variables_in_values_dict(out, shortvarname="inner_mda_name")
         out.update(optim_values_dict)
         out.update(ref_value_dict)
 
         dspace = out[f'{self.study_name}.{self.optim_name}.design_space']
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl',
                                     'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl',
-                                    'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix',
+                                    'milk_and_eggs_calories_per_day_ctrl', 'reforestation_investment_array_mix',
                                     'deforestation_investment_ctrl']
 
         # clean dspace
@@ -184,16 +184,6 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.design_var_descriptor': updated_dvar_descriptor
         })
 
-
-        a = {
-          'out_name': GlossaryCore.ShareNonEnergyInvestmentsValue,
-            'out_type': "dataframe",
-            'key': GlossaryCore.ShareNonEnergyInvestmentsValue,
-            'index': np.arange(self.year_start, self.year_end + 1),
-            'index_name': GlossaryCore.Years,
-            'namespace_in': "",
-            'namespace_out': GlossaryCore.NS_WITNESS,
-        }
         return out
 
 

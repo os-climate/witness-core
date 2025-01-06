@@ -588,8 +588,8 @@ class DatabaseWitnessCore:
     )
 
     @classmethod
-    def get_forest_invest_before_year_start(cls, year_start: int, construction_delay: int,
-                                            is_available_at_year: bool = False):
+    def get_reforestation_invest_before_year_start(cls, year_start: int, construction_delay: int,
+                                                   is_available_at_year: bool = False):
 
         path_to_csv = os.path.join(data_folder, "forest_invests") + ".csv"
         df = pd.read_csv(path_to_csv)
