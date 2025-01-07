@@ -44,7 +44,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         self.model_name = 'policy'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',}
+                   'ns_public': f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -73,7 +73,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline.pkl',
                             local_data = disc.local_data,discipline=disc, inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
@@ -82,7 +82,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         self.model_name = 'policy'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',}
+                   'ns_public': f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -110,7 +110,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
@@ -118,7 +118,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         self.model_name = 'policy'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',}
+                   'ns_public': f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -146,7 +146,6 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{self.model_name}')[0].discipline_wrapp.discipline
         self.check_jacobian(location=dirname(__file__), filename='jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=self.checked_inputs,
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
-

@@ -92,11 +92,11 @@ class Study(ClimateEconomicsStudyManager):
         design_var_descriptor = {}
         years = np.arange(self.year_start, self.year_end + 1)
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = \
-            dspace_df['forest_investment_array_mix']['value']
-        design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
+        dv_arrays_dict[f'{self.witness_uc.study_name}.reforestation_investment_array_mix'] = \
+            dspace_df['reforestation_investment_array_mix']['value']
+        design_var_descriptor['reforestation_investment_array_mix'] = {'out_name': 'reforestation_investment',
                                                                 'out_type': 'dataframe',
-                                                                'key': 'forest_investment',
+                                                                'key': 'reforestation_investment',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
                                                                 'namespace_in': GlossaryCore.NS_WITNESS,
@@ -183,7 +183,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'

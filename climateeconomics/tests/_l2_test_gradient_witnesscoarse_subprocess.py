@@ -133,7 +133,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # Do not use a gradient method to validate gradient is better, Gauss Seidel works
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[
@@ -181,9 +181,9 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # self.override_dump_jacobian = True
         #TODO: correct if condition of 597 of gemseo/mda/mda.py
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,
-                            discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
+                            discipline=coupling_disc.discipline_wrapp.discipline,
                             step=1.0e-4, derr_approx='finite_differences', threshold=1e-15,
-                            local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
+                            local_data=coupling_disc.discipline_wrapp.discipline.local_data,
                             inputs=inputs,
                             outputs=outputs)
 
@@ -225,7 +225,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
             # Do not use a gradient method to validate gradient is better, Gauss Seidel works
             full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-15
-            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
             full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
             full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
             # same hypothesis as uc1
@@ -305,9 +305,9 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                 self.override_dump_jacobian = True
                 # TODO: correct if condition of 597 of gemseo/mda/mda.py
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name,
-                                    discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
+                                    discipline=coupling_disc.discipline_wrapp.discipline,
                                     step=1.0e-18, derr_approx='complex_step', threshold=1e-16,
-                                    local_data=dict_values_cleaned,#coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,#design_space_values_dict,
+                                    local_data=dict_values_cleaned,#coupling_disc.discipline_wrapp.discipline.local_data,#design_space_values_dict,
                                     inputs=inputs,
                                     outputs=outputs)
                 test_results.append((iter, True))
@@ -366,7 +366,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                   ee.dm.get_all_namespaces_from_var_name('land_demand_constraint')[0],
                   ]
         outputs = [ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
-        disc = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc = ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         disc.check_jacobian(
             input_data=disc.local_data,
             threshold=1e-15, inputs=inputs, step=1e-4,
@@ -402,7 +402,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         # Do not use a gradient method to validate gradient is better, Gauss Seidel works
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[
@@ -493,9 +493,9 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                 try:
                     # TODO: correct if condition of 597 of gemseo/mda/mda.py
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name,
-                                        discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
+                                        discipline=coupling_disc.discipline_wrapp.discipline,
                                         step=1.0e-4, derr_approx='finite_differences', threshold=1e-8,
-                                        local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
+                                        local_data=coupling_disc.discipline_wrapp.discipline.local_data,
                                         inputs=[input],
                                         outputs=[output])
                     dict_success[output].append(input)
@@ -584,7 +584,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         self.assertEqual(outputs[OBJECTIVE_LAGR][0], res)
 
-        disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         assert disc_techno.check_jacobian(
             input_data=disc_techno.local_data,
@@ -635,7 +635,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         f.close()
 
         coupling_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines[0]
-        discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
+        discipline = coupling_disc.discipline_wrapp.discipline
 
         # export all the coupled variables
         list_coupled_var = discipline.all_couplings
@@ -708,7 +708,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             import pickle
             pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
-        discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
+        discipline = coupling_disc.discipline_wrapp.discipline
 
         inputs = [
             self.ee.dm.get_all_namespaces_from_var_name(
@@ -816,7 +816,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             raise ValueError(
                 f'outputs for discipline {self.model_name} are not varying in X+h. No gradient will be computed')
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         location = dirname(__file__)
         filename = f'jacobian_{self.name}_discipline_output.pkl'
         step = 1.e-4
@@ -939,7 +939,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             raise ValueError(
                 f'outputs for discipline {self.model_name} are not varying in X+h. No gradient will be computed')
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         location = dirname(__file__)
         filename = f'jacobian_{self.name}_discipline_output.pkl'
         step = 1.e-4
@@ -981,7 +981,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.WITNESS_MDO.WITNESS_Eval.WITNESS.EnergyMix')[0].discipline_wrapp.discipline
 
         list_input_var_all = disc_techno.input_grammar.data_names
         list_output_var_all = disc_techno.output_grammar.data_names
@@ -1192,7 +1192,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             import pickle
             pickle.dump(self.ee.dm.get_data_dict_values(), f)
             pass
-        discipline = coupling_disc.mdo_discipline_wrapp.mdo_discipline
+        discipline = coupling_disc.discipline_wrapp.discipline
         """
         inputs = [
             #self.ee.dm.get_all_namespaces_from_var_name('RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix')[0], #OK lagr

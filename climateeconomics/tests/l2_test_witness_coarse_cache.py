@@ -19,8 +19,8 @@ import unittest
 
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from gemseo.utils.compare_data_manager_tooling import compare_dict
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.compare_data_manager_tooling import compare_dict
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import (
     Study as witness_proc_usecase,
@@ -58,7 +58,7 @@ class WitnessCoarseCache(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = False
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 1
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 1
 
         # execute optim without cache and retrieve dm
@@ -134,7 +134,7 @@ class WitnessCoarseCache(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = False
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 2
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 10
 
         # execute optim without cache and retrieve dm

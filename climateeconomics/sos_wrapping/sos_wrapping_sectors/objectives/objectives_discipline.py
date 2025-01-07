@@ -147,9 +147,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 dynamic_outputs[f'{sector}.gdp_error'] = {
                     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                     'namespace': 'ns_obj'}
-                dynamic_outputs[f'{sector}.cap_error'] = {
-                    'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                    'namespace': 'ns_obj'}
+                # dynamic_outputs[f'{sector}.cap_error'] = {
+                #     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                #     'namespace': 'ns_obj'}
                 dynamic_outputs[f'{sector}.energy_eff_error'] = {
                     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                     'namespace': 'ns_obj'}

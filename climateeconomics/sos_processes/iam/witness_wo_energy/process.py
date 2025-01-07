@@ -42,7 +42,7 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_agriculture': ns_scatter,
-                   GlossaryCore.NS_MACRO: ns_scatter,
+                   GlossaryCore.NS_MACRO: f'{self.ee.study_name}.Macroeconomics',
                    'ns_forest': ns_scatter}
 
         mods_dict = {
@@ -76,9 +76,6 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
 
-        '''
-        Add emissions disciplines
-        '''
         mods_dict = {
             GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline',
             AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',

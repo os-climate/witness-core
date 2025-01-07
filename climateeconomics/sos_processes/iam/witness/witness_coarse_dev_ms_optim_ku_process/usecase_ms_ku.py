@@ -56,21 +56,17 @@ class Study(ClimateEconomicsStudyManager):
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(self.scenario_dict) ,'scenario_name': list(self.scenario_dict.keys())})
         values_dict = {
             f'{self.study_name}.{self.scatter_scenario}.samples_df': scenario_df,
-            f'{self.study_name}.n_subcouplings_parallel': min(16, len(scenario_df.loc[scenario_df['selected_scenario']]))
         }
 
         for scenario_name, studyClass in self.scenario_dict.items():
             scenarioUseCase = studyClass(execution_engine=self.execution_engine, year_start=self.year_start)
             scenarioUseCase.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario_name}'
             scenarioData = scenarioUseCase.setup_usecase()
-            scenarioDatadict = {}
-            for data in scenarioData:
-                scenarioDatadict.update(data)
-            values_dict.update(scenarioDatadict)
+            values_dict.update(scenarioData)
 
         values_dict.update({f"{self.study_name}.{self.scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 400 for scenario_name in self.scenario_dict.keys()})
         values_dict.update(
-            {f"{self.study_name}.{self.scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
+            {f"{self.study_name}.{self.scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.inner_mda_name": "MDAGaussSeidel" for scenario_name in
              self.scenario_dict.keys()})
 
         values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)

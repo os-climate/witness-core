@@ -20,7 +20,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as datacase_energy,
 )
-from pandas import DataFrame
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
 )
@@ -74,19 +73,6 @@ class Study(ClimateEconomicsStudyManager):
     def setup_process(self):
         datacase_energy.setup_process(self)
 
-    def setup_constraint_land_use(self):
-        # Create the DataFrame
-        func_df = DataFrame({
-            'variable': ['land_demand_constraint_df'],
-            'parent': [None],
-            'ftype': [INEQ_CONSTRAINT],
-            'weight': [-1.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS]
-        })
-
-        return func_df
-
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
@@ -123,7 +109,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.inner_mda_name': 'MDAGSNewton',
             f'{self.study_name}.cache_type': 'SimpleCache'}
         return numerical_values_dict
 

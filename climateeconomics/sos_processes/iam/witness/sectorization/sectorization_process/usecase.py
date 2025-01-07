@@ -250,7 +250,7 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel'}
+            f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel'}
 
         setup_data_list.append(numerical_values_dict)
 

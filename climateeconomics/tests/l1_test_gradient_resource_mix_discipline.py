@@ -19,6 +19,7 @@ import unittest
 from os.path import dirname, join
 
 import numpy as np
+import pandas as pd
 from pandas import read_csv
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import (
@@ -108,7 +109,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'all_demand_with_high_demand.csv'))
 
         self.year_start = 2020
-        self.year_end = GlossaryCore.YearEndDefault
+        self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
         self.year_range = self.year_end - self.year_start + 1
 
@@ -208,11 +209,14 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.platinum_resource.recycled_production': self.platinum_recycled_production_df,
                        f'{self.name}.{self.model_name}.{ResourceMixModel.NON_MODELED_RESOURCE_PRICE}': self.non_modeled_resource_df
                        }
+        for name, value in values_dict.items():
+            if isinstance(value, pd.DataFrame) and GlossaryCore.Years in value.columns:
+                values_dict[name] = value.loc[value[GlossaryCore.Years] <= self.year_end]
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         input_names = []
         input_stock = [
             f'{self.name}.{self.model_name}.{resource}.resource_stock' for resource in ResourceMixModel.RESOURCE_LIST]
@@ -243,6 +247,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_DEMAND}',
                            ]
 
+        self.override_dump_jacobian = 1
         self.check_jacobian(location=dirname(__file__), filename='jacobian_all_resource_discipline.pkl',
                             discipline=disc_techno, local_data = disc_techno.local_data, inputs=input_names,
                             outputs=resource_output, step=1e-15,

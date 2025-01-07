@@ -143,7 +143,7 @@ managed\_wood\_part = managed\_wood\_production / total\_biomass\_production
 
 ## CO2 emissions
 The land emissions can be computed with this formula:
-$$CO2\_land\_emissions = Surface\_deforestation * CO2\_per\_ha - Surface\_reforestation * CO2\_per\_ha \\+ Surface\_managed\_wood * 0$$
+$$CO2\_land\_emissions = Surface\_deforestation * CO2\_per\_ha - Surface\_reforestation * CO2\_per\_ha + Surface\_managed\_wood * 0$$
 
 The forest for energy emissions can be computed as following:
 $$CO2\_emissions = CO2(by\_use\_biomass) - CO2(captured\_from\_growing\_trees) => 0$$

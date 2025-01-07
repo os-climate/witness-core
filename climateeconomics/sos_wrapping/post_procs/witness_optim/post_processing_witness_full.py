@@ -328,9 +328,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             # no detailed CO2_emissions_df for Crop and Forest => CO2_from_other_consumption = 0
             if 'Forest' in techno:
                 data_fuel_dict = energy_disc.get_sosdisc_inputs('data_fuel_dict')
-                invest_techno = techno_disc.get_sosdisc_inputs('forest_investment')[
-                                    'forest_investment'].values * \
-                                techno_disc.get_sosdisc_inputs('scaling_factor_forest_investment')
+                invest_techno = techno_disc.get_sosdisc_inputs('reforestation_investment')[
+                                    'reforestation_investment'].values
                 carbon_emissions = techno_disc.get_sosdisc_outputs(
                     'CO2_emissions')
             elif 'Crop' in techno:
