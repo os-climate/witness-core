@@ -584,6 +584,138 @@ class DifferentiableModel:
 
         return result
 
+    def _create_wrapped_compute_array(
+            self, output_name: str, input_names: list[str] = None
+    ) -> Callable:
+        """Creates a wrapped compute function that accepts a single array for multiple inputs.
+
+        Args:
+            output_name (str): The name of the output.
+            input_names (List[str]): List of input names to include in the wrapper.
+                If None, all inputs are used.
+
+        Returns:
+            Callable: A wrapped compute function that accepts a single 1D numpy array.
+        """
+        if input_names is None:
+            input_names = list(self.inputs.keys())
+
+        # Get the shapes once to avoid repeated calls
+        _, shapes, _ = self._inputs_to_array(input_names)
+
+        def wrapped_compute(flat_array: np.ndarray):
+            # Store original state
+            temp_inputs = deepcopy(self.inputs)
+            # temp_outputs = deepcopy(self.outputs)
+
+            # Convert flat array back to dictionary and update inputs
+            restored_dict = self._array_to_dict(flat_array, input_names, shapes)
+            for key, value in restored_dict.items():
+                self.inputs[key] = value
+
+            # Compute and get result
+            self.compute()
+            return_value = self.outputs[output_name]
+
+            # Restore original state
+            self.inputs = temp_inputs
+            # self.outputs = temp_outputs
+
+            return return_value
+
+        return wrapped_compute
+
+    def _inputs_to_array(self, keys):
+        """
+        Convert selected inputs items into a 1D numpy array.
+
+        Args:
+            keys (list): List of keys to include in the array
+
+        Returns:
+            tuple: (concatenated array, list of shapes, total length)
+        """
+        arrays = []
+        shapes = []
+        total_length = 0
+
+        for key in keys:
+            if isinstance(self.inputs[key], float):
+                arr = np.array([self.inputs[key]])
+                shapes.append(arr.shape)
+            else:
+                arr = self.inputs[key].reshape(-1)  # Flatten the array
+                shapes.append(self.inputs[key].shape)
+
+            total_length += len(arr)
+            arrays.append(arr)
+
+        return np.concatenate(arrays), shapes, total_length
+
+    def _array_to_dict(self, array, keys, shapes):
+        """
+        Convert 1D array back to dictionary with original shapes.
+
+        Args:
+            array (np.ndarray): 1D array containing all values
+            keys (list): List of keys in the same order as dict_to_array
+            shapes (list): Original shapes of arrays from dict_to_array
+
+        Returns:
+            dict: Dictionary with reshaped arrays
+        """
+        result = {}
+        start_idx = 0
+
+        for key, shape in zip(keys, shapes):
+            size = np.prod(shape)
+            arr = array[start_idx : start_idx + size]
+            result[key] = arr.reshape(shape)
+            start_idx += size
+
+        return result
+
+    def compute_partial_multiple(
+            self, output_name: str, input_names: Union[str, list]
+    ) -> Union[
+        npt.NDArray[np.float64],
+        dict[str, Union[npt.NDArray[np.float64], dict[str, npt.NDArray[np.float64]]]],
+    ]:
+        """Computes the partial derivative of an output with respect to an input or all inputs.
+
+        Args:
+            output_name (str): The name of the output.
+            input_names (str): The name of the input.
+
+        Returns:
+            Union[npt.NDArray[np.float64], Dict[str, Union[npt.NDArray[np.float64], Dict[str, npt.NDArray[np.float64]]]]]:
+                The computed partial derivative(s).
+        """
+        # pylint: disable=E1120
+
+        wrapped_compute = self._create_wrapped_compute_array(output_name, input_names)
+
+        inputs_array, shapes, _ = self._inputs_to_array(input_names)
+
+        jacobian_func = self.__jacobian(wrapped_compute)
+        jac_array = jacobian_func(inputs_array)
+
+        # Convert Jacobian array back to dictionary format
+        output_shape = self.outputs[output_name].shape
+        result = {}
+        start_idx = 0
+
+        for key, shape in zip(input_names, shapes):
+            size = np.prod(shape)
+            # Reshape the Jacobian slice for this input
+            # Combine output shape with input shape
+            full_shape = output_shape + shape
+            jac_slice = jac_array[:, start_idx:start_idx + size].reshape(full_shape)
+            result[key] = jac_slice
+            start_idx += size
+
+        return result
+
     def compute_partial_numeric(
             self,
             output_name: str,
