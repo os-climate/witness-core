@@ -21,9 +21,12 @@ from os.path import dirname, join
 
 import numpy as np
 from energy_models.glossaryenergy import GlossaryEnergy
-from gemseo.utils.derivatives_approx import DisciplineJacApprox
-from gemseo.utils.pkl_tools import dump_compressed_pickle, load_compressed_pickle
+from gemseo.utils.derivatives.derivatives_approx import DisciplineJacApprox
 from sostrades_core.sos_processes.script_test_all_usecases import test_compare_dm
+from sostrades_core.tools.pkl_converter.pkl_tools import (
+    dump_compressed_pickle,
+    load_compressed_pickle,
+)
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -91,14 +94,14 @@ def post_processings(execution_engine, scenario_name, chart_filters=None): #scen
 
         dm_data_dict_before = deepcopy(execution_engine.dm.get_data_dict_values())
         n_profiles = get_scenario_value(execution_engine, 'n_profiles', scenario_name)
-        mdo_disc = execution_engine.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        mdo_disc = execution_engine.root_process.proxy_disciplines[0].discipline_wrapp.discipline
         inputs = [f'{scenario_name}.InvestmentsProfileBuilderDisc.coeff_{i}' for i in range(n_profiles)]
         outputs = [f"{scenario_name.split('.')[0]}.{OBJECTIVE_LAGR}"] # the objective lagrangian is one level above the scenario level
         # compute analytical gradient first at the converged point of the MDA
         mdo_disc.add_differentiated_inputs(inputs)
         mdo_disc.add_differentiated_outputs(outputs)
         logging.info('Post-processing: Computing analytical gradient')
-        grad_analytical = mdo_disc.linearize(force_no_exec=True) #can add data of the converged point (see sos_mdo_discipline.py)
+        grad_analytical = mdo_disc.linearize(force_no_exec=True) #can add data of the converged point (see sos_discipline.py)
 
         # computed approximated gradient in 2nd step so that the analytical gradient is not computed in X0 + h
         # warm start must have been removed so that mda and convergence criteria are the same for analytical and approximated gradients

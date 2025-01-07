@@ -239,3 +239,20 @@ class ClimateEconomicsStudyManager(StudyManager):
             dspace_out.update(dspace)
         dspace_out["dspace_size"] = dspace_size_out
         return dspace_out
+
+    def load_data(self, from_path=None, from_input_dict=None, display_treeview=True, from_datasets_mapping=None):
+        parameter_changes = super().load_data(from_path=from_path, from_input_dict=from_input_dict,
+                                              display_treeview=display_treeview,
+                                              from_datasets_mapping=from_datasets_mapping)
+        lin_mode_dict = {}
+        linearization_mode_dict = self.add_auto_linearization_mode_rec(self.execution_engine.root_process,
+                                                                       lin_mode_dict)
+        lin_parameter_changes = self.execution_engine.load_study_from_input_dict(linearization_mode_dict)
+        parameter_changes.extend(lin_parameter_changes)
+        return parameter_changes
+
+    def add_auto_linearization_mode_rec(self, disc, lin_mode_dict):
+        lin_mode_dict[f"{disc.get_disc_full_name()}.linearization_mode"] = 'auto'
+        for sub_disc in disc.proxy_disciplines:
+            lin_mode_dict = self.add_auto_linearization_mode_rec(sub_disc, lin_mode_dict)
+        return lin_mode_dict

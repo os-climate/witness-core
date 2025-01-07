@@ -24,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     Study as EnergyMDA,
 )
-from gemseo.utils.compare_data_manager_tooling import compare_dict
+from sostrades_core.tools.compare_data_manager_tooling import compare_dict
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -54,7 +54,7 @@ class EnergyMix_co2emissions_nonreg_test():
         # load and run usecase
         usecase.load_data()
         inputs_dict = {}
-        inputs_dict[usecase.ee.dm.get_all_namespaces_from_var_name('sub_mda_class')[
+        inputs_dict[usecase.ee.dm.get_all_namespaces_from_var_name('inner_mda_name')[
             0]] = 'MDAGaussSeidel'
         usecase.ee.load_study_from_input_dict(inputs_dict)
         usecase.run(for_test=False)

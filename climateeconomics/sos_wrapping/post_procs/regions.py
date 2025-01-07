@@ -112,7 +112,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     if GlossaryCore.ChartGDPBiggestEconomies in chart_list:
         # get variable with total GDP per countries
         total_gdp_per_countries_df = get_scenario_value(execution_engine, GlossaryCore.GDPCountryDFName, scenario_name)
-        economics_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDetailDfValue, scenario_name)
+        economics_df = get_scenario_value(execution_engine, f'Macroeconomics.{GlossaryCore.EconomicsDetailDfValue}', scenario_name)
         # Take the year 2020 as a reference to determine the ten biggest countries in terms of GDP
         # Rank GDP in descending order to select the x countries with the biggest GDP
         # Find the name of the x biggest  countries

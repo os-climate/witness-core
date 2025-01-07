@@ -101,11 +101,11 @@ class Study(ClimateEconomicsStudyManager):
 
 
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = \
-            dspace_df['forest_investment_array_mix']['value']
-        design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
+        dv_arrays_dict[f'{self.witness_uc.study_name}.reforestation_investment_array_mix'] = \
+            dspace_df['reforestation_investment_array_mix']['value']
+        design_var_descriptor['reforestation_investment_array_mix'] = {'out_name': 'reforestation_investment',
                                                                 'out_type': 'dataframe',
-                                                                'key': 'forest_investment',
+                                                                'key': 'reforestation_investment',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
                                                                 'namespace_in': GlossaryCore.NS_WITNESS,
@@ -188,7 +188,6 @@ class Study(ClimateEconomicsStudyManager):
 
         func_df = self.witness_uc.func_df
         func_df = func_df[~func_df['variable'].isin(['non_use_capital_cons', 'forest_lost_capital_cons'])]
-        func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'calories_per_day_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'total_prod_minus_min_prod_constraint_df', 'weight'] = 0.
 
@@ -201,7 +200,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'

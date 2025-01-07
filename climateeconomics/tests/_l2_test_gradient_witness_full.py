@@ -57,7 +57,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
         full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = max_mda_iter
 
         self.ee.load_study_from_input_dict(full_values_dict)
@@ -222,7 +222,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
     #     full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
     #     full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
     #     full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
-    #     full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+    #     full_values_dict[f'{self.name}.{usecase.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
     #     full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 2
     #
     #     self.ee.load_study_from_input_dict(full_values_dict)

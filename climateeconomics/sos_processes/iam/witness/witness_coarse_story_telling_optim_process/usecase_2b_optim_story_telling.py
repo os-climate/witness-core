@@ -62,7 +62,7 @@ class Study(ClimateEconomicsStudyManager):
         # design space WITNESS
 
         # optimization functions:
-        optim_values_dict = {f'{ns}.epsilon0': 1,
+        values_dict.update({f'{ns}.epsilon0': 1,
                              f'{ns}.cache_type': 'SimpleCache',
                              f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR, #GlossaryCore.UsableCapitalObjectiveName,
                              f'{ns}.{self.optim_name}.eq_constraints': [],
@@ -102,28 +102,25 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "n_processes": 32,
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.inner_mda_name': 'MDAGSNewton',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': 'SimpleCache',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.propagate_cache_to_children': True,
-                             f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
-
-        data_witness = []
+                             f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False})
 
         # update assumptions dict and specific values for optimization
-        updated_data = {f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.assumptions_dict': {'compute_gdp': True,
+        values_dict.update({f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': True,
                                                                 'activate_climate_effect_population': True,
                                                                 'activate_pandemic_effects': True,
-                                                                                                                       }}
-        data_witness.append(updated_data)
+                                                                                                                             }})
 
-        data_witness.append({
+        values_dict.update({
             f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.ccs_price_percentage": 0.0,
             f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.co2_damage_price_percentage": 100.,
         })
 
-        return [values_dict] + [optim_values_dict] + data_witness
+        return values_dict
 
 
 if '__main__' == __name__:

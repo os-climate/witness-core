@@ -85,7 +85,7 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         values_dict[f'{self.name}.tolerance'] = 1.0e-12
         values_dict[f'{self.name}.tolerance_linear_solver_MDO'] = 1.0e-14
 
-        values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         values_dict[f'{self.name}.{GlossaryCore.CO2TaxesValue}'] = pd.DataFrame(
             {GlossaryCore.Years: np.arange(year_start, year_end + 1), GlossaryCore.CO2Tax: 50.0})
         self.ee.load_study_from_input_dict(values_dict)

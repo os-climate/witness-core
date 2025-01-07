@@ -36,17 +36,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
     def get_builders(self):
 
-        ns_scatter = self.ee.study_name
-
-        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
-                   GlossaryCore.NS_ENERGY_MIX: ns_scatter,
-                   'ns_agriculture': ns_scatter,
-                   GlossaryCore.NS_CCS: ns_scatter,
-                   'ns_energy': ns_scatter,
-                   'ns_forest': ns_scatter,
-                   'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
-
-
 
         builder_list = []
 
@@ -69,11 +58,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        '''
-        Add emissions disciplines
-        '''
-        mods_dict = {AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',
-                     }
+        mods_dict = {AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',}
         non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
         builder_list.extend(non_use_capital_list)

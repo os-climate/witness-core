@@ -124,9 +124,9 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         deforestation_surface = np.linspace(10, 5, year_range)
         self.deforestation_surface_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, "deforested_surface": deforestation_surface})
-        forest_invest = np.linspace(5, 8, year_range)
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
         mw_invest = np.linspace(1, 4, year_range)
         uw_invest = np.linspace(0, 1, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -221,7 +221,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_agriculture_mix_discipline.pkl', discipline=disc_techno,
                             step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,

@@ -74,7 +74,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.warm_start'] = False
         full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.chain_linearize'] = False
-        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDANewtonRaphson'
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.inner_mda_name'] = 'MDANewtonRaphson'
         full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
 
@@ -142,7 +142,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.warm_start'] = False
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
         self.ee.execute()
@@ -204,7 +204,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.warm_start'] = False
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-12
         full_values_dict[f'{self.name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.inner_mda_name'] = 'MDAGaussSeidel'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
 

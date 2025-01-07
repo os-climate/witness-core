@@ -68,9 +68,9 @@ class DataStudy():
         nb_per = self.year_end - self.year_start + 1
         years = arange(self.year_start, self.year_end + 1)
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": reforestation_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -88,7 +88,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{'Damage.damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
         #         witness_input[f"{self.study_name}.{}#                      '.Damage.damage_constraint_factor'}" = np.asarray([1] * len(years))
-        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.forest_investment"] = self.forest_invest_df
+        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.reforestation_investment"] = self.reforestation_investment_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')
@@ -138,13 +138,12 @@ class DataStudy():
                                                                                                        1935]},
                                                               index=[2017, 2018, 2019])
 
-        CO2_emitted_land = pd.DataFrame()
+        CO2_emitted_land = pd.DataFrame({GlossaryCore.Years: years})
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)
         CO2_emitted_land['Crop'] = np.zeros(len(years))
         CO2_emitted_land['Forest'] = cum_emission
-
         witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
         self.CO2_tax = np.asarray([50.] * len(years))
@@ -159,9 +158,9 @@ class DataStudy():
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": reforestation_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(self.year_start, self.year_end, main_study=False)

@@ -46,7 +46,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
     _maturity = 'Research'
 
     DESC_IN = {
-        "mdo_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False},
+        "mdo_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False, 'structuring': True},
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
     }
 

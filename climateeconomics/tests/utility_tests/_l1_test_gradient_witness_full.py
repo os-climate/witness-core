@@ -81,7 +81,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         values_dict['Test.tolerance_linear_solver_MDO'] = 1.0e-12
         values_dict['Test.linearization_mode'] = 'adjoint'
         values_dict['Test.tolerance'] = 1.0e-10
-        values_dict['Test.sub_mda_class'] = 'MDAGaussSeidel'
+        values_dict['Test.inner_mda_name'] = 'MDAGaussSeidel'
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -127,7 +127,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         values_dict['Test.tolerance_linear_solver_MDO'] = 1.0e-8
         values_dict['Test.linearization_mode'] = 'adjoint'
         values_dict['Test.tolerance'] = 1.0e-10
-        values_dict['Test.sub_mda_class'] = 'MDAGaussSeidel'
+        values_dict['Test.inner_mda_name'] = 'MDAGaussSeidel'
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -211,7 +211,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.tolerance'] = 1.0e-12
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.max_mda_iter'] = 200
-        full_values_dict[f'{usecase.study_name}.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
 
         self.ee.load_study_from_input_dict(full_values_dict)
 
@@ -268,7 +268,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict['Test.WITNESS_Eval.linearization_mode'] = 'adjoint'
         full_values_dict['Test.WITNESS_Eval.tolerance'] = 1.0e-10
         full_values_dict['Test.WITNESS_Eval.warm_start'] = False
-        full_values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict['Test.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc = self.ee.root_process.proxy_disciplines[0]
@@ -355,7 +355,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.linearization_mode'] = 'adjoint'
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.tolerance'] = 1.0e-12
         full_values_dict[f'{usecase.study_name}.WITNESS_Eval.max_mda_iter'] = 200
-        full_values_dict[f'{usecase.study_name}.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.WITNESS_Eval.inner_mda_name'] = 'MDAGaussSeidel'
 
         input_full_names = ['Test.WITNESS_Eval.WITNESS.CO2_taxes_array']
         nb_poles = 5

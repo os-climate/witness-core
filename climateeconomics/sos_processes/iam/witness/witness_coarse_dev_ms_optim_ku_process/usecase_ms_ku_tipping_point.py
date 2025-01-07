@@ -36,7 +36,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_story_telling_opt
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2023, filename=__file__, bspline=False, run_usecase=False, execution_engine=None):
+    def __init__(self, year_start=2023, filename=__file__, bspline=True, run_usecase=False, execution_engine=None):
         super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
@@ -77,14 +77,17 @@ class Study(ClimateEconomicsStudyManager):
             scenarioUseCase = studyClass(execution_engine=self.execution_engine, year_start=self.year_start)
             scenarioUseCase.study_name = f'{self.study_name}.{scatter_scenario}.{scenario_name}'
             scenarioData = scenarioUseCase.setup_usecase()
-            scenarioDatadict = {}
-            for data in scenarioData:
-                scenarioDatadict.update(data)
-            values_dict.update(scenarioDatadict)
+            if isinstance(scenarioData, list):
+                for dictionnary in  scenarioData:
+                    values_dict.update(dictionnary)
+            elif isinstance(scenarioData, dict):
+                values_dict.update(scenarioData)
+            else:
+                raise ValueError("Fixme")
 
         values_dict.update({f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 100 for scenario_name in scenario_dict.keys()})
         values_dict.update(
-            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class": "MDAGaussSeidel" for scenario_name in
+            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.WITNESS_Eval.inner_mda_name": "MDAGaussSeidel" for scenario_name in
              scenario_dict.keys()})
         # update the tipping point value
         values_dict.update({
