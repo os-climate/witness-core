@@ -143,6 +143,7 @@ class DifferentiableModel:
         self.dataframes_inputs_colnames: dict[str: list[str]] = {}
         self.inputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
         self.outputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
+        self.temp_variables: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {} # variables that are only use temporarily during computation
         self.flatten_dfs = flatten_dfs
 
     def set_parameters(self, params: dict[str, float, np.ndarray]) -> None:
@@ -816,6 +817,18 @@ class DifferentiableModel:
 
     def get_df_output_dotpaths(self, df_outputname: str) -> dict[str: list[str]]:
         return [f'{df_outputname}:{colname}' for colname in self.dataframes_outputs_colnames[df_outputname]]
+
+    def get_colnames_output_dataframe(self, df_name: str, expect_years: bool = False, full_path: bool = False):
+        columns_names = list(filter(lambda key: key.startswith(f'{df_name}:'), self.outputs.keys()))
+        if expect_years:
+            columns_names.remove(f'{df_name}:{GlossaryCore.Years}')
+        if not full_path:
+            columns_names = [col.replace(f'{df_name}:', '') for col in columns_names]
+        return columns_names
+    def get_cols_output_dataframe(self, df_name: str, expect_years: bool = False):
+        columns_names = self.get_colnames_output_dataframe(df_name=df_name, expect_years=expect_years, full_path=True)
+        columns = [self.outputs[col] for col in columns_names]
+        return columns
 
 
 if __name__ == "__main__":

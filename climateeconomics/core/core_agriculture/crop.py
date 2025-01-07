@@ -177,7 +177,7 @@ class Crop():
         self.construction_delay = 3  # default value
         self.margin = self.param['margin']
         if GlossaryCore.ConstructionDelay in self.techno_infos_dict:
-            self.construction_delay = self.techno_infos_dict[GlossaryCore.ConstructionDelay]
+            self.construction_delay = self.inputs['techno_infos_dict'][GlossaryCore.ConstructionDelay]
         else:
             print(
                 'The construction_delay data is not set for Crop : default = 3 years  ')
@@ -483,10 +483,10 @@ class Crop():
 
         # Factory cost including CAPEX OPEX
         self.cost_details['Factory ($/MWh)'] = self.cost_details['Capex ($/MWh)'] * (
-                self.crf + self.techno_infos_dict['Opex_percentage'])
+                self.crf + self.inputs['techno_infos_dict']['Opex_percentage'])
 
         if 'nb_years_amort_capex' in self.techno_infos_dict:
-            self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
+            self.nb_years_amort_capex = self.inputs['techno_infos_dict']['nb_years_amort_capex']
 
         # pylint: disable=no-member
         len_y = max(self.cost_details[GlossaryCore.Years]) + \
@@ -497,7 +497,7 @@ class Crop():
         # pylint: enable=no-member
 
         # Compute and add transport
-        self.cost_details['Transport ($/MWh)'] = self.transport_cost['transport'].values * \
+        self.cost_details['Transport ($/MWh)'] = self.inputs[f'{GlossaryEnergy.TransportCostValue}:transport'] * \
                                                  self.transport_margin['margin'].values / 100.0 / self.data_fuel_dict[
                                                      'calorific_value']
 
@@ -528,11 +528,11 @@ class Crop():
             self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)'].values
 
         price_crop = self.cost_details['Total ($/t)'].values / \
-                     (1 + self.techno_infos_dict['residue_density_percentage'] *
-                      (self.techno_infos_dict['crop_residue_price_percent_dif'] - 1))
+                     (1 + self.inputs['techno_infos_dict']['residue_density_percentage'] *
+                      (self.inputs['techno_infos_dict']['crop_residue_price_percent_dif'] - 1))
 
         price_residue = price_crop * \
-                        self.techno_infos_dict['crop_residue_price_percent_dif']
+                        self.inputs['techno_infos_dict']['crop_residue_price_percent_dif']
 
         # Price_residue = crop_residue_ratio * Price_crop
         # Price_crop = Price_tot / ((1-ratio_prices)*crop_residue_ratio + ratio_prices)
@@ -707,10 +707,10 @@ class Crop():
         '''
         # compute residue part from food land surface for energy sector in TWh
         residue_production = self.total_food_land_surface['total surface (Gha)'] * \
-                             self.techno_infos_dict['residue_density_percentage'] * \
-                             self.techno_infos_dict['density_per_ha'] * \
+                             self.inputs['techno_infos_dict']['residue_density_percentage'] * \
+                             self.inputs['techno_infos_dict']['density_per_ha'] * \
                              self.data_fuel_dict['calorific_value'] * \
-                             self.techno_infos_dict['residue_percentage_for_energy']
+                             self.inputs['techno_infos_dict']['residue_percentage_for_energy']
 
         self.residue_prod_from_food_surface = residue_production
 
@@ -719,7 +719,7 @@ class Crop():
         Compute land use required for crop for energy
         """
         self.land_use_required['Crop (Gha)'] = self.mix_detailed_production['Crop for Energy (TWh)'] / \
-                                               self.techno_infos_dict['density_per_ha']
+                                               self.inputs['techno_infos_dict']['density_per_ha']
 
     def compute_carbon_emissions(self):
         '''
@@ -729,14 +729,14 @@ class Crop():
         if 'CO2_from_production' not in self.techno_infos_dict:
             self.CO2_emissions['production'] = self.get_theoretical_co2_prod(
                 unit='kg/kWh')
-        elif self.techno_infos_dict['CO2_from_production'] == 0.0:
+        elif self.inputs['techno_infos_dict']['CO2_from_production'] == 0.0:
             self.CO2_emissions['production'] = 0.0
         else:
-            if self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kg':
-                self.CO2_emissions['production'] = self.techno_infos_dict['CO2_from_production'] / \
+            if self.inputs['techno_infos_dict']['CO2_from_production_unit'] == 'kg/kg':
+                self.CO2_emissions['production'] = self.inputs['techno_infos_dict']['CO2_from_production'] / \
                                                    self.data_fuel_dict['high_calorific_value']
-            elif self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kWh':
-                self.CO2_emissions['production'] = self.techno_infos_dict['CO2_from_production']
+            elif self.inputs['techno_infos_dict']['CO2_from_production_unit'] == 'kg/kWh':
+                self.CO2_emissions['production'] = self.inputs['techno_infos_dict']['CO2_from_production']
 
         # Add carbon emission from input energies (resources or other
         # energies)
@@ -1154,9 +1154,9 @@ class Crop():
         # production = residue production from food + crop energy production
         # residue production from food = compute_residue_from_food_investment
         d_prod_dland_for_food = dland_for_food * \
-                                self.techno_infos_dict['residue_density_percentage'] * \
-                                self.techno_infos_dict['density_per_ha'] * \
-                                self.techno_infos_dict['residue_percentage_for_energy'] * \
+                                self.inputs['techno_infos_dict']['residue_density_percentage'] * \
+                                self.inputs['techno_infos_dict']['density_per_ha'] * \
+                                self.inputs['techno_infos_dict']['residue_percentage_for_energy'] * \
                                 self.data_fuel_dict['calorific_value'] / \
                                 self.scaling_factor_techno_production
         return d_prod_dland_for_food
@@ -1312,21 +1312,21 @@ class Crop():
 
     def compute_mix_detailed_production(self):
         self.mix_detailed_production['Crop residues (TWh)'] = self.residue_prod_from_food_surface.values + \
-                                                              self.techno_infos_dict[
+                                                              self.inputs['techno_infos_dict'][
                                                                   'residue_density_percentage'] * self.production[
                                                                   'biomass_dry (TWh)']
 
         self.mix_detailed_production['Crop for Energy (TWh)'] = self.production['biomass_dry (TWh)'] * (
-                1 - self.techno_infos_dict['residue_density_percentage'])
+                1 - self.inputs['techno_infos_dict']['residue_density_percentage'])
 
         self.mix_detailed_production['Total (TWh)'] = self.mix_detailed_production['Crop for Energy (TWh)'] + \
                                                       self.mix_detailed_production['Crop residues (TWh)']
 
     def compute_techno_consumption(self):
-        self.techno_consumption[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
+        self.techno_consumption[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.inputs['techno_infos_dict']['CO2_from_production'] / \
                                                                     self.data_fuel_dict['high_calorific_value'] * \
                                                                     self.mix_detailed_production['Total (TWh)']
-        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.techno_infos_dict[
+        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.inputs['techno_infos_dict'][
             'CO2_from_production'] / \
                                                                             self.data_fuel_dict[
                                                                                 'high_calorific_value'] * \

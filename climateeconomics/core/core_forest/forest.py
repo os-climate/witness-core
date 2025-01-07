@@ -16,7 +16,6 @@ limitations under the License.
 '''
 
 import autograd.numpy as np
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 from climateeconomics.core.tools.differentiable_model import DifferentiableModel

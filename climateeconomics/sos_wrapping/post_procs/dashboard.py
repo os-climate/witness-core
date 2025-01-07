@@ -20,7 +20,6 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from plotly.subplots import make_subplots
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter

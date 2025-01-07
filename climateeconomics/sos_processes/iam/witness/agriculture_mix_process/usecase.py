@@ -23,8 +23,7 @@ from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.glossarycore import GlossaryCore
 
 AGRI_MIX_MODEL_LIST = ['Crop', 'Forest']
-AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = [
-    'ManagedWood', 'CropEnergy']
+AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = []
 COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = []
 
 
@@ -172,38 +171,6 @@ class Study(StudyManager):
         self.reforestation_investment_df = pd.DataFrame(
             {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
 
-        if 'CropEnergy' in self.techno_list:
-            crop_invest = np.linspace(0.5, 0.25, year_range)
-        else:
-            crop_invest = [0] * year_range
-        if 'ManagedWood' in self.techno_list:
-            mw_invest = np.linspace(1, 4, year_range)
-        else:
-            mw_invest = [0] * year_range
-
-        self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
-        self.crop_investment = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: crop_invest})
-        # deforest_invest = np.linspace(10, 1, year_range)
-        deforest_invest = [114.548759121872, 117.184116493791, 119.627727466938, 121.881049634694, 123.945540590445,
-                           125.82265792757, 127.513859239454, 129.02060211948, 130.34434416103, 131.486542957486,
-                           132.448656102233, 133.232141188651, 133.838455810126, 134.269057560038, 134.525404031772,
-                           134.60895281871, 134.521161514233, 134.264348221602, 133.844273083575, 133.267556752788,
-                           132.540819881875, 131.670683123473, 130.663767130216, 129.52669255474, 128.266080049678,
-                           126.888550267669, 125.400723861344, 123.809221483342, 122.120663786294, 120.341671422839,
-                           118.47886504561, 116.538865307244, 114.528292860374, 112.453964415913, 110.323480917878,
-                           108.144639368564, 105.925236770266, 103.673070125275, 101.395936435889, 99.1016327044,
-                           96.7979559331032, 94.492703124292, 92.1936712802624, 89.9086574033064, 87.6454584957192,
-                           85.411871559796, 83.2156935978296, 81.0647216121152, 78.9667526049464, 76.9282359492362,
-                           74.9502305003717, 73.0324474843579, 71.1745981272006, 69.3763936549051, 67.6375452934767,
-                           65.957764268921, 64.3367618072431, 62.7742491344488, 61.2699374765432, 59.8235380595319,
-                           58.4347621094202, 57.1033208522136, 55.8289255139174, 54.6112873205371, 53.4501174980782,
-                           52.3443211421342, 51.2895788266526, 50.2807649951686, 49.3127540912181, 48.3804205583364,
-                           47.4786388400591, 46.6022833799217, 45.7462286214598, 44.905349008209, 44.0745189837049,
-                           43.2486129914827, 42.4225054750783, 41.591070878027, 40.7491836438646, 39.8917182161264,
-                           39.013549038348]
-
         deforest_invest_df = pd.DataFrame({
             GlossaryCore.Years: years,
             GlossaryCore.InvestmentsValue: np.linspace(114, 39, len(self.years))})
@@ -273,11 +240,6 @@ class Study(StudyManager):
         design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl
         design_space_ctrl_dict['reforestation_investment_array_mix'] = reforestation_investment_array_mix
 
-        if 'CropEnergy' in self.techno_list:
-            design_space_ctrl_dict['crop_investment_array_mix'] = crop_investment_array_mix
-        if 'ManagedWood' in self.techno_list:
-            design_space_ctrl_dict['managed_wood_investment_array_mix'] = managed_wood_investment_array_mix
-
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
         self.dspace = self.setup_design_space_ctrl_new()
@@ -315,16 +277,6 @@ class Study(StudyManager):
                                 self.design_space_ctrl['reforestation_investment_array_mix'].values,
                                 [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
                                 activated_elem=[True] * self.nb_poles)
-        if 'CropEnergy' in self.techno_list:
-            update_dspace_dict_with(ddict, 'crop_investment_array_mix',
-                                    self.design_space_ctrl['crop_investment_array_mix'].values,
-                                    [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
-                                    activated_elem=[True] * self.nb_poles, enable_variable=False, )
-        if 'ManagedWood' in self.techno_list:
-            update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
-                                    self.design_space_ctrl['managed_wood_investment_array_mix'].values,
-                                    [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
-                                    activated_elem=[True] * self.nb_poles, enable_variable=False)
 
         return ddict
 
