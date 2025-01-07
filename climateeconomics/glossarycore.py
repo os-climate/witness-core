@@ -70,6 +70,7 @@ class GlossaryCore:
         "namespace": "ns_public",
         "range": [2000, 2300],
     }
+    Forest = "Forest"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
@@ -207,6 +208,7 @@ class GlossaryCore:
     NS_ENERGY_MIX = "ns_energy_mix"
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
+    NS_AGRI = "ns_agriculture"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
     NS_SECTORS_POST_PROC_EMISSIONS = "ns_sectors_postproc"
     NS_SECTORS_POST_PROC_GDP = "ns_sectors_postproc_gdp"
@@ -614,11 +616,11 @@ class GlossaryCore:
             DamageFractionOutput: ("float", [0.0, 1.0], False),
         },
     }
-    Damages = "Damages [G$]"
+    Damages = "Damages"
     DamageDfValue = "damage_df"
-    DamagesFromClimate = "Damages from climate [G$]"
-    DamagesFromProductivityLoss = "Damages from productivity loss [G$]"
-    EstimatedDamages = "Estimated damages [G$]"
+    DamagesFromClimate = "Damages from climate"
+    DamagesFromProductivityLoss = "Damages from productivity loss"
+    EstimatedDamages = "Estimated damages"
     DamageDf = {
         "var_name": DamageDfValue,
         "type": "dataframe",
@@ -632,8 +634,18 @@ class GlossaryCore:
         },
     }
 
-    EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied) [G$]"
-    EstimatedDamagesFromClimate = "Estimated damages from climate (not applied) [G$]"
+    SubsectorDamagesDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Damages: ("float", [0, 1e30], False),
+        },
+    }
+
+    EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied)"
+    EstimatedDamagesFromClimate = "Estimated damages from climate (not applied)"
     DamageDetailedDfValue = "damage_detailed_df"
     DamageDetailedDf = {
         "var_name": DamageDetailedDfValue,
@@ -1209,6 +1221,22 @@ class GlossaryCore:
             OutputNetOfDamage: ("float", [0, 1e30], False),
         },
     }
+    SubsectorProductionDf = {
+        "visibility": "Shared",
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            GrossOutput: ("float", [0, 1e30], False),
+            OutputNetOfDamage: ("float", [0, 1e30], False),
+        },
+    }
+
+    SubsectorProductionDetailedDf = {
+        "type": "dataframe",
+        "unit": "G$",
+    }
+
     ConsumptionSectorBreakdown = {
         "type": "dataframe",
         "unit": "T$",

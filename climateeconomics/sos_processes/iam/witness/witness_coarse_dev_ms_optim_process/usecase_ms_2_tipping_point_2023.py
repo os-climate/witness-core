@@ -96,7 +96,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict = self.update_dataframes_with_year_star(values_dict=values_dict, year_start=self.year_start)
         values_dict.update(
-            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 2 for scenario_name in
+            {f"{self.study_name}.{scatter_scenario}.{scenario_name}.WITNESS_MDO.max_iter": 1 for scenario_name in
              scenario_dict.keys()})
 
         return values_dict
@@ -105,4 +105,4 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    uc_cls.test()
+    uc_cls.run()

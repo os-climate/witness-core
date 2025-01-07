@@ -123,6 +123,7 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.eval_mode': True,
                              f'{ns}.warm_start': True,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': 'SimpleCache',
                              # SLSQP, NLOPT_SLSQP
                              f'{ns}.{self.optim_name}.algo': "L-BFGS-B",
                              f'{ns}.{self.optim_name}.formulation': 'DisciplinaryOpt',
@@ -160,7 +161,7 @@ class Study(ClimateEconomicsStudyManager):
 
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl',
                                     'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl',
-                                    'forest_investment_array_mix', 'crop_investment_array_mix']
+                                    'reforestation_investment_array_mix', 'crop_investment_array_mix']
         diet_mortality_df = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', 'diet_mortality.csv'))
 
         # clean dspace
@@ -209,9 +210,9 @@ class Study(ClimateEconomicsStudyManager):
         invest_mix_file = 'investment_mix.csv'
         invest_mix = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', invest_mix_file))
         hydro_prod_IEA = pd.read_csv(join(dirname(__file__), '../../../../data', 'IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv'))
-        models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "models")[0]
+        models_path_abs = os.path.dirname(os.path.abspath(__file__)).split(os.sep + "witness-core")[0]
         df_prod_iea = pd.read_csv(
-            os.path.join(models_path_abs, 'models', 'witness-core', 'climateeconomics', 'data',
+            os.path.join(models_path_abs, 'witness-core', 'climateeconomics', 'data',
                          'IEA_NZE_EnergyMix.biogas.energy_production_detailed.csv'))
         forest_invest_file = 'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), '../witness_optim_process/data', forest_invest_file))
@@ -226,10 +227,12 @@ class Study(ClimateEconomicsStudyManager):
         invest_before_year_start_hydropower = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['Hydropower'], self.year_start), GlossaryEnergy.InvestValue: [0., 102.49276698, 98.17710767]})
         invest_before_year_start_windonshore = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['WindOnshore'], self.year_start), GlossaryEnergy.InvestValue: [0., 125.73068603, 125.73068603]})
         invest_before_year_start_windoffshore = pd.DataFrame({GlossaryEnergy.Years: np.arange(self.year_start - GlossaryEnergy.TechnoConstructionDelayDict['WindOffshore'], self.year_start), GlossaryEnergy.InvestValue: [0., 34.26931397, 34.26931397]})
+        invest_mix[f'{GlossaryEnergy.methane}.{GlossaryEnergy.Methanation}'] = 0.
+        invest_mix[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.{GlossaryEnergy.BiomassFermentation}'] = 0.
         values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.forest_investment': forest_invest,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.reforestation_investment': forest_invest,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Crop.crop_investment': crop_investment_df_NZE,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
