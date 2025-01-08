@@ -37,7 +37,6 @@ from climateeconomics.core.core_witness.utility_tools import (
     get_inputs_for_utility_per_sector,
     s_curve_function,
 )
-from climateeconomics.core.tools.color_map import ColorMap
 from climateeconomics.core.tools.colormaps import SectorsColorMap
 from climateeconomics.core.tools.plotting import (
     WITNESSTwoAxesInstanciatedChart as TwoAxesInstanciatedChart,
@@ -265,7 +264,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.Years,
                 "Variation [%]",
                 chart_name="Variation of consumption by sector",
-            ).set_color_map(SectorsColorMap | ColorMap({"Industry": "red"}))
+            ).set_color_map(SectorsColorMap)
 
             for sector in sector_list:
                 consumption = sectors_consumption_df[sector].to_numpy()
