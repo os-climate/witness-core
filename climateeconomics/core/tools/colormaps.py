@@ -103,6 +103,7 @@ ResourcesColorMap: ColorMap = ColorMap(
 )
 
 SectorsColorMap: ColorMap = ColorMap(
+    name="sectors",
     color_map={"Industry": "#000000", "Services": "#1696D2", "Agriculture": "#55B748"}
 )
 

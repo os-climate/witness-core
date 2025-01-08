@@ -34,6 +34,51 @@ if TYPE_CHECKING:
 
     from climateeconomics.core.tools.color_palette import ColorPalette
 
+DEFAULT_PALETTE: ColorPalette | None = None
+DEFAULT_COLORMAP: ColorMap | None = None
+
+
+def set_default_palette(
+    palette: str | ColorPalette | None = None,
+) -> ColorPalette | None:
+    """Set default palette to new value.
+
+    Example:
+        >>> from climateeconomics.core.tools.color_palette import ColorPalette
+        >>> palette = set_default_palette(ColorPalette(name="witness"))
+        >>> palette.name
+        'witness'
+    """
+    global DEFAULT_PALETTE
+
+    if isinstance(palette, str):
+        if palette in available_palettes:
+            DEFAULT_PALETTE = available_palettes[palette]
+            return DEFAULT_PALETTE
+
+    DEFAULT_PALETTE = palette
+    return DEFAULT_PALETTE
+
+
+def set_default_colormap(colormap: str | ColorMap | None = None) -> ColorMap | None:
+    """Set default colormap to new value.
+
+    Example:
+        >>> colormap = set_default_colormap(ColorMap(name="sectors", color_map={}))
+        >>> print(colormap.name)
+        sectors
+    """
+    global DEFAULT_COLORMAP
+
+    if isinstance(colormap, str):
+        if colormap in available_colormaps:
+            DEFAULT_COLORMAP = available_colormaps[colormap]
+        return DEFAULT_COLORMAP
+
+    DEFAULT_COLORMAP = colormap
+    return DEFAULT_COLORMAP
+
+
 T = TypeVar("T", bound="ExtendedMixin")
 
 
@@ -49,13 +94,15 @@ class ExtendedMixin(Generic[T]):
         if "color_palette" in kwargs:
             self.set_color_palette(kwargs.get("color_palette"))
         else:
-            self.set_color_palette("witness")
+            self.set_color_palette(DEFAULT_PALETTE)
 
         if "group_name" in kwargs:
             self.set_group(kwargs.get("group_name"))
 
         if "color_map" in kwargs:
             self.set_color_map(kwargs.get("color_map"))
+        else:
+            self.set_color_map(DEFAULT_COLORMAP)
 
     def set_group(self, group_name: str) -> T:
         if self.color_palette is None:
@@ -94,7 +141,9 @@ class ExtendedMixin(Generic[T]):
         return self
 
     def set_color_map(
-        self, color_map: dict | ColorMap | str, fill_nonexistent: bool = False
+        self,
+        color_map: dict | ColorMap | str | None = None,
+        fill_nonexistent: bool = False,
     ) -> T:
         """Set color map."""
 

@@ -41,6 +41,10 @@ from climateeconomics.core.tools.colormaps import SectorsColorMap
 from climateeconomics.core.tools.plotting import (
     WITNESSTwoAxesInstanciatedChart as TwoAxesInstanciatedChart,
 )
+from climateeconomics.core.tools.plotting import (
+    set_default_colormap,
+    set_default_palette,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -225,6 +229,9 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         instanciated_charts = []
         chart_list = []
 
+        set_default_palette("witness")
+        set_default_colormap("sectors")
+
         if chart_filters is not None:
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == "charts":
@@ -242,7 +249,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 f"Variation of quantity of things consumed per capita since {years[0]} [%]",
                 "Utility gain per capita",
                 chart_name="Model visualisation : Quantity utility per capita function",
-            ).set_color_palette("witness").set_color_map("sectors")
+            )
             for sector in sector_list:
                 scurve_stretch = self.get_sosdisc_inputs(f"{sector}_strech_scurve")
                 scurve_shift = self.get_sosdisc_inputs(f"{sector}_shift_scurve")
@@ -312,7 +319,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.Years,
                 "[-]",
                 chart_name="Utility per capita by sector",
-            ).set_color_map("sectors")
+            )  # .set_color_map("sectors")
             for sector in sector_list:
                 discounted_utility_pc_sector = self.get_sosdisc_outputs(
                     f"{sector}.{GlossaryCore.UtilityDfValue}"
