@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 
 from __future__ import annotations
 
@@ -295,7 +295,20 @@ def rgb_to_lab(rgb) -> LabColor:
 
 
 def to_hex(color: str) -> str:
-    """Converts any color format to hex."""
+    """Converts any color format to hex.
+
+    Args:
+        color (str): Color string in supported format (hex or RGB).
+
+    Returns:
+        str: Color in hex format.
+
+    Example:
+        >>> print(to_hex("rgb(255, 0, 0)"))
+        #FF0000
+        >>> print(to_hex("#FF0000"))
+        #FF0000
+    """
     if re.match(r"^#[0-9a-fA-F]{6}$", color):
         return color
     elif re.match(r"^rgb\((\d+),\s*(\d+),\s*(\d+)\)$", color):
@@ -305,7 +318,20 @@ def to_hex(color: str) -> str:
 
 
 def to_rgb_string(color: str) -> str:
-    """Converts any color format to RGB string."""
+    """Converts any color format to RGB string.
+
+    Args:
+        color (str): Color string in supported format (hex, RGB, HSL, or LAB).
+
+    Returns:
+        str: Color in RGB string format.
+
+    Example:
+        >>> print(to_rgb_string("#FF0000"))
+        rgb(255, 0, 0)
+        >>> print(to_rgb_string("hsl(0, 100%, 50%)"))
+        rgb(255, 0, 0)
+    """
     if re.match(r"^#[0-9a-fA-F]{6}$", color):
         return hex_to_rgb_string(color)
     elif re.match(r"^rgb\((\d+),\s*(\d+),\s*(\d+)\)$", color):
@@ -360,11 +386,35 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
 
 
 def hex_to_rgb_string(hex_color: str) -> str:
+    """Convert hex color to RGB string format.
+
+    Args:
+        hex_color (str): Color in hex format.
+
+    Returns:
+        str: Color in RGB string format.
+
+    Example:
+        >>> print(hex_to_rgb_string("#FF0000"))
+        rgb(255, 0, 0)
+    """
     rgb = hex_to_rgb(hex_color)
     return f"rgb({rgb[0]}, {rgb[1]}, {rgb[2]})"
 
 
 def rgb_string_to_hsl_string(rgb_string: str) -> str:
+    """Convert RGB string to HSL string format.
+
+    Args:
+        rgb_string (str): Color in RGB string format.
+
+    Returns:
+        str: Color in HSL string format.
+
+    Example:
+        >>> print(rgb_string_to_hsl_string("rgb(255, 0, 0)"))
+        hsl(0, 100%, 50%)
+    """
     match = re.match(r"rgb\((\d+),\s*(\d+),\s*(\d+)\)", rgb_string)
     r, g, b = map(int, match.groups())
     hsl = colorsys.rgb_to_hls(r / 255.0, g / 255.0, b / 255.0)
@@ -372,6 +422,18 @@ def rgb_string_to_hsl_string(rgb_string: str) -> str:
 
 
 def rgb_string_to_lab_string(rgb_string: str) -> str:
+    """Convert RGB string to LAB color space string format.
+
+    Args:
+        rgb_string (str): Color in RGB string format (e.g., "rgb(255, 0, 0)").
+
+    Returns:
+        str: Color in LAB string format.
+
+    Example:
+        >>> print(rgb_string_to_lab_string("rgb(255, 0, 0)"))
+        lab(53.24, 80.09, 67.20)
+    """
     match = re.match(r"rgb\((\d+),\s*(\d+),\s*(\d+)\)", rgb_string)
     r, g, b = map(int, match.groups())
     lab = convert_color(sRGBColor(r / 255.0, g / 255.0, b / 255.0), LabColor)
@@ -379,6 +441,18 @@ def rgb_string_to_lab_string(rgb_string: str) -> str:
 
 
 def hsl_string_to_rgb_string(hsl_string: str) -> str:
+    """Convert HSL string to RGB string format.
+
+    Args:
+        hsl_string (str): Color in HSL string format (e.g., "hsl(0, 100%, 50%)").
+
+    Returns:
+        str: Color in RGB string format.
+
+    Example:
+        >>> print(hsl_string_to_rgb_string("hsl(0, 100%, 50%)"))
+        rgb(255, 0, 0)
+    """
     match = re.match(r"hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)", hsl_string)
     h, s, l = map(int, match.groups())
     rgb = colorsys.hls_to_rgb(h / 360.0, l / 100.0, s / 100.0)
@@ -386,6 +460,18 @@ def hsl_string_to_rgb_string(hsl_string: str) -> str:
 
 
 def lab_string_to_rgb_string(lab_string: str) -> str:
+    """Convert LAB string to RGB string format.
+
+    Args:
+        lab_string (str): Color in LAB string format (e.g., "lab(53.24, 80.09, 67.20)").
+
+    Returns:
+        str: Color in RGB string format.
+
+    Example:
+        >>> print(lab_string_to_rgb_string("lab(53.24, 80.09, 67.20)"))
+        rgb(255, 0, 0)
+    """
     match = re.match(r"lab\(([-\d.]+),\s*([-\d.]+),\s*([-\d.]+)\)", lab_string)
     l, a, b = map(float, match.groups())
     rgb = convert_color(LabColor(l, a, b), sRGBColor)
