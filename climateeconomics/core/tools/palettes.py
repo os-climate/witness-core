@@ -1,5 +1,5 @@
 '''
-Copyright 2025 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ WITNESSPalette: ColorPalette = ColorPalette.from_dict(
             "#5c5859",
             "#55B748",
             "#DB2B27",
+            "#0a4c6a"
         ],
         "highlight_colors": [],
         "color_tags": [
@@ -39,6 +40,7 @@ WITNESSPalette: ColorPalette = ColorPalette.from_dict(
             "space_gray",
             "green",
             "red",
+            "dark_blue"
         ],
         "shades": {
             "primary_blue": [
@@ -123,6 +125,23 @@ WITNESSPalette: ColorPalette = ColorPalette.from_dict(
             "three_3": ["primary_blue", "black", "green"],
             "three_4": ["primary_blue", "black", "magenta"],
             "three_seq": ["#a2d4ec", "primary_blue", "#0a4c6a"],
+            "four": ["primary_blue", "black", "neutral_gray", "yellow"],
+            "four_2": ["primary_blue", "black", "neutral_gray", "yellow"],
+            "four_3": ["primary_blue", "black", "neutral_gray", "magenta"],
+            "four_4": ["primary_blue", "black", "yellow", "green"],
+            "four_5": ["primary_blue", "black", "yellow", "magenta"],
+            "four_seq": ["#cfe8f3", "#73bfe2", "primary_blue", "#0a4c6a"],
+            "five": ["primary_blue", "black", "neutral_gray", "yellow", "magenta"],
+            "five_2": ["primary_blue", "black", "neutral_gray", "yellow", "dark_blue"],
+            "five_3": ["primary_blue", "black", "neutral_gray", "green", "dark_blue"],
+            "five_4": ["primary_blue", "black", "yellow", "green", "magenta"],
+            "five_seq": ["#cfe8f3", "#73bfe2", "primary_blue", "dark_blue", "black"],
+            "six": ["primary_blue", "black", "neutral_gray", "yellow", "green", "magenta"],
+            "six_2": ["primary_blue", "black", "neutral_gray", "yellow", "green", "dark_blue"],
+            "six_3": ["primary_blue", "black", "dark_blue", "yellow", "green", "magenta"],
+            "seven":  ["primary_blue", "black", "neutral_gray", "yellow", "green", "magenta", "dark_blue"],
+            "diverging": ["#ca5800", "#fdbf11", "#fdd870", "#fff2cf", "#cfe8f3", "#73bfe2", "#1696d2", "#0a4c6a"]
+
         },
         "description": "Clean, professional palette for data visualization",
         "color_blind_friendly": False,
@@ -167,31 +186,58 @@ EarthTonesPalette = ColorPalette.from_dict(
     },
 )
 
-PastelVibesPalette = ColorPalette.from_dict(palette_name="pastel_vibes", palette_dict={
-    "main_colors": ["#FFB3BA", "#BAFFC9", "#BAE1FF", "#F5F5DC", "#E6E6FA"],
-    "highlight_colors": ["#FF6B6B", "#4ECDC4"],
-    "color_tags": [
-        "pastel_pink",
-        "pastel_green",
-        "pastel_blue",
-        "cream",
-        "lavender",
-        "bright_pink",
-        "teal",
-    ],
-    "description": "Soft, gentle pastel palette",
-    "color_blind_friendly": False,
-})
+PastelVibesPalette = ColorPalette.from_dict(
+    palette_name="pastel_vibes",
+    palette_dict={
+        "main_colors": ["#FFB3BA", "#BAFFC9", "#BAE1FF", "#F5F5DC", "#E6E6FA"],
+        "highlight_colors": ["#FF6B6B", "#4ECDC4"],
+        "color_tags": [
+            "pastel_pink",
+            "pastel_green",
+            "pastel_blue",
+            "cream",
+            "lavender",
+            "bright_pink",
+            "teal",
+        ],
+        "description": "Soft, gentle pastel palette",
+        "color_blind_friendly": False,
+    },
+)
+
+IBMColorSafePalette = ColorPalette.from_dict(
+    palette_name="IBM Color Safe",
+    palette_dict={
+        "main_colors": [
+            "#648fff",
+            "#785ef0",
+            "#dc267f",
+            "#fe6100",
+            "#ffb000",
+            "#000000",
+
+        ],
+        "color_tags": ["ultramarine", "indigo", "magenta", "orange", "gold", "black"],
+        "description": "retrieved from https://lospec.com/palette-list/ibm-color-blind-safe",
+        "color_blind_friendly": False,
+    },
+)
+
+PlotlyPalette = ColorPalette.from_plotly_qualitative("Plotly")
+ColorBlindSafePalette2 = ColorPalette.from_plotly_qualitative("Safe")
 
 available_palettes: dict = {
     "witness": WITNESSPalette,
-    "cbs": ColorBlindSafePalette,
+    "color_blind_safe": ColorBlindSafePalette,
+    "color_blind_safe2": ColorBlindSafePalette2,
     "earth_tones": EarthTonesPalette,
-    "pastel_vibes": PastelVibesPalette
+    "pastel_vibes": PastelVibesPalette,
+    "plotly": PlotlyPalette,
+    "ibm": IBMColorSafePalette,
 }
 
 if __name__ == "__main__":
     for pal in available_palettes.values():
         # Visualize the palette
-        fig = pal.visualize_palette()
-        fig.show()
+        pal.visualize_palette()
+        pal.visualize_groups()

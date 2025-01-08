@@ -1,5 +1,5 @@
 '''
-Copyright 2025 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -567,7 +567,7 @@ class ColorPalette:
         msg = f"Unknown palette type: {palette_type}"
         raise ValueError(msg)
 
-    def visualize_palette(self) -> go.Figure:
+    def visualize_palette(self, show: bool = True) -> go.Figure:
         """
         Create a visualization of the color palette.
 
@@ -580,24 +580,42 @@ class ColorPalette:
         """
         fig = go.Figure()
 
-        # Main colors
-        main_colors_len = len(self.main_colors)
-        fig.add_trace(
-            go.Bar(
-                y=["Main Colors"] * main_colors_len,
-                x=[1] * main_colors_len,
-                orientation="h",
-                marker={"color": self.main_colors, "line": {"width": 0}},
-                text=[
-                    f"{color} <br> ({self.icolor_map[color]})"
-                    for color in self.main_colors
-                ],
-                textposition="inside",
-                insidetextanchor="middle",
-                showlegend=False,
-                hoverinfo="none",
-            )
-        )
+        # Color variations
+        for colors in [self.main_colors, self.highlight_colors]:
+            for color in colors:
+                color_name = self.icolor_map[color]
+
+                if color_name in self.predefined_shades:
+                    shades = self.predefined_shades[color_name]
+                    fig.add_trace(
+                        go.Bar(
+                            y=[f"Shades of {color_name}"] * len(shades),
+                            x=[1] * len(shades),
+                            orientation="h",
+                            marker={"color": shades, "line": {"width": 0}},
+                            text=shades,
+                            textposition="inside",
+                            insidetextanchor="middle",
+                            showlegend=False,
+                            hoverinfo="none",
+                        )
+                    )
+                else:
+                    shades = self.get_shades(color)
+                    self.generate_shades(color, num_darker=3, num_lighter=4)
+                    fig.add_trace(
+                        go.Bar(
+                            y=[f"Shades of {color_name}"] * len(shades),
+                            x=[1] * len(shades),
+                            orientation="h",
+                            marker={"color": shades, "line": {"width": 0}},
+                            text=shades,
+                            textposition="inside",
+                            insidetextanchor="middle",
+                            showlegend=False,
+                            hoverinfo="none",
+                        )
+                    )
 
         # Highlight colors
         if self.highlight_colors:
@@ -618,44 +636,25 @@ class ColorPalette:
                     hoverinfo="none",
                 )
             )
+        # Main colors
+        main_colors_len = len(self.main_colors)
+        fig.add_trace(
+            go.Bar(
+                y=["Main Colors"] * main_colors_len,
+                x=[1] * main_colors_len,
+                orientation="h",
+                marker={"color": self.main_colors, "line": {"width": 0}},
+                text=[
+                    f"{color} <br> ({self.icolor_map[color]})"
+                    for color in self.main_colors
+                ],
+                textposition="inside",
+                insidetextanchor="middle",
+                showlegend=False,
+                hoverinfo="none",
+            )
+        )
 
-        # Color variations
-        for colors in [self.main_colors, self.highlight_colors]:
-            for color in colors:
-                color_name = self.icolor_map[color]
-
-                if color_name in self.predefined_shades:
-                    shades = self.predefined_shades[color_name]
-                    fig.add_trace(
-                        go.Bar(
-                            y=[f"Predefined Shades of {color_name}"] * len(shades),
-                            x=[1] * len(shades),
-                            orientation="h",
-                            marker={"color": shades, "line": {"width": 0}},
-                            text=shades,
-                            textposition="inside",
-                            insidetextanchor="middle",
-                            showlegend=False,
-                            hoverinfo="none",
-                        )
-                    )
-
-                shades = self.get_shades(color)
-
-                self.generate_shades(color, num_darker=3, num_lighter=4)
-                fig.add_trace(
-                    go.Bar(
-                        y=[f"Shades of {color_name}"] * len(shades),
-                        x=[1] * len(shades),
-                        orientation="h",
-                        marker={"color": shades, "line": {"width": 0}},
-                        text=shades,
-                        textposition="inside",
-                        insidetextanchor="middle",
-                        showlegend=False,
-                        hoverinfo="none",
-                    )
-                )
         # Layout
         fig.update_layout(
             title=f"{self.name} Color Palette",
@@ -667,6 +666,73 @@ class ColorPalette:
             autosize=False,
             barmode="stack",
         )
+
+        if show:
+            fig.show()
+
+        return fig
+
+    def visualize_groups(self, show: bool = True) -> go.Figure | None:
+        """
+        Create a visualization of the predefined color groups.
+
+        Returns:
+            go.Figure: Plotly Figure object showing all predefined groups.
+
+        Example:
+            >>> cm = ColorPalette.from_preset(preset_name="witness")
+            >>> fig = cm.visualize_groups()
+        """
+        if not self.predefined_groups:
+            return None
+
+        fig = go.Figure()
+
+        # Add a bar for each group
+        for group_name, colors in self.predefined_groups.items():
+            # Convert any color names to hex codes
+            colors = self.convert_colors_to_format(colors)
+
+            fig.add_trace(
+                go.Bar(
+                    y=[group_name] * len(colors),
+                    x=[1] * len(colors),
+                    orientation="h",
+                    marker={
+                        "color": colors,
+                        "line": {"width": 0}
+                    },
+                    text=[f"{color}" for color in colors],
+                    textposition="inside",
+                    insidetextanchor="middle",
+                    showlegend=False,
+                    hoverinfo="none",
+                )
+            )
+
+        # Layout configuration
+        fig.update_layout(
+            title=f"{self.name} Color Groups",
+            xaxis={
+                "showticklabels": False,
+                "showgrid": False,
+                "zeroline": False,
+            },
+            yaxis={
+                "title": "Groups",
+                "gridwidth": 1,
+                "gridcolor": "lightgray",
+            },
+            height=50 + len(self.predefined_groups) * 40,  # Dynamic height based on number of groups
+            width=800,
+            margin={"l": 150, "r": 50, "t": 50, "b": 50},
+            autosize=False,
+            barmode="stack",
+            plot_bgcolor="white",
+        )
+
+        if show:
+            fig.show()
 
         return fig
 
