@@ -1,5 +1,5 @@
 '''
-Copyright 2024 Capgemini
+Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,14 +37,30 @@ class ColorMap:
 
     @property
     def all_colors(self) -> list:
-        """Return list of all colors."""
+        """Return list of all colors.
+
+        Example:
+            >>> cmap = ColorMap({"text1": "red", "text2": "blue"})
+            >>> print(cmap.all_colors)
+            ['red', 'blue']
+            """
         return list(
-            set(self.base_mapping.values()) | set(self.additional_mapping.values())
+            (self.base_mapping | self.additional_mapping).values()
         )
 
     @property
     def mapping(self) -> dict:
-        """Return extended mapping."""
+        """Return extended mapping.
+
+        Example:
+            >>> cmap = ColorMap({"text1": "red", "text2": "blue"})
+            >>> print(cmap.mapping)
+            {'text1': 'red', 'text2': 'blue'}
+            >>> cmap.additional_mapping = {"text3": "black"}
+            >>> print(cmap.mapping)
+            {'text1': 'red', 'text2': 'blue', 'text3': 'black'}
+
+        """
         return self.base_mapping | self.additional_mapping
 
     def get_colors(self, text_list: list, as_dict: bool = False) -> list | dict:

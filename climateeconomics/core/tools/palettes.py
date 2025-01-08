@@ -1,5 +1,5 @@
 '''
-Copyright 2024 Capgemini
+Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -189,3 +189,9 @@ available_palettes: dict = {
     "earth_tones": EarthTonesPalette,
     "pastel_vibes": PastelVibesPalette
 }
+
+if __name__ == "__main__":
+    for pal in available_palettes.values():
+        # Visualize the palette
+        fig = pal.visualize_palette()
+        fig.show()

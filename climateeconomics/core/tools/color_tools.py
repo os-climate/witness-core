@@ -1,5 +1,5 @@
 '''
-Copyright 2024 Capgemini
+Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -283,7 +283,7 @@ def generate_color_variations(color: str, num_shades: int) -> list[str]:
     return darker_shades[::-1] + [color] + lighter_shades
 
 
-def rgb_to_lab(rgb) -> LabColor:
+def rgb_to_lab(rgb: tuple) -> LabColor:
     """
     Convert an RGB tuple (0-255) to LAB color space.
 
@@ -662,3 +662,84 @@ def get_closest_color_name(hex_color: str) -> str | None:
             min_distance = distance
 
     return closest_name
+
+
+def generate_complementary_palette(base_color: str) -> dict[str, str]:
+    """
+    Generate a complementary color palette.
+
+    Args:
+        base_color (str): Base color in hex format.
+
+    Returns:
+        dict[str, str]: dictionary of complementary colors.
+
+    Example:
+        >>> print(generate_complementary_palette("#FF0000"))
+        {'base': '#FF0000', 'complementary': '#00FEFF', 'analogous_1': '#FF7E00', 'analogous_2': '#FF007E', 'triadic_1': '#00FF00', 'triadic_2': '#0000FF'}
+
+    """
+    # Convert hex to HSL
+    h, l, s = colorsys.rgb_to_hls(
+        *[x / 255.0 for x in hex_to_rgb(base_color)]
+    )
+
+    # Complementary color (180 degrees on color wheel)
+    complementary_h = (h + 0.5) % 1.0
+
+    # Generate variations
+    return {
+        "base": base_color,
+        "complementary": hls_to_hex(complementary_h, l, s),
+        "analogous_1": hls_to_hex((h + 0.083) % 1.0, l, s),
+        "analogous_2": hls_to_hex((h - 0.083) % 1.0, l, s),
+        "triadic_1": hls_to_hex((h + 0.333) % 1.0, l, s),
+        "triadic_2": hls_to_hex((h - 0.333) % 1.0, l, s),
+    }
+
+
+def select_colors_from_list(colors: list[str], n: int) -> list[str]:
+    """
+    Select n colors maximizing the distance between them.
+
+    Args:
+        colors (list[str]): list of colors to select from. In Hex format
+        n (int): Number of colors to select.
+
+    Returns:
+        list[str]: Selected colors.
+
+    Example:
+        >>> colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"]
+        >>> print(select_colors_from_list(colors, 3))
+        ['#FF0000', '#00FF00', '#0000FF']
+
+    """
+    # Convert colors to LAB color space
+    lab_colors = [rgb_to_lab(hex_to_rgb(color)) for color in colors]
+
+    # Start with the first color and build the selected list
+    selected_colors = [lab_colors[0]]
+
+    for _ in range(1, n):
+        max_min_dist = -1
+        next_color = None
+
+        for candidate in lab_colors:
+            if candidate in selected_colors:
+                continue
+            # Compute minimum distance to the already selected colors
+            min_dist = min(
+                calculate_distance(candidate, selected)
+                for selected in selected_colors
+            )
+
+            if min_dist > max_min_dist:
+                max_min_dist = min_dist
+                next_color = candidate
+
+        if next_color:
+            selected_colors.append(next_color)
+
+    # Convert selected LAB colors back to RGB for the result
+    return [colors[lab_colors.index(selected)] for selected in selected_colors]
