@@ -5,7 +5,7 @@ import time  # do not remove this grey imports otherwise pylint fails
 from contextlib import ContextDecorator, contextmanager
 from copy import deepcopy
 from statistics import mean
-from typing import Any, Callable, Union
+from typing import Callable, Union
 
 try:
     import jax
@@ -152,11 +152,11 @@ class DifferentiableModel:
     """
 
     def __init__(
-            self,
-            flatten_dfs: bool = True,
-            ad_backend: str = "autograd",
-            overload_numpy: bool = True,
-            numpy_ns: str = "np",
+        self,
+        flatten_dfs: bool = True,
+        ad_backend: str = "autograd",
+        overload_numpy: bool = True,
+        numpy_ns: str = "np",
     ) -> None:
         """Initialize the model.
 
@@ -191,8 +191,8 @@ class DifferentiableModel:
             self.__grad = jax.grad
             self.__jacobian = jax.jacobian
 
-        self.dataframes_outputs_colnames: dict[str: list[str]] = {}
-        self.dataframes_inputs_colnames: dict[str: list[str]] = {}
+        self.dataframes_outputs_colnames: dict[str : list[str]] = {}
+        self.dataframes_inputs_colnames: dict[str : list[str]] = {}
 
         self.inputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
         self.outputs: dict[str, Union[float, np.ndarray, dict[str, np.ndarray]]] = {}
@@ -291,9 +291,9 @@ class DifferentiableModel:
         self.output_types = output_types
 
     def get_dataframe(
-            self,
-            name: str,
-            get_from: str = "outputs",
+        self,
+        name: str,
+        get_from: str = "outputs",
     ) -> pd.DataFrame | None:
         """Retrieve a specific DataFrame from outputs or inputs based on its name.
 
@@ -316,9 +316,9 @@ class DifferentiableModel:
 
         # First check if there's a direct dictionary output with this name
         if (
-                name in source
-                and isinstance(source[name], dict)
-                and all(isinstance(v, np.ndarray) for v in source[name].values())
+            name in source
+            and isinstance(source[name], dict)
+            and all(isinstance(v, np.ndarray) for v in source[name].values())
         ):
             return pd.DataFrame(source[name])
 
@@ -329,8 +329,8 @@ class DifferentiableModel:
             for key, value in source.items():
                 if key.startswith(prefix) and isinstance(value, np.ndarray):
                     col_name = key[
-                               len(prefix):
-                               ]  # Remove the prefix to get column name
+                        len(prefix) :
+                    ]  # Remove the prefix to get column name
                     columns[col_name] = value
 
             if columns:  # Only create DataFrame if we found matching columns
@@ -409,10 +409,10 @@ class DifferentiableModel:
         return self.outputs
 
     def _create_wapped_compute_bwd(
-            self,
-            output_name: str,
-            input_names: Union[str, list] = None,
-            all_inputs: bool = False,
+        self,
+        output_name: str,
+        input_names: Union[str, list] = None,
+        all_inputs: bool = False,
     ) -> Callable | list[Callable]:
         """Create wrapped compute functions for a specific output and inputs.
 
@@ -456,8 +456,8 @@ class DifferentiableModel:
                 if isinstance(self.inputs[input_name], dict):
 
                     def wrapped_compute(
-                            *args: InputType,
-                            input_name: str = input_name,
+                        *args: InputType,
+                        input_name: str = input_name,
                     ) -> OutputType:
                         temp_inputs = deepcopy(self.inputs)
                         for i, col in enumerate(self.inputs[input_name].keys()):
@@ -468,8 +468,8 @@ class DifferentiableModel:
                 else:
 
                     def wrapped_compute(
-                            arg: InputType,
-                            input_name: str = input_name,
+                        arg: InputType,
+                        input_name: str = input_name,
                     ) -> OutputType:
                         temp_inputs = deepcopy(self.inputs)
                         self.inputs[input_name] = arg
@@ -482,10 +482,10 @@ class DifferentiableModel:
         return wrapped_computes
 
     def compute_partial_bwd(
-            self, output_name: str, input_names: str | list, all_inputs: bool = False
+        self, output_name: str, input_names: str | list, all_inputs: bool = False
     ) -> (
-            npt.NDArray[np.float64]
-            | dict[str, npt.NDArray[np.float64] | dict[str, npt.NDArray[np.float64]]]
+        npt.NDArray[np.float64]
+        | dict[str, npt.NDArray[np.float64] | dict[str, npt.NDArray[np.float64]]]
     ):
         """Compute the partial derivative of an output with respect to an input or all inputs.
 
@@ -585,7 +585,7 @@ class DifferentiableModel:
         return result
 
     def _create_wrapped_compute_array(
-            self, output_name: str, input_names: list[str] = None
+        self, output_name: str, input_names: list[str] = None
     ) -> Callable:
         """Creates a wrapped compute function that accepts a single array for multiple inputs.
 
@@ -676,7 +676,7 @@ class DifferentiableModel:
         return result
 
     def compute_partial_multiple(
-            self, output_name: str, input_names: Union[str, list]
+        self, output_name: str, input_names: Union[str, list]
     ) -> Union[
         npt.NDArray[np.float64],
         dict[str, Union[npt.NDArray[np.float64], dict[str, npt.NDArray[np.float64]]]],
@@ -710,18 +710,18 @@ class DifferentiableModel:
             # Reshape the Jacobian slice for this input
             # Combine output shape with input shape
             full_shape = output_shape + shape
-            jac_slice = jac_array[:, start_idx:start_idx + size].reshape(full_shape)
+            jac_slice = jac_array[:, start_idx : start_idx + size].reshape(full_shape)
             result[key] = jac_slice
             start_idx += size
 
         return result
 
     def compute_partial_numeric(
-            self,
-            output_name: str,
-            input_name: str,
-            method: str = "complex_step",
-            epsilon: float = 1e-8,
+        self,
+        output_name: str,
+        input_name: str,
+        method: str = "complex_step",
+        epsilon: float = 1e-8,
     ) -> dict[str, Union[np.ndarray, float, bool]]:
         """Compute the partial derivative of an output with respect to an input using a numerical method.
 
@@ -791,13 +791,13 @@ class DifferentiableModel:
         return numerical
 
     def check_partial(
-            self,
-            output_name: str,
-            input_name: str,
-            method: str = "complex_step",
-            epsilon: float = 1e-8,
-            rtol: float = 1e-5,
-            atol: float = 1e-8,
+        self,
+        output_name: str,
+        input_name: str,
+        method: str = "complex_step",
+        epsilon: float = 1e-8,
+        rtol: float = 1e-5,
+        atol: float = 1e-8,
     ) -> dict[str, Union[np.ndarray, float, bool]]:
         """Compare the partial derivative computed by compute_partial with a numerical approximation
         for a specific input-output pair, handling array inputs correctly.
@@ -869,7 +869,9 @@ class DifferentiableModel:
             "within_tolerance": within_tolerance,
         }
 
-    def compute_jacobians_custom(self, outputs: list[str], inputs: list[str]) -> dict[str: dict[str: dict[str: dict[str: np.ndarray]]]]:
+    def compute_jacobians_custom(
+        self, outputs: list[str], inputs: list[str]
+    ) -> dict[str : dict[str : dict[str : dict[str : np.ndarray]]]]:
         """
         Returns a dictionnary 'gradients' containing gradients for SoSwrapp disciplines, with structure :
         gradients[output df name][output column name][input df name][input column name] = value
@@ -878,28 +880,50 @@ class DifferentiableModel:
         all_inputs_paths = []
         for input_df_name in inputs:
             all_inputs_paths.extend(self.get_df_input_dotpaths(input_df_name))
-        all_inputs_paths = list(filter(lambda x: not (str(x).endswith(f':{GlossaryCore.Years}')), all_inputs_paths))
+        all_inputs_paths = list(
+            filter(
+                lambda x: not (str(x).endswith(f":{GlossaryCore.Years}")),
+                all_inputs_paths,
+            )
+        )
         for i, output in enumerate(outputs):
             gradients[output] = {}
-            output_columns_paths = list(filter(lambda x: not (str(x).endswith(f':{GlossaryCore.Years}')), self.get_df_output_dotpaths(output)))
+            output_columns_paths = list(
+                filter(
+                    lambda x: not (str(x).endswith(f":{GlossaryCore.Years}")),
+                    self.get_df_output_dotpaths(output),
+                )
+            )
             for output_path in output_columns_paths:
-                gradients_output_path = self.compute_partial_multiple(output_name=output_path, input_names=all_inputs_paths)
-                output_colname = output_path.split(f'{output}:')[1]
+                gradients_output_path = self.compute_partial(
+                    output_name=output_path, input_names=all_inputs_paths
+                )
+                output_colname = output_path.split(f"{output}:")[1]
                 gradients[output][output_colname] = {}
                 for ip, value_grad in gradients_output_path.items():
-                    input_varname, input_varname_colname = ip.split(':')
+                    input_varname, input_varname_colname = ip.split(":")
                     if input_varname in gradients[output][output_colname]:
-                        gradients[output][output_colname][input_varname][input_varname_colname] = value_grad
+                        gradients[output][output_colname][input_varname][
+                            input_varname_colname
+                        ] = value_grad
                     else:
-                        gradients[output][output_colname][input_varname] = {input_varname_colname: value_grad}
+                        gradients[output][output_colname][input_varname] = {
+                            input_varname_colname: value_grad
+                        }
 
         return gradients
 
-    def get_df_input_dotpaths(self, df_inputname: str) -> dict[str: list[str]]:
-        return [f'{df_inputname}:{colname}' for colname in self.dataframes_inputs_colnames[df_inputname]]
+    def get_df_input_dotpaths(self, df_inputname: str) -> dict[str : list[str]]:
+        return [
+            f"{df_inputname}:{colname}"
+            for colname in self.dataframes_inputs_colnames[df_inputname]
+        ]
 
-    def get_df_output_dotpaths(self, df_outputname: str) -> dict[str: list[str]]:
-        return [f'{df_outputname}:{colname}' for colname in self.dataframes_outputs_colnames[df_outputname]]
+    def get_df_output_dotpaths(self, df_outputname: str) -> dict[str : list[str]]:
+        return [
+            f"{df_outputname}:{colname}"
+            for colname in self.dataframes_outputs_colnames[df_outputname]
+        ]
 
 
 if __name__ == "__main__":
@@ -914,9 +938,9 @@ if __name__ == "__main__":
             y_a = y["a"] ** 3
             y_b = y["b"] ** 3
 
-            result = self.np.sum(x ** 2)
+            result = self.np.sum(x**2)
             result = result + self.np.sum(y_a)
-            result = result + self.np.sum(y_b ** 3)
+            result = result + self.np.sum(y_b**3)
 
             self.outputs["result"] = result
 
@@ -970,7 +994,7 @@ if __name__ == "__main__":
             y = self.inputs["data:feature2"]
 
             # Create flattened outputs
-            self.outputs["result:squared"] = x ** 2
+            self.outputs["result:squared"] = x**2
             self.outputs["result:sum"] = x + y
             self.outputs["other:value"] = x * y
 
@@ -1004,7 +1028,7 @@ if __name__ == "__main__":
             y = self.inputs["data"]["feature2"]
 
             # Create dictionary outputs
-            self.outputs["result:squared"] = x ** 2
+            self.outputs["result:squared"] = x**2
             self.outputs["result:sum"] = x + y
             self.outputs["single_value"] = (
                 x.mean()
@@ -1039,9 +1063,9 @@ if __name__ == "__main__":
             y_a = y["a"] ** 3
             y_b = y["b"] ** 3
 
-            result = self.np.sum(x ** 2)
+            result = self.np.sum(x**2)
             result = result + self.np.sum(y_a)
-            result = result + self.np.sum(y_b ** 3)
+            result = result + self.np.sum(y_b**3)
 
             self.outputs["result"] = result
 
@@ -1094,7 +1118,7 @@ if __name__ == "__main__":
             y = self.inputs["data:feature2"]
 
             # Create flattened outputs
-            self.outputs["result:squared"] = x ** 2
+            self.outputs["result:squared"] = x**2
             self.outputs["result:sum"] = x + y
             self.outputs["other:value"] = x * y
 
@@ -1113,7 +1137,9 @@ if __name__ == "__main__":
         print(f"Jacobian ({o}):", jacobian_y)
 
     # Get a specific DataFrame
-    result_df = model.get_dataframe("result")  # DataFrame with 'squared' and 'sum' columns
+    result_df = model.get_dataframe(
+        "result"
+    )  # DataFrame with 'squared' and 'sum' columns
     other_df = model.get_dataframe("other")  # DataFrame with 'value' column
 
     # Get all DataFrames
@@ -1127,9 +1153,11 @@ if __name__ == "__main__":
             y = self.inputs["data"]["feature2"]
 
             # Create dictionary outputs
-            self.outputs["result:squared"] = x ** 2
+            self.outputs["result:squared"] = x**2
             self.outputs["result:sum"] = x + y
-            self.outputs["single_value"] = x.mean()  # This won't be converted to DataFrame
+            self.outputs["single_value"] = (
+                x.mean()
+            )  # This won't be converted to DataFrame
 
     model = DictModule(flatten_dfs=False)
     model.set_inputs({"data": df})
@@ -1143,7 +1171,9 @@ if __name__ == "__main__":
     print("Jacobian (result:sum):", j)
 
     # Get a specific DataFrame
-    result_df = model.get_dataframe("result")  # DataFrame with 'squared' and 'sum' columns
+    result_df = model.get_dataframe(
+        "result"
+    )  # DataFrame with 'squared' and 'sum' columns
     single_value_df = model.get_dataframe("single_value")  # Returns None
 
     # Get all DataFrames
@@ -1159,9 +1189,9 @@ if __name__ == "__main__":
 
             # Validate inputs
             if (
-                    pollution_concentration is None
-                    or emission_rate is None
-                    or region_area is None
+                pollution_concentration is None
+                or emission_rate is None
+                or region_area is None
             ):
                 raise ValueError(
                     "All inputs (pollution_concentration, emission_rate, region_area) must be provided."
