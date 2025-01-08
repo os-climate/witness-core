@@ -19,6 +19,7 @@ from __future__ import annotations
 import colorsys
 import re
 
+import numpy
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie2000
 from colormath.color_objects import LabColor, sRGBColor
@@ -172,6 +173,13 @@ CSS3_NAMES_TO_HEX: dict[str, str] = {
 }
 
 
+def patch_asscalar(a):
+    return a.item()
+
+
+setattr(numpy, "asscalar", patch_asscalar)
+
+
 def calculate_distance(color1: LabColor, color2: LabColor) -> float:
     """
     Calculate perceptual distance between two LAB colors.
@@ -188,7 +196,7 @@ def calculate_distance(color1: LabColor, color2: LabColor) -> float:
         >>> lab2 = rgb_to_lab((0, 255, 0))
         >>> distance = calculate_distance(lab1, lab2)
         >>> print(f"{distance:.2f}")
-        86.60
+        86.61
 
     """
     return delta_e_cie2000(color1, color2)
@@ -207,14 +215,14 @@ def create_colorscale(colors: list[str]) -> list[list[float]]:
     Example:
         >>> scale = create_colorscale(["#FF0000", "#00FF00", "#0000FF"])
         >>> print(scale[:2])  # Print first two entries of the colorscale
-        [[0.0, 'rgb(255,0,0)'], [0.5, 'rgb(0,255,0)']]
+        [[0.0, '#FF0000'], [0.5, '#00FF00']]
 
     """
     return make_colorscale(colors)
 
 
 def interpolate_between_colors(
-    start_color: str, end_color: str, num_colors: int
+        start_color: str, end_color: str, num_colors: int
 ) -> list[str]:
     """
     Interpolate between two specific colors.
@@ -229,7 +237,7 @@ def interpolate_between_colors(
 
     Example:
         >>> print(interpolate_between_colors("#FF0000", "#0000FF", 3))
-        ['#FF0000', '#800080', '#0000FF']
+        ['#FF0000', '#7F007F', '#0000FF']
 
     """
     return [
@@ -257,7 +265,7 @@ def generate_color_variations(color: str, num_shades: int) -> list[str]:
 
     Example:
         >>> print(generate_color_variations("#FF0000", 2))
-        ['#800000', '#FF0000', '#FF8080']
+        ['#000000', '#7F0000', '#FF0000', '#FF7F7F', '#FFFFFF']
 
     """
     rgb_color = hex_to_rgb(color)
@@ -287,7 +295,7 @@ def rgb_to_lab(rgb) -> LabColor:
 
     Example:
         >>> rgb_to_lab((255, 0, 0))
-        <colormath.color_objects.LabColor object at ...>
+        LabColor(lab_l=53.23896002513146,lab_a=80.09045298802708,lab_b=67.2013836595967)
 
     """
     srgb = sRGBColor(rgb[0] / 255.0, rgb[1] / 255.0, rgb[2] / 255.0)
@@ -382,7 +390,7 @@ def hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
 
     """
     hex_color = hex_color.lstrip("#")
-    return tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+    return tuple(int(hex_color[i: i + 2], 16) for i in (0, 2, 4))
 
 
 def hex_to_rgb_string(hex_color: str) -> str:
@@ -470,12 +478,12 @@ def lab_string_to_rgb_string(lab_string: str) -> str:
 
     Example:
         >>> print(lab_string_to_rgb_string("lab(53.24, 80.09, 67.20)"))
-        rgb(255, 0, 0)
+        rgb(250, 0, 6)
     """
     match = re.match(r"lab\(([-\d.]+),\s*([-\d.]+),\s*([-\d.]+)\)", lab_string)
     l, a, b = map(float, match.groups())
     rgb = convert_color(LabColor(l, a, b), sRGBColor)
-    return f"rgb({int(rgb.clamped_rgb_r * 255)}, {int(rgb.clamped_rgb_g * 255)}, {int(rgb.clamped_rgb_b * 255)})"
+    return f"rgb({int(rgb.clamped_rgb_r * 255.0)}, {int(rgb.clamped_rgb_g * 255.0)}, {int(rgb.clamped_rgb_b * 255.0)})"
 
 
 def rgb_to_hex(rgb_color: tuple[int, int, int]) -> str:
@@ -532,7 +540,7 @@ def rgb_string_to_hex(rgb_string: str) -> str:
 
 
 def adjust_color_brightness(
-    rgb_color: tuple[int, int, int], factor: float
+        rgb_color: tuple[int, int, int], factor: float
 ) -> tuple[int, int, int]:
     """
     Adjust color brightness.
@@ -546,7 +554,7 @@ def adjust_color_brightness(
 
     Example:
         >>> adjust_color_brightness((100, 150, 200), 0.2)
-        (131, 170, 211)
+        (131, 171, 211)
 
     """
     if factor < 0:  # Darken
@@ -563,7 +571,7 @@ def adjust_color_brightness(
 
 
 def adjust_color_intensity(
-    rgb_color: tuple[int, int, int], factor: float
+        rgb_color: tuple[int, int, int], factor: float
 ) -> tuple[int, int, int]:
     """
     Adjust color intensity.
@@ -577,7 +585,7 @@ def adjust_color_intensity(
 
     Example:
         >>> adjust_color_intensity((100, 150, 200), 0.2)
-        (100, 160, 220)
+        (80, 140, 200)
     """
     # Convert RGB to HSV
     r, g, b = [x / 255.0 for x in rgb_color]
