@@ -171,7 +171,7 @@ class ColorPalette:
     def __init__(
         self,
         name: str = "",
-        main_colors: list[str] | None = None,
+        main_colors: list[str] | None | dict = None,
         highlight_colors: list[str] | None = None,
         color_tags: list[str] | None = None,
         predefined_shades: dict | None = None,
@@ -194,17 +194,29 @@ class ColorPalette:
 
         """
         # Determine color sources with priority
-        self.main_colors = main_colors or []
-        self.highlight_colors = highlight_colors or []
-        self.color_tags = color_tags or [
-            f"color_{i}" for i in range(len(self.main_colors))
-        ]
+        if isinstance(main_colors, dict):
+            if isinstance(highlight_colors, list):
+                raise ValueError("highlight colors should be given in same format of main_colors.")
+
+            self.main_colors = list(main_colors.values())
+            highlight_colors = highlight_colors or {}
+            self.highlight_colors = list(highlight_colors.values())
+
+            self.color_tags = list(main_colors.keys()) + list(highlight_colors.keys())
+        else:
+            self.main_colors = main_colors or []
+            self.highlight_colors = highlight_colors or []
+
+            self.color_tags = color_tags or [
+                f"color_{i}" for i in range(len(self.main_colors + self.highlight_colors))
+            ]
+
         self.predefined_shades = predefined_shades or {}
         self.predefined_groups = predefined_groups or {}
 
         # Ensure color_tags matches the number of main_colors
         if len(self.color_tags) != len(self.main_colors + self.highlight_colors):
-            self.color_tags = [f"color_{i}" for i in range(len(self.main_colors))]
+            self.color_tags = [f"color_{i}" for i in range(len(self.main_colors + self.highlight_colors))]
 
         self.name = name
         self.colorscale = make_colorscale(self.main_colors) if main_colors else []

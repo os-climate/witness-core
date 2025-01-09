@@ -265,6 +265,7 @@ class Study(ClimateEconomicsStudyManager):
         population_df = create_df_from_csv("IEA_NZE_population.csv")
         temperature_df = create_df_from_csv("IEA_NZE_temp_atmo.csv")
         energy_production_df = create_df_from_csv("IEA_NZE_energy_production_brut.csv")
+        energy_consumption_df = create_df_from_csv("IEA_NZE_energy_final_consumption.csv")
         nuclear_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.Nuclear.techno_production.csv")
         hydro_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.Hydropower.techno_production.csv")
         solar_production_df = create_df_from_csv("IEA_NZE_EnergyMix.electricity.SolarPv.techno_production.csv")
@@ -285,6 +286,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.EconomicsDfValue}': GDP_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.CO2TaxesValue}': CO2_tax_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.EnergyProductionValue}': energy_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.EnergyFinalConsumptionName}': energy_consumption_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.TemperatureDfValue}': temperature_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.PopulationDfValue}': population_df,
             # energy production
@@ -311,7 +313,6 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.test()
 
-    '''
     from sostrades_core.tools.post_processing.post_processing_factory import (
         PostProcessingFactory,
     )
@@ -325,4 +326,3 @@ if '__main__' == __name__:
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.ee, ns, filters, as_json=False)
     for graph in graph_list:
         graph.to_plotly().show()
-    '''
