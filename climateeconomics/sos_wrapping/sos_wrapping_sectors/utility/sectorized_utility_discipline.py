@@ -40,6 +40,10 @@ from climateeconomics.core.core_witness.utility_tools import (
 from climateeconomics.core.tools.plotting import (
     WITNESSTwoAxesInstanciatedChart as TwoAxesInstanciatedChart,
 )
+from climateeconomics.core.tools.plotting import (
+    set_default_colormap,
+    set_default_palette,
+)
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -224,8 +228,8 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         instanciated_charts = []
         chart_list = []
 
-        # set_default_palette("witness")
-        # set_default_colormap("sectors")
+        set_default_palette("witness")
+        set_default_colormap("sectors")
 
         if chart_filters is not None:
             for chart_filter in chart_filters:
@@ -281,7 +285,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.Years,
                 "Variation [%]",
                 chart_name="Variation of energy price and population",
-            )  # .set_color_palette(color_palette="witness", group_name="two_4")
+            ) .set_color_palette(color_palette="witness", group_name="two_4")
 
             energy_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)[
                 GlossaryCore.EnergyPriceValue
