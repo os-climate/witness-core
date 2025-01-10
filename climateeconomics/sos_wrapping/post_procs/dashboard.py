@@ -1095,6 +1095,7 @@ def create_xy_chart(
     for data_name, data in data_dict.items():
         x_data = None
         y_data = None
+        text_data = None
 
         if data["data_type"] == "variable":
             x_data_df = get_scenario_value(
