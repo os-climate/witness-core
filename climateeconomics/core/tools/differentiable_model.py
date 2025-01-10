@@ -1,10 +1,22 @@
+'''
+Copyright 2024 Capgemini
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
 from __future__ import annotations
 
-import functools  # do not remove this grey imports otherwise pylint fails
-import time  # do not remove this grey imports otherwise pylint fails
-from contextlib import ContextDecorator, contextmanager
+from collections import defaultdict
 from copy import deepcopy
-from statistics import mean
 from typing import Callable, Union
 
 try:
@@ -20,121 +32,12 @@ import autograd.numpy as anp
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from tqdm import tqdm
 
 from climateeconomics.glossarycore import GlossaryCore
 
 ArrayLike = Union[list[float], npt.NDArray[np.float64]]
 InputType = Union[float, int, ArrayLike, pd.DataFrame]
 OutputType = Union[float, ArrayLike]
-
-
-class TimerContext(ContextDecorator):
-    def __init__(self, name: str = "Code block", runs: int = 5):
-        self.name = name
-        self.runs = runs
-        self.execution_times = []
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        avg_time = mean(self.execution_times)
-        max_time = max(self.execution_times)
-        min_time = min(self.execution_times)
-
-        print(f"'{self.name}' statistics:")
-        print(f"  Average time: {avg_time:.6f} seconds")
-        print(f"  Maximum time: {max_time:.6f} seconds")
-        print(f"  Minimum time: {min_time:.6f} seconds")
-        print(f"  Number of runs: {self.runs}")
-
-    def run(self, func, *args, **kwargs):
-        for _ in tqdm(range(self.runs)):
-            start_time = time.perf_counter()
-            result = func(*args, **kwargs)
-            end_time = time.perf_counter()
-            self.execution_times.append(end_time - start_time)
-        return result
-
-
-timer = TimerContext
-
-
-def time_function(runs: int = 5) -> Callable:
-    """Decorate a function to measure the execution time.
-
-    The function is run multiple times and the statistics of the
-    execution times are printed to the console.
-
-    Parameters
-    ----------
-    runs : int
-        The number of times to run the function. Defaults to 5.
-
-    Returns
-    -------
-    A decorator that runs the function multiple times and prints the execution
-    time statistics.
-
-    Example
-    -------
-    @time_function()
-    def my_function(x):
-        # Do something
-        return x
-
-    my_function(5)
-    """
-
-    def decorator(func: Callable) -> Callable:
-        @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            execution_times = []
-            results = []
-
-            for _ in range(runs):
-                start_time = time.perf_counter()
-                result = func(*args, **kwargs)
-                end_time = time.perf_counter()
-                execution_time = end_time - start_time
-                execution_times.append(execution_time)
-                results.append(result)
-
-            avg_time = mean(execution_times)
-            max_time = max(execution_times)
-            min_time = min(execution_times)
-
-            print(f"Function '{func.__name__}' statistics:")
-            print(f"  Average time: {avg_time:.6f} seconds")
-            print(f"  Maximum time: {max_time:.6f} seconds")
-            print(f"  Minimum time: {min_time:.6f} seconds")
-            print(f"  Number of runs: {runs}")
-
-            return results[0]  # Return the result of the first run
-
-        return wrapper
-
-    return decorator
-
-
-@contextmanager
-def timer_context(name: str = "Operation"):
-    """Context manager for timing a block of code.
-
-    Args:
-        name: Description of the operation being timed
-
-    Yields:
-        None
-    """
-    start_time = time.perf_counter()
-    try:
-        yield
-    finally:
-        end_time = time.perf_counter()
-        execution_time = end_time - start_time
-        print(f"{name} took {execution_time:.4f} seconds to execute")
 
 
 class DifferentiableModel:
@@ -158,7 +61,8 @@ class DifferentiableModel:
         overload_numpy: bool = True,
         numpy_ns: str = "np",
     ) -> None:
-        """Initialize the model.
+        """
+        Initialize the model.
 
         Args:
             flatten_dfs: If True, DataFrames will be flattened into separate arrays
@@ -290,6 +194,26 @@ class DifferentiableModel:
         """
         self.output_types = output_types
 
+    def get_output_df_names(self) -> dict:
+        """Retreive."""
+
+        result = defaultdict(list)
+
+        if self.flatten_dfs:
+            # Find all unique base names in flattened outputs
+            for key in self.outputs:
+                if ":" not in key:
+                    continue
+                base, child = key.split(":")
+                result[base].append(child)
+
+        # Check for dictionary outputs
+        for key, value in self.outputs.items():
+            if isinstance(value, dict):
+                result[key] = list(value.keys())
+
+        return dict(result)
+
     def get_dataframe(
         self,
         name: str,
@@ -358,7 +282,6 @@ class DifferentiableModel:
         else:
             source = self.outputs
 
-        self.dataframes_outputs_colnames = {}
         if self.flatten_dfs:
             # Find all unique base names in flattened outputs
             base_names = {key.split(":", 1)[0] for key in source if ":" in key}
@@ -366,7 +289,6 @@ class DifferentiableModel:
                 df = self.get_dataframe(base_name)
                 if df is not None:
                     result[base_name] = df
-                    self.dataframes_outputs_colnames[base_name] = list(df.columns)
 
         # Check for dictionary outputs
         for key, value in source.items():
@@ -873,9 +795,15 @@ class DifferentiableModel:
         self, outputs: list[str], inputs: list[str]
     ) -> dict[str : dict[str : dict[str : dict[str : np.ndarray]]]]:
         """
-        Returns a dictionnary 'gradients' containing gradients for SoSwrapp disciplines, with structure :
-        gradients[output df name][output column name][input df name][input column name] = value
+        Return a dictionnary 'gradients' containing gradients for SoSwrapp disciplines.
+
+        gradients[output df name][output column name][input df name][input column name] = value.
+
         """
+
+        # Make sure output column names are known:
+        self.dataframes_outputs_colnames = self.get_output_df_names()
+
         gradients = {}
         all_inputs_paths = []
         for input_df_name in inputs:
@@ -886,7 +814,7 @@ class DifferentiableModel:
                 all_inputs_paths,
             )
         )
-        for i, output in enumerate(outputs):
+        for output in outputs:
             gradients[output] = {}
             output_columns_paths = list(
                 filter(
@@ -914,6 +842,11 @@ class DifferentiableModel:
         return gradients
 
     def get_df_input_dotpaths(self, df_inputname: str) -> dict[str : list[str]]:
+        """Get dataframe inputs dotpaths.
+
+        Returns:
+            _type_: _description_
+        """
         return [
             f"{df_inputname}:{colname}"
             for colname in self.dataframes_inputs_colnames[df_inputname]
@@ -924,372 +857,3 @@ class DifferentiableModel:
             f"{df_outputname}:{colname}"
             for colname in self.dataframes_outputs_colnames[df_outputname]
         ]
-
-
-if __name__ == "__main__":
-    from contextlib import contextmanager
-    from typing import Any, Callable
-
-    class MyModel(DifferentiableModel):
-        def compute(self) -> None:
-            x = self.inputs["x"]
-            y = self.inputs["y"]
-
-            y_a = y["a"] ** 3
-            y_b = y["b"] ** 3
-
-            result = self.np.sum(x**2)
-            result = result + self.np.sum(y_a)
-            result = result + self.np.sum(y_b**3)
-
-            self.outputs["result"] = result
-
-    def replace_namespace_instance(instance, new_namespace):
-        instance.__dict__["np"] = new_namespace
-
-    # Usage example
-    model = MyModel(flatten_dfs=False, ad_backend="autograd")
-
-    # Set inputs
-    inputs: dict[str, InputType] = {
-        "x": np.array([1.0, 2.0, 3.0]),
-        "y": pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [4.0, 5.0, 6.0]}),
-    }
-    model.set_inputs(inputs)
-
-    # Compute the model
-    model.compute()
-
-    # Get outputs
-    outputs: dict[str, OutputType] = model.get_outputs()
-
-    # Compute Jacobian
-    jacobian_x = model.compute_partial("result", ["x", "y"])
-    print("Jacobian_x:", jacobian_x)
-
-    jacobian_y = model.compute_partial("result", "y")
-    print("Jacobian_y:", jacobian_y)
-
-    jacobian_y = model.compute_partial_all_inputs("result")
-    print("Jacobian all:", jacobian_y)
-
-    result = model.check_partial("result", "x", method="complex_step")
-    print(f"Analytical: {result['analytical']}")
-    print(f"Numerical: {result['numerical']}")
-    print(f"Max absolute error: {result['max_absolute_error']}")
-    print(f"Max relative error: {result['max_relative_error']}")
-    print(f"Within tolerance: {result['within_tolerance']}")
-
-    result = model.check_partial("result", "y", method="complex_step")
-    print(f"Analytical: {result['analytical']}")
-    print(f"Numerical: {result['numerical']}")
-    print(f"Max absolute error: {result['max_absolute_error']}")
-    print(f"Max relative error: {result['max_relative_error']}")
-    print(f"Within tolerance: {result['within_tolerance']}")
-
-    # Example with flatten_dfs=True
-    class FlatModule(DifferentiableModel):
-        def compute(self):
-            x = self.inputs["data:feature1"]
-            y = self.inputs["data:feature2"]
-
-            # Create flattened outputs
-            self.outputs["result:squared"] = x**2
-            self.outputs["result:sum"] = x + y
-            self.outputs["other:value"] = x * y
-
-    model = FlatModule(flatten_dfs=True)
-    df = pd.DataFrame({"feature1": [1.0, 2.0, 3.0], "feature2": [4.0, 5.0, 6.0]})
-    model.set_inputs({"data": df})
-    model.compute()
-
-    with timer_context("SINGLE ALL"):
-        for i in range(100):
-            jacobian_y = model.compute_partial_all_inputs("other:value")
-        print("Jacobian multiple:", jacobian_y)
-
-    for o in model.outputs:
-        jacobian_y = model.compute_partial_all_inputs(o)
-        print(f"Jacobian ({o}):", jacobian_y)
-
-    # Get a specific DataFrame
-    result_df = model.get_dataframe(
-        "result"
-    )  # DataFrame with 'squared' and 'sum' columns
-    other_df = model.get_dataframe("other")  # DataFrame with 'value' column
-
-    # Get all DataFrames
-    all_dfs = model.get_dataframes()  # Dictionary with 'result' and 'other' keys
-
-    # Example with flatten_dfs=False
-    class DictModule(DifferentiableModel):
-        def compute(self):
-            x = self.inputs["data"]["feature1"]
-            y = self.inputs["data"]["feature2"]
-
-            # Create dictionary outputs
-            self.outputs["result:squared"] = x**2
-            self.outputs["result:sum"] = x + y
-            self.outputs["single_value"] = (
-                x.mean()
-            )  # This won't be converted to DataFrame
-
-    model = DictModule(flatten_dfs=False)
-    model.set_inputs({"data": df})
-    model.compute()
-
-    for o in model.outputs:
-        j = model.compute_partial_all_inputs(o)
-        print(f"Jacobian ({o}):", j)
-
-    j = model.compute_partial("result:sum", "data")
-    print("Jacobian (result:sum):", j)
-
-    # Get a specific DataFrame
-    result_df = model.get_dataframe(
-        "result"
-    )  # DataFrame with 'squared' and 'sum' columns
-    single_value_df = model.get_dataframe("single_value")  # Returns None
-
-    # Get all DataFrames
-    all_dfs = model.get_dataframes()  # Dictionary with only 'result' key
-
-    # %%
-    class MyModel(DifferentiableModel):
-        def compute(self) -> None:
-            x = self.inputs["x"]
-            y = self.inputs["y"]
-
-            y_a = y["a"] ** 3
-            y_b = y["b"] ** 3
-
-            result = self.np.sum(x**2)
-            result = result + self.np.sum(y_a)
-            result = result + self.np.sum(y_b**3)
-
-            self.outputs["result"] = result
-
-    # %%
-    # Usage example
-    model = MyModel(flatten_dfs=False, ad_backend="autograd")
-
-    # Set inputs
-    inputs: dict[str, InputType] = {
-        "x": np.array([1.0, 2.0, 3.0]),
-        "y": pd.DataFrame({"a": [1.0, 2.0, 3.0], "b": [4.0, 5.0, 6.0]}),
-    }
-    model.set_inputs(inputs)
-
-    # Compute the model
-    model.compute()
-
-    # Get outputs
-    outputs: dict[str, OutputType] = model.get_outputs()
-
-    # Compute Jacobian
-    jacobian_x = model.compute_partial("result", ["x", "y"])
-    print("Jacobian_x:", jacobian_x)
-
-    jacobian_y = model.compute_partial("result", "y")
-    print("Jacobian_y:", jacobian_y)
-
-    jacobian_y = model.compute_partial_all_inputs("result")
-    print("Jacobian all:", jacobian_y)
-
-    result = model.check_partial("result", "x", method="complex_step")
-    print(f"Analytical: {result['analytical']}")
-    print(f"Numerical: {result['numerical']}")
-    print(f"Max absolute error: {result['max_absolute_error']}")
-    print(f"Max relative error: {result['max_relative_error']}")
-    print(f"Within tolerance: {result['within_tolerance']}")
-
-    result = model.check_partial("result", "y", method="complex_step")
-    print(f"Analytical: {result['analytical']}")
-    print(f"Numerical: {result['numerical']}")
-    print(f"Max absolute error: {result['max_absolute_error']}")
-    print(f"Max relative error: {result['max_relative_error']}")
-    print(f"Within tolerance: {result['within_tolerance']}")
-
-    # %%
-    # Example with flatten_dfs=True
-    class FlatModule(DifferentiableModel):
-        def _compute(self):
-            x = self.inputs["data:feature1"]
-            y = self.inputs["data:feature2"]
-
-            # Create flattened outputs
-            self.outputs["result:squared"] = x**2
-            self.outputs["result:sum"] = x + y
-            self.outputs["other:value"] = x * y
-
-    model = FlatModule(flatten_dfs=True)
-    df = pd.DataFrame({"feature1": [1.0, 2.0, 3.0], "feature2": [4.0, 5.0, 6.0]})
-    model.set_inputs({"data": df})
-    model.compute()
-
-    with timer_context("SINGLE ALL"):
-        for i in range(100):
-            jacobian_y = model.compute_partial_all_inputs("other:value")
-        print("Jacobian multiple:", jacobian_y)
-
-    for o in model.outputs:
-        jacobian_y = model.compute_partial_all_inputs(o)
-        print(f"Jacobian ({o}):", jacobian_y)
-
-    # Get a specific DataFrame
-    result_df = model.get_dataframe(
-        "result"
-    )  # DataFrame with 'squared' and 'sum' columns
-    other_df = model.get_dataframe("other")  # DataFrame with 'value' column
-
-    # Get all DataFrames
-    all_dfs = model.get_dataframes()  # Dictionary with 'result' and 'other' keys
-
-    # %%
-    # Example with flatten_dfs=False
-    class DictModule(DifferentiableModel):
-        def _compute(self):
-            x = self.inputs["data"]["feature1"]
-            y = self.inputs["data"]["feature2"]
-
-            # Create dictionary outputs
-            self.outputs["result:squared"] = x**2
-            self.outputs["result:sum"] = x + y
-            self.outputs["single_value"] = (
-                x.mean()
-            )  # This won't be converted to DataFrame
-
-    model = DictModule(flatten_dfs=False)
-    model.set_inputs({"data": df})
-    model.compute()
-
-    for o in model.outputs:
-        j = model.compute_partial_all_inputs(o)
-        print(f"Jacobian ({o}):", j)
-
-    j = model.compute_partial("result:sum", "data")
-    print("Jacobian (result:sum):", j)
-
-    # Get a specific DataFrame
-    result_df = model.get_dataframe(
-        "result"
-    )  # DataFrame with 'squared' and 'sum' columns
-    single_value_df = model.get_dataframe("single_value")  # Returns None
-
-    # Get all DataFrames
-    all_dfs = model.get_dataframes()  # Dictionary with only 'result' key
-
-    # %%
-    class DictModule(DifferentiableModel):
-        def _compute(self):
-            # Extract inputs
-            pollution_concentration = self.inputs["data:pollution_concentration"]
-            emission_rate = self.inputs["data:emission_rate"]
-            region_area = self.inputs["data:region_area"]
-
-            # Validate inputs
-            if (
-                pollution_concentration is None
-                or emission_rate is None
-                or region_area is None
-            ):
-                raise ValueError(
-                    "All inputs (pollution_concentration, emission_rate, region_area) must be provided."
-                )
-
-            if self.np.any(region_area <= 0):
-                raise ValueError("Region area must be positive for all elements.")
-
-            # Step 1: Calculate pollution density
-            pollution_density = self.calculate_pollution_density(
-                pollution_concentration, region_area
-            )
-
-            # Step 2: Calculate radiative forcing for each density
-            radiative_forcing = self.calculate_radiative_forcing(pollution_density)
-
-            # Step 3: Compute temperature change based on thresholds
-            temperature_change = self.calculate_temperature_change(radiative_forcing)
-
-            # Step 4: Adjust for emission rate
-            adjusted_temperature_change = self.adjust_for_emission_rate(
-                temperature_change, emission_rate
-            )
-
-            # Store results in the outputs dictionary
-            self.outputs["pollution_density"] = pollution_density
-            self.outputs["radiative_forcing"] = radiative_forcing
-            self.outputs["temperature_change"] = adjusted_temperature_change
-
-        def calculate_pollution_density(self, concentration, area):
-            """Calculates pollution density per unit area."""
-            return concentration / area
-
-        def calculate_radiative_forcing(self, pollution_density):
-            """Calculates radiative forcing based on pollution density."""
-            return self.np.where(
-                pollution_density < 10,
-                5.35 * self.np.log1p(pollution_density),
-                6.0 * self.np.log1p(pollution_density),
-            )
-
-        def calculate_temperature_change(self, radiative_forcing):
-            """Calculates temperature change using climate sensitivity and a threshold."""
-            climate_sensitivity = 0.8  # K per W/m²
-            temperature_change = radiative_forcing * climate_sensitivity
-
-            # Apply temperature caps for extreme forcing
-            temperature_cap = 5.0  # Max temperature increase in K
-            return self.np.minimum(temperature_change, temperature_cap)
-
-        def adjust_for_emission_rate(self, temperature_change, emission_rate):
-            """Adjusts temperature change based on emission rate."""
-            return self.np.where(
-                emission_rate > 0.5, temperature_change * 1.2, temperature_change * 0.9
-            )
-
-    # %%
-    inputs = {}
-
-    # Provide input values
-    inputs["pollution_concentration"] = np.array([10.0, 20.0, 50.0])  # μg/m³
-    inputs["emission_rate"] = np.array([1.0, 6.0, 3.0])  # tons per year
-    inputs["region_area"] = np.array([100.0, 200.0, 300.0])  # km²
-
-    data_df = pd.DataFrame(inputs)
-
-    # %%
-    model = DictModule(flatten_dfs=True, ad_backend="autograd")
-    model.set_inputs({"data": data_df})
-    model.compute()
-
-    # %%
-    model.outputs
-
-    ic = print
-
-    # %%
-    for o in model.outputs:
-        j = model.compute_partial_all_inputs(o)
-        print(f"Jacobian ({o}):")
-        ic(j)
-        print("")
-
-    # %%
-    for o in model.outputs:
-        j = model.compute_partial(o, [f"data:{i}" for i in inputs])
-        print(f"Jacobian ({o}):")
-        ic(j)
-        print("")
-
-    # %%
-    for o in model.outputs:
-        with timer_context(f"CHECK PARTIAL {o}"):
-            result = model.check_partial(
-                o, "data:pollution_concentration", method="complex_step"
-            )
-            ic(f"Analytical: {result['analytical']}")
-            ic(f"Numerical: {result['numerical']}")
-            print(f"Max absolute error: {result['max_absolute_error']}")
-            print(f"Max relative error: {result['max_relative_error']}")
-            print(f"Within tolerance: {result['within_tolerance']}")
