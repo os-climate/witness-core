@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 
 from copy import deepcopy
 
@@ -37,10 +37,12 @@ from climateeconomics.core.core_witness.utility_tools import (
     get_inputs_for_utility_per_sector,
     s_curve_function,
 )
-from climateeconomics.core.tools.color_map import ColorMap
-from climateeconomics.core.tools.colormaps import SectorsColorMap
 from climateeconomics.core.tools.plotting import (
     WITNESSTwoAxesInstanciatedChart as TwoAxesInstanciatedChart,
+)
+from climateeconomics.core.tools.plotting import (
+    set_default_colormap,
+    set_default_palette,
 )
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -226,6 +228,9 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
         instanciated_charts = []
         chart_list = []
 
+        set_default_palette("witness")
+        set_default_colormap("sectors")
+
         if chart_filters is not None:
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == "charts":
@@ -243,7 +248,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 f"Variation of quantity of things consumed per capita since {years[0]} [%]",
                 "Utility gain per capita",
                 chart_name="Model visualisation : Quantity utility per capita function",
-            ).set_color_palette("witness").set_color_map("sectors")
+            )
             for sector in sector_list:
                 scurve_stretch = self.get_sosdisc_inputs(f"{sector}_strech_scurve")
                 scurve_shift = self.get_sosdisc_inputs(f"{sector}_shift_scurve")
@@ -265,7 +270,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.Years,
                 "Variation [%]",
                 chart_name="Variation of consumption by sector",
-            ).set_color_map(SectorsColorMap | ColorMap({"Industry": "red"}))
+            )  # .set_color_map(SectorsColorMap)
 
             for sector in sector_list:
                 consumption = sectors_consumption_df[sector].to_numpy()
@@ -280,7 +285,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.Years,
                 "Variation [%]",
                 chart_name="Variation of energy price and population",
-            ).set_color_palette(color_palette="witness", group_name="two_4")
+            ) .set_color_palette(color_palette="witness", group_name="two_4")
 
             energy_price = self.get_sosdisc_inputs(GlossaryCore.EnergyMeanPriceValue)[
                 GlossaryCore.EnergyPriceValue
@@ -313,7 +318,7 @@ class SectorizedUtilityDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.Years,
                 "[-]",
                 chart_name="Utility per capita by sector",
-            ).set_color_map("sectors")
+            )
             for sector in sector_list:
                 discounted_utility_pc_sector = self.get_sosdisc_outputs(
                     f"{sector}.{GlossaryCore.UtilityDfValue}"

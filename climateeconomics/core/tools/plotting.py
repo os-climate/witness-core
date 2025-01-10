@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    TwoAxesInstanciatedChart,
+    TwoAxesInstanciatedChart as BaseTwoAxesInstanciatedChart,
 )
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
+    InstantiatedPlotlyNativeChart as BaseInstantiatedPlotlyNativeChart,
 )
 
 from climateeconomics.core.tools.color_map import ColorMap
@@ -34,6 +34,51 @@ if TYPE_CHECKING:
 
     from climateeconomics.core.tools.color_palette import ColorPalette
 
+DEFAULT_PALETTE: ColorPalette | None = None
+DEFAULT_COLORMAP: ColorMap | None = None
+
+
+def set_default_palette(
+    palette: str | ColorPalette | None = None,
+) -> ColorPalette | None:
+    """Set default palette to new value.
+
+    Example:
+        >>> from climateeconomics.core.tools.color_palette import ColorPalette
+        >>> palette = set_default_palette(ColorPalette(name="witness"))
+        >>> palette.name
+        'witness'
+    """
+    global DEFAULT_PALETTE
+
+    if isinstance(palette, str):
+        if palette in available_palettes:
+            DEFAULT_PALETTE = available_palettes[palette]
+            return DEFAULT_PALETTE
+
+    DEFAULT_PALETTE = palette
+    return DEFAULT_PALETTE
+
+
+def set_default_colormap(colormap: str | ColorMap | None = None) -> ColorMap | None:
+    """Set default colormap to new value.
+
+    Example:
+        >>> colormap = set_default_colormap(ColorMap(name="sectors", color_map={}))
+        >>> print(colormap.name)
+        sectors
+    """
+    global DEFAULT_COLORMAP
+
+    if isinstance(colormap, str):
+        if colormap in available_colormaps:
+            DEFAULT_COLORMAP = available_colormaps[colormap]
+        return DEFAULT_COLORMAP
+
+    DEFAULT_COLORMAP = colormap
+    return DEFAULT_COLORMAP
+
+
 T = TypeVar("T", bound="ExtendedMixin")
 
 
@@ -42,6 +87,7 @@ class ExtendedMixin(Generic[T]):
     color_palette: ColorPalette = None
     color_map: ColorMap = None
     group_name: str = None
+    layout_custom_updates: dict = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,13 +95,15 @@ class ExtendedMixin(Generic[T]):
         if "color_palette" in kwargs:
             self.set_color_palette(kwargs.get("color_palette"))
         else:
-            self.set_color_palette("witness")
+            self.set_color_palette(DEFAULT_PALETTE)
 
         if "group_name" in kwargs:
             self.set_group(kwargs.get("group_name"))
 
         if "color_map" in kwargs:
             self.set_color_map(kwargs.get("color_map"))
+        else:
+            self.set_color_map(DEFAULT_COLORMAP)
 
     def set_group(self, group_name: str) -> T:
         if self.color_palette is None:
@@ -94,7 +142,9 @@ class ExtendedMixin(Generic[T]):
         return self
 
     def set_color_map(
-        self, color_map: dict | ColorMap | str, fill_nonexistent: bool = False
+        self,
+        color_map: dict | ColorMap | str | None = None,
+        fill_nonexistent: bool = False,
     ) -> T:
         """Set color map."""
 
@@ -110,6 +160,11 @@ class ExtendedMixin(Generic[T]):
 
         self.color_map = color_map
 
+        return self
+
+    def set_layout_custom_updates(self, layout_updates: dict) -> T:
+        """Set layout custom updates."""
+        self.layout_custom_updates = layout_updates
         return self
 
     def to_plotly(self, logger=None) -> go.Figure:
@@ -157,40 +212,32 @@ class ExtendedMixin(Generic[T]):
         fig.update_layout(xaxis={"showgrid": False})
         fig.update_yaxes(rangemode="tozero")
 
-        return fig
+        # Update layout with custom layout updates
+        if self.layout_custom_updates:
+            fig.update_layout(**self.layout_custom_updates)
 
-    # def get_default_title_layout(self, title_name="", pos_x=0.05, pos_y=0.9):
-    #     """Generate plotly layout dict for title
-    #     :params: title_name : title of chart
-    #     :type: str
-    #     :params: pos_x : position of title on x axis
-    #     :type: float
-    #     :params: pos_y : position of title on y axis
-    #     :type: float
-    #
-    #     :return: title_dict : dict that contains plotly layout for the title
-    #     :type: dict
-    #     """
-    #     title_dict = {
-    #         "text": f"<b>{title_name}</b>",
-    #         "y": pos_y,
-    #         "x": pos_x,
-    #         "xanchor": "left",
-    #         "yanchor": "top",
-    #         "font": {
-    #             "size": 16,
-    #         },
-    #     }
-    #     return title_dict
+        return fig
 
 
 class WITNESSTwoAxesInstanciatedChart(
-    ExtendedMixin["WITNESSTwoAxesInstanciatedChart"], TwoAxesInstanciatedChart
+    ExtendedMixin["WITNESSTwoAxesInstanciatedChart"], BaseTwoAxesInstanciatedChart
 ):
     pass
 
 
 class WITNESSInstantiatedPlotlyNativeChart(
-    ExtendedMixin["WITNESSInstantiatedPlotlyNativeChart"], InstantiatedPlotlyNativeChart
+    ExtendedMixin["WITNESSInstantiatedPlotlyNativeChart"], BaseInstantiatedPlotlyNativeChart
+):
+    pass
+
+
+class TwoAxesInstanciatedChart(
+    ExtendedMixin["TwoAxesInstanciatedChart"], BaseTwoAxesInstanciatedChart
+):
+    pass
+
+
+class InstantiatedPlotlyNativeChart(
+    ExtendedMixin["InstantiatedPlotlyNativeChart"], BaseInstantiatedPlotlyNativeChart
 ):
     pass
