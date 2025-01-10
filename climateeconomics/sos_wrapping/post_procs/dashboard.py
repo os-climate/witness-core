@@ -1129,7 +1129,7 @@ def create_xy_chart(
             y_data = data["y_data"]
             text_data = data["text"]
 
-        if x_data_df is not None and y_data_df is not None:
+        if x_data is not None and y_data is not None:
             new_series = InstanciatedSeries(
                 x_data * data.get("x_data_scale", 1.0),
                 y_data * data.get("y_data_scale", 1.0),
