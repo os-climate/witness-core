@@ -20,11 +20,11 @@ from os.path import dirname
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.tools.discipline_tester import discipline_test_function
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc import (
     ForestDiscipline,
 )
+from sostrades_optimization_plugins.tools.discipline_tester import discipline_test_function
 
 
 class ForestJacobianDiscTest(unittest.TestCase):
