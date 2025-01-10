@@ -26,11 +26,10 @@ from climateeconomics.core.core_forest.forest import ForestAutodiff
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
-from climateeconomics.core.tools.autodifferentiated_discipline import (
-    AutodifferentiedDisc,
-)
+
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 class ForestDiscipline(AutodifferentiedDisc):
@@ -281,15 +280,7 @@ class ForestDiscipline(AutodifferentiedDisc):
                 self.update_default_value('initial_co2_emissions', 'in', DatabaseWitnessCore.ForestEmissions.get_value_at_year(year_start))
 
     def init_execution(self):
-
         self.model = ForestAutodiff()
-
-    def run(self):
-
-        inputs = self.get_sosdisc_inputs()
-        self.model.set_inputs(inputs)
-        outputs = self.model.compute()
-        self.store_sos_outputs_values(outputs)
 
     def get_chart_filter_list(self):
 

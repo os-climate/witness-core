@@ -57,8 +57,6 @@ class ForestAutodiff(DifferentiableModel):
         self.rescale_techno_production_and_consumption()
         self.compute_coupling_dfs()
 
-        return self.get_dataframes()
-
     def compute_managed_wood_surface(self):
         """
         compute managed wood delta and cumulative surface from investments
