@@ -238,12 +238,11 @@ class DifferentiableModel:
 
         return None
 
-    def get_dataframes(self) -> dict[str, pd.DataFrame]:
+    def get_dataframes(self, complete_with_non_dataframe_output: bool = False) -> dict[str, Any]:
         """
         Convert all suitable outputs to pandas DataFrames.
+        complete_with_non_dataframe_output: bool, if True, non dataframe variables are added to output dictionnary
 
-        Returns:
-            Dictionary of DataFrames reconstructed from outputs
         """
         result = {}
         self.dataframes_outputs_colnames = {}
@@ -265,7 +264,20 @@ class DifferentiableModel:
                 if df is not None:
                     result[key] = df
 
+            else:
+                result[key] = value
+
         return result
+
+    def get_all_outputs(self) -> dict[str, pd.DataFrame]:
+        """
+        Convert all suitable outputs to pandas DataFrames.
+        other output that are not convertible to dataframes are there
+
+        Returns:
+            Dictionary of DataFrames reconstructed from outputs
+        """
+        return self.get_dataframes(complete_with_non_dataframe_output=True)
 
     def compute(self, *args: InputType) -> OutputType:
         """Computes the model outputs based on inputs passed as arguments.
