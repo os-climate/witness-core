@@ -19,10 +19,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    TwoAxesInstanciatedChart,
+    TwoAxesInstanciatedChart as BaseTwoAxesInstanciatedChart,
 )
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
+    InstantiatedPlotlyNativeChart as BaseInstantiatedPlotlyNativeChart,
 )
 
 from climateeconomics.core.tools.color_map import ColorMap
@@ -220,12 +220,24 @@ class ExtendedMixin(Generic[T]):
 
 
 class WITNESSTwoAxesInstanciatedChart(
-    ExtendedMixin["WITNESSTwoAxesInstanciatedChart"], TwoAxesInstanciatedChart
+    ExtendedMixin["WITNESSTwoAxesInstanciatedChart"], BaseTwoAxesInstanciatedChart
 ):
     pass
 
 
 class WITNESSInstantiatedPlotlyNativeChart(
-    ExtendedMixin["WITNESSInstantiatedPlotlyNativeChart"], InstantiatedPlotlyNativeChart
+    ExtendedMixin["WITNESSInstantiatedPlotlyNativeChart"], BaseInstantiatedPlotlyNativeChart
+):
+    pass
+
+
+class TwoAxesInstanciatedChart(
+    ExtendedMixin["TwoAxesInstanciatedChart"], BaseTwoAxesInstanciatedChart
+):
+    pass
+
+
+class InstantiatedPlotlyNativeChart(
+    ExtendedMixin["InstantiatedPlotlyNativeChart"], BaseInstantiatedPlotlyNativeChart
 ):
     pass
