@@ -49,3 +49,7 @@ repos:
         --disable,
         MD024,
         ]
+  - repo: https://gitlab.com/vincentdrouet/header_updater_hook.git
+    rev: v0.1.1
+    hooks:
+    - id: update-headers
