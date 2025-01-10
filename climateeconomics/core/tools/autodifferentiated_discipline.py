@@ -31,6 +31,13 @@ class AutodifferentiedDisc(SoSWrapp):
         super().__init__(sos_name, logger)
         self.model: Union[DifferentiableModel, None] = None
 
+    def run(self):
+
+        inputs = self.get_sosdisc_inputs()
+        self.model.set_inputs(inputs)
+        outputs = self.model.compute()
+        self.store_sos_outputs_values(outputs)
+
     def compute_sos_jacobian(self):
         """
         Compute jacobian for each coupling variable
