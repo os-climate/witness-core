@@ -51,6 +51,7 @@ class ForestDiscipline(AutodifferentiedDisc):
         'version': 'Version 0',
     }
 
+    autoconfigure_gradient_variables = False
     coupling_inputs = [
         'deforestation_investment',
         'reforestation_investment',
