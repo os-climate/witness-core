@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
+import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
 from plotly import graph_objects as go
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
@@ -30,9 +29,6 @@ from climateeconomics.core.tools.plotting import (
     TwoAxesInstanciatedChart,
 )
 from climateeconomics.core.tools.post_proc import get_scenario_value
-
-if TYPE_CHECKING:
-    import pandas as pd
 
 
 def create_sankey_diagram_at_year(
@@ -183,9 +179,6 @@ def create_sankey_diagram_at_year(
 
         link_data["color"] = [colormap.get_color(label) for label in labels]
 
-    # Determine node positions
-    node_x = {}
-    node_y = {}
     node_color = {}
 
     if not split_external:
@@ -196,51 +189,19 @@ def create_sankey_diagram_at_year(
 
     middle_nodes = [n for n in actors if n not in input_nodes and n not in output_nodes]
 
-    # Assign x coordinates
-    # Input nodes at x=0
-    for idx, node in enumerate(input_nodes):
-        node_x[node] = 0.0
-        node_y[node] = (idx + 1) / (len(input_nodes) + 1)
+    for node in input_nodes:
         node_color[node] = "red"
 
     # Middle nodes evenly distributed between 0.3 and 0.7
-    for idx, node in enumerate(middle_nodes):
-        node_x[node] = 0.3 + (0.4 * idx / max(1, len(middle_nodes) - 1))
-        node_y[node] = (idx + 1) / (len(middle_nodes) + 1)
+    for node in middle_nodes:
         node_color[node] = "lightblue"
 
     # Output nodes at x=1
-    for idx, node in enumerate(output_nodes):
-        node_x[node] = 1.0
-        node_y[node] = (idx + 1) / (len(output_nodes) + 1)
+    for node in output_nodes:
         node_color[node] = "green"
 
     # Convert to lists in the same order as actors
-    x_positions = [node_x[actor] for actor in actors]
-    y_positions = [node_y[actor] for actor in actors]
     node_colors = [node_color[actor] for actor in actors]
-
-    # Create a list of indices sorted by x_position
-    sorted_indices = sorted(range(len(x_positions)), key=lambda k: x_positions[k])
-
-    # Create a mapping from old to new indices
-    index_mapping = {old: new for new, old in enumerate(sorted_indices)}
-
-    # Sort all node-related arrays
-    actors = [actors[i] for i in sorted_indices]
-    x_positions = [x_positions[i] for i in sorted_indices]
-    y_positions = [y_positions[i] for i in sorted_indices]
-    node_colors = [node_colors[i] for i in sorted_indices]
-
-    # Update link source and target indices using the mapping
-    new_source = [index_mapping[s] for s in source]
-    new_target = [index_mapping[t] for t in target]
-
-    # Update link_data with new source/target indices
-    link_data.update({
-        'source': new_source,
-        'target': new_target
-    })
 
     # Create the Sankey diagram with positioned nodes
     fig = go.Figure(
@@ -252,11 +213,8 @@ def create_sankey_diagram_at_year(
                     "line": {"color": "black", "width": 0.5},
                     "label": actors,
                     "color": node_colors,
-                    "x": x_positions,  # Add x positions
-                    "y": y_positions,  # Add y positions
                 },
                 link=link_data,
-                arrangement="perpendicular",
             )
         ]
     )
