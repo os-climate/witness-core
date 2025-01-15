@@ -19,6 +19,7 @@ from os.path import join
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -32,6 +33,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
+from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import (
     Study as usecase_ms_mdo,
@@ -630,6 +632,20 @@ def post_processings(execution_engine, namespace, filters):
 
     if "GDP vs Energy":
 
+        raw_iea_df = pd.merge(
+            DatabaseWitnessCore.IEANZEEnergyProduction.value,
+            DatabaseWitnessCore.IEANZEGDPNetOfDamage.value,
+            on="years",
+            how="inner",
+        )
+
+        net_iea_df = pd.merge(
+            DatabaseWitnessCore.IEANZEFinalEnergyConsumption.value,
+            DatabaseWitnessCore.IEANZEGDPNetOfDamage.value,
+            on="years",
+            how="inner",
+        )
+
         raw_data_dict = {scenario_name: {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
@@ -648,6 +664,15 @@ def post_processings(execution_engine, namespace, filters):
                 "x_column_name": 'Primary energy consumption [PWh]',
                 "y_column_name": 'World GDP [T$]',
                 "marker_symbol": "triangle-up",
+                "text_column": "years",
+            }
+
+        raw_data_dict["IEA"] = {
+                "data_type": "dataframe",
+                "data": raw_iea_df,
+                "x_column_name": "Total production",
+                "y_column_name": "output_net_of_d",
+                "marker_symbol": "square",
                 "text_column": "years",
             }
 
@@ -670,6 +695,15 @@ def post_processings(execution_engine, namespace, filters):
                 "x_column_name": 'Net energy consumption [PWh]',
                 "y_column_name": 'World GDP [T$]',
                 "marker_symbol": "triangle-up",
+                "text_column": "years",
+            }
+
+        net_data_dict["IEA"] = {
+                "data_type": "dataframe",
+                "data": net_iea_df,
+                "x_column_name": "Final Consumption",
+                "y_column_name": "output_net_of_d",
+                "marker_symbol": "square",
                 "text_column": "years",
             }
 

@@ -19,10 +19,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
-    TwoAxesInstanciatedChart,
+    TwoAxesInstanciatedChart as BaseTwoAxesInstanciatedChart,
 )
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import (
-    InstantiatedPlotlyNativeChart,
+    InstantiatedPlotlyNativeChart as BaseInstantiatedPlotlyNativeChart,
 )
 
 from climateeconomics.core.tools.color_map import ColorMap
@@ -87,6 +87,7 @@ class ExtendedMixin(Generic[T]):
     color_palette: ColorPalette = None
     color_map: ColorMap = None
     group_name: str = None
+    layout_custom_updates: dict = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -161,6 +162,11 @@ class ExtendedMixin(Generic[T]):
 
         return self
 
+    def set_layout_custom_updates(self, layout_updates: dict) -> T:
+        """Set layout custom updates."""
+        self.layout_custom_updates = layout_updates
+        return self
+
     def to_plotly(self, logger=None) -> go.Figure:
         """Convert to plotly figure."""
         fig: go.Figure = super().to_plotly(logger=logger)
@@ -206,40 +212,32 @@ class ExtendedMixin(Generic[T]):
         fig.update_layout(xaxis={"showgrid": False})
         fig.update_yaxes(rangemode="tozero")
 
-        return fig
+        # Update layout with custom layout updates
+        if self.layout_custom_updates:
+            fig.update_layout(**self.layout_custom_updates)
 
-    # def get_default_title_layout(self, title_name="", pos_x=0.05, pos_y=0.9):
-    #     """Generate plotly layout dict for title
-    #     :params: title_name : title of chart
-    #     :type: str
-    #     :params: pos_x : position of title on x axis
-    #     :type: float
-    #     :params: pos_y : position of title on y axis
-    #     :type: float
-    #
-    #     :return: title_dict : dict that contains plotly layout for the title
-    #     :type: dict
-    #     """
-    #     title_dict = {
-    #         "text": f"<b>{title_name}</b>",
-    #         "y": pos_y,
-    #         "x": pos_x,
-    #         "xanchor": "left",
-    #         "yanchor": "top",
-    #         "font": {
-    #             "size": 16,
-    #         },
-    #     }
-    #     return title_dict
+        return fig
 
 
 class WITNESSTwoAxesInstanciatedChart(
-    ExtendedMixin["WITNESSTwoAxesInstanciatedChart"], TwoAxesInstanciatedChart
+    ExtendedMixin["WITNESSTwoAxesInstanciatedChart"], BaseTwoAxesInstanciatedChart
 ):
     pass
 
 
 class WITNESSInstantiatedPlotlyNativeChart(
-    ExtendedMixin["WITNESSInstantiatedPlotlyNativeChart"], InstantiatedPlotlyNativeChart
+    ExtendedMixin["WITNESSInstantiatedPlotlyNativeChart"], BaseInstantiatedPlotlyNativeChart
+):
+    pass
+
+
+class TwoAxesInstanciatedChart(
+    ExtendedMixin["TwoAxesInstanciatedChart"], BaseTwoAxesInstanciatedChart
+):
+    pass
+
+
+class InstantiatedPlotlyNativeChart(
+    ExtendedMixin["InstantiatedPlotlyNativeChart"], BaseInstantiatedPlotlyNativeChart
 ):
     pass
