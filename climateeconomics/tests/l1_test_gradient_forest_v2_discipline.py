@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/06-2025/01/10 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +19,10 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_optimization_plugins.tools.discipline_tester import (
+    discipline_test_function,
+)
 
-from climateeconomics.core.tools.discipline_tester import discipline_test_function
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc import (
     ForestDiscipline,
@@ -75,7 +77,6 @@ class ForestJacobianDiscTest(unittest.TestCase):
             f'{self.name}.{GlossaryCore.CropProductivityReductionName}': crop_reduction_productivity_df,
         }
 
-
     def test_forest(self):
         discipline_test_function(
             module_path='climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline',
@@ -91,3 +92,7 @@ class ForestJacobianDiscTest(unittest.TestCase):
             pickle_name='jacobian_forest_autodiff.pkl',
             override_dump_jacobian=False
         )
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -17,15 +17,17 @@ limitations under the License.
 import autograd.numpy as np
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_optimization_plugins.models.differentiable_model import (
+    DifferentiableModel,
+)
 
-from climateeconomics.core.tools.differentiable_model import DifferentiableModel
 from climateeconomics.glossarycore import GlossaryCore
 
 
 class ForestAutodiff(DifferentiableModel):
     """
-    Forest model class 
-    basic for now, to evolve 
+    Forest model class
+    basic for now, to evolve
 
     """
 
@@ -45,7 +47,6 @@ class ForestAutodiff(DifferentiableModel):
 
         self.compute_land_use_required()
 
-
         self.compute_forest_constraint_evolution()
         self.compute_production_for_energy()
         self.compute_price_in_d_per_mwh()
@@ -55,8 +56,6 @@ class ForestAutodiff(DifferentiableModel):
         self.compute_economical_output_and_damages()
         self.rescale_techno_production_and_consumption()
         self.compute_coupling_dfs()
-
-        return self.get_dataframes()
 
     def compute_managed_wood_surface(self):
         """
@@ -90,7 +89,7 @@ class ForestAutodiff(DifferentiableModel):
         cubic_meter_production = (self.inputs['managed_wood_initial_surface'] * self.outputs['yields:actual'] +
                                   (self.outputs['managed_wood_df:cumulative_surface'] - self.inputs['managed_wood_initial_surface'])
                                   * self.outputs['yields:managed wood'])
-        wasted_production =  cubic_meter_production_wo_climate_change - cubic_meter_production
+        wasted_production = cubic_meter_production_wo_climate_change - cubic_meter_production
         self.outputs['managed_wood_df:delta_wood_production (Mt)'] = self.outputs['managed_wood_df:delta_surface'] * self.outputs['yields:managed wood'] * (
                                                                      1 - self.inputs['params']['residues_density_percentage']) * self.inputs['params']['wood_density']
         # Gm3* kg/m3 => Mt
@@ -140,7 +139,6 @@ class ForestAutodiff(DifferentiableModel):
 
         delta_unmanaged_forest_surface = self.outputs['forest_surface_detail_df:delta_reforestation_surface'] + self.outputs['forest_surface_detail_df:delta_deforestation_surface']
         self.outputs['forest_surface_detail_df:unmanaged_forest'] = np.maximum(self.inputs['initial_unmanaged_forest_surface'] + np.cumsum(delta_unmanaged_forest_surface), 0)
-
 
     def compute_deforestation_biomass(self):
         """
@@ -201,8 +199,6 @@ class ForestAutodiff(DifferentiableModel):
 
         self.outputs[f'CO2_land_emission_df:{GlossaryCore.Years}'] = self.years
         self.outputs['CO2_land_emission_df:emitted_CO2_evol_cumulative'] = self.outputs[f'{GlossaryCore.CO2EmissionsDetailDfValue}:emitted_CO2_evol_cumulative']
-
-
 
     def compute_biomass_dry_production(self):
         """
@@ -265,8 +261,8 @@ class ForestAutodiff(DifferentiableModel):
 
     def compute_carbon_emissions(self):
         '''
-        Compute the carbon emissions from the technology taking into account 
-        CO2 from production + CO2 from primary resources 
+        Compute the carbon emissions from the technology taking into account
+        CO2 from production + CO2 from primary resources
         '''
         # CO2 emissions
         if 'CO2_from_production' not in self.inputs['params']:
@@ -363,7 +359,6 @@ class ForestAutodiff(DifferentiableModel):
         self.outputs[f"{GlossaryCore.Forest}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Years}"] = self.years
         self.outputs[f"{GlossaryCore.Forest}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Damages}"] = total_damages
 
-
     def compute_yields(self):
         """yields are impact by climate change"""
         self.outputs[f'yields:{GlossaryCore.Years}'] = self.years
@@ -409,5 +404,3 @@ class ForestAutodiff(DifferentiableModel):
     def compute_capital_loss(self):
         self.outputs[f'forest_lost_capital:{GlossaryCore.Years}'] = self.years
         self.outputs['forest_lost_capital:deforestation'] = - self.outputs['forest_surface_detail_df:delta_deforestation_surface'] * self.inputs['params']['reforestation_cost_per_ha']
-
-        

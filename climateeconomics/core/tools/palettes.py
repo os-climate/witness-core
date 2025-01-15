@@ -28,7 +28,7 @@ WITNESSPalette: ColorPalette = ColorPalette.from_dict(
             "#5c5859",
             "#55B748",
             "#DB2B27",
-            "#0a4c6a"
+            "#0a4c6a",
         ],
         "highlight_colors": [],
         "color_tags": [
@@ -40,7 +40,7 @@ WITNESSPalette: ColorPalette = ColorPalette.from_dict(
             "space_gray",
             "green",
             "red",
-            "dark_blue"
+            "dark_blue",
         ],
         "shades": {
             "primary_blue": [
@@ -136,12 +136,49 @@ WITNESSPalette: ColorPalette = ColorPalette.from_dict(
             "five_3": ["primary_blue", "black", "neutral_gray", "green", "dark_blue"],
             "five_4": ["primary_blue", "black", "yellow", "green", "magenta"],
             "five_seq": ["#cfe8f3", "#73bfe2", "primary_blue", "dark_blue", "black"],
-            "six": ["primary_blue", "black", "neutral_gray", "yellow", "green", "magenta"],
-            "six_2": ["primary_blue", "black", "neutral_gray", "yellow", "green", "dark_blue"],
-            "six_3": ["primary_blue", "black", "dark_blue", "yellow", "green", "magenta"],
-            "seven":  ["primary_blue", "black", "neutral_gray", "yellow", "green", "magenta", "dark_blue"],
-            "diverging": ["#ca5800", "#fdbf11", "#fdd870", "#fff2cf", "#cfe8f3", "#73bfe2", "#1696d2", "#0a4c6a"]
-
+            "six": [
+                "primary_blue",
+                "black",
+                "neutral_gray",
+                "yellow",
+                "green",
+                "magenta",
+            ],
+            "six_2": [
+                "primary_blue",
+                "black",
+                "neutral_gray",
+                "yellow",
+                "green",
+                "dark_blue",
+            ],
+            "six_3": [
+                "primary_blue",
+                "black",
+                "dark_blue",
+                "yellow",
+                "green",
+                "magenta",
+            ],
+            "seven": [
+                "primary_blue",
+                "black",
+                "neutral_gray",
+                "yellow",
+                "green",
+                "magenta",
+                "dark_blue",
+            ],
+            "diverging": [
+                "#ca5800",
+                "#fdbf11",
+                "#fdd870",
+                "#fff2cf",
+                "#cfe8f3",
+                "#73bfe2",
+                "#1696d2",
+                "#0a4c6a",
+            ],
         },
         "description": "Clean, professional palette for data visualization",
         "color_blind_friendly": False,
@@ -215,7 +252,6 @@ IBMColorSafePalette = ColorPalette.from_dict(
             "#fe6100",
             "#ffb000",
             "#000000",
-
         ],
         "color_tags": ["ultramarine", "indigo", "magenta", "orange", "gold", "black"],
         "description": "retrieved from https://lospec.com/palette-list/ibm-color-blind-safe",
@@ -223,11 +259,35 @@ IBMColorSafePalette = ColorPalette.from_dict(
     },
 )
 
+CapgeminiPalette = ColorPalette(
+    name="Capgemini",
+    main_colors={
+        "capgemini_blue": "#0070AD",
+        "vibrant_blue": "#12ABDB",
+        "dark_grey": "#272936",
+        "green": "#2EA657",
+        "teal": "#00BFBF",
+        "peacock": "#0F878A",
+        "sapphire": "#14596B",
+        "yellow": "#FFB24A",
+        "red": "#FF304D",
+        "violet": "#BA2980",
+        "velvet": "#750D5C",
+    },
+    predefined_groups={
+        "cool": ["green", "teal", "peacock", "sapphire"],
+        "warm": ["yellow", "red", "violet", "velvet"],
+    },
+)
+
+print(CapgeminiPalette.color_map)
+
 PlotlyPalette = ColorPalette.from_plotly_qualitative("Plotly")
 ColorBlindSafePalette2 = ColorPalette.from_plotly_qualitative("Safe")
 
 available_palettes: dict = {
     "witness": WITNESSPalette,
+    "capgemini": CapgeminiPalette,
     "color_blind_safe": ColorBlindSafePalette,
     "color_blind_safe2": ColorBlindSafePalette2,
     "earth_tones": EarthTonesPalette,
