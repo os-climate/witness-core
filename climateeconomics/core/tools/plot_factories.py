@@ -13,18 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
+import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
 from plotly import graph_objects as go
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+)
 
 from climateeconomics.core.tools.color_map import ColorMap
 from climateeconomics.core.tools.colormaps import available_colormaps
-
-if TYPE_CHECKING:
-    import pandas as pd
+from climateeconomics.core.tools.plotting import (
+    TwoAxesInstanciatedChart,
+)
+from climateeconomics.core.tools.post_proc import get_scenario_value
 
 
 def create_sankey_diagram_at_year(
@@ -35,7 +39,7 @@ def create_sankey_diagram_at_year(
     years_column: str = GlossaryEnergy.Years,
     split_external: bool = False,
     output_node: str | None = None,
-    input_node: str | None = None
+    input_node: str | None = None,
 ) -> go.Figure:
     """Creates a Sankey diagram showing direct flows between nodes based on their inputs
     and output patterns.
@@ -76,6 +80,9 @@ def create_sankey_diagram_at_year(
                 data_dict[actor]["input"][years_column] == year
             ][flow_type].to_numpy()[0]
 
+    input_nodes = []
+    output_nodes = []
+
     # Create flows between actors based on matching production and consumption types
     for producer, prod_data in data_dict.items():
         for consumer, cons_data in data_dict.items():
@@ -100,9 +107,6 @@ def create_sankey_diagram_at_year(
 
                 # Inside the nested loops where flows are created
                 for flow_type in common_types:
-                    if "resource" in flow_type:
-                        continue
-
                     prod_value = prod_df[flow_type].to_numpy()[0]
                     cons_value = cons_df[flow_type].to_numpy()[0]
 
@@ -112,17 +116,19 @@ def create_sankey_diagram_at_year(
                         # Handle output node splitting
                         target_node = consumer
                         if consumer == output_node and split_external:
-                            net_flow_label = f"Net {flow_type}"
+                            net_flow_label = f"{flow_type}"
                             if net_flow_label not in node_mapping:
                                 node_mapping[net_flow_label] = len(node_mapping)
+                                output_nodes.append(net_flow_label)
                             target_node = net_flow_label
 
                         # Handle input node splitting
                         source_node = producer
                         if producer == input_node and split_external:
-                            in_flow_label = f"In {flow_type}"
+                            in_flow_label = f"{flow_type}"
                             if in_flow_label not in node_mapping:
                                 node_mapping[in_flow_label] = len(node_mapping)
+                                input_nodes.append(in_flow_label)
                             source_node = in_flow_label
 
                         source.append(node_mapping[source_node])
@@ -135,10 +141,10 @@ def create_sankey_diagram_at_year(
 
     customdata = labels
     hovertemplate = (
-        '%{customdata}<br>'
-        + 'From : %{source.label}<br>'
-        + 'To   : %{target.label}<br>'
-        + 'Value: %{value:.2E}<br><extra></extra>'
+        "%{customdata}<br>"
+        "From : %{source.label}<br>"
+        "To   : %{target.label}<br>"
+        "Value: %{value:.2E}<br><extra></extra>"
     )
 
     # Overload customdata and hovertemplate in case constant_with is True
@@ -148,20 +154,20 @@ def create_sankey_diagram_at_year(
         value = [1.0] * len(value)
         # Update hovertemplate to include both pieces of information
         hovertemplate = (
-            '%{customdata[0]}<br>'
-            + 'From : %{source.label}<br>'
-            + 'To   : %{target.label}<br>'
-            + 'Value: %{customdata[1]}<br><extra></extra>'
+            "%{customdata[0]}<br>"
+            "From : %{source.label}<br>"
+            "To   : %{target.label}<br>"
+            "Value: %{customdata[1]}<br><extra></extra>"
         )
 
     # Handle colormap
-    link_data = dict(
-        source=source,
-        target=target,
-        value=value,
-        hovertemplate=hovertemplate,
-        customdata=customdata,
-    )
+    link_data = {
+        "source": source,
+        "target": target,
+        "value": value,
+        "hovertemplate": hovertemplate,
+        "customdata": customdata,
+    }
 
     if colormap is not None:
         if isinstance(colormap, dict):
@@ -173,17 +179,41 @@ def create_sankey_diagram_at_year(
 
         link_data["color"] = [colormap.get_color(label) for label in labels]
 
-    # Create the Sankey diagram
+    node_color = {}
+
+    if not split_external:
+        if output_node in actors:
+            output_nodes = [output_node]
+        if input_node in actors:
+            input_nodes = [input_node]
+
+    middle_nodes = [n for n in actors if n not in input_nodes and n not in output_nodes]
+
+    for node in input_nodes:
+        node_color[node] = "red"
+
+    # Middle nodes evenly distributed between 0.3 and 0.7
+    for node in middle_nodes:
+        node_color[node] = "lightblue"
+
+    # Output nodes at x=1
+    for node in output_nodes:
+        node_color[node] = "green"
+
+    # Convert to lists in the same order as actors
+    node_colors = [node_color[actor] for actor in actors]
+
+    # Create the Sankey diagram with positioned nodes
     fig = go.Figure(
         data=[
             go.Sankey(
-                node=dict(
-                    pad=5,
-                    thickness=10,
-                    line=dict(color="black", width=0.5),
-                    label=actors,
-                    color="lightblue",
-                ),
+                node={
+                    "pad": 5,
+                    "thickness": 5,
+                    "line": {"color": "black", "width": 0.5},
+                    "label": actors,
+                    "color": node_colors,
+                },
                 link=link_data,
             )
         ]
@@ -230,7 +260,11 @@ def create_sankey_with_slider(
     for year in years:
         # Get the Sankey diagram for this year
         year_fig = create_sankey_diagram_at_year(
-            data_dict, year, colormap=colormap, constant_width=normalized_links, **kwargs
+            data_dict,
+            year,
+            colormap=colormap,
+            constant_width=normalized_links,
+            **kwargs,
         )
 
         # Create frame from the Sankey data
@@ -242,7 +276,7 @@ def create_sankey_with_slider(
     return fig
 
 
-def create_slider_figure(figures_dict, method='frames'):
+def create_slider_figure(figures_dict, method="frames"):
     """
     Create a plotly figure with a slider based on a dictionary of figures.
 
@@ -259,7 +293,7 @@ def create_slider_figure(figures_dict, method='frames'):
         Figure with slider
     """
 
-    if method == 'frames':
+    if method == "frames":
         # Approach 1: Using frames
         frames = []
         data = []
@@ -282,11 +316,11 @@ def create_slider_figure(figures_dict, method='frames'):
             dict(
                 steps=[
                     dict(
-                        method='animate',
+                        method="animate",
                         args=[
                             [str(key)],
                             dict(
-                                mode='immediate',
+                                mode="immediate",
                                 frame=dict(duration=0, redraw=True),
                                 transition=dict(duration=0),
                             ),
@@ -295,7 +329,7 @@ def create_slider_figure(figures_dict, method='frames'):
                     )
                     for key in figures_dict.keys()
                 ],
-                currentvalue=dict(visible=True, prefix='Selection: '),
+                currentvalue=dict(visible=True, prefix="Selection: "),
                 pad=dict(t=50),
             )
         ]
@@ -306,7 +340,7 @@ def create_slider_figure(figures_dict, method='frames'):
         )
         fig.frames = frames
 
-    elif method == 'visibility':
+    elif method == "visibility":
         # Approach 2: Using visibility
         fig = go.Figure()
 
@@ -320,21 +354,21 @@ def create_slider_figure(figures_dict, method='frames'):
         steps = []
         for i, key in enumerate(figures_dict.keys()):
             step = dict(
-                method='update',
-                args=[{'visible': [False] * len(fig.data)}],
+                method="update",
+                args=[{"visible": [False] * len(fig.data)}],
                 label=str(key),
             )
             # Make traces for current figure visible
             start_idx = i * len(list(figures_dict.values())[0].data)
             end_idx = start_idx + len(list(figures_dict.values())[0].data)
             for j in range(start_idx, end_idx):
-                step['args'][0]['visible'][j] = True
+                step["args"][0]["visible"][j] = True
             steps.append(step)
 
         sliders = [
             dict(
                 active=0,
-                currentvalue=dict(visible=True, prefix='Selection: '),
+                currentvalue=dict(visible=True, prefix="Selection: "),
                 pad=dict(t=50),
                 steps=steps,
             )
@@ -342,7 +376,7 @@ def create_slider_figure(figures_dict, method='frames'):
 
         fig.update_layout(sliders=sliders)
 
-    elif method == 'update':
+    elif method == "update":
         # Approach 3: Using update (useful for updating specific properties)
         fig = go.Figure()
 
@@ -355,14 +389,14 @@ def create_slider_figure(figures_dict, method='frames'):
         steps = []
         for i, key in enumerate(figures_dict.keys()):
             step = dict(
-                method='update',
+                method="update",
                 args=[
                     {
-                        'visible': [
+                        "visible": [
                             True if i == j else False for j in range(len(figures_dict))
                         ]
                     },
-                    {'title': f'Selection: {key}'},  # Update title as example
+                    {"title": f"Selection: {key}"},  # Update title as example
                 ],
                 label=str(key),
             )
@@ -371,7 +405,7 @@ def create_slider_figure(figures_dict, method='frames'):
         sliders = [
             dict(
                 active=0,
-                currentvalue=dict(visible=True, prefix='Selection: '),
+                currentvalue=dict(visible=True, prefix="Selection: "),
                 pad=dict(t=50),
                 steps=steps,
             )
@@ -431,9 +465,11 @@ def add_dropdown_menu(fig, sort_by=None, dropdown_name="Select Option"):
 
         # Add "All" option
         dropdown_buttons.append(
-            dict(
-                args=[{"visible": [True] * len(fig.data)}], label="All", method="update"
-            )
+            {
+                "args": [{"visible": [True] * len(fig.data)}],
+                "label": "All",
+                "method": "update",
+            },
         )
 
         # Add options from sort_by dictionary
@@ -452,36 +488,105 @@ def add_dropdown_menu(fig, sort_by=None, dropdown_name="Select Option"):
                     print(f"Warning: Trace index {idx} exceeds number of traces")
 
             dropdown_buttons.append(
-                dict(args=[{"visible": visibility}], label=str(label), method="update")
+                {
+                    "args": [{"visible": visibility}],
+                    "label": str(label),
+                    "method": "update",
+                }
             )
 
     # Update layout with dropdown menu
     fig.update_layout(
         updatemenus=[
-            dict(
-                buttons=dropdown_buttons,
-                direction="down",
-                showactive=True,
-                x=0.1,
-                xanchor="left",
-                y=1.15,
-                yanchor="top",
-                pad={"r": 10, "t": 10},
-                bgcolor="white",
-                bordercolor="gray",
-                borderwidth=1,
-            )
+            {
+                "buttons": dropdown_buttons,
+                "direction": "down",
+                "showactive": True,
+                "x": 0.1,
+                "xanchor": "left",
+                "y": 1.15,
+                "yanchor": "top",
+                "pad": {"r": 10, "t": 10},
+                "bgcolor": "white",
+                "bordercolor": "gray",
+                "borderwidth": 1,
+            }
         ],
         annotations=[
-            dict(
-                text=dropdown_name,
-                x=0,
-                y=1.15,
-                yref="paper",
-                xref="paper",
-                showarrow=False,
-            )
+            {
+                "text": dropdown_name,
+                "x": 0,
+                "y": 1.15,
+                "yref": "paper",
+                "xref": "paper",
+                "showarrow": False,
+            }
         ],
     )
 
     return fig
+
+
+def create_xy_chart(
+    execution_engine,
+    chart_name: str,
+    x_axis_name: str,
+    y_axis_name: str,
+    data_dict: dict,
+    **kwargs,
+) -> TwoAxesInstanciatedChart:
+    """Create XY chart from data dictionary"""
+    new_chart = TwoAxesInstanciatedChart(
+        x_axis_name, y_axis_name, chart_name=chart_name, **kwargs
+    )
+
+    for data_name, data in data_dict.items():
+        x_data = None
+        y_data = None
+        text_data = None
+
+        if data["data_type"] == "scenario_variable":
+            x_data_df = get_scenario_value(
+                execution_engine,
+                data["x_var_name"],
+                data["scenario_name"],
+                split_scenario_name=False,
+            )
+            y_data_df = get_scenario_value(
+                execution_engine,
+                data["y_var_name"],
+                data["scenario_name"],
+                split_scenario_name=False,
+            )
+            x_data = x_data_df[data["x_column_name"]]
+            y_data = y_data_df[data["y_column_name"]]
+            text_data = y_data_df[data["text_column"]].values.tolist()
+        elif data["data_type"] == "csv":
+            data_df = pd.read_csv(data["filename"])
+            x_data_df = y_data_df = data_df
+            x_data = x_data_df[data["x_column_name"]]
+            y_data = y_data_df[data["y_column_name"]]
+            text_data = y_data_df[data["text_column"]].values.tolist()
+        elif data["data_type"] == "dataframe":
+            x_data_df = y_data_df = data["data"]
+            x_data = x_data_df[data["x_column_name"]]
+            y_data = y_data_df[data["y_column_name"]]
+            text_data = y_data_df[data["text_column"]].values.tolist()
+        elif data["data_type"] == "separate_xy":
+            x_data = data["x_data"]
+            y_data = data["y_data"]
+            text_data = data.get("text")
+
+        if x_data is not None and y_data is not None:
+            new_series = InstanciatedSeries(
+                x_data * data.get("x_data_scale", 1.0),
+                y_data * data.get("y_data_scale", 1.0),
+                data_name,
+                display_type="scatter",
+                marker_symbol=data.get("marker_symbol", "circle"),
+                text=text_data,
+                **data.get("kwargs", {}),
+            )
+            new_chart.add_series(new_series)
+
+    return new_chart
