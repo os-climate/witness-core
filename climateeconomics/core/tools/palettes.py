@@ -280,8 +280,6 @@ CapgeminiPalette = ColorPalette(
     },
 )
 
-print(CapgeminiPalette.color_map)
-
 PlotlyPalette = ColorPalette.from_plotly_qualitative("Plotly")
 ColorBlindSafePalette2 = ColorPalette.from_plotly_qualitative("Safe")
 
