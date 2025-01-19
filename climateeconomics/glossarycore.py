@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.database import DatabaseWitnessCore
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 def get_ref_var_name(var_name: str) -> str:
@@ -526,6 +527,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "$/tCO2Eq",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
