@@ -898,11 +898,13 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "$/t",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": "ns_resource",
     }
 
     ResourcesCO2Emissions = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "kgCO2/kg",
         "visibility": "Shared",
         "namespace": "ns_resource",
