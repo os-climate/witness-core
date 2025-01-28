@@ -91,7 +91,7 @@ class Study(StudyManager):
             f'{ns_study}.{GlossaryCore.WorkforceDfValue}': workforce_df,
             f'{ns_study}.{GlossaryCore.PopulationDfValue}': population_df,
             f'{ns_study}.{GlossaryCore.DamageFractionDfValue}': damage_fraction,
-            f'{ns_study}.Macroeconomics.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': enegy_agri,
+            f'{ns_study}.Macroeconomics.{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}': enegy_agri,
             f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesInvestName}': investments,
         }
 

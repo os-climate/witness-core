@@ -48,7 +48,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
     name = 'AgricultureMix'
-    energy_name = BiomassDry.name
+    stream_name = BiomassDry.name
 
     # -- add specific techno outputs to this
     DESC_OUT = {}

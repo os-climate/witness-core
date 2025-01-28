@@ -65,7 +65,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                    'visibility': 'Shared',
                                    'unit': '-', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.FractionDamageToProductivityValue: GlossaryCore.FractionDamageToProductivity,
-        GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': GlossaryCore.EnergyProductionDf['unit'],
+        GlossaryCore.StreamProductionValue: {'type': 'dataframe', 'unit': GlossaryCore.EnergyProductionDf['unit'],
                                              'dataframe_descriptor': GlossaryCore.EnergyProductionDf['dataframe_descriptor'],
                                              'dataframe_edition_locked': False},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
@@ -267,66 +267,66 @@ class SectorDiscipline(ClimateEcoDiscipline):
         for section, grad in d_section_energy_cons_d_energy_prod_dict.items():
             self.set_partial_derivative_for_other_types(
                 (f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
                 grad)
         for section, grad in d_section_gdp.items():
             self.set_partial_derivative_for_other_types(
                 (f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}", section),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
                 grad)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_usable_capital_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_usable_capital_d_energy)
 
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_gross_output_d_energy)
 
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_net_output_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_damages_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_estimated_damages_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.Damages),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_damages_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.EstimatedDamages),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_estimated_damages_d_energy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.DamagesFromClimate),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_damages_from_climate)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.EstimatedDamagesFromClimate),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_estimated_damages_from_climate)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.DamagesFromProductivityLoss),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_damages_from_prod_loss)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}", GlossaryCore.EstimatedDamagesFromProductivityLoss),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_estimated_damages_from_prod_loss)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ConstraintUpperBoundUsableCapital}",),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_ku_ub_contraint)
 
         d_gross_output_d_wap, d_net_output_d_wap, d_damages_d_wap, d_estimated_damages_d_wap,\

@@ -897,7 +897,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # list inputs and outputs for the gradient computation
         #For macroeconomics, the default inputs and outputs checked in the l1 tests are:
         l1_inputs_checked = [f'{GlossaryCore.ShareNonEnergyInvestmentsValue}',
-                               f'{GlossaryCore.EnergyProductionValue}',
+                               f'{GlossaryCore.StreamProductionValue}',
                                f'{GlossaryCore.DamageFractionDfValue}',
                                f'{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                f'{GlossaryCore.CO2EmissionsGtValue}',
@@ -1000,7 +1000,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend([
-            f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
+            f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.StreamProductionValue}' for energy in
             energy_list if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend(
@@ -1012,7 +1012,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         l1_inputs_checked.extend(
-            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
+            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamProductionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend([
             f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in
@@ -1029,7 +1029,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                               f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.co2_emissions_needed_by_energy_mix',
                               f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.carbon_capture_from_energy_mix',
                               f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{GlossaryEnergy.EnergyMeanPriceValue}',
-                              f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}',
+                              f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{GlossaryEnergy.StreamProductionValue}',
                               f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.land_demand_df',
                               f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.EnergyCapitalDfValue}',
                               f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.energy_prices_after_tax',

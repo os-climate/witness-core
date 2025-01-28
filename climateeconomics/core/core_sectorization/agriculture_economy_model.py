@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import autograd.numpy as np
 import pandas as pd
 from autograd import jacobian
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -95,7 +94,7 @@ class AgricultureEconomyModel:
         return params_food_type
 
     def init_dataframes(self):
-        years = np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
+        years = self.np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
         dataframe_to_init = [
             GlossaryCore.FoodTypesPriceName
         ]
@@ -133,7 +132,7 @@ class AgricultureEconomyModel:
 
     def _null_derivative(self):
         nb_years = self.inputs[GlossaryCore.YearEnd] - self.inputs[GlossaryCore.YearStart] + 1
-        return np.zeros((nb_years, nb_years))
+        return self.np.zeros((nb_years, nb_years))
 
     def get_args(self, food_type: str):
         return self.get_coupling_inputs_arrays_food_types(food_type) + \
@@ -186,7 +185,7 @@ class AgricultureEconomyModel:
         gathers the dictionnary outputs of the compute food type function and flattens it in an array
         helps for the using autograd jacobian which only deals with arrays
         """
-        return np.array([outputs[varname] for varname in list(self.dataframes_to_totalize_by_food_type_couplings.keys()) + self.coupling_dataframes_not_totalized])
+        return self.np.array([outputs[varname] for varname in list(self.dataframes_to_totalize_by_food_type_couplings.keys()) + self.coupling_dataframes_not_totalized])
 
     def unwrap_arrays_to_outputs(self, array: dict):
         """converts the array output of autograd back to dictionnary to store derivatives values"""
@@ -195,12 +194,12 @@ class AgricultureEconomyModel:
 
     @staticmethod
     def compute_food_type(
-            capital_food_type: np.ndarray,  # 0
-            production_loss_from_prod_loss: np.ndarray,  # 1
-            production_loss_from_immediate_climate_damages: np.ndarray,  # 2
-            production_delivered_to_consumers: np.ndarray,  # 3
-            production_for_all_streams: np.ndarray,  # 4
-            energy_price: np.ndarray, # 5
+            capital_food_type: self.flezjgez.ndarray,  # 0
+            production_loss_from_prod_loss: self.flezjgez.ndarray,  # 1
+            production_loss_from_immediate_climate_damages: self.flezjgez.ndarray,  # 2
+            production_delivered_to_consumers: self.flezjgez.ndarray,  # 3
+            production_for_all_streams: self.flezjgez.ndarray,  # 4
+            energy_price: self.flezjgez.ndarray, # 5
 
             params: dict,
     ):
@@ -235,7 +234,7 @@ class AgricultureEconomyModel:
 
         # price breakdown df
         price_breakdown_df = pd.DataFrame({
-            GlossaryCore.Years: np.arange(params[GlossaryCore.YearStart], params[GlossaryCore.YearEnd] + 1),
+            GlossaryCore.Years: self.flezjgez.arange(params[GlossaryCore.YearStart], params[GlossaryCore.YearEnd] + 1),
             "Labor": labor_cost,
             "Energy": energy_cost,
             "Capital maintenance": capital_maintenance_cost,

@@ -155,7 +155,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': False,
             f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
             f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-            f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+            f'{self.name}.{GlossaryCore.StreamProductionValue}': self.energy_supply_df,
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
             f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
@@ -172,7 +172,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         }
 
         self.checked_inputs = [f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
-                               f'{self.name}.{GlossaryCore.EnergyProductionValue}',
+                               f'{self.name}.{GlossaryCore.StreamProductionValue}',
                                f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                                f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                f'{self.name}.{GlossaryCore.PopulationDfValue}',
@@ -400,7 +400,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply[GlossaryCore.TotalProductionValue] = energy_prod
         inputs_dict = self.inputs_dict
         inputs_dict.update({f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': False,
-                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply,
+                       f'{self.name}.{GlossaryCore.StreamProductionValue}': energy_supply,
                        })
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -430,7 +430,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply[GlossaryCore.TotalProductionValue] = energy_prod
         inputs_dict = self.inputs_dict
         inputs_dict.update({f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': True,
-                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply,
+                       f'{self.name}.{GlossaryCore.StreamProductionValue}': energy_supply,
                        })
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -461,7 +461,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_prod[20:] = energy_prod[20:] / 10.
         energy_supply[GlossaryCore.TotalProductionValue] = energy_prod
         inputs_dict = self.inputs_dict
-        inputs_dict.update({f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply,
+        inputs_dict.update({f'{self.name}.{GlossaryCore.StreamProductionValue}': energy_supply,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,

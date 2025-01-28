@@ -159,7 +159,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': share_non_energy_investment,
-                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.StreamProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': default_CO2_tax,

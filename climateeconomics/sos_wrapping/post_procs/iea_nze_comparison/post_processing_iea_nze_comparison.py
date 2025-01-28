@@ -44,7 +44,7 @@ SUFFIX_VAR_IEA = ''  # IEADataPreparationDiscipline.SUFFIX_VAR_INTERPOLATED
 WITNESS_RAW_ENERGY_DF_NAME = "EnergyMix.energy_production_brut"
 WITNESS_RAW_ENERGY_COL_NAME = f"{GlossaryCore.TotalProductionValue}"
 
-WITNESS_NET_ENERGY_DF_NAME = f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}"
+WITNESS_NET_ENERGY_DF_NAME = f"EnergyMix.{GlossaryEnergy.StreamProductionValue}"
 WITNESS_NET_ENERGY_COL_NAME = f"{GlossaryCore.TotalProductionValue}"
 
 
@@ -376,7 +376,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart.add_series(new_series)
 
         x_iea_df, _ = get_shared_value(execution_engine,
-                                       f"{IEA_NAME}.{GlossaryEnergy.EnergyProductionValue}{SUFFIX_VAR_IEA}")
+                                       f"{IEA_NAME}.{GlossaryEnergy.StreamProductionValue}{SUFFIX_VAR_IEA}")
         y_iea_df, _ = get_shared_value(execution_engine,
                                        f"{IEA_NAME}.{GlossaryEnergy.EconomicsDfValue}{SUFFIX_VAR_IEA}")
         # IEA Data is not always provided at the same years for different quantities
@@ -476,7 +476,7 @@ def post_processings(execution_engine, namespace, filters):
         new_chart = create_chart_comparing_WITNESS_and_IEA(
             chart_name="Raw Energy Production",
             y_axis_name="Energy (PWh)",
-            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.EnergyProductionValue}{SUFFIX_VAR_IEA}",
+            iea_variable=f"{IEA_NAME}.{GlossaryEnergy.StreamProductionValue}{SUFFIX_VAR_IEA}",
             witness_variable=WITNESS_RAW_ENERGY_DF_NAME,
             columns_to_plot=[GlossaryCore.TotalProductionValue],
             args_to_plot={

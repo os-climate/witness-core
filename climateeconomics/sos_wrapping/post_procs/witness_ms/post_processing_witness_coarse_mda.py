@@ -679,7 +679,7 @@ def post_processings(execution_engine, namespace, filters):
             scenario_name: {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}",
+                "x_var_name": f"EnergyMix.{GlossaryEnergy.StreamProductionValue}",
                 "x_column_name": GlossaryCore.TotalProductionValue,
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",

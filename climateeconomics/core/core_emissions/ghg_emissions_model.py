@@ -72,7 +72,7 @@ class GHGEmissions:
         self.gwp_100 = self.param['GHG_global_warming_potential100']
 
         self.CO2EmissionsRef = self.param[GlossaryCore.CO2EmissionsRef['var_name']]
-        self.total_energy_production = self.param[GlossaryCore.EnergyProductionValue]
+        self.total_energy_production = self.param[GlossaryCore.StreamProductionValue]
 
 
     def configure_parameters_update(self, inputs_dict):
@@ -83,7 +83,7 @@ class GHGEmissions:
         self.residential_energy_consumption = inputs_dict[GlossaryCore.ResidentialEnergyConsumptionDfValue]
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
         self.affine_co2_objective = inputs_dict['affine_co2_objective']
-        self.total_energy_production = inputs_dict[GlossaryCore.EnergyProductionValue]
+        self.total_energy_production = inputs_dict[GlossaryCore.StreamProductionValue]
         self.create_dataframe()
 
     def create_dataframe(self):

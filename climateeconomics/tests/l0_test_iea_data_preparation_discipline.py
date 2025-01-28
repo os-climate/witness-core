@@ -93,7 +93,7 @@ class IEADataPreparationTest(unittest.TestCase):
             f'{self.name}.{self.model_name}.{Glossary.CO2EmissionsGtValue}': CO2_emissions_df,
             f'{self.name}.{self.model_name}.{Glossary.EconomicsDfValue}': GDP_df,
             f'{self.name}.{self.model_name}.{Glossary.CO2TaxesValue}': CO2_tax_df,
-            f'{self.name}.{self.model_name}.{Glossary.EnergyProductionValue}': energy_production_df,
+            f'{self.name}.{self.model_name}.{Glossary.StreamProductionValue}': energy_production_df,
             f'{self.name}.{self.model_name}.{Glossary.EnergyFinalConsumptionName}': energy_consumption_df,
             f'{self.name}.{self.model_name}.{Glossary.TemperatureDfValue}': temperature_df,
             f'{self.name}.{self.model_name}.{Glossary.PopulationDfValue}': population_df,

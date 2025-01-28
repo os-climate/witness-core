@@ -468,7 +468,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_prices' for energy in energy_list if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
         inputs_names.extend([
-            f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in
+            f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.{GlossaryCore.StreamProductionValue}' for energy in
             energy_list if energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_consumption' for energy in
@@ -477,7 +477,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_consumption' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
-            [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in
+            [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.{GlossaryCore.StreamProductionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
             f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_prices' for energy in

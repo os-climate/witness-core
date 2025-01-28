@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-import autograd.numpy as np
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_optimization_plugins.models.differentiable_model import (
     DifferentiableModel,
@@ -68,11 +66,11 @@ class ForestAutodiff(DifferentiableModel):
         # managed wood from actual invest
         mw_from_invest = self.inputs[f'managed_wood_investment:{GlossaryCore.InvestmentsValue}'] / mw_cost
         # concat all managed wood form invest
-        managed_wood_yearly_surface_variation = np.concatenate([mw_from_past_invest, mw_from_invest])
+        managed_wood_yearly_surface_variation = self.np.concatenate([mw_from_past_invest, mw_from_invest])
         # remove value that exceed year_end
         managed_wood_yearly_surface_variation = managed_wood_yearly_surface_variation[:-construction_delay]
         self.outputs['managed_wood_df:delta_surface'] = managed_wood_yearly_surface_variation
-        managed_wood_total_surface = self.inputs['managed_wood_initial_surface'] + np.cumsum(managed_wood_yearly_surface_variation)
+        managed_wood_total_surface = self.inputs['managed_wood_initial_surface'] + self.np.cumsum(managed_wood_yearly_surface_variation)
         self.outputs['managed_wood_df:cumulative_surface'] = managed_wood_total_surface
 
     def compute_managed_wood_production(self):
@@ -133,11 +131,11 @@ class ForestAutodiff(DifferentiableModel):
         # invest in G$, coest_per_ha in $/ha --> Gha
         self.outputs['forest_surface_detail_df:delta_reforestation_surface'] = self.inputs['reforestation_investment:reforestation_investment'] / self.inputs['params']['reforestation_cost_per_ha']
 
-        self.outputs['forest_surface_detail_df:deforestation_surface'] = np.cumsum(self.outputs['forest_surface_detail_df:delta_deforestation_surface'])
-        self.outputs['forest_surface_detail_df:reforestation_surface'] = np.cumsum(self.outputs['forest_surface_detail_df:delta_reforestation_surface'])
+        self.outputs['forest_surface_detail_df:deforestation_surface'] = self.np.cumsum(self.outputs['forest_surface_detail_df:delta_deforestation_surface'])
+        self.outputs['forest_surface_detail_df:reforestation_surface'] = self.np.cumsum(self.outputs['forest_surface_detail_df:delta_reforestation_surface'])
 
         delta_unmanaged_forest_surface = self.outputs['forest_surface_detail_df:delta_reforestation_surface'] + self.outputs['forest_surface_detail_df:delta_deforestation_surface']
-        self.outputs['forest_surface_detail_df:unmanaged_forest'] = np.maximum(self.inputs['initial_unmanaged_forest_surface'] + np.cumsum(delta_unmanaged_forest_surface), 0)
+        self.outputs['forest_surface_detail_df:unmanaged_forest'] = self.np.maximum(self.inputs['initial_unmanaged_forest_surface'] + self.np.cumsum(delta_unmanaged_forest_surface), 0)
 
     def compute_deforestation_biomass(self):
         """
@@ -366,7 +364,7 @@ class ForestAutodiff(DifferentiableModel):
         self.outputs['yields:unmanaged wood'] = self.inputs['params']['unmanaged_wood_yield_year_start'] * (1 - self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
 
     def initialize_years(self):
-        self.years = np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
+        self.years = self.np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
         self.zeros_array = self.years * 0.
         self.outputs[f'forest_surface_detail_df:{GlossaryCore.Years}'] = self.years
         self.outputs[f'managed_wood_df:{GlossaryCore.Years}'] = self.years

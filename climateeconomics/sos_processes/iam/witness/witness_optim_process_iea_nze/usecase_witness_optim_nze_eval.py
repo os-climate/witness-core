@@ -285,7 +285,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.CO2EmissionsGtValue}': CO2_emissions_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.EconomicsDfValue}': GDP_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.CO2TaxesValue}': CO2_tax_df,
-            f'{ns}.{IEA_DISC}.{GlossaryEnergy.EnergyProductionValue}': energy_production_df,
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.StreamProductionValue}': energy_production_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.EnergyFinalConsumptionName}': energy_consumption_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.TemperatureDfValue}': temperature_df,
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.PopulationDfValue}': population_df,

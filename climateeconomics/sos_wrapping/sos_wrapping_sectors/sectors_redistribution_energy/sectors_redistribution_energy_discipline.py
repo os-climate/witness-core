@@ -46,7 +46,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
     _maturity = 'Research'
 
     DESC_IN = {
-        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
+        GlossaryCore.StreamProductionValue: GlossaryCore.EnergyProductionDf,
         GlossaryCore.ShareResidentialEnergyDfValue: GlossaryCore.ShareResidentialEnergyDf,
         GlossaryCore.ShareOtherEnergyDfValue: GlossaryCore.ShareOtherEnergyDf
     }
@@ -71,7 +71,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
                 dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorEnergyDf)
 
         for sector in GlossaryCore.SectorsPossibleValues:
-            dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors)
+            dynamic_outputs[f'{sector}.{GlossaryCore.StreamProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors)
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -92,7 +92,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         }
 
         for sector in GlossaryCore.SectorsPossibleValues:
-            outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = sectors_energy[sector]
+            outputs[f'{sector}.{GlossaryCore.StreamProductionValue}'] = sectors_energy[sector]
 
         self.store_sos_outputs_values(outputs)
 
@@ -101,7 +101,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         inputs = self.get_sosdisc_inputs()
         deduced_sector = GlossaryCore.get_deduced_sector()
 
-        total_energy_production = inputs[GlossaryCore.EnergyProductionValue][GlossaryCore.TotalProductionValue].values
+        total_energy_production = inputs[GlossaryCore.StreamProductionValue][GlossaryCore.TotalProductionValue].values
 
         sum_share_other_sectors = []
         for sector in GlossaryCore.SectorsValueOptim:
@@ -121,19 +121,19 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
             sum_share_other_sectors.append(sector_share_energy)
             self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                (f'{sector}.{GlossaryCore.StreamProductionValue}', GlossaryCore.TotalProductionValue),
+                (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
                 np.diag(sector_share_energy / 100.)
             )
 
             self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
+                (f'{sector}.{GlossaryCore.StreamProductionValue}', GlossaryCore.TotalProductionValue),
                 (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
                 np.diag(total_energy_production / 100.)
             )
 
             self.set_partial_derivative_for_other_types(
-                (f'{deduced_sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
+                (f'{deduced_sector}.{GlossaryCore.StreamProductionValue}', GlossaryCore.TotalProductionValue),
                 (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
                 np.diag(-total_energy_production / 100.)
             )
@@ -141,7 +141,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         res_share_energy = inputs[f'{GlossaryCore.ShareResidentialEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
         self.set_partial_derivative_for_other_types(
             (f'{GlossaryCore.ResidentialEnergyConsumptionDfValue}', GlossaryCore.TotalProductionValue),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             np.diag(res_share_energy / 100.)
         )
 
@@ -152,7 +152,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         )
 
         self.set_partial_derivative_for_other_types(
-            (f'{deduced_sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
+            (f'{deduced_sector}.{GlossaryCore.StreamProductionValue}', GlossaryCore.TotalProductionValue),
             (f'{GlossaryCore.ShareResidentialEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
             np.diag(-total_energy_production / 100.)
         )
@@ -165,8 +165,8 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         sum_share_other_sectors = np.sum(sum_share_other_sectors, axis=0)
 
         self.set_partial_derivative_for_other_types(
-            (f'{deduced_sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (f'{deduced_sector}.{GlossaryCore.StreamProductionValue}', GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             np.diag(1 - sum_share_other_sectors / 100.)
         )
 
@@ -191,7 +191,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         instanciated_charts = []
         if all_filters or GlossaryCore.RedistributionEnergyProductionDf:
             # first graph
-            total_production_values = self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue)[GlossaryCore.TotalProductionValue].values
+            total_production_values = self.get_sosdisc_inputs(GlossaryCore.StreamProductionValue)[GlossaryCore.TotalProductionValue].values
             redistribution_energy_production_df = self.get_sosdisc_outputs(GlossaryCore.RedistributionEnergyProductionDfValue)
             categories_list = [col for col in redistribution_energy_production_df.columns if col != GlossaryCore.Years]
 

@@ -92,7 +92,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
         'affine_co2_objective': {'type': 'bool','default': True, 'user_level': 2, 'namespace': GlossaryCore.NS_WITNESS},
         'constraint_nze_2050_ref': {'type': 'float', 'default': 15, 'user_level': 2},
-        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
+        GlossaryCore.StreamProductionValue: GlossaryCore.EnergyProductionDf,
         GlossaryCore.SectorListValue: sector_list_variable,
         GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf
     }
@@ -279,7 +279,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         d_carbon_intensity_d_energy_prod = self.emissions_model.d_carbon_intensity_of_energy_mix_d_energy_production()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_carbon_intensity_d_energy_prod)
 
         d_sector_energy_emissions_d_ghg_emissions = {}
@@ -340,12 +340,12 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         if self.emissions_model.economic_sectors_except_agriculture:
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
                 np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
                 np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
 
             for ghg in GlossaryCore.GreenHouseGases:

@@ -86,7 +86,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}',
             f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}',
             f'{self.name}.GHG_total_energy_emissions',
-            f"{self.name}.{GlossaryCore.EnergyProductionValue}",
+            f"{self.name}.{GlossaryCore.StreamProductionValue}",
         ]
 
         self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}" for sector in GlossaryCore.DefaultSectorListGHGEmissions]
@@ -139,7 +139,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
                        f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
-                       f"{self.name}.{GlossaryCore.EnergyProductionValue}": self.energy_production,
+                       f"{self.name}.{GlossaryCore.StreamProductionValue}": self.energy_production,
                        f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
                        **self.ghg_eenergy_consumptions_sectors,
                        **self.ghg_sections_gdp,
@@ -185,7 +185,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.affine_co2_objective": False,
-                       f"{self.name}.{GlossaryCore.EnergyProductionValue}": self.energy_production,
+                       f"{self.name}.{GlossaryCore.StreamProductionValue}": self.energy_production,
                        f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
                        **self.ghg_eenergy_consumptions_sectors,
                        **self.ghg_sections_gdp,

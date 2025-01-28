@@ -94,7 +94,7 @@ class TestScatter(unittest.TestCase):
         energy_mean_price = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.EnergyPriceValue: energy_price})
 
-        input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = self.energy_supply_df
+        input_dict_to_load[f'{self.name}.{GlossaryCore.StreamProductionValue}'] = self.energy_supply_df
         input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
         input_dict_to_load[f'{self.name}.CCS_price'] = CCS_price

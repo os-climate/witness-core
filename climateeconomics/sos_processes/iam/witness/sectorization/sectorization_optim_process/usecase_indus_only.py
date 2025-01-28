@@ -236,9 +236,9 @@ class Study(StudyManager):
         sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
         sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}"] = invest_agriculture
         sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
-        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
-        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
-        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.StreamProductionValue}"] = indus_energy
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}"] = agri_energy
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.StreamProductionValue}"] = services_energy
 
         disc_dict.update(sect_input)
 

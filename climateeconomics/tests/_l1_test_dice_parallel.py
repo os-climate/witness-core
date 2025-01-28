@@ -114,7 +114,7 @@ class DICEParallelTest(unittest.TestCase):
 
         # put manually the index
 
-        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = self.energy_supply_df
+        values_dict[f'{self.name}.{GlossaryCore.StreamProductionValue}'] = self.energy_supply_df
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
@@ -148,7 +148,7 @@ class DICEParallelTest(unittest.TestCase):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
-        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = self.energy_supply_df
+        values_dict[f'{self.name}.{GlossaryCore.StreamProductionValue}'] = self.energy_supply_df
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = self.energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price

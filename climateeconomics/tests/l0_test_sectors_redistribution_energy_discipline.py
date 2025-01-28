@@ -68,7 +68,7 @@ class SectorsRedistributionEnergyDisciplineTest(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.{GlossaryCore.EnergyProductionValue}': self.energy_production_df,
+        inputs_dict = {f'{name}.{GlossaryCore.StreamProductionValue}': self.energy_production_df,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_agriculture,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_services,
                        f'{name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_energy_residential,

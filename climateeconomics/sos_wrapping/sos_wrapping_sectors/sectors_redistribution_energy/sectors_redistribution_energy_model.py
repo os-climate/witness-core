@@ -37,7 +37,7 @@ class SectorRedistributionEnergyModel:
         In addition to sectors list energy is distributed for residential and "other" category
         """
         total_energy_production: pd.DataFrame = self.inputs[
-            GlossaryCore.EnergyProductionValue
+            GlossaryCore.StreamProductionValue
         ]
         total_energy_production_values = total_energy_production[
             GlossaryCore.TotalProductionValue

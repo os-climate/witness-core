@@ -144,7 +144,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             "WITNESS": {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}",
+                "x_var_name": f"EnergyMix.{GlossaryEnergy.StreamProductionValue}",
                 "x_column_name": GlossaryCore.TotalProductionValue,
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
@@ -762,7 +762,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         #  dataframe of energy production in PWh
         energy_production = get_scenario_value(
             execution_engine,
-            f"{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionValue}",
+            f"{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionValue}",
             scenario_name,
         )
         years = energy_production[GlossaryEnergy.Years].values.tolist()

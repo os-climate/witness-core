@@ -84,7 +84,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': self.enegy_agri,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}': self.enegy_agri,
             f'{self.name}.{GlossaryCore.FoodTypesInvestName}': self.investments_food_types,
         }
 
@@ -113,7 +113,7 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.WorkforceDfValue}',
             f'{self.name}.{GlossaryCore.PopulationDfValue}',
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}',
             f'{self.name}.{GlossaryCore.FoodTypesInvestName}',
         ]
         self.coupling_outputs = [

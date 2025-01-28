@@ -243,6 +243,6 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.test_name}.{disc_name}.energy_prices',
                                     f'{self.test_name}.{disc_name}.energy_consumption',
                                     f'{self.test_name}.{disc_name}.energy_consumption_woratio',
-                                    f'{self.test_name}.{disc_name}.{GlossaryCore.EnergyProductionValue}',
+                                    f'{self.test_name}.{disc_name}.{GlossaryCore.StreamProductionValue}',
                                     f'{self.test_name}.{disc_name}.land_use_required',
                             ])

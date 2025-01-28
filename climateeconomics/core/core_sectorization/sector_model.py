@@ -136,7 +136,7 @@ class SectorModel:
             self.investment_df = inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"]
             self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         #scale energy production
-        self.energy_production = inputs[GlossaryCore.EnergyProductionValue]
+        self.energy_production = inputs[GlossaryCore.StreamProductionValue]
         self.workforce_df = inputs[GlossaryCore.WorkforceDfValue]
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
         self.damage_fraction_output_df = inputs[GlossaryCore.DamageFractionDfValue]

@@ -73,7 +73,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CropProductivityReductionName: GlossaryCore.CropProductivityReductionDf,
         GlossaryCore.FoodTypesName: GlossaryCore.FoodTypesVar,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
-        f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors),
+        f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}': GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors),
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
     }
@@ -677,7 +677,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         )
         charts.append(new_chart)
 
-        energy_agri = self.get_sosdisc_inputs(f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}')
+        energy_agri = self.get_sosdisc_inputs(f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}')
         energy_attribution_per_capital = energy_agri[GlossaryCore.TotalProductionValue].values[:, np.newaxis] / capital
         energy_attribution_per_capital[GlossaryCore.Years] = years
         new_chart = self.get_breakdown_charts_on_food_type(

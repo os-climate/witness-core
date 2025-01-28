@@ -87,7 +87,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                                   f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.StreamProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
@@ -131,7 +131,7 @@ class ServicesDiscTest(unittest.TestCase):
                                   f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest, #To check if not used
                        f'{self.name}.{SectorDiscipline.sector_name}.hist_sector_investment': self.total_invest,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.StreamProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test

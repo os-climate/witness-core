@@ -225,7 +225,7 @@ class Study(StudyManager):
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_agriculture,
                 f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
                 f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
-                f"{self.study_name}.{GlossaryCore.EnergyProductionValue}": energy_production,
+                f"{self.study_name}.{GlossaryCore.StreamProductionValue}": energy_production,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": CO2_emitted_land,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}": CO2_emitted_land,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": CO2_emitted_land,

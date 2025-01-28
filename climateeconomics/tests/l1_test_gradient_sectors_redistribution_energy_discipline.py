@@ -77,7 +77,7 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.{GlossaryCore.EnergyProductionValue}': self.energy_production_df,
+        inputs_dict = {f'{name}.{GlossaryCore.StreamProductionValue}': self.energy_production_df,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_agriculture,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_services,
                        f'{name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_energy_residential,
@@ -85,9 +85,9 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
                        }
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
-        inputs_checked = [f"{name}.{GlossaryCore.EnergyProductionValue}"]
+        inputs_checked = [f"{name}.{GlossaryCore.StreamProductionValue}"]
         inputs_checked += [f'{name}.{sector}.{GlossaryCore.ShareSectorEnergyDfValue}' for sector in self.sector_list[:-1]]
-        output_checked = [f'{name}.{sector}.{GlossaryCore.EnergyProductionValue}' for sector in self.sector_list]
+        output_checked = [f'{name}.{sector}.{GlossaryCore.StreamProductionValue}' for sector in self.sector_list]
         output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}']
 
         disc_techno = ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline

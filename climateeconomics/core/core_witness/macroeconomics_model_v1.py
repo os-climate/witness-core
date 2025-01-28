@@ -184,7 +184,7 @@ class MacroEconomics:
         self.damage_fraction_output_df = inputs[GlossaryCore.DamageFractionDfValue]
         self.damage_fraction_output_df.index = self.damage_fraction_output_df[GlossaryCore.Years].values
         # Scale energy production
-        self.energy_production = inputs[GlossaryCore.EnergyProductionValue]
+        self.energy_production = inputs[GlossaryCore.StreamProductionValue]
         self.energy_production.index = self.energy_production[GlossaryCore.Years].values
         #Investment in energy
         self.energy_investment = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue]

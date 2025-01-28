@@ -84,7 +84,7 @@ class Crop:
 
         # mapping of the coupling inputs to the compute function, used for the gradients with autograd
         self.mapping_coupling_inputs_argument_number = {
-            0: (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}", GlossaryCore.TotalProductionValue),
+            0: (f"{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}", GlossaryCore.TotalProductionValue),
             1: (GlossaryCore.WorkforceDfValue, GlossaryCore.SectorAgriculture),
             2: (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             3: (GlossaryCore.CropProductivityReductionName, GlossaryCore.CropProductivityReductionName),

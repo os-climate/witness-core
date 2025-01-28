@@ -104,7 +104,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
         GlossaryCore.ShareNonEnergyInvestmentsValue: GlossaryCore.ShareNonEnergyInvestment,
-        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
+        GlossaryCore.StreamProductionValue: GlossaryCore.EnergyProductionDf,
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'unit': '-', 'user_level': 2},
         # Employment rate param
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
@@ -374,35 +374,35 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         d_damages_d_energy, d_energy_investment_d_energy, d_ku_obj_d_energy, d_ku_ub_contraint = self.macro_model.d_energy_production()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CapitalDfValue, GlossaryCore.UsableCapital),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_usable_capital_d_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_gross_output_d_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_net_output_d_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_consumption_pc_d_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_damages_d_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_estimated_damages_d_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UsableCapitalObjectiveName,),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_ku_obj_d_energy)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ConstraintUpperBoundUsableCapital, GlossaryCore.ConstraintUpperBoundUsableCapital),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             d_ku_ub_contraint)
 
         d_gross_output_d_dfo, d_net_output_d_dfo, d_consumption_pc_d_dfo, d_estimated_damages_d_dfo,\
@@ -521,7 +521,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # # Compute gradient CO2 Taxes
         d_gross_output_dict = {
-            GlossaryCore.EnergyProductionValue: (GlossaryCore.TotalProductionValue, d_net_output_d_energy),
+            GlossaryCore.StreamProductionValue: (GlossaryCore.TotalProductionValue, d_net_output_d_energy),
             GlossaryCore.WorkingAgePopulationDfValue: (GlossaryCore.Population1570, d_net_output_d_wap),
             GlossaryCore.DamageFractionDfValue: (GlossaryCore.DamageFractionOutput, d_net_output_d_dfo),
         }
@@ -539,12 +539,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 d_section_energy_consumption_d_energy = self.macro_model.d_gdp_section_energy_consumption_d_energy_prod(sector_name=sector, section_name=section)
                 self.set_partial_derivative_for_other_types(
                     (f"{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}", section),
-                    (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                    (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
                     d_section_energy_consumption_d_energy)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ResidentialEnergyConsumptionDfValue, GlossaryCore.TotalProductionValue),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.StreamProductionValue, GlossaryCore.TotalProductionValue),
             self.macro_model.d_residential_energy_consumption_d_energy_prod())
 
     def get_chart_filter_list(self):

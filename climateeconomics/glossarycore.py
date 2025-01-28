@@ -923,17 +923,17 @@ class GlossaryCore:
         },
     }
 
-    EnergyProductionValue = "energy_production"
-    StreamProductionDetailedValue = "energy_production_detailed"
-    StreamProductionWithoutRatioValue = "energy_production_woratio"
-    StreamConsumptionValue = "energy_consumption"
-    StreamConsumptionWithoutRatioValue = "energy_consumption_woratio"
+    StreamProductionValue = "stream_production"
+    StreamProductionDetailedValue = "stream_production_detailed"
+    StreamProductionWithoutRatioValue = "stream_production_woratio"
+    StreamConsumptionValue = "stream_consumption"
+    StreamConsumptionWithoutRatioValue = "stream_consumption_woratio"
     LandUseRequiredValue = "land_use_required"
     NonUseCapital = "non_use_capital"
 
     TotalProductionValue = "Total production"
     EnergyProductionDf = {
-        "var_name": EnergyProductionValue,
+        "var_name": StreamProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "PWh",
@@ -959,10 +959,11 @@ class GlossaryCore:
     }
 
     EnergyProductionDetailedDf = {
-        "var_name": EnergyProductionValue,
+        "var_name": StreamProductionValue,
         "type": "dataframe",
         "unit": "TWh",
         "dynamic_dataframe_columns": True,
+        AutodifferentiedDisc.GRADIENTS: True,
     }
 
     EnergyCarbonIntensityDfValue = "energy_carbon_intensity_df"
@@ -978,7 +979,7 @@ class GlossaryCore:
     }
 
     EnergyProductionDfSectors = {
-        "var_name": EnergyProductionValue,
+        "var_name": StreamProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "PWh",
