@@ -22,6 +22,13 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
 )
+from sostrades_optimization_plugins.tools.plot_tools.plotting import (
+    WITNESSTwoAxesInstanciatedChart as TwoAxesInstanciatedChart,
+)
+from sostrades_optimization_plugins.tools.plot_tools.plotting import (
+    set_default_colormap,
+    set_default_palette,
+)
 
 # TwoAxesInstanciatedChart,
 from climateeconomics.core.core_witness.climateeco_discipline import (
@@ -36,13 +43,6 @@ from climateeconomics.core.core_witness.utility_tools import (
     get_inputs_for_utility_all_sectors,
     get_inputs_for_utility_per_sector,
     s_curve_function,
-)
-from climateeconomics.core.tools.plotting import (
-    WITNESSTwoAxesInstanciatedChart as TwoAxesInstanciatedChart,
-)
-from climateeconomics.core.tools.plotting import (
-    set_default_colormap,
-    set_default_palette,
 )
 from climateeconomics.glossarycore import GlossaryCore
 
