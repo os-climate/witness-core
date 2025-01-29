@@ -21,6 +21,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.database import DatabaseWitnessCore
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
 
 
 def get_ref_var_name(var_name: str) -> str:
@@ -385,6 +386,7 @@ class GlossaryCore:
 
     CaloriesPerCapitaValue = "calories_pc_df"
     CaloriesPerCapita = {
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -607,6 +609,7 @@ class GlossaryCore:
     BaseCarbonPrice = "base_carbon_price"
     DamageFractionDf = {
         "var_name": DamageFractionDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -623,6 +626,7 @@ class GlossaryCore:
     EstimatedDamages = "Estimated damages"
     DamageDf = {
         "var_name": DamageDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -835,6 +839,7 @@ class GlossaryCore:
     PopulationDf = {
         "var_name": PopulationDfValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "millions of people",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -910,6 +915,7 @@ class GlossaryCore:
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "unit": "$/MWh",
@@ -977,6 +983,7 @@ class GlossaryCore:
         "var_name": EnergyProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "PWh",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
@@ -1137,6 +1144,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "%",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -1225,6 +1233,7 @@ class GlossaryCore:
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_SECTORS,
         "visibility": "Shared",
         "type": "dataframe",
@@ -1517,6 +1526,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
@@ -1781,6 +1791,7 @@ class GlossaryCore:
     FoodTypesInvestName = "invest_food_type"
     FoodTypesInvestVar = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_CROP,
         "unit": "G$",
         "user_level": 2,
@@ -1791,6 +1802,7 @@ class GlossaryCore:
     FoodTypesPriceName = "food_type_price"
     FoodTypesPriceVar = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "$/kg",
         "description": "Price of different food price",
     }
@@ -1879,8 +1891,6 @@ class GlossaryCore:
     FoodTypeNotProducedDueToClimateChangeVar = {
         "var_name": FoodTypeNotProducedDueToClimateChangeName,
         "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
         "unit": "Mt",
         "description": "Food that is not produced due to loss of productivity (caused by climate change)",
     }
@@ -1898,8 +1908,6 @@ class GlossaryCore:
         "var_name": FoodTypeWasteByClimateDamagesName,
         "type": "dataframe",
         "unit": "Mt",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
         "description": "Production wasted due to immediate climate change",
     }
 
@@ -1958,6 +1966,7 @@ class GlossaryCore:
     CropProdForStreamName = "crop_prod_for_stream_{}"
     CropProdForStreamVar = {
         "var_name": CropProdForStreamName,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "unit": "Mt",
         "namespace": NS_CROP,
@@ -1971,8 +1980,6 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Mt",
         "user_level": 3,
-        "namespace": NS_CROP,
-        "visibility": "Shared",
         "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
     }
 
@@ -1981,8 +1988,6 @@ class GlossaryCore:
         "var_name": FoodTypeDeliveredToConsumersName,
         "type": "dataframe",
         "unit": "Mt",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Production delivered to consumers",
     }
 
@@ -2129,8 +2134,6 @@ class GlossaryCore:
         "var_name": FoodTypeCapitalName,
         "type": "dataframe",
         "unit": "G$",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Capital of each food type",
     }
 

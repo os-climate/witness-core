@@ -45,9 +45,8 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mods_dict = {
-            model_name: 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline',
-            f'Macroeconomics.{GlossaryCore.SectorAgriculture}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_economy_discipline.AgricultureEconomyDiscipline',
-                     }
+            model_name: 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
+        }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
         return builder_list
