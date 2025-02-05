@@ -33,12 +33,13 @@ class ProcessBuilder(EnergyProcessBuilder):
     def get_builders(self):
 
         ns_study = self.ee.study_name
-        model_name = 'AgricultureMix.Crop'
+        model_name = 'Macroeconomics.Agriculture.Crop'
         ns_dict = {
             'ns_public': ns_study,
             GlossaryCore.NS_WITNESS: ns_study,
             'ns_crop': f'{ns_study}.{model_name}',
             'ns_sectors': f'{ns_study}.Macroeconomics',
+            GlossaryCore.NS_AGRI: f'{ns_study}.Macroeconomics.Agriculture',
             GlossaryCore.NS_ENERGY_MIX: f'{ns_study}',
         }
 

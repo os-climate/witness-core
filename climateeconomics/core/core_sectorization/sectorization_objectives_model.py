@@ -19,9 +19,6 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import (
-    AgricultureDiscipline,
-)
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import (
     IndustrialDiscipline,
 )
@@ -37,7 +34,7 @@ class ObjectivesModel():
 
     #Units conversion
     conversion_factor = 1.0
-    SECTORS_DISC_LIST = [AgricultureDiscipline, ServicesDiscipline, IndustrialDiscipline]
+    SECTORS_DISC_LIST = [ServicesDiscipline, IndustrialDiscipline]
     SECTORS_LIST = [disc.sector_name for disc in SECTORS_DISC_LIST]
     SECTORS_OUT_UNIT = {disc.sector_name: disc.prod_cap_unit for disc in SECTORS_DISC_LIST}
 

@@ -131,7 +131,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           'index': years,
                                                                           'index_name': GlossaryCore.Years,
                                                                           'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                          'namespace_out': 'ns_forest'
+                                                                          'namespace_out': 'ns_forestry'
                                                                           }
         dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = \
             dspace_df['deforestation_investment_ctrl']['value']
@@ -141,7 +141,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                   'index': years,
                                                                   'index_name': GlossaryCore.Years,
                                                                   'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                  'namespace_out': 'ns_forest'
+                                                                  'namespace_out': 'ns_forestry'
                                                                   }
         dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_calories_per_day_ctrl'] = \
             np.array(dspace_df['red_meat_calories_per_day_ctrl']['value'])
@@ -200,7 +200,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'

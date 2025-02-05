@@ -155,7 +155,7 @@ class Study(ClimateEconomicsStudyManager):
         func_df = pd.DataFrame(data=func_dict)
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'

@@ -20,22 +20,21 @@ from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_optimization_plugins.models.differentiable_model import DifferentiableModel
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.subsector_model import (
+    SubSectorModel,
+)
 
 
-class Crop(DifferentiableModel):
+class Crop(SubSectorModel):
     """
     Crop model class 
     """
-
+    subsector_name = GlossaryCore.Crop
+    sector_name = GlossaryCore.SectorAgriculture
     streams_energy_prod = [GlossaryEnergy.biomass_dry, GlossaryEnergy.wet_biomass]
 
-    def configure_years(self):
-        self.years = self.np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
-        self.zeros_arrays = 0. * self.years
-    
     def compute(self):
-        self.configure_years()
+        SubSectorModel.compute(self)
         for ft in self.inputs[GlossaryCore.FoodTypesName]:
             self.ft = ft
             self.compute_capital()
@@ -55,9 +54,11 @@ class Crop(DifferentiableModel):
 
         self.compute_totals()
 
+        self.compute_crop_capital()
+
         self.compute_kcal_infos()
         self.compute_kg_infos()
-        #self.add_years_to_dfs()
+        self.add_years_to_dfs()
 
     def compute_kcal_infos(self):
         self.outputs['kcal_dict_infos'] = {}
@@ -100,7 +101,7 @@ class Crop(DifferentiableModel):
     def compute_capital(self):
         # forecasting capital of food type
         capital_food_type = [self.inputs[GlossaryCore.FoodTypeCapitalStartName][self.ft]]  # G$
-        invest_ft = self.inputs[f'{GlossaryCore.FoodTypesInvestName}:{self.ft}']
+        invest_ft = self.temp_variables[f'invest_details:{self.ft}']
         depreciation_rate_ft = self.inputs[GlossaryCore.FoodTypeCapitalDepreciationRateName][self.ft]
         for invest in invest_ft[:-1]:
             capital_food_type.append(capital_food_type[-1] * (1 - depreciation_rate_ft / 100) + invest)
@@ -117,10 +118,11 @@ class Crop(DifferentiableModel):
         energy_per_capital = energy_allocated_to_agri / capital_food_type
         workforce_per_capital = workforce_agri / capital_food_type
 
-        usable_capital_food_type = capital_food_type * energy_per_capital / year_start_energy_per_capital * workforce_per_capital / year_start_workforce_per_capital
-        #usable_capital_food_type = capital_food_type * self.np.minimum(1, self.np.minimum(
-        #    energy_per_capital / year_start_energy_per_capital,
-        #    workforce_per_capital / year_start_workforce_per_capital))
+        usable_capital_food_type = capital_food_type * self.np.minimum(1, self.np.minimum(
+            energy_per_capital / year_start_energy_per_capital,
+            workforce_per_capital / year_start_workforce_per_capital))
+        # TODO : find a way to have a pseudo_min
+        #usable_capital_food_type = capital_food_type * energy_per_capital / year_start_energy_per_capital * workforce_per_capital / year_start_workforce_per_capital
 
         self.outputs[f"usable_capital_breakdown:{self.ft}"] = capital_food_type - usable_capital_food_type
         self.outputs[f"non_used_capital_breakdown:{self.ft}"] = capital_food_type - usable_capital_food_type
@@ -219,13 +221,13 @@ class Crop(DifferentiableModel):
                 self.outputs[f"{GlossaryCore.FoodTypeWasteByConsumersName}:{self.ft}"] *\
                 self.inputs[f"{GlossaryCore.FoodTypeShareUserWasteUsedToStreamProdName.format(stream)}:{self.ft}"] / 100.  # Mt
 
-            self.outputs[f"{GlossaryCore.CropProdForStreamName.format(stream)}_breakdown:{self.ft}"] = \
+            self.outputs[f"Crop.{GlossaryCore.ProdForStreamName.format(stream)}_breakdown:{self.ft}"] = \
                 self.outputs[f"{GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream)}_breakdown:{self.ft}"] + \
                 self.outputs[f"{GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream)}_breakdown:{self.ft}"] + \
                 self.outputs[f"{GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream)}_breakdown:{self.ft}"]  # Mt
 
             self.outputs[f"{GlossaryCore.CropProdForAllStreamName}:{self.ft}"] = self.outputs[f"{GlossaryCore.CropProdForAllStreamName}:{self.ft}"] +\
-                                                                                 self.outputs[f"{GlossaryCore.CropProdForStreamName.format(stream)}_breakdown:{self.ft}"]
+                                                                                 self.outputs[f"Crop.{GlossaryCore.ProdForStreamName.format(stream)}_breakdown:{self.ft}"]
 
     def compute_totals(self):
 
@@ -245,11 +247,11 @@ class Crop(DifferentiableModel):
 
         }
         for ghg in GlossaryCore.GreenHouseGases:
-            dataframes_to_totalize[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] = (GlossaryCore.CropFoodEmissionsName, ghg)
+            dataframes_to_totalize[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)] = (GlossaryCore.FoodEmissionsName, ghg)
             dataframes_to_totalize[GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)] = (GlossaryCore.CropEnergyEmissionsName, ghg)
 
         for stream in self.streams_energy_prod:
-            dataframes_to_totalize[GlossaryCore.CropProdForStreamName.format(stream) + "_breakdown"] = (GlossaryCore.CropProdForStreamName.format(stream), "Total")
+            dataframes_to_totalize["Crop." + GlossaryCore.ProdForStreamName.format(stream) + "_breakdown"] = ("Crop." + GlossaryCore.ProdForStreamName.format(stream), "Total")
 
         for stream in self.streams_energy_prod:
             dataframes_to_totalize[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream) + "_breakdown"] = (GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream), "Total")
@@ -318,3 +320,9 @@ class Crop(DifferentiableModel):
         self.outputs[f"{GlossaryCore.GrossOutput}_breakdown:{self.ft}"] = \
             self.outputs[f"{GlossaryCore.OutputNetOfDamage}_breakdown:{self.ft}"] + \
             self.outputs[f"{GlossaryCore.Damages}_breakdown:{self.ft}"]
+
+    def compute_crop_capital(self):
+        self.outputs[f'Crop.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'Crop.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Capital}'] = \
+            self.sum_cols(self.get_cols_output_dataframe(f"{GlossaryCore.FoodTypeCapitalName}"))
+        self.outputs[f'Crop.{GlossaryCore.CapitalDfValue}:{GlossaryCore.UsableCapital}'] = self.outputs[f'Crop.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Capital}']

@@ -28,13 +28,15 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from climateeconomics.core.core_agriculture.crop_2 import Crop
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.subsector_discipline import (
+    SubSectorDiscipline,
+)
 
 
-class CropDiscipline(AutodifferentiedDisc):
+class CropDiscipline(SubSectorDiscipline):
     """Crop discipline for computing food production"""
     _ontology_data = {
-        'label': 'Crop food Model',
+        'label': 'Crop food Model for witness sectorized version',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -46,6 +48,8 @@ class CropDiscipline(AutodifferentiedDisc):
         'version': '',
     }
     streams_energy_prod = Crop.streams_energy_prod
+    sector_name = GlossaryCore.SectorAgriculture
+    subsector_name = GlossaryCore.Crop
 
     food_types_colors = {
         GlossaryCore.RedMeat: 'crimson',
@@ -73,11 +77,12 @@ class CropDiscipline(AutodifferentiedDisc):
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.EnergyMeanPriceValue: GlossaryCore.EnergyMeanPrice,
     }
+    DESC_IN.update(SubSectorDiscipline.DESC_IN)
 
     DESC_OUT = {
         GlossaryCore.CropFoodLandUseName: GlossaryCore.CropFoodLandUseVar,
         GlossaryCore.CropEnergyLandUseName: GlossaryCore.CropEnergyLandUseVar,
-        GlossaryCore.CropFoodEmissionsName: GlossaryCore.CropFoodEmissionsVar,
+        GlossaryCore.FoodEmissionsName: GlossaryCore.FoodEmissionsVar,
         GlossaryCore.CropEnergyEmissionsName: GlossaryCore.CropEnergyEmissionsVar,
         GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
         "non_used_capital": {"type": "dataframe", "unit": "G$", "description": "Lost capital due to missing workforce or energy attribution to agriculture sector"},
@@ -85,13 +90,15 @@ class CropDiscipline(AutodifferentiedDisc):
         "kg_dict_infos": {'type': 'dict',},
         GlossaryCore.CropFoodNetGdpName: GlossaryCore.CropFoodGdpVar,
         GlossaryCore.CropEnergyNetGdpName: GlossaryCore.CropEnergyGdpVar,
-        f"Crop.{GlossaryCore.ProductionDfValue}": GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf),
+        f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}": GlossaryCore.get_subsector_production_df(subsector_name='Crop', sector_namespace=GlossaryCore.NS_AGRI),
+        "Crop." + GlossaryCore.CapitalDfValue: GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.CapitalDf, sector_namespace=GlossaryCore.NS_AGRI, subsector_name='Crop'),
     }
+    DESC_OUT.update(SubSectorDiscipline.DESC_OUT)
     df_output_streams = {
         GlossaryCore.FoodTypeDedicatedToProductionForStreamName: GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
         GlossaryCore.WasteSupplyChainReusedForEnergyProdName: GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
         GlossaryCore.ConsumerWasteUsedForEnergyName: GlossaryCore.ConsumerWasteUsedForEnergyVar,
-        GlossaryCore.CropProdForStreamName: GlossaryCore.CropProdForStreamVar,
+        "Crop." + GlossaryCore.ProdForStreamName: GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.ProdForStreamVar, sector_namespace=GlossaryCore.NS_AGRI, subsector_name='Crop')
     }
     for stream in streams_energy_prod:
         for df_name, df_var_descr in df_output_streams.items():
@@ -100,21 +107,22 @@ class CropDiscipline(AutodifferentiedDisc):
             DESC_OUT.update({df_name.format(stream): df_stream_crop_prod})
 
     df_sectors_dict = {
-        f"Crop.{GlossaryCore.DamageDfValue}": GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDf),
-        f"Crop.{GlossaryCore.DamageDetailedDfValue}": GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDetailedDf),
+        f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}": GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDf),
+        f"{GlossaryCore.Crop}.{GlossaryCore.DamageDetailedDfValue}": GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDetailedDf),
     }
     for df_name, df_var_descr in df_sectors_dict.items():
         df_sectors = copy.deepcopy(df_var_descr)
-        df_sectors["namespace"] = GlossaryCore.NS_SECTORS
+        df_sectors["namespace"] = GlossaryCore.NS_AGRI
         DESC_OUT.update({df_name: df_sectors})
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
         self.model = Crop()
 
-    def setup_sos_disciplines(self):
+    def add_additionnal_dynamic_variables(self):
         dynamic_inputs = {}
         dynamic_outputs = {}
+
 
         if GlossaryCore.FoodTypesName in self.get_data_in():
             year_start, year_end, food_types = self.get_sosdisc_inputs([GlossaryCore.YearStart, GlossaryCore.YearEnd, GlossaryCore.FoodTypesName])
@@ -144,8 +152,7 @@ class CropDiscipline(AutodifferentiedDisc):
                     GlossaryCore.FoodTypeFertilizationAndPesticidesCostsName: GlossaryCore.FoodTypeFertilizationAndPesticidesCostsVar
                 })
 
-                dataframes_inputs = {
-                    GlossaryCore.FoodTypesInvestName: GlossaryCore.FoodTypesInvestVar}
+                dataframes_inputs = {}
 
                 for stream in self.streams_energy_prod:
                     df_shares = {
@@ -216,7 +223,7 @@ class CropDiscipline(AutodifferentiedDisc):
                         GlossaryCore.FoodTypeDedicatedToProductionForStreamName: GlossaryCore.FoodTypeDedicatedToProductionForStreamVar,
                         GlossaryCore.WasteSupplyChainReusedForEnergyProdName: GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
                         GlossaryCore.ConsumerWasteUsedForEnergyName: GlossaryCore.ConsumerWasteUsedForEnergyVar,
-                        GlossaryCore.CropProdForStreamName: GlossaryCore.CropProdForStreamVar,
+                        "Crop." + GlossaryCore.ProdForStreamName: GlossaryCore.ProdForStreamVar,
                     }
                     for df_name, df_var in df_output_streams.items():
                         df_out = copy.deepcopy(df_var)
@@ -239,8 +246,7 @@ class CropDiscipline(AutodifferentiedDisc):
                     df_output["dataframe_descriptor"] = dataframes_descriptors
                     dynamic_outputs[varname] = df_output
 
-        self.add_inputs(dynamic_inputs)
-        self.add_outputs(dynamic_outputs)
+        return dynamic_inputs, dynamic_outputs
 
     def get_chart_filter_list(self):
         chart_list = [
@@ -286,8 +292,8 @@ class CropDiscipline(AutodifferentiedDisc):
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.OutputNetOfDamage + "_breakdown"],
                 charts_name="Crop sector net output breakdown",
-                unit=GlossaryCore.ProductionDf['unit'],
-                df_total=outputs[f"Crop.{GlossaryCore.ProductionDfValue}"],
+                unit=GlossaryCore.SectorProductionDf['unit'],
+                df_total=outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"],
                 column_total=GlossaryCore.OutputNetOfDamage,
                 post_proc_category="Economical output"
             )
@@ -511,8 +517,8 @@ class CropDiscipline(AutodifferentiedDisc):
                 new_chart = self.get_breakdown_charts_on_food_type(
                     df_all_food_types=outputs[GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)],
                     charts_name=f"{ghg} Emissions of food production",
-                    unit=GlossaryCore.CropFoodEmissionsVar['unit'],
-                    df_total=outputs[GlossaryCore.CropFoodEmissionsName],
+                    unit=GlossaryCore.FoodEmissionsVar['unit'],
+                    df_total=outputs[GlossaryCore.FoodEmissionsName],
                     column_total=ghg,
                     post_proc_category="Emissions",
                     note={"Emissions": "does not include emissions due to land use change"}
@@ -536,10 +542,10 @@ class CropDiscipline(AutodifferentiedDisc):
                 stream_nicer = stream.replace('_', ' ')
                 stream_nicer = stream_nicer.capitalize()
                 new_chart = self.get_breakdown_charts_on_food_type(
-                    df_all_food_types=outputs[GlossaryCore.CropProdForStreamName.format(stream) + '_breakdown'],
+                    df_all_food_types=outputs["Crop." + GlossaryCore.ProdForStreamName.format(stream) + '_breakdown'],
                     charts_name=f"Total crop production for {stream_nicer} stream (dedicated + waste reused)",
-                    unit=GlossaryCore.CropProdForStreamVar['unit'],
-                    df_total=outputs[GlossaryCore.CropProdForStreamName.format(stream)],
+                    unit=GlossaryCore.ProdForStreamVar['unit'],
+                    df_total=outputs["Crop." + GlossaryCore.ProdForStreamName.format(stream)],
                     column_total="Total",
                     post_proc_category="Energy production",
                 )
@@ -651,10 +657,10 @@ class CropDiscipline(AutodifferentiedDisc):
             GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream): GlossaryCore.WasteSupplyChainReusedForEnergyProdVar,
             GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream): GlossaryCore.ConsumerWasteUsedForEnergyVar,
         }
-        df_total = self.get_sosdisc_outputs(GlossaryCore.CropProdForStreamName.format(stream))
+        df_total = self.get_sosdisc_outputs("Crop." + GlossaryCore.ProdForStreamName.format(stream))
 
         years = df_total[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.CropProdForStreamVar['unit'], stacked_bar=True,
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ProdForStreamVar['unit'], stacked_bar=True,
                                              chart_name=f"{stream_nicer} for energy production: breakdown of production")
 
         for df_name, df_var_descr in dfs_to_sum.items():
@@ -695,7 +701,6 @@ class CropDiscipline(AutodifferentiedDisc):
     def get_charts_capital_usages(self):
         charts = []
 
-        invests = self.get_sosdisc_inputs(GlossaryCore.FoodTypesInvestName)
 
         capital = self.get_sosdisc_outputs(GlossaryCore.FoodTypeCapitalName)
         non_use_capital = self.get_sosdisc_outputs("non_used_capital_breakdown")
@@ -703,7 +708,6 @@ class CropDiscipline(AutodifferentiedDisc):
         years = capital[GlossaryCore.Years]
         total_capital = capital[food_types].values.sum(axis=1)
         total_non_use_capital = non_use_capital[food_types].values.sum(axis=1)
-        total_invests = invests[food_types].values.sum(axis=1)
 
         new_chart = TwoAxesInstanciatedChart('Years', "T$", stacked_bar=True, chart_name="Crop capital stock")
 
@@ -715,15 +719,7 @@ class CropDiscipline(AutodifferentiedDisc):
         new_chart.post_processing_section_name = "Investments and capital"
         charts.append(new_chart)
 
-        new_chart = self.get_breakdown_charts_on_food_type(
-            df_all_food_types=invests,
-            charts_name="Investments",
-            unit=GlossaryCore.FoodTypesInvestVar["unit"],
-            df_total=None,
-            column_total=None,
-            post_proc_category="Investments and capital",
-        )
-        new_chart.add_series(InstanciatedSeries(years, total_invests, 'Total', 'lines', True, line={'color': 'gray'}))
+        new_chart = self.get_investment_chart()
         charts.append(new_chart)
 
         new_chart = self.get_breakdown_charts_on_food_type(
@@ -797,9 +793,9 @@ class CropDiscipline(AutodifferentiedDisc):
             "Energy": GlossaryCore.CropEnergyNetGdpName,
             "Food": GlossaryCore.CropFoodNetGdpName
         }
-        total_df = outputs[f"Crop.{GlossaryCore.ProductionDfValue}"]
+        total_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"]
         years = total_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ProductionDf["unit"], stacked_bar=True, chart_name="Net output breakdown (food & energy)", y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorProductionDf["unit"], stacked_bar=True, chart_name="Net output breakdown (food & energy)", y_min_zero=True)
         for key, varname  in variables.items():
             df = outputs[varname]
             new_series = InstanciatedSeries(years, df["Total"], key, 'bar', True)
@@ -812,8 +808,8 @@ class CropDiscipline(AutodifferentiedDisc):
         return new_chart
 
     def get_chart_damages(self, outputs):
-        damage_detailed_df = outputs[f"Crop.{GlossaryCore.DamageDetailedDfValue}"]
-        damage_df = outputs[f"Crop.{GlossaryCore.DamageDfValue}"]
+        damage_detailed_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDetailedDfValue}"]
+        damage_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}"]
         years = damage_detailed_df[GlossaryCore.Years]
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Damages", y_min_zero=True)
         variables_bar_plot = {
@@ -830,8 +826,8 @@ class CropDiscipline(AutodifferentiedDisc):
         return new_chart
 
     def chart_gross_and_net_output(self, outputs):
-        production_df = outputs[f"Crop.{GlossaryCore.ProductionDfValue}"]
-        damage_df = outputs[f"Crop.{GlossaryCore.DamageDfValue}"]
+        production_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"]
+        damage_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}"]
         years = production_df[GlossaryCore.Years]
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)

@@ -43,7 +43,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         Check discipline setup and run
         '''
 
-        disc_name = 'AgricultureMix'
+        disc_name = 'Agriculture'
         ns_dict = {'ns_agriculture': f'{self.test_name}',
                    'ns_energy_study': f'{self.test_name}',
                    'ns_public': f'{self.test_name}',
@@ -63,7 +63,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
-        self.technology_list = ['Crop', 'Forest']
+        self.technology_list = ['Crop', GlossaryCore.Forestry]
 
         # ----------------------------------------------------
         # Crop related inputs
@@ -149,11 +149,11 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         techno_prices = np.linspace(9, 9, year_range)
         techno_prices_wotaxes = np.linspace(9, 9, year_range)
         self.techno_prices_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest': techno_prices, 'Forest_wotaxes': techno_prices_wotaxes})
+            {GlossaryCore.Years: self.years, GlossaryCore.Forestry: techno_prices, 'Forestry_wotaxes': techno_prices_wotaxes})
 
         CO2_emissions = np.linspace(0, 0, year_range)
-        self.CO2_emissions_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest': CO2_emissions})
+        self.CO2_emissions_forestry = pd.DataFrame(
+            {GlossaryCore.Years: self.years, GlossaryCore.Forestry: CO2_emissions})
 
         CO2_emitted_land = pd.DataFrame()
         emission_forest = np.linspace(0.04, 0.04, len(self.years))
@@ -172,7 +172,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
 
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest (Gha)': land_use_required})
+            {GlossaryCore.Years: self.years, 'Forestry (Gha)': land_use_required})
         # -----------------------------------------------------
         # Agriculture mix related inputs
         self.margin = pd.DataFrame(
@@ -207,13 +207,13 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
                        f'{self.test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
                        f'{self.test_name}.{disc_name}.Crop.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
-                       f'{self.test_name}.{disc_name}.Forest.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
-                       f'{self.test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
-                       f'{self.test_name}.{disc_name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.techno_consumption_woratio_forest,
-                       f'{self.test_name}.{disc_name}.Forest.techno_production': self.techno_production_forest,
-                       f'{self.test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
-                       f'{self.test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
-                       f'{self.test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
+                       f'{self.test_name}.{disc_name}.Forestry.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{self.test_name}.{disc_name}.Forestry.techno_consumption': self.techno_consumption_forest,
+                       f'{self.test_name}.{disc_name}.Forestry.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.techno_consumption_woratio_forest,
+                       f'{self.test_name}.{disc_name}.Forestry.techno_production': self.techno_production_forest,
+                       f'{self.test_name}.{disc_name}.Forestry.techno_prices': self.techno_prices_forest,
+                       f'{self.test_name}.{disc_name}.Forestry.CO2_emissions': self.CO2_emissions_forestry,
+                       f'{self.test_name}.{disc_name}.Forestry.land_use_required': self.land_use_required_forest,
                        f'{self.test_name}.{GlossaryCore.techno_list}': self.technology_list,
                        f'{self.test_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes
                       }
@@ -231,12 +231,12 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.test_name}.{disc_name}.Crop.techno_prices',
                                     f'{self.test_name}.{disc_name}.Crop.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.Crop.land_use_required',
-                                    f'{self.test_name}.{disc_name}.Forest.techno_consumption',
-                                    f'{self.test_name}.{disc_name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                                    f'{self.test_name}.{disc_name}.Forest.techno_production',
-                                    f'{self.test_name}.{disc_name}.Forest.techno_prices',
-                                    f'{self.test_name}.{disc_name}.Forest.CO2_emissions',
-                                    f'{self.test_name}.{disc_name}.Forest.land_use_required',
+                                    f'{self.test_name}.{disc_name}.Forestry.techno_consumption',
+                                    f'{self.test_name}.{disc_name}.Forestry.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                    f'{self.test_name}.{disc_name}.Forestry.techno_production',
+                                    f'{self.test_name}.{disc_name}.Forestry.techno_prices',
+                                    f'{self.test_name}.{disc_name}.Forestry.CO2_emissions',
+                                    f'{self.test_name}.{disc_name}.Forestry.land_use_required',
                                     ],
                             outputs=[f'{self.test_name}.{disc_name}.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.CO2_per_use',

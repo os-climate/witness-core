@@ -18,11 +18,10 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-
-from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 
 class Crop2JacobianTestCase(GenericDisciplinesTestClass):
@@ -82,10 +81,12 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             GlossaryCore.NS_CROP: f'{self.name}',
             'ns_sectors': f'{self.name}',
             GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+            GlossaryCore.NS_AGRI: f'{self.name}',
         }
 
     def get_inputs_dict(self) -> dict:
         return  {
+            f'{self.name}.mdo_sectors_invest_level': 2,
             f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
             f'{self.name}.{GlossaryCore.CropProductivityReductionName}': self.crop_productivity_reduction,
@@ -94,13 +95,13 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
             f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': self.enegy_agri,
-            f'{self.name}.{GlossaryCore.FoodTypesInvestName}': self.investments_food_types,
+            f'{self.name}.Agriculture.Crop.{GlossaryCore.InvestmentDetailsDfValue}': self.investments_food_types,
         }
     def test_crop_discipline_2(self):
         '''
         Check discipline setup and run
         '''
-        self.model_name = 'crop_food'
+        self.model_name = 'Agriculture.Crop'
         self.override_dump_jacobian = False
         self.show_graphs = False
         self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'

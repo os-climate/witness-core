@@ -165,7 +165,7 @@ class LandUseV1Discipline(SoSWrapp):
             LandUseV1.LAND_DEMAND_CONSTRAINT: self.land_use_model.land_demand_constraint,
             LandUseV1.LAND_SURFACE_DETAIL_DF: self.land_use_model.land_surface_df,
             LandUseV1.LAND_SURFACE_DF: self.land_use_model.land_surface_df[[
-                'Agriculture (Gha)', 'Forest (Gha)']],
+                'Agriculture (Gha)', 'Forestry (Gha)']],
             LandUseV1.LAND_SURFACE_FOR_FOOD_DF: self.land_use_model.land_surface_for_food_df
         }
 
@@ -266,7 +266,7 @@ class LandUseV1Discipline(SoSWrapp):
             # FOREST USAGE -> Technologies that uses forest (ManagedWood,
             # UnmanagedWood..)
             if demand_df is not None:
-                forest_surfaces = surface_df['Forest (Gha)'].values
+                forest_surfaces = surface_df['Forestry (Gha)'].values
                 forest_surface_series = InstanciatedSeries(
                     years, forest_surfaces.tolist(), 'Available surface', InstanciatedSeries.LINES_DISPLAY)
 
@@ -374,7 +374,7 @@ class LandUseV1Discipline(SoSWrapp):
             series_to_add.append(agriculture_surface)
 
             forest_surface = InstanciatedSeries(
-                years, (surface_df['Forest (Gha)']).values.tolist(), surface_df['Forest (Gha)'].name.replace('(Gha)', ''), InstanciatedSeries.BAR_DISPLAY)
+                years, (surface_df['Forestry (Gha)']).values.tolist(), surface_df['Forestry (Gha)'].name.replace('(Gha)', ''), InstanciatedSeries.BAR_DISPLAY)
 
             series_to_add.append(forest_surface)
 
