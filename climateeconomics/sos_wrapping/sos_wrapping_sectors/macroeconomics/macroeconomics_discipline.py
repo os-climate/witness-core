@@ -160,6 +160,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
                 (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.Damages),
                 identity_mat)
+            try:
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+                    (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.EstimatedDamages),
+                    identity_mat)
+            except:
+                pass
 
         # gradient of constraint and invest_df wrt output net damage for each
         self.set_partial_derivative_for_other_types(

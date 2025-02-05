@@ -311,7 +311,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     total_carbon_emissions = None
     for energy in energy_list:
         if energy == GlossaryEnergy.biomass_dry:
-            namespace_disc = f'{namespace}.AgricultureMix'
+            namespace_disc = f'{namespace}.Agriculture'
         else:
             namespace_disc = f'{namespace}.EnergyMix.{energy}'
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace_disc)[0]

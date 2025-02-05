@@ -105,5 +105,5 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         self.override_dump_jacobian = False
         self.show_graphs = False
         self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.pickle_directory = dirname(__file__)

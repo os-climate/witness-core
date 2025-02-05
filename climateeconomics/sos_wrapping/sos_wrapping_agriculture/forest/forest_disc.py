@@ -50,6 +50,7 @@ class ForestryDiscipline(SubSectorDiscipline):
         'version': 'Version 0',
     }
 
+    DYNAMIC_VAR_NAMESPACE_LIST = [GlossaryCore.NS_SECTORS]
     autoconfigure_gradient_variables = True
     AGRI_CAPITAL_TECHNO_LIST = []
     biomass_cal_val = BiomassDry.data_energy_dict[
