@@ -51,8 +51,8 @@ class Crop(SubSectorModel):
             self.compute_economic_damages()
             self.compute_economics()
 
-
         self.compute_totals()
+        self.compute_biomass_dry_price()
 
         self.compute_crop_capital()
 
@@ -124,7 +124,7 @@ class Crop(SubSectorModel):
         # TODO : find a way to have a pseudo_min
         #usable_capital_food_type = capital_food_type * energy_per_capital / year_start_energy_per_capital * workforce_per_capital / year_start_workforce_per_capital
 
-        self.outputs[f"usable_capital_breakdown:{self.ft}"] = capital_food_type - usable_capital_food_type
+        self.outputs[f"usable_capital_breakdown:{self.ft}"] = usable_capital_food_type
         self.outputs[f"non_used_capital_breakdown:{self.ft}"] = capital_food_type - usable_capital_food_type
 
     def compute_productions(self):
@@ -326,3 +326,15 @@ class Crop(SubSectorModel):
         self.outputs[f'Crop.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Capital}'] = \
             self.sum_cols(self.get_cols_output_dataframe(f"{GlossaryCore.FoodTypeCapitalName}"))
         self.outputs[f'Crop.{GlossaryCore.CapitalDfValue}:{GlossaryCore.UsableCapital}'] = self.outputs[f'Crop.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Capital}']
+
+    def compute_biomass_dry_price(self):
+        total_biomass_dry_prod = self.outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProdForStreamName.format(GlossaryEnergy.biomass_dry)}:Total"]
+        biomass_dry_price = self.zeros_arrays
+        for ft in self.inputs[GlossaryCore.FoodTypesName]:
+            share_of_biomass_dry_prod_ft = self.outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProdForStreamName.format(GlossaryEnergy.biomass_dry)}_breakdown:{ft}"] / total_biomass_dry_prod
+            ft_price = self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{ft}"]
+            biomass_dry_price = biomass_dry_price + share_of_biomass_dry_prod_ft * ft_price
+
+        self.outputs[f"{GlossaryCore.Crop}.biomass_dry_price:{GlossaryCore.Crop}"] = biomass_dry_price
+
+

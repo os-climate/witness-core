@@ -76,6 +76,7 @@ class GlossaryCore:
         "range": [2000, 2300],
     }
     Forestry = "Forestry"
+    biomass_dry = "biomass_dry"
     Crop = "Crop"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
@@ -2306,6 +2307,17 @@ class GlossaryCore:
 
     SubsectorsDict = {SectorAgriculture: [Crop, Forestry]}
     MDOSectorsLevel = {"visibility": "Shared", "default": 0, "namespace": NS_PUBLIC, "type": "int", "range": [0, 2], 'structuring': True}
+
+    PriceDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_AGRI,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "$/ton",
+        "user_level": 2,
+        "description": "Price",
+        "dynamic_dataframe_columns": True,
+    }
 
     @staticmethod
     def get_dynamic_variable(variable: dict):

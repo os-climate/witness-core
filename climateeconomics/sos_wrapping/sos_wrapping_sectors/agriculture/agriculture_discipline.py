@@ -17,6 +17,11 @@ limitations under the License.
 import logging
 from copy import deepcopy
 
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
+    InstanciatedSeries,
+    TwoAxesInstanciatedChart,
+)
 from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
     AutodifferentiedDisc,
 )
@@ -57,7 +62,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
     }
 
     for sub_sector in AgricultureModel.sub_sectors:
-        for commun_variable_name, commun_variable_descr, _ in AgricultureModel.sub_sector_commun_variables:
+        for commun_variable_name, commun_variable_descr, _, _ in AgricultureModel.sub_sector_commun_variables:
             DESC_IN.update({
                 f"{sub_sector}.{commun_variable_name}": GlossaryCore.get_subsector_variable(
                     subsector_name=sub_sector, sector_namespace=GlossaryCore.NS_AGRI, var_descr=commun_variable_descr),
@@ -78,7 +83,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
                                                                                GlossaryCore.Years: ('float', None, False),
                                                                                },}
     }
-    for commun_variable_name, commun_variable_descr, _ in AgricultureModel.sub_sector_commun_variables:
+    for commun_variable_name, commun_variable_descr, _ , _ in AgricultureModel.sub_sector_commun_variables:
         var_descr = deepcopy(commun_variable_descr)
         var_descr["namespace"] = GlossaryCore.NS_SECTORS
         DESC_OUT.update({f"{sector_name}.{commun_variable_name}": var_descr})
@@ -118,4 +123,156 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
         do.update(dynamic_outputs)
         self.add_inputs(di)
         self.add_outputs(do)
+
+    def get_chart_filter_list(self):
+        chart_list = ['Emissions'
+                      'Economical output',
+                      'Capital',
+                      "Economical damages",
+                      "Biomass dry price",
+                      'Biomass dry production']
+        return [ChartFilter("Charts", chart_list, chart_list, "charts"),]
+
+    def get_post_processing_list(self, filters=None):
+        instanciated_charts = []
+        charts = []
+        selected_food_types = []
+        if filters is not None:
+            for chart_filter in filters:
+                if chart_filter.filter_key == 'charts':
+                    charts = chart_filter.selected_values
+        food_emissions_df = self.get_sosdisc_inputs(GlossaryCore.FoodEmissionsName)
+        years = food_emissions_df[GlossaryCore.Years]
+        if "Emissions" in charts:
+            forest_co2_emissions = self.get_sosdisc_inputs(f"{GlossaryCore.Forestry}.CO2_land_emission_df")["emitted_CO2_evol_cumulative"]
+            # CO2 chart:
+            agri_co2_emissions = self.get_sosdisc_outputs(GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2))
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
+                                                 stacked_bar=True, chart_name="CO2 Emissions of Agriculture sector",
+                                                 y_min_zero=True)
+            new_series = InstanciatedSeries(years, food_emissions_df[GlossaryCore.CO2], "Crop for food production", 'bar', True)
+            new_chart.add_series(new_series)
+            new_series = InstanciatedSeries(years, forest_co2_emissions, "Forest emissions", 'bar', True)
+            new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(years, agri_co2_emissions, "Total", 'lines', True)
+            new_chart.add_series(new_series)
+
+            new_chart.post_processing_section_name = "GHG Emissions"
+            new_chart.annotation_upper_left = {"Note": "does not include Crop for energy emissions (they are associated to energy sector emissions)"}
+            instanciated_charts.append(new_chart)
+
+        if "Emissions" in charts:
+            for ghg in [GlossaryCore.CH4, GlossaryCore.N2O]:
+                # CH4 chart:
+                agri_emissions = self.get_sosdisc_outputs(
+                    GlossaryCore.insertGHGAgriLandEmissions.format(ghg))
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
+                                                     stacked_bar=True, chart_name=f"{ghg} Emissions of Agriculture sector",
+                                                     y_min_zero=True)
+                new_series = InstanciatedSeries(years, food_emissions_df[ghg], "Crop for food production",
+                                                'bar', True)
+                new_chart.add_series(new_series)
+                new_series = InstanciatedSeries(years, agri_emissions, "Total", 'lines', True)
+                new_chart.add_series(new_series)
+
+                new_chart.post_processing_section_name = "GHG Emissions"
+                new_chart.annotation_upper_left = {
+                    "Note": "does not include Crop for energy emissions (they are associated to energy sector emissions)"}
+                instanciated_charts.append(new_chart)
+
+        if "Economical output" in charts:
+            # Output net of damages
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
+                                                 stacked_bar=True, chart_name="Output net of damage for Agriculture sector",
+                                                 y_min_zero=True)
+            for subsector in AgricultureModel.sub_sectors:
+                conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SubsectorProductionDf["unit"]][GlossaryCore.SectorProductionDf["unit"]]
+                subsector_data = self.get_sosdisc_inputs(f"{self.sector_name}.{subsector}.{GlossaryCore.ProductionDfValue}")[GlossaryCore.OutputNetOfDamage] * conversion_factor
+                new_series = InstanciatedSeries(years, subsector_data, subsector, 'bar', True)
+                new_chart.add_series(new_series)
+
+            sector_data = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProductionDfValue}")[GlossaryCore.OutputNetOfDamage]
+
+            new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
+            new_chart.add_series(new_series)
+
+            new_chart.post_processing_section_name = "Economical output"
+            instanciated_charts.append(new_chart)
+
+        if "Economical damages" in charts:
+            # Damages
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorProductionDf["unit"],
+                                                 stacked_bar=True, chart_name="Economical damages for Agriculture sector",
+                                                 y_min_zero=True)
+            for subsector in AgricultureModel.sub_sectors:
+                conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SubsectorDamagesDf["unit"]][GlossaryCore.DamageDf["unit"]]
+                subsector_data = self.get_sosdisc_inputs(f"{subsector}.{GlossaryCore.DamageDfValue}")[GlossaryCore.Damages] * conversion_factor
+                new_series = InstanciatedSeries(years, subsector_data, subsector, 'bar', True)
+                new_chart.add_series(new_series)
+
+            sector_data = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDfValue}")[GlossaryCore.Damages]
+
+            new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
+            new_chart.add_series(new_series)
+
+            new_chart.post_processing_section_name = "Economical output"
+            instanciated_charts.append(new_chart)
+
+        if "Biomass dry production" in charts:
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
+                                                 stacked_bar=True,
+                                                 chart_name="Biomass dry production of Agriculture sector", y_min_zero=True)
+            for subsector in AgricultureModel.sub_sectors:
+                conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.ProdForStreamVar["unit"]][GlossaryCore.ProdForStreamVar["unit"]]
+                subsector_data = self.get_sosdisc_inputs(f"{subsector}.{GlossaryCore.ProdForStreamName.format('biomass_dry')}")["Total"] * conversion_factor
+                new_series = InstanciatedSeries(years, subsector_data, subsector, 'bar', True)
+                new_chart.add_series(new_series)
+
+            sector_data = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProdForStreamName.format('biomass_dry')}")["Total"]
+
+            new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
+            new_chart.add_series(new_series)
+
+            new_chart.post_processing_section_name = "Biomass dry"
+            instanciated_charts.append(new_chart)
+
+        if "Biomass dry price" in charts:
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.PriceDf["unit"],
+                                                 stacked_bar=True,
+                                                 chart_name="Biomass dry price", y_min_zero=True)
+            for subsector in AgricultureModel.sub_sectors:
+                subsector_data = self.get_sosdisc_inputs(f"{subsector}.biomass_dry_price")[subsector]
+                new_series = InstanciatedSeries(years, subsector_data, subsector, 'lines', True)
+                new_chart.add_series(new_series)
+
+            sector_data = self.get_sosdisc_outputs(f"{self.sector_name}.biomass_dry_price")[GlossaryCore.biomass_dry]
+
+            new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
+            new_chart.add_series(new_series)
+
+            new_chart.post_processing_section_name = "Biomass dry"
+            instanciated_charts.append(new_chart)
+
+        if "Capital" in charts:
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorCapitalDf["unit"],
+                                                 stacked_bar=True, chart_name="Capital stock of Agriculture sector",
+                                                 y_min_zero=True)
+            for subsector in AgricultureModel.sub_sectors:
+                conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SubsectorCapitalDf["unit"]][GlossaryCore.SectorCapitalDf["unit"]]
+                subsector_data = self.get_sosdisc_inputs(f"{subsector}.{GlossaryCore.CapitalDfValue}")[GlossaryCore.Capital] * conversion_factor
+                new_series = InstanciatedSeries(years, subsector_data, subsector, 'bar', True)
+                new_chart.add_series(new_series)
+
+            sector_data = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDfValue}")[GlossaryCore.Damages]
+
+            new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
+            new_chart.add_series(new_series)
+
+            new_chart.post_processing_section_name = "Capital"
+            instanciated_charts.append(new_chart)
+
+
+        return instanciated_charts
+
 

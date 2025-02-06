@@ -188,7 +188,7 @@ class ForestryDiscipline(SubSectorDiscipline):
             'type': 'dataframe', 'unit': 'Gha'},
         'biomass_dry_detail_df': {
             'type': 'dataframe', 'unit': '-',},
-
+        f"{GlossaryCore.Forestry}.biomass_dry_price": GlossaryCore.get_subsector_variable(subsector_name='Crop', sector_namespace=GlossaryCore.NS_AGRI, var_descr=GlossaryCore.PriceDf),
         f'{GlossaryCore.Forestry}.techno_production': {
             'type': 'dataframe', 'unit': 'TWh or Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': GlossaryCore.NS_AGRI},
@@ -211,7 +211,6 @@ class ForestryDiscipline(SubSectorDiscipline):
         GlossaryCore.EconomicsDetailDfValue: {'type': 'dataframe', 'unit': 'G$', 'description': 'Net economical output details.'},
         "Forestry." + GlossaryCore.ProdForStreamName.format('biomass_dry'): GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.ProdForStreamVar, sector_namespace=GlossaryCore.NS_AGRI, subsector_name=GlossaryCore.Forestry),
         "Forestry." + GlossaryCore.ProdForStreamName.format('wet_biomass'): GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.ProdForStreamVar, sector_namespace=GlossaryCore.NS_AGRI, subsector_name=GlossaryCore.Forestry),
-        "Forestry." + GlossaryCore.CapitalDfValue: GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.CapitalDf, sector_namespace=GlossaryCore.NS_AGRI, subsector_name=GlossaryCore.Forestry),
         "Forestry." + GlossaryCore.CapitalDfValue: GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.CapitalDf, sector_namespace=GlossaryCore.NS_AGRI, subsector_name=GlossaryCore.Forestry),
     }
 
