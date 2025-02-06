@@ -64,7 +64,7 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_invest',
                                          'ns_agriculture',
                                          'ns_crop',
-                                         'ns_forest',
+                                         'ns_forestry',
                                          ]}
 
         self.ee.smaps_manager.add_build_map(

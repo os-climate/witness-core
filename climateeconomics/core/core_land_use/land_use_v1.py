@@ -67,7 +67,7 @@ class LandUseV1():
 
     LAND_USE_CONSTRAINT_REF = 'land_use_constraint_ref'
     AGRICULTURE_COLUMN = 'Agriculture (Gha)'
-    FOREST_COLUMN = 'Forest (Gha)'
+    FOREST_COLUMN = 'Forestry (Gha)'
 
     # Technologies filtered by land type
     FOREST_TECHNO = ['ManagedWood (Gha)', 'UnmanagedWood (Gha)']
@@ -156,9 +156,9 @@ class LandUseV1():
         self.land_surface_df['Added Forest (Gha)'] = self.__extract_and_compute_constraint_change(
             self.FOREST_CONSTRAINT_IMPACT)
 
-        self.land_surface_df['Forest (Gha)'] = [
+        self.land_surface_df['Forestry (Gha)'] = [
             forest_surfaces] * number_of_data
-        self.land_surface_df['Forest (Gha)'] = self.land_surface_df['Forest (Gha)'].values + self.land_surface_df['Added Forest (Gha)'].values \
+        self.land_surface_df['Forestry (Gha)'] = self.land_surface_df['Forestry (Gha)'].values + self.land_surface_df['Added Forest (Gha)'].values \
             + self.land_surface_df['Deforestation (Gha)'].values
 
         demand_crops = self.__extract_and_make_sum(
@@ -170,7 +170,7 @@ class LandUseV1():
 
         self.land_demand_constraint[self.LAND_DEMAND_CONSTRAINT_AGRICULTURE] = (self.land_surface_df['Agriculture (Gha)'].values -
                                                                                    demand_crops) / self.ref_land_use_constraint
-        self.land_demand_constraint[self.LAND_DEMAND_CONSTRAINT_FOREST] = (self.land_surface_df['Forest (Gha)'].values -
+        self.land_demand_constraint[self.LAND_DEMAND_CONSTRAINT_FOREST] = (self.land_surface_df['Forestry (Gha)'].values -
                                                                               demand_forest) / self.ref_land_use_constraint
 
     def get_derivative(self, objective_column, demand_column):
@@ -320,7 +320,7 @@ class LandUseV1():
             d_land_surface_d_deforestation_surface = np.tril(
                 np.ones((number_of_values, number_of_values))) * -1.0
 
-        elif objective_column == 'Forest (Gha)':
+        elif objective_column == 'Forestry (Gha)':
             d_land_surface_d_deforestation_surface = \
                 np.tril(np.ones((number_of_values, number_of_values))) * 1.0
         else:

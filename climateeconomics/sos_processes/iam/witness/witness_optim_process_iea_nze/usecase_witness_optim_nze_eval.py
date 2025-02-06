@@ -153,7 +153,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "n_processes": 32,
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.inner_mda_name': 'MDAGSNewton',
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.inner_mda_name': 'MDAGaussSeidel',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}': False}
 
@@ -233,8 +233,8 @@ class Study(ClimateEconomicsStudyManager):
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.reforestation_investment': forest_invest,
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Crop.crop_investment': crop_investment_df_NZE,
-                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Agriculture.Crop.crop_investment': crop_investment_df_NZE,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Agriculture.Forestry.reforestation_cost_per_ha': 3800.,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.electricity.Hydropower.initial_production': 4444.3,  # from data_energy/fitting/hydropower.py
                                  f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.biogas.AnaerobicDigestion.initial_production': 507.47,  # from data_energy/fitting/gaseous_bioenergy.py

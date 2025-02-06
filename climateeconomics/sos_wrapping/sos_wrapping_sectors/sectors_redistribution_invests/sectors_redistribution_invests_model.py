@@ -28,7 +28,7 @@ class SectorRedistributionInvestsModel:
 
         sectors_invests = {}
         all_sectors_invests_df = {}
-        for sector in GlossaryCore.SectorsPossibleValues:
+        for sector in self.inputs["sector_list_wo_subsector"]:
             if not self.inputs["mdo_mode"]:
                 economics_df: pd.DataFrame = self.inputs[GlossaryCore.EconomicsDfValue]
                 net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
@@ -47,7 +47,7 @@ class SectorRedistributionInvestsModel:
             sectors_invests[sector] = sector_invests_df
 
         all_sectors_invests_df = pd.DataFrame(all_sectors_invests_df)
-        all_sectors_invests_df[GlossaryCore.InvestmentsValue] = all_sectors_invests_df[GlossaryCore.SectorsPossibleValues].sum(axis=1)
+        all_sectors_invests_df[GlossaryCore.InvestmentsValue] = all_sectors_invests_df[self.inputs["sector_list_wo_subsector"]].sum(axis=1)
 
         return sectors_invests, all_sectors_invests_df
 

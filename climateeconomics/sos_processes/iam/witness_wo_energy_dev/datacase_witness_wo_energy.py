@@ -120,22 +120,22 @@ class DataStudy():
         diet_mortality['overnutrition'] = 0.
         witness_input[f'{self.study_name}.Population.{GlossaryCore.DietMortalityParamDf["var_name"]}'] = diet_mortality
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.red_meat_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.red_meat_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'red_meat_calories_per_day': [CropDiscipline.red_meat_average_ca_daily_intake] * len(years)}
         )
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.white_meat_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.white_meat_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'white_meat_calories_per_day': [CropDiscipline.white_meat_average_ca_daily_intake] * len(years)}
         )
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.vegetables_and_carbs_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.vegetables_and_carbs_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'vegetables_and_carbs_calories_per_day': [CropDiscipline.vegetables_and_carbs_average_ca_daily_intake] * len(years)}
         )
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.milk_and_eggs_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.milk_and_eggs_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'milk_and_eggs_calories_per_day': [CropDiscipline.milk_eggs_average_ca_daily_intake] * len(years)}
         )
@@ -165,7 +165,7 @@ class DataStudy():
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)
         CO2_emitted_land['Crop'] = np.zeros(len(years))
-        CO2_emitted_land['Forest'] = cum_emission
+        CO2_emitted_land[GlossaryCore.Forestry] = cum_emission
 
         witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 

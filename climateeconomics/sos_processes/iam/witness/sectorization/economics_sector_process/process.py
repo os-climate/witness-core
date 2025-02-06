@@ -37,15 +37,24 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_public': ns_scatter,
                    GlossaryCore.NS_FUNCTIONS: ns_scatter,
                    GlossaryCore.NS_SECTORS: ns_macro,
+                   GlossaryCore.NS_AGRI: f'{ns_macro}.Agriculture',
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    GlossaryCore.NS_GHGEMISSIONS: ns_scatter,
                    GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: self.ee.study_name}
 
-        mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
-                     f'Macroeconomics.{GlossaryCore.SectorServices}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline' ,
-                     f'Macroeconomics.{GlossaryCore.SectorAgriculture}':'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline',
-                     f'Macroeconomics.{GlossaryCore.SectorIndustry}':'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
-                     }
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+        builder_list = []
+
+        # insert Agriculture process at Macroeconomics.Agriculture node :
+
+        mods_dict = {
+            'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
+            f'Macroeconomics.{GlossaryCore.SectorServices}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline',
+            f'Macroeconomics.{GlossaryCore.SectorIndustry}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline',
+            "Macroeconomics.Agriculture": "climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureSectorDiscipline",
+            "Macroeconomics.Agriculture.Crop": 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline',
+            "Macroeconomics.Agriculture.Forestry": 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestryDiscipline',
+            }
+
+        builder_list.extend(self.create_builder_list(mods_dict, ns_dict=ns_dict))
 
         return builder_list

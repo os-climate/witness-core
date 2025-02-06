@@ -37,7 +37,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
 
 
     DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': ['Crop', 'Forest'],
+                                     'possible_values': ['Crop', GlossaryCore.Forestry],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
                                      'structuring': True,
@@ -47,7 +47,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
                                   'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-    name = 'AgricultureMix'
+    name = 'Agriculture'
     energy_name = BiomassDry.name
 
     # -- add specific techno outputs to this
