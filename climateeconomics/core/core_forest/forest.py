@@ -46,7 +46,7 @@ class ForestryModel(SubSectorModel):
 
         self.compute_forest_constraint_evolution()
         self.compute_production_for_energy()
-        self.compute_price_in_d_per_mwh()
+        self.compute_biomass_dry_price_in_d_per_t()
         self.compute_carbon_emissions()
         self.compute_carbon_consumption()
 
@@ -210,14 +210,13 @@ class ForestryModel(SubSectorModel):
 
         self.compute_price()
 
-        self.managed_wood_part = self.outputs['managed_wood_df:biomass_production (Mt)'] / (
-                self.outputs['managed_wood_df:biomass_production (Mt)'] + self.outputs['biomass_dry_detail_df:deforestation (Mt)'])
-        self.deforestation_part = self.outputs['biomass_dry_detail_df:deforestation (Mt)'] / (
-                self.outputs['managed_wood_df:biomass_production (Mt)'] + self.outputs['biomass_dry_detail_df:deforestation (Mt)'])
+        total_production = self.outputs['managed_wood_df:biomass_production (Mt)'] + self.outputs['biomass_dry_detail_df:deforestation (Mt)']
+        managed_wood_share_prod = self.outputs['managed_wood_df:biomass_production (Mt)'] / total_production
+        deforestation_share_prod = self.outputs['biomass_dry_detail_df:deforestation (Mt)'] / total_production
 
-        self.outputs['biomass_dry_detail_df:price_per_ton'] = self.outputs['biomass_dry_detail_df:managed_wood_price_per_ton'] * self.managed_wood_part + \
-                                                       self.outputs['biomass_dry_detail_df:deforestation_price_per_ton'] * \
-                                                       self.deforestation_part
+        self.outputs['biomass_dry_detail_df:price_per_ton'] = \
+            self.outputs['biomass_dry_detail_df:managed_wood_price_per_ton'] * managed_wood_share_prod + \
+            self.outputs['biomass_dry_detail_df:deforestation_price_per_ton'] * deforestation_share_prod
 
         self.outputs['biomass_dry_detail_df:managed_wood_price_per_MWh'] = self.outputs['biomass_dry_detail_df:managed_wood_price_per_ton'] / \
                                                                     self.inputs['params']['biomass_dry_calorific_value']
@@ -316,7 +315,13 @@ class ForestryModel(SubSectorModel):
         self.outputs['forest_surface_detail_df:forest_constraint_evolution'] = self.outputs['forest_surface_detail_df:reforestation_surface'] + \
                                                                         self.outputs['forest_surface_detail_df:deforestation_surface']
 
-    def compute_price_in_d_per_mwh(self):
+    def compute_biomass_dry_price_in_d_per_t(self):
+        # for sectorized version :
+        # Prices in $/t
+        self.outputs[f'{GlossaryCore.Forestry}.biomass_dry_price:{GlossaryCore.Forestry}'] = self.outputs['biomass_dry_detail_df:price_per_ton']
+        self.outputs[f'{GlossaryCore.Forestry}.biomass_dry_price:{GlossaryCore.Forestry}_wotaxes'] = self.outputs['biomass_dry_detail_df:price_per_ton']
+
+        # for non-sectorized version :
         # Prices in $/MWh
         self.outputs[f'{GlossaryCore.Forestry}.techno_prices:{GlossaryCore.Forestry}'] = self.outputs['biomass_dry_detail_df:price_per_MWh']
         self.outputs[f'{GlossaryCore.Forestry}.techno_prices:{GlossaryCore.Forestry}_wotaxes'] = self.outputs['biomass_dry_detail_df:price_per_MWh']
@@ -374,7 +379,7 @@ class ForestryModel(SubSectorModel):
 
         # output dataframes:
         self.outputs[f'{GlossaryCore.Forestry}.techno_production:{GlossaryCore.Years}'] = self.years
-        self.outputs[f'{GlossaryCore.Forestry}.techno_prices:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.biomass_dry_price:{GlossaryCore.Years}'] = self.years
         self.outputs[f'techno_consumption:{GlossaryCore.Years}'] = self.years
         self.outputs[f'techno_consumption_woratio:{GlossaryCore.Years}'] = self.years
         self.outputs[f'{GlossaryCore.Forestry}.land_use_required:{GlossaryCore.Years}'] = self.years

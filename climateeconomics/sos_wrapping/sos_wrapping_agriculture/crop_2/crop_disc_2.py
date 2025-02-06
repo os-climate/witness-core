@@ -91,6 +91,7 @@ class CropDiscipline(SubSectorDiscipline):
         GlossaryCore.CropFoodNetGdpName: GlossaryCore.CropFoodGdpVar,
         GlossaryCore.CropEnergyNetGdpName: GlossaryCore.CropEnergyGdpVar,
         f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}": GlossaryCore.get_subsector_production_df(subsector_name='Crop', sector_namespace=GlossaryCore.NS_AGRI),
+        f"{GlossaryCore.Crop}.biomass_dry_price": GlossaryCore.get_subsector_variable(subsector_name='Crop', sector_namespace=GlossaryCore.NS_AGRI, var_descr=GlossaryCore.PriceDf),
         "Crop." + GlossaryCore.CapitalDfValue: GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.CapitalDf, sector_namespace=GlossaryCore.NS_AGRI, subsector_name='Crop'),
     }
     DESC_OUT.update(SubSectorDiscipline.DESC_OUT)
@@ -829,7 +830,6 @@ class CropDiscipline(SubSectorDiscipline):
         production_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"]
         damage_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}"]
         years = production_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)
         variables_bar_plot = {
             "Gross output": GlossaryCore.GrossOutput,

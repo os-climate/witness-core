@@ -26,10 +26,11 @@ class AgricultureModel(DifferentiableModel):
     name = 'Agriculture'
     sub_sectors = [GlossaryCore.Forestry, GlossaryCore.Crop]
     sub_sector_commun_variables = [
-        (GlossaryCore.DamageDfValue, GlossaryCore.SubsectorDamagesDf, GlossaryCore.DamageDf),
-        (GlossaryCore.ProductionDfValue, GlossaryCore.SubsectorProductionDf, GlossaryCore.SectorProductionDf),
-        (GlossaryCore.ProdForStreamName.format('biomass_dry'), GlossaryCore.ProdForStreamVar, GlossaryCore.ProdForStreamVar),
-        (GlossaryCore.CapitalDfValue, GlossaryCore.SubsectorCapitalDf, GlossaryCore.SectorCapitalDf),
+        (GlossaryCore.DamageDfValue, GlossaryCore.SubsectorDamagesDf, GlossaryCore.DamageDf, True),
+        (GlossaryCore.ProductionDfValue, GlossaryCore.SubsectorProductionDf, GlossaryCore.SectorProductionDf, True),
+        (GlossaryCore.ProdForStreamName.format('biomass_dry'), GlossaryCore.ProdForStreamVar, GlossaryCore.ProdForStreamVar, True),
+        (GlossaryCore.CapitalDfValue, GlossaryCore.SubsectorCapitalDf, GlossaryCore.SectorCapitalDf, True),
+        ("biomass_dry_price", GlossaryCore.PriceDf, GlossaryCore.PriceDf, False),
     ]
 
     def configure_years(self):
@@ -42,16 +43,18 @@ class AgricultureModel(DifferentiableModel):
         self.sum_commun_variables()
         self.compute_sector_emissions()
         self.compute_damages_detailed()
+        self.compute_biomass_dry_price()
 
     def sum_commun_variables(self):
-        for varname, var_descr_input, var_descr_output in self.sub_sector_commun_variables:
-            self.outputs[f'{self.name}.{varname}:{GlossaryCore.Years}'] = self.years
-            conversion_factor = GlossaryCore.conversion_dict[var_descr_input['unit']][var_descr_output['unit']]
-            for column in var_descr_input['dataframe_descriptor'].keys():
-                if column != GlossaryCore.Years:
-                    self.outputs[f'{self.name}.{varname}:{column}'] = self.zeros_array
-                    for subsector in self.sub_sectors:
-                        self.outputs[f'{self.name}.{varname}:{column}'] = self.outputs[f'{self.name}.{varname}:{column}'] + self.inputs[f'{subsector}.{varname}:{column}'] * conversion_factor
+        for varname, var_descr_input, var_descr_output, do_sum in self.sub_sector_commun_variables:
+            if do_sum:
+                self.outputs[f'{self.name}.{varname}:{GlossaryCore.Years}'] = self.years
+                conversion_factor = GlossaryCore.conversion_dict[var_descr_input['unit']][var_descr_output['unit']]
+                for column in var_descr_input['dataframe_descriptor'].keys():
+                    if column != GlossaryCore.Years:
+                        self.outputs[f'{self.name}.{varname}:{column}'] = self.zeros_array
+                        for subsector in self.sub_sectors:
+                            self.outputs[f'{self.name}.{varname}:{column}'] = self.outputs[f'{self.name}.{varname}:{column}'] + self.inputs[f'{subsector}.{varname}:{column}'] * conversion_factor
 
 
     def compute_sector_investments(self):
@@ -86,3 +89,14 @@ class AgricultureModel(DifferentiableModel):
         self.outputs[f"{self.name}.{GlossaryCore.DamageDetailedDfValue}:{GlossaryCore.EstimatedDamagesFromProductivityLoss}"] = self.zeros_array
         self.outputs[f"{self.name}.{GlossaryCore.DamageDetailedDfValue}:{GlossaryCore.DamagesFromClimate}"] = self.outputs[f"{self.name}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Damages}"]
         self.outputs[f"{self.name}.{GlossaryCore.DamageDetailedDfValue}:{GlossaryCore.EstimatedDamagesFromClimate}"] = self.outputs[f"{self.name}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Damages}"]
+
+    def compute_biomass_dry_price(self):
+        """Compute the biomass dry price of agriculture sector"""
+        biomass_dry_price = self.zeros_array
+        total_biomass_dry_prod = self.outputs[f"{self.name}.{GlossaryCore.ProdForStreamName.format(GlossaryCore.biomass_dry)}:Total"]
+        for subsector in AgricultureModel.sub_sectors:
+            share_of_prod = self.inputs[f"{subsector}.{GlossaryCore.ProdForStreamName.format(GlossaryCore.biomass_dry)}:Total"] / total_biomass_dry_prod
+            subsector_biomassy_dry_price = self.inputs[f"{subsector}.biomass_dry_price:{subsector}"]
+            biomass_dry_price = biomass_dry_price + subsector_biomassy_dry_price * share_of_prod
+
+        self.outputs[f"{self.name}.biomass_dry_price:{GlossaryCore.biomass_dry}"] = biomass_dry_price

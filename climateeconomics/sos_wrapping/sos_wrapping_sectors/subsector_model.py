@@ -44,11 +44,11 @@ class SubSectorModel(DifferentiableModel):
             for col in self.get_colnames_input_dataframe(df_name=f"{self.sector_name}.{self.subsector_name}.{GlossaryCore.InvestmentDetailsDfValue}"):
                 self.temp_variables[f'invest_details:{col}'] = self.inputs[f"{self.sector_name}.{self.subsector_name}.{GlossaryCore.InvestmentDetailsDfValue}:{col}"]
         elif self.inputs["mdo_sectors_invest_level"] == 0:
-            net_output = self.inputs[f"{GlossaryCore.EconomicsDfValue}:{GlossaryCore.OutputNetOfDamage}"]
+            net_output = self.inputs[f"{GlossaryCore.EconomicsDfValue}:{GlossaryCore.OutputNetOfDamage}"] # Trillion (T$)
             share_invest_sector = self.inputs[f'{GlossaryCore.ShareSectorInvestmentDfValue}:{self.sector_name}']
             share_invest_sub_sectors = self.inputs[f'{self.sector_name}.{GlossaryCore.ShareSectorInvestmentDfValue}:{self.subsector_name}']
             share_invests_inside_sub_sectors_columns = self.get_colnames_input_dataframe(f'{self.sector_name}.{self.subsector_name}.{GlossaryCore.SubShareSectorInvestDfValue}', expect_years=True)
-            invest_sub_sector = net_output * share_invest_sector /100. * share_invest_sub_sectors / 100.
+            invest_sub_sector = net_output * 1e3 * share_invest_sector /100. * share_invest_sub_sectors / 100. # to G$
             self.temp_variables[f"invest_details:{GlossaryCore.Years}"] = self.years
             self.outputs[f"{self.sector_name}.{self.subsector_name}.{GlossaryCore.InvestmentDetailsDfValue}:{GlossaryCore.Years}"] = self.years
             for col in share_invests_inside_sub_sectors_columns:
