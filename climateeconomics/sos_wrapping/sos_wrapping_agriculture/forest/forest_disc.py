@@ -276,7 +276,7 @@ class ForestryDiscipline(SubSectorDiscipline):
 
             for col in economical_output_df.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, economical_output_df[col], pimp_string(col), "lines"))
+                    new_chart.add_series(InstanciatedSeries(years, economical_output_df[col], self.pimp_string(col), "lines"))
 
             new_chart.add_series(InstanciatedSeries(years, -economical_damages_df[GlossaryCore.Damages], "Damages", "bar"))
             new_chart.post_processing_section_name = "Economical output"
@@ -289,7 +289,7 @@ class ForestryDiscipline(SubSectorDiscipline):
 
             for col in economical_detail.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, economical_detail[col], pimp_string(col), "bar"))
+                    new_chart.add_series(InstanciatedSeries(years, economical_detail[col], self.pimp_string(col), "bar"))
 
             new_chart.add_series(InstanciatedSeries(years, economical_output_df[GlossaryCore.OutputNetOfDamage], "Total", "lines"))
             new_chart.post_processing_section_name = "Economical output"
@@ -302,7 +302,7 @@ class ForestryDiscipline(SubSectorDiscipline):
 
             for col in economical_damages_df_detailed.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, economical_damages_df_detailed[col], pimp_string(col), "bar"))
+                    new_chart.add_series(InstanciatedSeries(years, economical_damages_df_detailed[col], self.pimp_string(col), "bar"))
 
             new_chart.add_series(InstanciatedSeries(years, economical_damages_df[GlossaryCore.Damages], "Total", "lines"))
             new_chart.post_processing_section_name = "Damages"
@@ -314,7 +314,7 @@ class ForestryDiscipline(SubSectorDiscipline):
 
             for col in yields_df.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, yields_df[col], pimp_string(col), "lines"))
+                    new_chart.add_series(InstanciatedSeries(years, yields_df[col], self.pimp_string(col), "lines"))
 
             new_chart.post_processing_section_name = "Damages"
             instanciated_charts.append(new_chart)
@@ -325,7 +325,7 @@ class ForestryDiscipline(SubSectorDiscipline):
 
             for col in crop_productivity_reduction.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, - crop_productivity_reduction[col], pimp_string(col), "lines"))
+                    new_chart.add_series(InstanciatedSeries(years, crop_productivity_reduction[col], self.pimp_string(col), "lines"))
 
             new_chart.post_processing_section_name = "Damages"
             instanciated_charts.append(new_chart)
@@ -513,8 +513,3 @@ class ForestryDiscipline(SubSectorDiscipline):
 
         return instanciated_charts
 
-
-def pimp_string(val: str):
-    val = val.replace("_", ' ')
-    val = val.capitalize()
-    return val

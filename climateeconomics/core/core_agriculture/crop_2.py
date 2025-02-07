@@ -133,7 +133,7 @@ class Crop(SubSectorModel):
         production_raw = self.outputs[f"usable_capital_breakdown:{self.ft}"] *\
                          self.inputs[GlossaryCore.FoodTypeCapitalIntensityName][self.ft]
 
-        production_wasted_by_productivity_loss = production_raw * self.inputs[f"{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}"] / 100.  # Mt
+        production_wasted_by_productivity_loss = production_raw * (- self.inputs[f"{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}"]) / 100.  # Mt
         self.outputs[f"{GlossaryCore.FoodTypeNotProducedDueToClimateChangeName}:{self.ft}"] = production_wasted_by_productivity_loss
         self.outputs[f"{GlossaryCore.FoodTypeWasteByClimateDamagesName}:{self.ft}"] = (
                                                                               production_raw - production_wasted_by_productivity_loss) * self.inputs[f'{GlossaryCore.DamageFractionDfValue}:{GlossaryCore.DamageFractionOutput}']  # Mt

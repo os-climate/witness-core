@@ -366,9 +366,9 @@ class ForestryModel(SubSectorModel):
     def compute_yields(self):
         """yields are impact by climate change"""
         self.outputs[f'yields:{GlossaryCore.Years}'] = self.years
-        self.outputs['yields:actual'] = self.inputs['params']['actual_yield_year_start'] * (1 - self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
-        self.outputs['yields:managed wood'] = self.inputs['params']['managed_wood_yield_year_start'] * (1 - self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
-        self.outputs['yields:unmanaged wood'] = self.inputs['params']['unmanaged_wood_yield_year_start'] * (1 - self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
+        self.outputs['yields:actual'] = self.inputs['params']['actual_yield_year_start'] * (1 + self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
+        self.outputs['yields:managed wood'] = self.inputs['params']['managed_wood_yield_year_start'] * (1 + self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
+        self.outputs['yields:unmanaged wood'] = self.inputs['params']['unmanaged_wood_yield_year_start'] * (1 + self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
 
     def initialize_years(self):
         self.years = self.np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)

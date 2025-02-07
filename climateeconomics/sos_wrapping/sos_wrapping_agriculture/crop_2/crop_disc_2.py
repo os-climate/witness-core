@@ -257,7 +257,7 @@ class CropDiscipline(SubSectorDiscipline):
             "Waste",
             'Land use',
             'Emissions',
-            'Energy production',
+            'Biomass production for energy sector',
             "Food data (kcal)",
             "Food data (kg)",
             "Crop prices",
@@ -326,6 +326,21 @@ class CropDiscipline(SubSectorDiscipline):
             new_chart = self.get_chart_damages(outputs)
             instanciated_charts.append(new_chart)
 
+        if "Damages" in charts:
+            crop_productivity_reduction = self.get_sosdisc_inputs(GlossaryCore.CropProductivityReductionName)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.CropProductivityReductionDf['unit'],
+                                                 chart_name='Yields variation due to climate change')
+
+            for col in crop_productivity_reduction.columns:
+                if col != GlossaryCore.Years:
+                    new_chart.add_series(
+                        InstanciatedSeries(crop_productivity_reduction[GlossaryCore.Years],
+                                           crop_productivity_reduction[col], self.pimp_string(col), "lines"))
+
+            new_chart.post_processing_section_name = "Damages"
+            new_chart.to_plotly().show()
+            instanciated_charts.append(new_chart)
+
         if "Prices" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.FoodTypesPriceName],
@@ -349,7 +364,7 @@ class CropDiscipline(SubSectorDiscipline):
                 )
                 instanciated_charts.append(new_chart)
 
-        if "Production" in charts:
+        if "Crop production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.CaloriesPerCapitaBreakdownValue],
                 charts_name="Calories per capita",
@@ -360,7 +375,7 @@ class CropDiscipline(SubSectorDiscipline):
             )
             instanciated_charts.append(new_chart)
 
-        if "Production" in charts:
+        if "Crop production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs["food_per_capita_per_year"],
                 charts_name="Food per capita",
@@ -371,7 +386,7 @@ class CropDiscipline(SubSectorDiscipline):
             )
             instanciated_charts.append(new_chart)
 
-        if "Production" in charts:
+        if "Crop production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.FoodTypeDeliveredToConsumersName],
                 charts_name="Production delivered to consumers",
@@ -387,7 +402,7 @@ class CropDiscipline(SubSectorDiscipline):
             charts_capital = self.get_charts_capital_usages()
             instanciated_charts.extend(charts_capital)
 
-        if "Production" in charts:
+        if "Crop production" in charts:
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.FoodTypeProductionName],
                 charts_name="Net production",
@@ -538,7 +553,7 @@ class CropDiscipline(SubSectorDiscipline):
                 )
                 instanciated_charts.append(new_chart)
 
-        if "Energy production" in charts:
+        if "Biomass production for energy sector" in charts:
             for stream in self.streams_energy_prod:
                 stream_nicer = stream.replace('_', ' ')
                 stream_nicer = stream_nicer.capitalize()
@@ -548,7 +563,7 @@ class CropDiscipline(SubSectorDiscipline):
                     unit=GlossaryCore.ProdForStreamVar['unit'],
                     df_total=outputs["Crop." + GlossaryCore.ProdForStreamName.format(stream)],
                     column_total="Total",
-                    post_proc_category="Energy production",
+                    post_proc_category="Biomass production for energy sector",
                 )
                 instanciated_charts.append(new_chart)
 
@@ -558,7 +573,7 @@ class CropDiscipline(SubSectorDiscipline):
                     unit=GlossaryCore.FoodTypeDedicatedToProductionForStreamVar['unit'],
                     df_total=outputs[GlossaryCore.FoodTypeDedicatedToProductionForStreamName.format(stream)],
                     column_total="Total",
-                    post_proc_category="Energy production",
+                    post_proc_category="Biomass production for energy sector",
                 )
                 instanciated_charts.append(new_chart)
 
@@ -568,7 +583,7 @@ class CropDiscipline(SubSectorDiscipline):
                     unit=GlossaryCore.WasteSupplyChainReusedForEnergyProdVar['unit'],
                     df_total=outputs[GlossaryCore.WasteSupplyChainReusedForEnergyProdName.format(stream)],
                     column_total="Total",
-                    post_proc_category="Energy production",
+                    post_proc_category="Biomass production for energy sector",
                 )
                 instanciated_charts.append(new_chart)
 
@@ -578,7 +593,7 @@ class CropDiscipline(SubSectorDiscipline):
                     unit=GlossaryCore.ConsumerWasteUsedForEnergyVar['unit'],
                     df_total=outputs[GlossaryCore.ConsumerWasteUsedForEnergyName.format(stream)],
                     column_total="Total",
-                    post_proc_category="Energy production",
+                    post_proc_category="Biomass production for energy sector",
                 )
                 instanciated_charts.append(new_chart)
 
@@ -673,7 +688,7 @@ class CropDiscipline(SubSectorDiscipline):
         new_series = InstanciatedSeries(years, df_total["Total"], 'Total', 'lines', True)
         new_chart.add_series(new_series)
 
-        new_chart.post_processing_section_name = "Energy production"
+        new_chart.post_processing_section_name = "Biomass production for energy sector"
 
         return new_chart
 
