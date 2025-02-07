@@ -41,7 +41,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
         'last_modification_date': '',
         'category': '',
         'definition': 'compute food production',
-        'icon': 'fas fa-seedling fa-fw',
+        'icon': "fa-solid fa-tractor",
         'version': '',
     }
 
