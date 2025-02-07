@@ -125,7 +125,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
         self.add_outputs(do)
 
     def get_chart_filter_list(self):
-        chart_list = ['Emissions'
+        chart_list = ['Emissions',
                       'Economical output',
                       'Capital',
                       "Economical damages",
@@ -183,7 +183,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
 
         if "Economical output" in charts:
             # Output net of damages
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorProductionDf["unit"],
                                                  stacked_bar=True, chart_name="Output net of damage for Agriculture sector",
                                                  y_min_zero=True)
             for subsector in AgricultureModel.sub_sectors:
@@ -197,7 +197,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
             new_chart.add_series(new_series)
 
-            new_chart.post_processing_section_name = "Economical output"
+            new_chart.post_processing_section_name = "Economical data"
             instanciated_charts.append(new_chart)
 
         if "Economical damages" in charts:
@@ -216,7 +216,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
             new_chart.add_series(new_series)
 
-            new_chart.post_processing_section_name = "Economical output"
+            new_chart.post_processing_section_name = "Economical data"
             instanciated_charts.append(new_chart)
 
         if "Biomass dry production" in charts:
@@ -271,7 +271,6 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
 
             new_chart.post_processing_section_name = "Capital"
             instanciated_charts.append(new_chart)
-            new_chart.to_plotly().show()
 
 
         return instanciated_charts
