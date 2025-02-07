@@ -264,13 +264,14 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
                 new_series = InstanciatedSeries(years, subsector_data, subsector, 'bar', True)
                 new_chart.add_series(new_series)
 
-            sector_data = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDfValue}")[GlossaryCore.Damages]
+            sector_data = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.CapitalDfValue}")[GlossaryCore.Capital]
 
             new_series = InstanciatedSeries(years, sector_data, "Total", 'lines', True)
             new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "Capital"
             instanciated_charts.append(new_chart)
+            new_chart.to_plotly().show()
 
 
         return instanciated_charts

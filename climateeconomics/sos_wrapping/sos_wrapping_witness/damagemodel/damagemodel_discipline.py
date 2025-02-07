@@ -225,7 +225,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = [GlossaryCore.Damages,
-                      'CO2 damage price']
+                      'CO2 damage price',
+                      'Crop productivity']
         co2_damage_price_dev_formula = self.get_sosdisc_inputs("co2_damage_price_dev_formula")
         if co2_damage_price_dev_formula:
             chart_list.append(GlossaryCore.ExtraCO2tDamagePrice)
@@ -265,6 +266,21 @@ class DamageDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(new_series)
 
             note = {'Note': 'This does not include damage due to loss of productivity'}
+            new_chart.annotation_upper_left = note
+
+            instanciated_charts.append(new_chart)
+
+        if "Biomass yields" in chart_list:
+            crop_productivity_reduction = self.get_sosdisc_outputs(GlossaryCore.CropProductivityReductionName)
+            years = crop_productivity_reduction[GlossaryCore.Years]
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.CropProductivityReductionDf['unit'],
+                                                 chart_name='Biomass yields variation due to climate change')
+
+            new_chart.add_series(
+                InstanciatedSeries(years, crop_productivity_reduction[GlossaryCore.CropProductivityReductionName], 'Variation', "lines"))
+
+            new_chart.post_processing_section_name = "Damages"
+            note = {'Note': 'This impacts crop and forestry activies productivity.'}
             new_chart.annotation_upper_left = note
 
             instanciated_charts.append(new_chart)
