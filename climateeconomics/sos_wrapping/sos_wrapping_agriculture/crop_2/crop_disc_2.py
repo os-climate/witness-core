@@ -338,7 +338,6 @@ class CropDiscipline(SubSectorDiscipline):
                                            crop_productivity_reduction[col], self.pimp_string(col), "lines"))
 
             new_chart.post_processing_section_name = "Damages"
-            new_chart.to_plotly().show()
             instanciated_charts.append(new_chart)
 
         if "Prices" in charts:
