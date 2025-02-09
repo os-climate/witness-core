@@ -996,7 +996,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         energy_list = [GlossaryCore.clean_energy, GlossaryEnergy.fossil]
 
         l1_inputs_checked.extend([
-            f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in energy_list
+            f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list
             if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend([
@@ -1004,18 +1004,18 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             energy_list if
             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend(
-            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
+            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}' for energy in
              energy_list if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend(
-            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamConsumptionValue}' for energy in
+            [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamEnergyConsumptionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         l1_inputs_checked.extend(
             [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamProductionValue}' for energy in
              [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend([
-            f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.StreamPricesValue}' for energy in
+            f'WITNESS_MDO.WITNESS_Eval.WITNESS.{GlossaryEnergy.ccus_type}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in
             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         l1_inputs_checked.extend(
             [f'WITNESS_MDO.WITNESS_Eval.WITNESS.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list

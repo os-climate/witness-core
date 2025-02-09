@@ -103,8 +103,6 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
-    ObjectiveEnergyNonUseCapital = "objective_non_use_capital_energy"
-    ObjectiveEnergyNonUseCapitalByStream = "objective_non_use_capital_energy_by_stream"
     ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
     ConstraintEnergyCarbonNegative2050 = "constraint_energy_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
@@ -195,7 +193,8 @@ class GlossaryCore:
     OtherDailyCal = "other_calories_per_day"
 
     TechnoCapitalValue = "techno_capital"
-    TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
+    TechnoResourceDemandsValue = "techno_resources_demands"
+    TechnoEnergyDemandsValue = "techno_energy_demands"
     ConstructionDelay = "construction_delay"
     LifetimeName = "lifetime"
     IsTechnoMainstream = "is_mainstream"
@@ -884,14 +883,8 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
         "unit": "-",
     }
-    EnergyMeanPriceObjectiveRefValue = get_ref_var_name(EnergyMeanPriceObjectiveValue)
-    EnergyMeanPriceObjectiveRef = get_ref_variable(
-        var_name=EnergyMeanPriceObjectiveRefValue,
-        unit="$",
-        default_value=100.0,
-    )
 
-    StreamPricesValue = "energy_prices"  # todo : rename streams_prices, but it will break all l1
+    EnergyPricesValue = "energy_prices"  # todo : rename streams_prices, but it will break all l1
     ResourcesPriceValue = "resources_price"
 
     ResourcesPrice = {
@@ -913,6 +906,7 @@ class GlossaryCore:
     EnergyPriceValue = "energy_price"
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
@@ -924,10 +918,19 @@ class GlossaryCore:
     }
 
     StreamProductionValue = "stream_production"
-    StreamProductionDetailedValue = "stream_production_detailed"
-    StreamProductionWithoutRatioValue = "stream_production_woratio"
-    StreamConsumptionValue = "stream_consumption"
-    StreamConsumptionWithoutRatioValue = "stream_consumption_woratio"
+    StreamProductionDetailedValue = "energy_production_detailed"
+
+    StreamEnergyConsumptionValue = "stream_energy_consumption"
+    StreamResourceConsumptionValue = "stream_resource_consumption"
+    StreamEnergyConsumption = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies consumptions in stream"}
+    StreamResourceConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources consumptions in stream"}
+
+    StreamEnergyDemandValue = "stream_energy_demand"
+    StreamResourceDemandValue = "stream_resource_demand"
+    StreamEnergyDemand = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies demand in stream"}
+    StreamResourceDemand = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources demand in stream"}
+
+
     LandUseRequiredValue = "land_use_required"
     NonUseCapital = "non_use_capital"
 
@@ -958,7 +961,7 @@ class GlossaryCore:
         },
     }
 
-    EnergyProductionDetailedDf = {
+    StreamProductionDetailedDf = {
         "var_name": StreamProductionValue,
         "type": "dataframe",
         "unit": "TWh",
@@ -1675,6 +1678,7 @@ class GlossaryCore:
     TargetProductionConstraint = {
         "var_name": TargetProductionConstraintValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "description": "Production Constraint",
         "unit": "TWh",
         "visibility": "Shared",
@@ -1685,10 +1689,6 @@ class GlossaryCore:
         },
     }
 
-    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
-    TargetProductionConstraintRef = get_ref_variable(
-        var_name=TargetProductionConstraintRefValue, unit="TWh", default_value=1e5
-    )
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,

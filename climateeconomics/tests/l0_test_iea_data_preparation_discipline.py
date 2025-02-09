@@ -98,7 +98,7 @@ class IEADataPreparationTest(unittest.TestCase):
             f'{self.name}.{self.model_name}.{Glossary.TemperatureDfValue}': temperature_df,
             f'{self.name}.{self.model_name}.{Glossary.PopulationDfValue}': population_df,
             f'{self.name}.{self.model_name}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
-            f'{self.name}.{self.model_name}.{Glossary.methane}_{Glossary.StreamPricesValue}': natural_gas_price,
+            f'{self.name}.{self.model_name}.{Glossary.methane}_{Glossary.EnergyPricesValue}': natural_gas_price,
         }
         # random values for techno
         for techno in l_technos_to_add:

@@ -64,7 +64,7 @@ class ForestDiscipline(AutodifferentiedDisc):
         'CO2_emissions',
         'techno_production',
         'techno_consumption',
-        GlossaryCore.TechnoConsumptionWithoutRatioValue,
+        GlossaryCore.TechnoEnergyDemandsValue,
         'techno_prices',
         'forest_lost_capital',
         'forest_lost_capital',

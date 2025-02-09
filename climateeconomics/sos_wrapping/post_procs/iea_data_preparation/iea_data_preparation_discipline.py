@@ -132,7 +132,7 @@ class IEADataPreparationDiscipline(SoSWrapp):
     for energy in [f'{Glossary.electricity}', f'{Glossary.methane}']:
         energy_prices_dict = Glossary.get_dynamic_variable(Glossary.EnergyPricesDf)
         # only energy price to compare is for electricity technologies. No need to call a function
-        energy_prices_dict['var_name'] = f'{energy}_{Glossary.StreamPricesValue}'
+        energy_prices_dict['var_name'] = f'{energy}_{Glossary.EnergyPricesValue}'
         desc_in_energy_prices, desc_out_energy_prices = update_variable_name([energy_prices_dict], SUFFIX_VAR_INTERPOLATED)
         # update desc_in and desc_out with energy prices variable
         desc_in_updated.update(desc_in_energy_prices)
