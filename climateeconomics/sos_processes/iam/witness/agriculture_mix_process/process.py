@@ -28,7 +28,7 @@ from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase 
 class ProcessBuilder(EnergyProcessBuilder):
     # ontology information
     _ontology_data = {
-        'label': 'Agriculture Mix',
+        'label': 'Agriculture Mix for non sectorized witness version',
         'description': '',
         'category': '',
         'version': '',
@@ -42,18 +42,19 @@ class ProcessBuilder(EnergyProcessBuilder):
 
         ns_study = self.ee.study_name
 
-        ns_agriculture_mix = 'AgricultureMix'
+        ns_agriculture_mix = 'Agriculture'
         ns_crop = 'Crop'
-        ns_forest = 'Forest'
+        ns_forestry = GlossaryCore.Forestry
         ns_dict = {'ns_agriculture': f'{ns_study}.{ns_agriculture_mix}',
                    'ns_energy': f'{ns_study}.{ns_agriculture_mix}',
                    'ns_energy_study': f'{ns_study}',
+                   GlossaryCore.NS_SECTORS: f'{ns_study}',
                    'ns_public': f'{ns_study}',
                    GlossaryCore.NS_WITNESS: f'{ns_study}',
                    GlossaryCore.NS_FUNCTIONS: f'{ns_study}',
                    'ns_biomass_dry': f'{ns_study}',
                    'ns_land_use': f'{ns_study}',
-                   'ns_forest': f'{ns_study}.{ns_agriculture_mix}.{ns_forest}',
+                   'ns_forestry': f'{ns_study}.{ns_agriculture_mix}.{ns_forestry}',
                    'ns_invest': f'{ns_study}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
         self.ee.ns_manager.add_ns('ns_crop', f'{ns_study}.{ns_agriculture_mix}.{ns_crop}')
@@ -72,8 +73,8 @@ class ProcessBuilder(EnergyProcessBuilder):
                 technoDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
                 builder = self.ee.factory.get_builder_from_module(
                     f'{ns_agriculture_mix}.{model_name}', technoDiscPath)
-            elif model_name == "Forest":
-                technoDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
+            elif model_name == "Forestry":
+                technoDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestryDiscipline'
 
             builder = self.ee.factory.get_builder_from_module(
                 f'{ns_agriculture_mix}.{model_name}', technoDiscPath)

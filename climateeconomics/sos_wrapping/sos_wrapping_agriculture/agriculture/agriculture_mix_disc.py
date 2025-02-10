@@ -37,7 +37,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
 
 
     DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': ['Crop', 'Forest'],
+                                     'possible_values': ['Crop', GlossaryCore.Forestry],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
                                      'structuring': True,

@@ -14,11 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import json
-from copy import copy, deepcopy
+from copy import deepcopy
 from os import path
 
 import numpy as np
 import pandas as pd
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
+    AutodifferentiedDisc,
+)
 
 from climateeconomics.database import DatabaseWitnessCore
 from sostrades_optimization_plugins.models.autodifferentiated_discipline import AutodifferentiedDisc
@@ -53,6 +56,8 @@ class GlossaryCore:
     # PWh = 1e3 TWh
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
+    conversion_dict = {"G$":{"G$": 1, 'T$': 1e-3},
+                       'Mt':{'Mt':1 }}
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
@@ -71,7 +76,9 @@ class GlossaryCore:
         "namespace": "ns_public",
         "range": [2000, 2300],
     }
-    Forest = "Forest"
+    Forestry = "Forestry"
+    biomass_dry = "biomass_dry"
+    Crop = "Crop"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
@@ -372,6 +379,28 @@ class GlossaryCore:
         "structuring": True,
     }
 
+    SectorListWoSubsector = {
+        "type": "list",
+        "description": "List of sectors without subsectors",
+        "subtype_descriptor": {"list": "string"},
+        "default": [SectorServices, SectorIndustry],
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "editable": False,
+        "structuring": True,
+    }
+
+    SectorListWithSubsector = {
+        "type": "list",
+        "description": "List of sectors with subsectors",
+        "subtype_descriptor": {"list": "string"},
+        "default": [SectorAgriculture],
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "editable": False,
+        "structuring": True,
+    }
+
     MissingSectorNameValue = "sector_name_deduced_share"
     MissingSectorName = {
         "var_name": MissingSectorNameValue,
@@ -385,6 +414,7 @@ class GlossaryCore:
 
     CaloriesPerCapitaValue = "calories_pc_df"
     CaloriesPerCapita = {
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -608,6 +638,7 @@ class GlossaryCore:
     BaseCarbonPrice = "base_carbon_price"
     DamageFractionDf = {
         "var_name": DamageFractionDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -624,6 +655,7 @@ class GlossaryCore:
     EstimatedDamages = "Estimated damages"
     DamageDf = {
         "var_name": DamageDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -637,12 +669,14 @@ class GlossaryCore:
 
     SubsectorDamagesDf = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "visibility": "Shared",
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Damages: ("float", [0, 1e30], False),
         },
+        "description": "Economical damages data for sub-sector {}"
     }
 
     EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied)"
@@ -651,6 +685,7 @@ class GlossaryCore:
     DamageDetailedDf = {
         "var_name": DamageDetailedDfValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_MACRO,
         "visibility": "Shared",
         "unit": "T$",
@@ -796,6 +831,7 @@ class GlossaryCore:
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "unit": "-",
         "dataframe_descriptor": {
@@ -836,6 +872,7 @@ class GlossaryCore:
     PopulationDf = {
         "var_name": PopulationDfValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "millions of people",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -908,6 +945,7 @@ class GlossaryCore:
         "var_name": EnergyMeanPriceValue,
         AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "unit": "$/MWh",
@@ -985,6 +1023,7 @@ class GlossaryCore:
         "var_name": StreamProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "PWh",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
@@ -1072,6 +1111,32 @@ class GlossaryCore:
         },
     }
 
+    SubSectorGHGEmissionsDf = {
+        "type": "dataframe",
+        "unit": "Gt",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "description": "GHG emissions of sub-sector {}",
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YearEndDefault], False),
+            CO2: ("float", [0, 1e30], False),
+            CH4: ("float", [0, 1e30], False),
+            N2O: ("float", [0, 1e30], False),
+        },
+    }
+
+    SectorGHGEmissionsDf = {
+        "type": "dataframe",
+        "unit": "Gt",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "description": "GHG emissions of sector {}",
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YearEndDefault], False),
+            CO2: ("float", [0, 1e30], False),
+            CH4: ("float", [0, 1e30], False),
+            N2O: ("float", [0, 1e30], False),
+        },
+    }
+
     GWPEmissionsDfValue = "GWP_emissions"
     TotalGWPEmissionsDfValue = "Total GWP emissions"
     GWPEmissionsDf = {
@@ -1145,6 +1210,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "%",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -1231,8 +1297,9 @@ class GlossaryCore:
     }
 
     ProductionDfValue = "production_df"
-    ProductionDf = {
+    SectorProductionDf = {
         "var_name": ProductionDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_SECTORS,
         "visibility": "Shared",
         "type": "dataframe",
@@ -1246,12 +1313,14 @@ class GlossaryCore:
     SubsectorProductionDf = {
         "visibility": "Shared",
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
         },
+        "description": "Economical output data for sub-sector {}"
     }
 
     SubsectorProductionDetailedDf = {
@@ -1276,10 +1345,38 @@ class GlossaryCore:
     NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "visibility": "Shared",
         "type": "dataframe",
         "unit": "G$",
+        "description": "Capital of sector {}",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Capital: ("float", [0, 1e30], False),
+            UsableCapital: ("float", [0, 1e30], False),
+        },
+    }
+
+    SectorCapitalDf = {
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "type": "dataframe",
+        "unit": "T$",
+        "description": "Capital of sector {}",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Capital: ("float", [0, 1e30], False),
+            UsableCapital: ("float", [0, 1e30], False),
+        },
+    }
+
+    SubsectorCapitalDf = {
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "type": "dataframe",
+        "unit": "G$",
+        "description": "Capital of sub-sector {}",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
@@ -1428,6 +1525,24 @@ class GlossaryCore:
         },
     }
 
+    SubSectorInvestDf = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
+        "dynamic_dataframe_columns": True,
+    }
+
+    SubShareSectorInvestDfValue = "sub_sector_share_invest_df"
+    SubShareSectorInvestDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
+        "dynamic_dataframe_columns": True,
+    }
+
     ShareSectorEnergyDfValue = "share_sector_energy_df"
     ShareSectorEnergy = "Share of total energy production [%]"
     ShareSectorEnergyDf = {
@@ -1525,6 +1640,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
@@ -1542,14 +1658,16 @@ class GlossaryCore:
             Population1570: ("float", [0, 1e30], False),
         },
     }
-
+    InvestmentDetailsDfValue = "investment_details_df"
     InvestmentDfValue = "investment_df"
     InvestmentDf = {
         "var_name": InvestmentDfValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "T$",
         "visibility": "Shared",
         "namespace": NS_SECTORS,
+        'description': "Total investements in sector {}",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             InvestmentsValue: ("float", [0, 1e30], False),
@@ -1778,7 +1896,6 @@ class GlossaryCore:
     FoodTypesVar = {
         "var_name": FoodTypesName,
         'type': 'list', 'subtype_descriptor': {'list': 'string'},
-        'namespace': NS_CROP,
         "user_level": 3,
         'default': DefaultFoodTypesV2
     }
@@ -1786,6 +1903,7 @@ class GlossaryCore:
     FoodTypesInvestName = "invest_food_type"
     FoodTypesInvestVar = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_CROP,
         "unit": "G$",
         "user_level": 2,
@@ -1796,6 +1914,7 @@ class GlossaryCore:
     FoodTypesPriceName = "food_type_price"
     FoodTypesPriceVar = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "$/kg",
         "description": "Price of different food price",
     }
@@ -1884,8 +2003,6 @@ class GlossaryCore:
     FoodTypeNotProducedDueToClimateChangeVar = {
         "var_name": FoodTypeNotProducedDueToClimateChangeName,
         "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
         "unit": "Mt",
         "description": "Food that is not produced due to loss of productivity (caused by climate change)",
     }
@@ -1903,8 +2020,6 @@ class GlossaryCore:
         "var_name": FoodTypeWasteByClimateDamagesName,
         "type": "dataframe",
         "unit": "Mt",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
         "description": "Production wasted due to immediate climate change",
     }
 
@@ -1960,13 +2075,15 @@ class GlossaryCore:
         "unit": "Mt",
         "description": "Crop dedicated production of {}",
     }
-    CropProdForStreamName = "crop_prod_for_stream_{}"
-    CropProdForStreamVar = {
-        "var_name": CropProdForStreamName,
+    ProdForStreamName = "prod_for_stream_{}"
+    ProdForStreamVar = {
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "unit": "Mt",
-        "namespace": NS_CROP,
-        "visibility": "Shared",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            "Total": ("float", [0., 1e30], False),
+        },
         "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
     }
 
@@ -1976,8 +2093,6 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Mt",
         "user_level": 3,
-        "namespace": NS_CROP,
-        "visibility": "Shared",
         "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
     }
 
@@ -1986,8 +2101,6 @@ class GlossaryCore:
         "var_name": FoodTypeDeliveredToConsumersName,
         "type": "dataframe",
         "unit": "Mt",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Production delivered to consumers",
     }
 
@@ -2095,8 +2208,6 @@ class GlossaryCore:
         "var_name": CropFoodLandUseName,
         "type": "dataframe",
         "unit": "Gha",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
     }
 
@@ -2124,8 +2235,6 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Gha",
         "user_level": 3,
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
     }
 
@@ -2134,8 +2243,6 @@ class GlossaryCore:
         "var_name": FoodTypeCapitalName,
         "type": "dataframe",
         "unit": "G$",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Capital of each food type",
     }
 
@@ -2168,15 +2275,16 @@ class GlossaryCore:
         "description": "Food type {} emissions by food type for energy production",
     }
 
-    CropFoodEmissionsName = "crop_food_emissions"
-    CropFoodEmissionsVar = {
-        "var_name": CropFoodEmissionsName,
+    FoodEmissionsName = "food_emissions"
+    FoodEmissionsVar = {
+        "var_name": FoodEmissionsName,
+        "visibility": "Shared",
+        "namespace": NS_AGRI,
         "type": "dataframe",
         "unit": "Gt",
-        "visibility": "Shared",
         "user_level": 3,
-        "namespace": NS_CROP,
-        "description": "Crop for food emissions for each GHG",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "description": "Emissions of food production in crop model, by GHG",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             CO2: ("float", None, True),
@@ -2185,14 +2293,14 @@ class GlossaryCore:
         },
     }
 
-    CropEnergyEmissionsName = "crop_energy_emissions"
+    CropEnergyEmissionsName = f"{Crop}.energy_emissions"
     CropEnergyEmissionsVar = {
-        "var_name": CropEnergyEmissionsName,
         "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_AGRI,
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "Gt",
         "user_level": 3,
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Crop for energy emissions for each GHG",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -2202,10 +2310,24 @@ class GlossaryCore:
         },
     }
 
+    SubsectorsDict = {SectorAgriculture: [Crop, Forestry]}
+    MDOSectorsLevel = {"visibility": "Shared", "default": 0, "namespace": NS_PUBLIC, "type": "int", "range": [0, 2], 'structuring': True}
+
+    PriceDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_AGRI,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "$/ton",
+        "user_level": 2,
+        "description": "Price",
+        "dynamic_dataframe_columns": True,
+    }
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
-        return copy(variable)
+        return deepcopy(variable)
 
     @staticmethod
     def delete_namespace(variable: dict):
@@ -2246,3 +2368,29 @@ class GlossaryCore:
     @classmethod
     def get_deduced_sector(cls) -> str:
         return list(set(cls.SectorsPossibleValues).difference(set(cls.SectorsValueOptim)))[0]
+
+    @classmethod
+    def get_subsector_production_df(cls, subsector_name: str, sector_namespace: str):
+        subsector_production_df = cls.get_dynamic_variable(GlossaryCore.SubsectorProductionDf)
+        subsector_production_df["namespace"] = sector_namespace
+        subsector_production_df["description"] = f"Economical output data for sub-sector {subsector_name}"
+
+        return subsector_production_df
+
+    @classmethod
+    def get_subsector_damage_df(cls, subsector_name: str, sector_namespace: str):
+        subsector_production_df = cls.get_dynamic_variable(GlossaryCore.SubsectorDamagesDf)
+        subsector_production_df["namespace"] = sector_namespace
+        subsector_production_df["description"] = f"Economical damages data for sub-sector {subsector_name}"
+
+        return subsector_production_df
+
+    @classmethod
+    def get_subsector_variable(cls, var_descr: dict, subsector_name: str, sector_namespace: str):
+        subsector_production_df = deepcopy(var_descr)
+        subsector_production_df["visibility"] = "Shared"
+        subsector_production_df[AutodifferentiedDisc.GRADIENTS] = True
+        subsector_production_df["namespace"] = sector_namespace
+        subsector_production_df["description"] = subsector_production_df["description"].format(subsector_name)
+
+        return subsector_production_df

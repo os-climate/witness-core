@@ -35,7 +35,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
-        self.technology_list = ['Crop', 'Forest']
+        self.technology_list = ['Crop', GlossaryCore.Forestry]
 
         # ----------------------------------------------------
         # Crop related inputs
@@ -123,15 +123,15 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         techno_prices = np.linspace(9, 9, year_range)
         techno_prices_wotaxes = np.linspace(9, 9, year_range)
         self.techno_prices_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest': techno_prices, 'Forest_wotaxes': techno_prices_wotaxes})
+            {GlossaryCore.Years: self.years, GlossaryCore.Forestry: techno_prices, 'Forestry_wotaxes': techno_prices_wotaxes})
 
         CO2_emissions = np.linspace(0, 0, year_range)
-        self.CO2_emissions_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest': CO2_emissions})
+        self.CO2_emissions_forestry = pd.DataFrame(
+            {GlossaryCore.Years: self.years, GlossaryCore.Forestry: CO2_emissions})
 
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest (Gha)': land_use_required})
+            {GlossaryCore.Years: self.years, 'Forestry (Gha)': land_use_required})
         # -----------------------------------------------------
         # Agriculture mix related inputs
         self.margin = pd.DataFrame(
@@ -156,7 +156,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         Check discipline setup and run
         '''
         test_name = 'Test'
-        disc_name = 'AgricultureMix'
+        disc_name = 'Agriculture'
         ee = ExecutionEngine(test_name)
         ns_dict = {'ns_agriculture': f'{test_name}',
                    'ns_energy_study': f'{test_name}',

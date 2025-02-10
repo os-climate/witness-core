@@ -25,7 +25,7 @@ from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
 )
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_grad_check_sub_process.demo_uq.usecase import (
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_grad_check_sub_process.demo_uq._usecase import (
     Study,
 )
 

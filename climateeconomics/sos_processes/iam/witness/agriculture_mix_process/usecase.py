@@ -20,6 +20,7 @@ import scipy.interpolate as sc
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.study_manager.study_manager import StudyManager
 
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 AGRI_MIX_MODEL_LIST = ['Crop', 'Forest']
@@ -73,7 +74,7 @@ class Study(StudyManager):
 
     def setup_usecase(self, study_folder_path=None):
 
-        agriculture_mix = 'AgricultureMix'
+        agriculture_mix = 'Agriculture'
         energy_name = f'{agriculture_mix}'
         years = np.arange(self.year_start, self.year_end + 1)
         self.stream_prices = pd.DataFrame({GlossaryCore.Years: years,
@@ -162,11 +163,7 @@ class Study(StudyManager):
             {GlossaryCore.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, GlossaryEnergy.electricity: 0.0,
              GlossaryEnergy.methane: 0.123 / 15.4, 'syngas': 0.0, f"{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}": 0.0, 'crude oil': 0.02533})
 
-        deforestation_surface = np.linspace(10, 5, year_range)
-        self.deforestation_surface_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "deforested_surface": deforestation_surface})
 
-        forest_invest = np.linspace(5, 8, year_range)
 
         self.reforestation_investment_df = pd.DataFrame(
             {GlossaryCore.Years: years, "reforestation_investment": forest_invest})
@@ -181,13 +178,44 @@ class Study(StudyManager):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
-        self.co2_taxes = pd.DataFrame(
+        co2_taxes = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.Capital: 20000 * np.ones_like(self.years),
             GlossaryCore.NonUseCapital: 0.,
+        })
+
+        share_investments_between_agri_subsectors = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.Crop: 90.,
+            GlossaryCore.Forestry: 10.,
+        })
+
+        share_investments_inside_forestry = pd.DataFrame({
+            GlossaryCore.Years: years,
+            "Managed wood": 33.,
+            "Deforestation": 33.,
+            "Reforestation": 33.,
+        })
+
+        share_investments_inside_crop = pd.DataFrame({
+            GlossaryCore.Years: years,
+            **GlossaryCore.crop_calibration_data["invest_food_type_share_start"]
+        })
+
+        economics_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.OutputNetOfDamage: 1.015 ** np.arange(0,
+                                                               len(years)) * DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(
+                self.year_start) * 0.98,
+        })
+
+        share_sectors_invest = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value,
         })
 
         values_dict = {
@@ -197,7 +225,7 @@ class Study(StudyManager):
             f'{self.study_name}.margin': self.margin,
             f'{self.study_name}.transport_cost': self.transport,
             f'{self.study_name}.transport_margin': self.margin,
-            f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+            f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': co2_taxes,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.diet_df': diet_df_default,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.red_meat_calories_per_day': self.red_meat_ca_per_day,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.white_meat_calories_per_day': self.white_meat_ca_per_day,
@@ -205,15 +233,17 @@ class Study(StudyManager):
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.{GlossaryCore.FishDailyCal}': self.fish_ca_per_day,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.{GlossaryCore.OtherDailyCal}': self.other_ca_per_day,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
-            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.crop_investment': self.crop_investment,
-            f'{self.study_name + self.additional_ns}.reforestation_investment': self.reforestation_investment_df,
-            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.managed_wood_investment': self.mw_invest_df,
-            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.deforestation_investment': deforest_invest_df,
-            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forest}.techno_capital': techno_capital,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.crop_investment': crop_investment,
+            f'{self.study_name}.{energy_name}.{GlossaryEnergy.Forestry}.techno_capital': techno_capital,
             f'{self.study_name}.{energy_name}.{GlossaryEnergy.Crop}.techno_capital': techno_capital,
             f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
             f'{self.study_name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
             f'{self.study_name}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
+            f'{self.study_name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+            f'{self.study_name}.{GlossaryCore.ShareSectorInvestmentDfValue}': share_sectors_invest,
+            f'{self.study_name}.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}': share_investments_between_agri_subsectors,
+            f'{self.study_name}.Agriculture.Crop.{GlossaryCore.SubShareSectorInvestDfValue}': share_investments_inside_crop,
+            f'{self.study_name}.Agriculture.Forestry.{GlossaryCore.SubShareSectorInvestDfValue}': share_investments_inside_forestry,
         }
 
         red_meat_percentage_ctrl = np.linspace(600, 900, self.nb_poles)
@@ -253,20 +283,6 @@ class Study(StudyManager):
         ddict['dspace_size'] = 0
 
         # Design variables
-        # -----------------------------------------
-        # Crop related
-        update_dspace_dict_with(ddict, 'red_meat_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['red_meat_calories_per_day_ctrl']),
-                                [1.0] * self.nb_poles, [1000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        update_dspace_dict_with(ddict, 'white_meat_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['white_meat_calories_per_day_ctrl']),
-                                [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        update_dspace_dict_with(ddict, 'vegetables_and_carbs_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['vegetables_and_carbs_calories_per_day_ctrl']),
-                                [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        update_dspace_dict_with(ddict, 'milk_and_eggs_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['milk_and_eggs_calories_per_day_ctrl']),
-                                [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
                                 self.design_space_ctrl['deforestation_investment_ctrl'].values,
@@ -284,3 +300,8 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.test()
+
+    """
+    uc_cls.load_data()
+    uc_cls.run()
+    """

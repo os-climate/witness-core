@@ -587,7 +587,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Energy from Forest",
             y_axis_name="Energy (PWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.ForestProduction}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.AgricultureMix.Forest.techno_production",
+            witness_variable="WITNESS.Agriculture.Forestry.techno_production",
             columns_to_plot=["biomass_dry (TWh)"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -601,7 +601,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Energy from crop",
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.CropEnergy}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.AgricultureMix.Crop.mix_detailed_production",
+            witness_variable="WITNESS.Agriculture.Crop.mix_detailed_production",
             columns_to_plot=["Total (TWh)"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},

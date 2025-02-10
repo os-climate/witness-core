@@ -62,13 +62,13 @@ class GHGEmissionDiscTest(unittest.TestCase):
                                                    GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
+                                           GlossaryCore.Forestry: np.linspace(3., 4., len(years))})
         N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
+                                           GlossaryCore.Forestry: np.linspace(3., 4., len(years))})
         CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
+                                           GlossaryCore.Forestry: np.linspace(3., 4., len(years))})
 
         CO2_emissions_ref = 6.49 # Gt
 

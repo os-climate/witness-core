@@ -22,6 +22,9 @@ from sostrades_core.study_manager.study_manager import StudyManager
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.sectorization.economics_sector_process.usecase import (
+    Study as StudyEconomicSectors,
+)
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
@@ -189,7 +192,7 @@ class Study(StudyManager):
             cum_emission = np.cumsum(emission_forest)
             CO2_emitted_land[GlossaryCore.Years] = years
             CO2_emitted_land['Crop'] = np.zeros(len(years))
-            CO2_emitted_land['Forest'] = cum_emission
+            CO2_emitted_land[GlossaryCore.Forestry] = cum_emission
             GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                        GlossaryCore.TotalCO2Emissions: np.linspace(37., 10.,
                                                                                                    len(years)),
@@ -253,10 +256,13 @@ class Study(StudyManager):
             f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel'}
 
         setup_data_list.append(numerical_values_dict)
-
+        study_economic_process = StudyEconomicSectors(year_start=self.year_start, year_end=self.year_end)
+        study_economic_process.study_name = self.study_name
+        setup_data_list.extend(study_economic_process.setup_usecase())
         return setup_data_list
 
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

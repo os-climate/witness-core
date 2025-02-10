@@ -18,9 +18,6 @@ limitations under the License.
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import (
-    AgricultureEmissionsDiscipline,
-)
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import (
     GHGemissionsDiscipline,
 )
@@ -44,7 +41,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: ns_scatter,
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: ns_scatter,
                    'ns_agriculture': ns_scatter,
-                   'ns_forest': ns_scatter}
+                   'ns_forestry': ns_scatter}
 
         mods_dict = {
             'GHGCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.ghgcycle.ghgcycle_discipline.GHGCycleDiscipline',
@@ -58,10 +55,6 @@ class ProcessBuilder(BaseProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'land_use_v2_process')
         builder_list.extend(chain_builders_landuse)
 
-        chain_builders_agriculture = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'agriculture_mix_process')
-        builder_list.extend(chain_builders_agriculture)
-
         chain_builders_sect = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness.sectorization', 'sectorization_process')
         builder_list.extend(chain_builders_sect)
@@ -74,13 +67,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-
-        mods_dict = {
-            AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',
-        }
-        non_use_capital_list = self.create_builder_list(
-            mods_dict, ns_dict=ns_dict)
-        builder_list.extend(non_use_capital_list)
 
         # emissions post proc modules :
         self.ee.ns_manager.add_ns(GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS,

@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2000, year_end=GlossaryCore.YearStartDefault, name='', execution_engine=None, run_usecase=False):
+    def __init__(self, year_start=2000, year_end=GlossaryCore.YearStartDefault, execution_engine=None, run_usecase=False):
         super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
         self.study_name = 'usecase_indus_only'
         self.macro_name = 'Macroeconomics'
@@ -52,14 +52,13 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.witness_sect_uc = witness_sect_usecase(self.year_start, self.year_end,
-                                                    execution_engine=execution_engine)
+                                                    execution_engine=execution_engine, main_study=False)
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        ns = self.study_name
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
-        INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
 
         dspace_dict = {'variable': ['output_alpha_indus_in', 'prod_gr_start_indus_in', 'decl_rate_tfp_indus_in',
@@ -149,6 +148,7 @@ class Study(StudyManager):
                                ]
         func_df['ftype'] = [OBJECTIVE, OBJECTIVE]
         func_df['weight'] = [1, 1]
+        func_df['parent'] = ["parent", "parent"]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM]
         func_df['namespace'] = ['ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'
@@ -161,11 +161,10 @@ class Study(StudyManager):
 
         # Inputs for objective 
         data_dir = join(
-            dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
+            dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data/sectorization_fitting')
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
-        hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
         long_term_energy_eff = pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
         lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
                                      GlossaryCore.EnergyEfficiency: long_term_energy_eff[
@@ -183,18 +182,17 @@ class Study(StudyManager):
             GlossaryCore.SectorServices: np.ones(n_years) * 1000,
             GlossaryCore.SectorAgriculture: np.ones(n_years) * 1000,
         })
-
+        ns_industry_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}"
+        ns_agriculture_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}"
+        ns_services_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorServices}"
         sect_input = {}
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_energy'}"] = hist_energy
-        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = hist_invest
         sect_input[f"{ns_coupling}.{self.macro_name}.{'prod_function_fitting'}"] = False
-        sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
-        sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
-        sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
+        sect_input[f"{ns_industry_macro}.{'longterm_energy_efficiency'}"] = lt_enef_indus
+        sect_input[f"{ns_agriculture_macro}.{'longterm_energy_efficiency'}"] = lt_enef_agri
+        sect_input[f"{ns_services_macro}.{'longterm_energy_efficiency'}"] = lt_enef_services
         sect_input[f"{ns_coupling}.{'workforce_df'}"] = workforce_df
         disc_dict.update(sect_input)
 
@@ -218,7 +216,6 @@ class Study(StudyManager):
         energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
         energy_supply_values = energy_supply * brut_net
 
-        energy_production = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values*0.7})
         indus_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.2894})
         agri_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.02136})
         services_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.37})

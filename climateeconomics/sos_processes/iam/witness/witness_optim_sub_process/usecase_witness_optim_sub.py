@@ -16,7 +16,6 @@ limitations under the License.
 '''
 from collections import defaultdict
 
-import numpy as np
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -97,94 +96,6 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         dv_arrays_dict, design_var_descriptor = self.get_dvar_descriptor_energy_mix(dspace=dspace_df)
-        years = np.arange(self.year_start, self.year_end + 1)
-
-
-
-        dv_arrays_dict[f'{self.witness_uc.study_name}.reforestation_investment_array_mix'] = \
-            dspace_df['reforestation_investment_array_mix']['value']
-        design_var_descriptor['reforestation_investment_array_mix'] = {'out_name': 'reforestation_investment',
-                                                                'out_type': 'dataframe',
-                                                                'key': 'reforestation_investment',
-                                                                'index': years,
-                                                                'index_name': GlossaryCore.Years,
-                                                                'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                'namespace_out': 'ns_invest'
-                                                                }
-        if 'CropEnergy' in self.agri_techno_list:
-            dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = \
-                dspace_df['crop_investment_array_mix']['value']
-            design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
-                                                                  'out_type': 'dataframe',
-                                                                  'key': GlossaryCore.InvestmentsValue,
-                                                                  'index': years,
-                                                                  'index_name': GlossaryCore.Years,
-                                                                  'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                  'namespace_out': 'ns_crop'
-                                                                  }
-        if 'ManagedWood' in self.agri_techno_list:
-            dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = \
-                dspace_df['managed_wood_investment_array_mix']['value']
-            design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
-                                                                          'out_type': 'dataframe',
-                                                                          'key': GlossaryCore.InvestmentsValue,
-                                                                          'index': years,
-                                                                          'index_name': GlossaryCore.Years,
-                                                                          'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                          'namespace_out': 'ns_forest'
-                                                                          }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = \
-            dspace_df['deforestation_investment_ctrl']['value']
-        design_var_descriptor['deforestation_investment_ctrl'] = {'out_name': 'deforestation_investment',
-                                                                  'out_type': 'dataframe',
-                                                                  'key': GlossaryCore.InvestmentsValue,
-                                                                  'index': years,
-                                                                  'index_name': GlossaryCore.Years,
-                                                                  'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                  'namespace_out': 'ns_forest'
-                                                                  }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_calories_per_day_ctrl'] = \
-            np.array(dspace_df['red_meat_calories_per_day_ctrl']['value'])
-        design_var_descriptor['red_meat_calories_per_day_ctrl'] = {'out_name': 'red_meat_calories_per_day',
-                                                                   'out_type': 'dataframe',
-                                                                   'key': 'red_meat_calories_per_day',
-                                                                   'index': years,
-                                                                   'index_name': GlossaryCore.Years,
-                                                                   'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                   'namespace_out': 'ns_crop'
-                                                                   }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_calories_per_day_ctrl'] = \
-            np.array(dspace_df['white_meat_calories_per_day_ctrl']['value'])
-        design_var_descriptor['white_meat_calories_per_day_ctrl'] = {'out_name': 'white_meat_calories_per_day',
-                                                                     'out_type': 'dataframe',
-                                                                     'key': 'white_meat_calories_per_day',
-                                                                     'index': years,
-                                                                     'index_name': GlossaryCore.Years,
-                                                                     'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                     'namespace_out': 'ns_crop'
-                                                                     }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.vegetables_and_carbs_calories_per_day_ctrl'] = \
-            np.array(dspace_df['vegetables_and_carbs_calories_per_day_ctrl']['value'])
-        design_var_descriptor['vegetables_and_carbs_calories_per_day_ctrl'] = {
-            'out_name': 'vegetables_and_carbs_calories_per_day',
-            'out_type': 'dataframe',
-            'key': 'vegetables_and_carbs_calories_per_day',
-            'index': years,
-            'index_name': GlossaryCore.Years,
-            'namespace_in': GlossaryCore.NS_WITNESS,
-            'namespace_out': 'ns_crop'
-        }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.milk_and_eggs_calories_per_day_ctrl'] = \
-            np.array(dspace_df['milk_and_eggs_calories_per_day_ctrl']['value'])
-        design_var_descriptor['milk_and_eggs_calories_per_day_ctrl'] = {
-            'out_name': 'milk_and_eggs_calories_per_day',
-            'out_type': 'dataframe',
-            'key': 'milk_and_eggs_calories_per_day',
-            'index': years,
-            'index_name': GlossaryCore.Years,
-            'namespace_in': GlossaryCore.NS_WITNESS,
-            'namespace_out': 'ns_crop'
-        }
 
         func_df = self.witness_uc.func_df
         func_df = func_df[~func_df['variable'].isin(['non_use_capital_cons', 'forest_lost_capital_cons'])]
@@ -200,7 +111,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'

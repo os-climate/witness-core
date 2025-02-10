@@ -311,7 +311,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     total_carbon_emissions = None
     for energy in energy_list:
         if energy == GlossaryEnergy.biomass_dry:
-            namespace_disc = f'{namespace}.AgricultureMix'
+            namespace_disc = f'{namespace}.Agriculture'
         else:
             namespace_disc = f'{namespace}.EnergyMix.{energy}'
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace_disc)[0]
@@ -326,7 +326,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             # crop had not invest_level but crop_investment. Same for Forest
             # data_fuel_dict is missing in Forest and is a copy of biomass_dry for Crop
             # no detailed CO2_emissions_df for Crop and Forest => CO2_from_other_consumption = 0
-            if 'Forest' in techno:
+            if GlossaryCore.Forestry in techno:
                 data_fuel_dict = energy_disc.get_sosdisc_inputs('data_fuel_dict')
                 invest_techno = techno_disc.get_sosdisc_inputs('reforestation_investment')[
                                     'reforestation_investment'].values

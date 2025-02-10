@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -52,7 +52,8 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.witness_sect_uc = witness_sect_usecase(self.year_start, self.year_end,
-                                                    execution_engine=execution_engine)
+                                                    execution_engine=execution_engine, main_study=False)
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
@@ -151,12 +152,6 @@ class Study(StudyManager):
         disc_dict[f"{ns_optim}.{'decl_rate_tfp_services_in'}"] = np.array([0.02])
         disc_dict[f"{ns_optim}.{'prod_start_services_in'}"] = np.array([0.27])
 
-        # other inputs
-        disc_dict[f"{self.ns_services}.{'energy_eff_k'}"] = 0.039609214
-        disc_dict[f"{self.ns_services}.{'energy_eff_cst'}"] = 2.867328682
-        disc_dict[f"{self.ns_services}.{'energy_eff_xzero'}"] = 2041.038019
-        disc_dict[f"{self.ns_services}.{'energy_eff_max'}"] = 11.4693228
-
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = ['Services.gdp_error',
@@ -164,6 +159,7 @@ class Study(StudyManager):
                                ]
         func_df['ftype'] = [OBJECTIVE]
         func_df['weight'] = [1]
+        func_df['parent'] = "parent"
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM]
         func_df['namespace'] = ['ns_obj']
         func_mng_name = 'FunctionsManager'
@@ -176,7 +172,7 @@ class Study(StudyManager):
 
         # Inputs for objective 
         data_dir = join(
-            dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
+            dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data/sectorization_fitting')
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
@@ -194,16 +190,16 @@ class Study(StudyManager):
             GlossaryCore.SectorServices: np.ones(n_years) * 1000,
             GlossaryCore.SectorAgriculture: np.ones(n_years) * 1000,
         })
+        ns_industry_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}"
+        ns_agriculture_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}"
+        ns_services_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorServices}"
         sect_input = {}
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_energy'}"] = hist_energy
-        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
-        sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
-        sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
+        sect_input[f"{ns_industry_macro}.{'longterm_energy_efficiency'}"] = lt_enef_indus
+        sect_input[f"{ns_agriculture_macro}.{'longterm_energy_efficiency'}"] = lt_enef_agri
+        sect_input[f"{ns_services_macro}.{'longterm_energy_efficiency'}"] = lt_enef_services
         sect_input[f"{ns_coupling}.{'workforce_df'}"] = workforce_df
         disc_dict.update(sect_input)
 

@@ -74,7 +74,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'GHG_global_warming_potential100':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
         GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2): {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                          'Forest': ('float', None, False),
+                                                          GlossaryCore.Forestry: ('float', None, False),
                                                           'Crop': ('float', None, False)}},
         GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4): {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
