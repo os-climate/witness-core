@@ -57,7 +57,10 @@ class GlossaryCore:
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
     conversion_dict = {"G$":{"G$": 1, 'T$': 1e-3},
-                       'Mt':{'Mt':1 }}
+                       'Mt':{'Mt':1 , 'Gt': 1e-3},
+                       'TWh':{'TWh': 1, 'PWh': 1e-3},
+                       'PWh':{'PWh': 1, 'TWh': 1e3},
+                       }
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
@@ -960,13 +963,13 @@ class GlossaryCore:
 
     StreamEnergyConsumptionValue = "stream_energy_consumption"
     StreamResourceConsumptionValue = "stream_resource_consumption"
-    StreamEnergyConsumption = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies consumptions in stream"}
-    StreamResourceConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources consumptions in stream"}
+    StreamEnergyConsumption = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies consumptions in stream", "dynamic_dataframe_columns": True,}
+    StreamResourceConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources consumptions in stream", "dynamic_dataframe_columns": True,}
 
     StreamEnergyDemandValue = "stream_energy_demand"
     StreamResourceDemandValue = "stream_resource_demand"
-    StreamEnergyDemand = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies demand in stream"}
-    StreamResourceDemand = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources demand in stream"}
+    StreamEnergyDemand = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies demand in stream", "dynamic_dataframe_columns": True,}
+    StreamResourceDemand = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources demand in stream", "dynamic_dataframe_columns": True,}
 
 
     LandUseRequiredValue = "land_use_required"
@@ -1390,6 +1393,20 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "G$",
         "description": "Capital of energy in G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Capital: ("float", [0, 1e30], False),
+            NonUseCapital: ("float", [0, 1e30], False),
+        },
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+    }
+
+    EnergyMixCapitalDfValue = "energy_sector_capital"
+    EnergyMixCapitalDf = {
+        "type": "dataframe",
+        "unit": "G$",
+        "description": "Capital of Energy sector in G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
@@ -2321,6 +2338,47 @@ class GlossaryCore:
         "unit": "$/ton",
         "user_level": 2,
         "description": "Price",
+        "dynamic_dataframe_columns": True,
+    }
+    GHGEnergyEmissionsDfValue = "ghg_energy_emissions_df"
+    GHGEnergyEmissionsDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "Gt",
+        "user_level": 2,
+        "description": "Emissions of the energy sector",
+        'dataframe_descriptor': {
+            Years: ('float', None, False),
+            CO2: ('float', None, False),
+            N2O: ('float', None, False),
+            CH4: ('float', None, False), }
+    }
+
+    EnergyMixRawProductionDetailedValue = 'energy_production_brut_detailed'
+    EnergyMixRawProductionDetailed = {
+        "type": "dataframe",
+        "unit": "TWh",
+        "user_level": 2,
+        "description": "Raw production of each energy within the energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+    EnergyMixAllDemandsDfValue = 'energy_mix_all_demands_df'
+    EnergyMixAllDemandsDf = {
+        "type": "dataframe",
+        "unit": "TWh",
+        "user_level": 2,
+        "description": "Demands for each energy with the Energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMixEnergiesConsumptionDfValue = 'energy_mix_energies_consumption_df'
+    EnergyMixEnergiesConsumptionDf = {
+        "type": "dataframe",
+        "unit": "TWh",
+        "user_level": 2,
+        "description": "Consumptions each energy within the Energy sector",
         "dynamic_dataframe_columns": True,
     }
 
