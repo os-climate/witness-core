@@ -16,6 +16,7 @@ limitations under the License.
 '''
 from os.path import join
 from pathlib import Path
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -66,6 +67,18 @@ class ClimateEcoDiscipline(SoSWrapp):
         'icon': '',
         'version': '',
     }
+
+    def collect_var_for_dynamic_setup(self, variable_names: Union[str, list[str]]):
+        """easy method for setup sos dynamic variable gathering"""
+        values_dict = {}
+        if isinstance(variable_names, str):
+            variable_names = [variable_names]
+        go = set(self.get_data_in().keys()).issuperset(variable_names)
+        if go:
+            values_dict = {vn: self.get_sosdisc_inputs(vn) for vn in variable_names}
+            go = not any(val is None for val in values_dict.values())
+
+        return values_dict, go
 
     def _run(self):
         """

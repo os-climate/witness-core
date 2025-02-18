@@ -47,7 +47,7 @@ class NonUseCapitalObjective():
 
         self.forest_lost_capital_cons_limit = self.param['forest_lost_capital_cons_limit']
         self.forest_lost_capital_cons_ref = self.param['forest_lost_capital_cons_ref']
-        self.forest_lost_capital = self.param['forest_lost_capital']
+        self.forest_lost_capital = self.param['forestry_lost_capital']
 
     def create_year_range(self):
         '''
@@ -70,7 +70,7 @@ class NonUseCapitalObjective():
         self.techno_capital_df = self.agreggate_and_compute_sum(
             GlossaryEnergy.TechnoCapitalValue, inputs_dict)
 
-        self.forest_lost_capital = inputs_dict['forest_lost_capital']
+        self.forest_lost_capital = inputs_dict['forestry_lost_capital']
 
         self.compute_objective()
         self.compute_constraint()

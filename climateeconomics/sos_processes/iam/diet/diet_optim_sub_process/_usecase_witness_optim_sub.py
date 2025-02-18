@@ -121,7 +121,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           'index': years,
                                                                           'index_name': GlossaryCore.Years,
                                                                           'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                          'namespace_out': 'ns_forest'
+                                                                          'namespace_out': 'ns_forestry'
                                                                           }
         dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = \
             dspace_df['deforestation_investment_ctrl']['value']
@@ -131,7 +131,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                   'index': years,
                                                                   'index_name': GlossaryCore.Years,
                                                                   'namespace_in': GlossaryCore.NS_WITNESS,
-                                                                  'namespace_out': 'ns_forest'
+                                                                  'namespace_out': 'ns_forestry'
                                                                   }
         dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = \
             dspace_df['red_meat_percentage_ctrl']['value']

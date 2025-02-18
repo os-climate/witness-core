@@ -14,25 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import autograd.numpy as np
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.models.differentiable_model import (
-    DifferentiableModel,
-)
 
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.subsector_model import (
+    SubSectorModel,
+)
 
 
-class ForestAutodiff(DifferentiableModel):
-    """
-    Forest model class
-    basic for now, to evolve
-
-    """
-
+class ForestryModel(SubSectorModel):
+    """Forestry model class"""
+    sector_name = GlossaryCore.SectorAgriculture
+    subsector_name = GlossaryCore.Forestry
     def compute(self):
         """Computation methods"""
+        SubSectorModel.compute(self)
 
         self.initialize_years()
         self.compute_yields()
@@ -49,13 +46,14 @@ class ForestAutodiff(DifferentiableModel):
 
         self.compute_forest_constraint_evolution()
         self.compute_production_for_energy()
-        self.compute_price_in_d_per_mwh()
+        self.compute_biomass_dry_price_in_d_per_t()
         self.compute_carbon_emissions()
         self.compute_carbon_consumption()
 
         self.compute_economical_output_and_damages()
         self.rescale_techno_production_and_consumption()
         self.compute_coupling_dfs()
+        self.compute_forestry_capital()
 
     def compute_managed_wood_surface(self):
         """
@@ -67,13 +65,13 @@ class ForestAutodiff(DifferentiableModel):
         # managed wood from past invest. invest in G$ - surface in Gha.
         mw_from_past_invest = self.inputs[f'managed_wood_invest_before_year_start:{GlossaryCore.InvestmentsValue}'] / mw_cost
         # managed wood from actual invest
-        mw_from_invest = self.inputs[f'managed_wood_investment:{GlossaryCore.InvestmentsValue}'] / mw_cost
+        mw_from_invest = self.temp_variables['invest_details:Managed wood'] / mw_cost
         # concat all managed wood form invest
-        managed_wood_yearly_surface_variation = np.concatenate([mw_from_past_invest, mw_from_invest])
+        managed_wood_yearly_surface_variation = self.np.concatenate([mw_from_past_invest, mw_from_invest])
         # remove value that exceed year_end
         managed_wood_yearly_surface_variation = managed_wood_yearly_surface_variation[:-construction_delay]
         self.outputs['managed_wood_df:delta_surface'] = managed_wood_yearly_surface_variation
-        managed_wood_total_surface = self.inputs['managed_wood_initial_surface'] + np.cumsum(managed_wood_yearly_surface_variation)
+        managed_wood_total_surface = self.inputs['managed_wood_initial_surface'] + self.np.cumsum(managed_wood_yearly_surface_variation)
         self.outputs['managed_wood_df:cumulative_surface'] = managed_wood_total_surface
 
     def compute_managed_wood_production(self):
@@ -128,17 +126,18 @@ class ForestAutodiff(DifferentiableModel):
 
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
-        self.outputs['forest_surface_detail_df:delta_deforestation_surface'] = - self.inputs[f'deforestation_investment:{GlossaryCore.InvestmentsValue}'] / self.inputs['params']['deforestation_cost_per_ha']
+        self.outputs['forest_surface_detail_df:delta_deforestation_surface'] = \
+            - self.temp_variables['invest_details:Deforestation'] / self.inputs['params']['deforestation_cost_per_ha']
 
         # forested surface
         # invest in G$, coest_per_ha in $/ha --> Gha
-        self.outputs['forest_surface_detail_df:delta_reforestation_surface'] = self.inputs['reforestation_investment:reforestation_investment'] / self.inputs['params']['reforestation_cost_per_ha']
+        self.outputs['forest_surface_detail_df:delta_reforestation_surface'] = self.temp_variables['invest_details:Reforestation'] / self.inputs['params']['reforestation_cost_per_ha']
 
-        self.outputs['forest_surface_detail_df:deforestation_surface'] = np.cumsum(self.outputs['forest_surface_detail_df:delta_deforestation_surface'])
-        self.outputs['forest_surface_detail_df:reforestation_surface'] = np.cumsum(self.outputs['forest_surface_detail_df:delta_reforestation_surface'])
+        self.outputs['forest_surface_detail_df:deforestation_surface'] = self.np.cumsum(self.outputs['forest_surface_detail_df:delta_deforestation_surface'])
+        self.outputs['forest_surface_detail_df:reforestation_surface'] = self.np.cumsum(self.outputs['forest_surface_detail_df:delta_reforestation_surface'])
 
         delta_unmanaged_forest_surface = self.outputs['forest_surface_detail_df:delta_reforestation_surface'] + self.outputs['forest_surface_detail_df:delta_deforestation_surface']
-        self.outputs['forest_surface_detail_df:unmanaged_forest'] = np.maximum(self.inputs['initial_unmanaged_forest_surface'] + np.cumsum(delta_unmanaged_forest_surface), 0)
+        self.outputs['forest_surface_detail_df:unmanaged_forest'] = self.np.maximum(self.inputs['initial_unmanaged_forest_surface'] + self.np.cumsum(delta_unmanaged_forest_surface), 0)
 
     def compute_deforestation_biomass(self):
         """
@@ -197,8 +196,8 @@ class ForestAutodiff(DifferentiableModel):
         self.outputs[f'{GlossaryCore.CO2EmissionsDetailDfValue}:emitted_CO2_evol_cumulative'] = self.outputs[f'{GlossaryCore.CO2EmissionsDetailDfValue}:global_CO2_emitted'] + \
                                                                      self.outputs[f'{GlossaryCore.CO2EmissionsDetailDfValue}:global_CO2_captured']
 
-        self.outputs[f'CO2_land_emission_df:{GlossaryCore.Years}'] = self.years
-        self.outputs['CO2_land_emission_df:emitted_CO2_evol_cumulative'] = self.outputs[f'{GlossaryCore.CO2EmissionsDetailDfValue}:emitted_CO2_evol_cumulative']
+        self.outputs[f'{GlossaryCore.Forestry}.CO2_land_emission_df:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.CO2_land_emission_df:emitted_CO2_evol_cumulative'] = self.outputs[f'{GlossaryCore.CO2EmissionsDetailDfValue}:emitted_CO2_evol_cumulative']
 
     def compute_biomass_dry_production(self):
         """
@@ -211,14 +210,13 @@ class ForestAutodiff(DifferentiableModel):
 
         self.compute_price()
 
-        self.managed_wood_part = self.outputs['managed_wood_df:biomass_production (Mt)'] / (
-                self.outputs['managed_wood_df:biomass_production (Mt)'] + self.outputs['biomass_dry_detail_df:deforestation (Mt)'])
-        self.deforestation_part = self.outputs['biomass_dry_detail_df:deforestation (Mt)'] / (
-                self.outputs['managed_wood_df:biomass_production (Mt)'] + self.outputs['biomass_dry_detail_df:deforestation (Mt)'])
+        total_production = self.outputs['managed_wood_df:biomass_production (Mt)'] + self.outputs['biomass_dry_detail_df:deforestation (Mt)']
+        managed_wood_share_prod = self.outputs['managed_wood_df:biomass_production (Mt)'] / total_production
+        deforestation_share_prod = self.outputs['biomass_dry_detail_df:deforestation (Mt)'] / total_production
 
-        self.outputs['biomass_dry_detail_df:price_per_ton'] = self.outputs['biomass_dry_detail_df:managed_wood_price_per_ton'] * self.managed_wood_part + \
-                                                       self.outputs['biomass_dry_detail_df:deforestation_price_per_ton'] * \
-                                                       self.deforestation_part
+        self.outputs['biomass_dry_detail_df:price_per_ton'] = \
+            self.outputs['biomass_dry_detail_df:managed_wood_price_per_ton'] * managed_wood_share_prod + \
+            self.outputs['biomass_dry_detail_df:deforestation_price_per_ton'] * deforestation_share_prod
 
         self.outputs['biomass_dry_detail_df:managed_wood_price_per_MWh'] = self.outputs['biomass_dry_detail_df:managed_wood_price_per_ton'] / \
                                                                     self.inputs['params']['biomass_dry_calorific_value']
@@ -266,15 +264,15 @@ class ForestAutodiff(DifferentiableModel):
         '''
         # CO2 emissions
         if 'CO2_from_production' not in self.inputs['params']:
-            self.outputs['CO2_emissions:production'] = self.zeros_array + self.get_theoretical_co2_prod(unit='kg/kWh')
+            self.outputs[f'{GlossaryCore.Forestry}.CO2_emissions:production'] = self.zeros_array + self.get_theoretical_co2_prod(unit='kg/kWh')
         elif self.inputs['params']['CO2_from_production'] == 0.0:
-            self.outputs['CO2_emissions:production'] = self.zeros_array + 0.0
+            self.outputs[f'{GlossaryCore.Forestry}.CO2_emissions:production'] = self.zeros_array + 0.0
         else:
             if self.inputs['params']['CO2_from_production_unit'] == 'kg/kg':
-                self.outputs['CO2_emissions:production'] = self.zeros_array + self.inputs['params']['CO2_from_production'] / \
+                self.outputs[f'{GlossaryCore.Forestry}.CO2_emissions:production'] = self.zeros_array + self.inputs['params']['CO2_from_production'] / \
                                                            self.inputs['params']['biomass_dry_high_calorific_value']
             elif self.inputs['params']['CO2_from_production_unit'] == 'kg/kWh':
-                self.outputs['CO2_emissions:production'] = self.zeros_array + self.inputs['params']['CO2_from_production']
+                self.outputs[f'{GlossaryCore.Forestry}.CO2_emissions:production'] = self.zeros_array + self.inputs['params']['CO2_from_production']
 
         # Add carbon emission from input energies (resources or other
         # energies)
@@ -282,7 +280,7 @@ class ForestAutodiff(DifferentiableModel):
         co2_emissions_frominput_energies = self.compute_CO2_emissions_from_input_resources()
 
         # Add CO2 from production + C02 from input energies
-        self.outputs['CO2_emissions:Forest'] = self.outputs['CO2_emissions:production'] + \
+        self.outputs[f'{GlossaryCore.Forestry}.CO2_emissions:{GlossaryCore.Forestry}'] = self.outputs[f'{GlossaryCore.Forestry}.CO2_emissions:production'] + \
                                                co2_emissions_frominput_energies
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
@@ -299,28 +297,34 @@ class ForestAutodiff(DifferentiableModel):
 
     def compute_production_for_energy(self):
         # techno production in TWh
-        self.outputs[f'techno_production:{BiomassDry.name} ({BiomassDry.unit})'] = (self.outputs['managed_wood_df:wood_production_for_energy (Mt)'] +
+        self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})'] = (self.outputs['managed_wood_df:wood_production_for_energy (Mt)'] +
                                                                                     self.outputs['biomass_dry_detail_df:deforestation_for_energy']) * self.inputs['params']['biomass_dry_calorific_value'] + self.outputs['managed_wood_df:residues_production_for_energy (Mt)'] * self.inputs['params']['residue_calorific_value']
 
     def compute_carbon_consumption(self):
         # CO2 consumed
         self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_capture} (Mt)'] = \
             -self.inputs['params']['CO2_from_production'] / self.inputs['params']['biomass_dry_high_calorific_value'] * \
-            self.outputs[f'techno_production:{BiomassDry.name} ({BiomassDry.unit})']
+            self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})']
 
         self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_capture} (Mt)'] = \
             - self.inputs['params']['CO2_from_production'] / self.inputs['params']['biomass_dry_high_calorific_value'] * \
-            self.outputs[f'techno_production:{BiomassDry.name} ({BiomassDry.unit})']
+            self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})']
 
     def compute_forest_constraint_evolution(self):
         # compute forest constrain evolution: reforestation + deforestation
         self.outputs['forest_surface_detail_df:forest_constraint_evolution'] = self.outputs['forest_surface_detail_df:reforestation_surface'] + \
                                                                         self.outputs['forest_surface_detail_df:deforestation_surface']
 
-    def compute_price_in_d_per_mwh(self):
+    def compute_biomass_dry_price_in_d_per_t(self):
+        # for sectorized version :
+        # Prices in $/t
+        self.outputs[f'{GlossaryCore.Forestry}.biomass_dry_price:{GlossaryCore.Forestry}'] = self.outputs['biomass_dry_detail_df:price_per_ton']
+        self.outputs[f'{GlossaryCore.Forestry}.biomass_dry_price:{GlossaryCore.Forestry}_wotaxes'] = self.outputs['biomass_dry_detail_df:price_per_ton']
+
+        # for non-sectorized version :
         # Prices in $/MWh
-        self.outputs['techno_prices:Forest'] = self.outputs['biomass_dry_detail_df:price_per_MWh']
-        self.outputs['techno_prices:Forest_wotaxes'] = self.outputs['biomass_dry_detail_df:price_per_MWh']
+        self.outputs[f'{GlossaryCore.Forestry}.techno_prices:{GlossaryCore.Forestry}'] = self.outputs['biomass_dry_detail_df:price_per_MWh']
+        self.outputs[f'{GlossaryCore.Forestry}.techno_prices:{GlossaryCore.Forestry}_wotaxes'] = self.outputs['biomass_dry_detail_df:price_per_MWh']
 
     def compute_economical_output_and_damages(self):
         """
@@ -351,56 +355,68 @@ class ForestAutodiff(DifferentiableModel):
                         self.outputs[f'{GlossaryCore.DamageDetailedDfValue}:Residues']
 
         # Forest economical output coupling variable
-        self.outputs[f"{GlossaryCore.Forest}.{GlossaryCore.ProductionDfValue}:{GlossaryCore.Years}"] = self.years
-        self.outputs[f"{GlossaryCore.Forest}.{GlossaryCore.ProductionDfValue}:{GlossaryCore.OutputNetOfDamage}"] = net_output
-        self.outputs[f"{GlossaryCore.Forest}.{GlossaryCore.ProductionDfValue}:{GlossaryCore.GrossOutput}"] = net_output + total_damages
+        self.outputs[f"{GlossaryCore.Forestry}.{GlossaryCore.ProductionDfValue}:{GlossaryCore.Years}"] = self.years
+        self.outputs[f"{GlossaryCore.Forestry}.{GlossaryCore.ProductionDfValue}:{GlossaryCore.OutputNetOfDamage}"] = net_output
+        self.outputs[f"{GlossaryCore.Forestry}.{GlossaryCore.ProductionDfValue}:{GlossaryCore.GrossOutput}"] = net_output + total_damages
 
         # Forest economical damages coupling variable
-        self.outputs[f"{GlossaryCore.Forest}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Years}"] = self.years
-        self.outputs[f"{GlossaryCore.Forest}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Damages}"] = total_damages
+        self.outputs[f"{GlossaryCore.Forestry}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Years}"] = self.years
+        self.outputs[f"{GlossaryCore.Forestry}.{GlossaryCore.DamageDfValue}:{GlossaryCore.Damages}"] = total_damages
 
     def compute_yields(self):
         """yields are impact by climate change"""
         self.outputs[f'yields:{GlossaryCore.Years}'] = self.years
-        self.outputs['yields:actual'] = self.inputs['params']['actual_yield_year_start'] * (1 - self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
-        self.outputs['yields:managed wood'] = self.inputs['params']['managed_wood_yield_year_start'] * (1 - self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
-        self.outputs['yields:unmanaged wood'] = self.inputs['params']['unmanaged_wood_yield_year_start'] * (1 - self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
+        self.outputs['yields:actual'] = self.inputs['params']['actual_yield_year_start'] * (1 + self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
+        self.outputs['yields:managed wood'] = self.inputs['params']['managed_wood_yield_year_start'] * (1 + self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
+        self.outputs['yields:unmanaged wood'] = self.inputs['params']['unmanaged_wood_yield_year_start'] * (1 + self.inputs[f'{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}'] / 100)
 
     def initialize_years(self):
-        self.years = np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
+        self.years = self.np.arange(self.inputs[GlossaryCore.YearStart], self.inputs[GlossaryCore.YearEnd] + 1)
         self.zeros_array = self.years * 0.
         self.outputs[f'forest_surface_detail_df:{GlossaryCore.Years}'] = self.years
         self.outputs[f'managed_wood_df:{GlossaryCore.Years}'] = self.years
         self.outputs[f'biomass_dry_detail_df:{GlossaryCore.Years}'] = self.years
 
         # output dataframes:
-        self.outputs[f'techno_production:{GlossaryCore.Years}'] = self.years
-        self.outputs[f'techno_prices:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.techno_production:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.biomass_dry_price:{GlossaryCore.Years}'] = self.years
         self.outputs[f'techno_consumption:{GlossaryCore.Years}'] = self.years
         self.outputs[f'techno_consumption_woratio:{GlossaryCore.Years}'] = self.years
-        self.outputs[f'land_use_required:{GlossaryCore.Years}'] = self.years
-        self.outputs[f'CO2_emissions:{GlossaryCore.Years}'] = self.years
-        self.outputs[f'forest_lost_capital:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.land_use_required:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.CO2_emissions:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'forestry_lost_capital:{GlossaryCore.Years}'] = self.years
 
     def compute_land_use_required(self):
         # compute land_use for energy
-        self.outputs[f'land_use_required:{GlossaryCore.Years}'] = self.years
-        self.outputs['land_use_required:Forest (Gha)'] = self.outputs['managed_wood_df:cumulative_surface']
+        self.outputs[f'{GlossaryCore.Forestry}.land_use_required:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.land_use_required:{GlossaryCore.Forestry} (Gha)'] = self.outputs['managed_wood_df:cumulative_surface']
 
     def rescale_techno_production_and_consumption(self):
-        self.outputs[f'techno_production:{BiomassDry.name} ({BiomassDry.unit})'] /= self.inputs['scaling_factor_techno_production']
-        self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_capture} (Mt)'] /= self.inputs['scaling_factor_techno_consumption']
-        self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_capture} (Mt)'] /= self.inputs['scaling_factor_techno_consumption']
+        self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})'] = self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})'] /1e3
+        self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_capture} (Mt)'] = self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_capture} (Mt)'] /1e3
+        self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_capture} (Mt)'] = self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_capture} (Mt)'] /1e3
 
     def compute_coupling_dfs(self):
         self.outputs[f'biomass_dry_df:{GlossaryCore.Years}'] = self.years
         self.outputs['biomass_dry_df:price_per_MWh'] = self.outputs['biomass_dry_detail_df:price_per_MWh']
         self.outputs['biomass_dry_df:biomass_dry_for_energy (Mt)'] = self.outputs['biomass_dry_detail_df:biomass_dry_for_energy (Mt)']
 
+        self.outputs[f'{GlossaryCore.Forestry}.{GlossaryCore.ProdForStreamName.format("biomass_dry")}:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.{GlossaryCore.ProdForStreamName.format("biomass_dry")}:Total'] = self.outputs['biomass_dry_detail_df:biomass_dry_for_energy (Mt)']
+
+        self.outputs[f'{GlossaryCore.Forestry}.{GlossaryCore.ProdForStreamName.format("biomass_dry")}:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.{GlossaryCore.ProdForStreamName.format("wet_biomass")}:Total'] = self.zeros_array
+
         self.outputs[f'forest_surface_df:{GlossaryCore.Years}'] = self.years
         self.outputs['forest_surface_df:global_forest_surface'] = self.outputs['forest_surface_detail_df:global_forest_surface']
         self.outputs['forest_surface_df:forest_constraint_evolution'] = self.outputs['forest_surface_detail_df:forest_constraint_evolution']
 
     def compute_capital_loss(self):
-        self.outputs[f'forest_lost_capital:{GlossaryCore.Years}'] = self.years
-        self.outputs['forest_lost_capital:deforestation'] = - self.outputs['forest_surface_detail_df:delta_deforestation_surface'] * self.inputs['params']['reforestation_cost_per_ha']
+        self.outputs[f'forestry_lost_capital:{GlossaryCore.Years}'] = self.years
+        self.outputs['forestry_lost_capital:deforestation'] = - self.outputs['forest_surface_detail_df:delta_deforestation_surface'] * self.inputs['params']['reforestation_cost_per_ha']
+
+    def compute_forestry_capital(self):
+        self.outputs[f'{GlossaryCore.Forestry}.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Years}'] = self.years
+        self.outputs[f'{GlossaryCore.Forestry}.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Capital}'] = self.zeros_array
+        self.outputs[f'{GlossaryCore.Forestry}.{GlossaryCore.CapitalDfValue}:{GlossaryCore.UsableCapital}'] = self.zeros_array
+

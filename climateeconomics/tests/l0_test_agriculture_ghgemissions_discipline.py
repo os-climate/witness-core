@@ -55,7 +55,7 @@ class AgricultureGHGEmissionDiscTest(unittest.TestCase):
 
         CO2_land_emissions_crop = pd.DataFrame({GlossaryCore.Years: years,
                                                 'emitted_CO2_evol_cumulative': np.linspace(0.7, 0.7, len(years))})
-        CO2_land_emissions_forest = pd.DataFrame({GlossaryCore.Years: years,
+        CO2_land_emissions_forestry = pd.DataFrame({GlossaryCore.Years: years,
                                                   'emitted_CO2_evol_cumulative': np.linspace(-7.6, -8, len(years))})
         N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'emitted_N2O_evol_cumulative': np.linspace(0., 0.4, len(years)),
@@ -66,9 +66,9 @@ class AgricultureGHGEmissionDiscTest(unittest.TestCase):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
-                       f'{self.name}.{GlossaryCore.techno_list}': ['Crop', 'Forest'],
+                       f'{self.name}.{GlossaryCore.techno_list}': ['Crop', GlossaryCore.Forestry],
                        f'{self.name}.Crop.CO2_land_emission_df': CO2_land_emissions_crop,
-                       f'{self.name}.Forest.CO2_land_emission_df': CO2_land_emissions_forest,
+                       f'{self.name}.Forestry.CO2_land_emission_df': CO2_land_emissions_forestry,
                        f'{self.name}.Crop.CH4_land_emission_df': CH4_land_emissions,
                        f'{self.name}.Crop.N2O_land_emission_df': N2O_land_emissions,
                        }

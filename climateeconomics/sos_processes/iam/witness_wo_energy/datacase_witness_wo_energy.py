@@ -143,7 +143,7 @@ class DataStudy():
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)
         CO2_emitted_land['Crop'] = np.zeros(len(years))
-        CO2_emitted_land['Forest'] = cum_emission
+        CO2_emitted_land[GlossaryCore.Forestry] = cum_emission
         witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
         self.CO2_tax = np.asarray([50.] * len(years))

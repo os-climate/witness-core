@@ -63,7 +63,8 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                              'possible_values': ['Crop', 'Forest'],
+                                   'default': ['Crop', GlossaryCore.Forestry],
+                                   'possible_values': ['Crop', GlossaryCore.Forestry],
                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                               'namespace': 'ns_agriculture',
                               'structuring': True},
@@ -119,7 +120,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         N2O_emitted_crop_df = self.get_sosdisc_inputs(
             'Crop.N2O_land_emission_df')
         CO2_emitted_forest_df = self.get_sosdisc_inputs(
-            'Forest.CO2_land_emission_df')
+            'Forestry.CO2_land_emission_df')
         other_land_CO2_emissions = self.get_sosdisc_inputs(
             'other_land_CO2_emissions')
 
@@ -131,7 +132,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         # co2 aggregation
         CO2_emissions_land_use_df[GlossaryCore.Years] = CO2_emitted_crop_df[GlossaryCore.Years]
         CO2_emissions_land_use_df['Crop'] = CO2_emitted_crop_df['emitted_CO2_evol_cumulative']
-        CO2_emissions_land_use_df['Forest'] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
+        CO2_emissions_land_use_df[GlossaryCore.Forestry] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
         CO2_emissions_land_use_df['Other_emissions'] = other_land_CO2_emissions
 
         # ch4 aggregation
@@ -147,11 +148,11 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
         l_years = len(N2O_emitted_crop_df[GlossaryCore.Years])
 
-        co2_eq_20 = (CO2_emissions_land_use_df['Forest'].sum() + CO2_emissions_land_use_df['Crop'].sum() +
+        co2_eq_20 = (CO2_emissions_land_use_df[GlossaryCore.Forestry].sum() + CO2_emissions_land_use_df['Crop'].sum() +
                         CH4_emissions_land_use_df['Crop'].sum() * self.GWP_20_default[GlossaryCore.CH4] +
                         N2O_emissions_land_use_df['Crop'].sum() * self.GWP_20_default[GlossaryCore.N2O]) / (co2_eq_20_ref * l_years)
 
-        co2_eq_100 = (CO2_emissions_land_use_df['Forest'].sum() + CO2_emissions_land_use_df['Crop'].sum() + \
+        co2_eq_100 = (CO2_emissions_land_use_df[GlossaryCore.Forestry].sum() + CO2_emissions_land_use_df['Crop'].sum() + \
                         CH4_emissions_land_use_df['Crop'].sum() * self.GWP_100_default[GlossaryCore.CH4] + \
                         N2O_emissions_land_use_df['Crop'].sum() * self.GWP_100_default[GlossaryCore.N2O]) / (co2_eq_100_ref * l_years)
 
@@ -194,7 +195,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
             np.ones(np_years) * self.GWP_20_default[GlossaryCore.CH4] / (co2_eq_20_ref * np_years))
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
-                'Forest.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+                'Forestry.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
             np.ones(np_years) / (co2_eq_20_ref * np_years))
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
@@ -218,7 +219,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('co2_eq_100',), (
-                'Forest.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+                'Forestry.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
             np.ones(np_years) / (co2_eq_100_ref * np_years))
 
         self.set_partial_derivative_for_other_types(

@@ -66,7 +66,7 @@ class LandUseV2():
     LAND_SURFACE_FOR_FOOD_DF = 'land_surface_for_food_df'
 
     AGRICULTURE_COLUMN = 'Agriculture (Gha)'
-    FOREST_COLUMN = 'Forest (Gha)'
+    FOREST_COLUMN = 'Forestry (Gha)'
 
     # Technologies filtered by land type
     FOREST_TECHNO = ['']

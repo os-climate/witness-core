@@ -31,9 +31,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
 )
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
-    Study as datacase_agriculture_mix,
-)
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import (
     Study as datacase_landuse,
 )
@@ -152,8 +149,9 @@ class DataStudy():
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)
+        CO2_emitted_land[GlossaryCore.Years] = years
         CO2_emitted_land['Crop'] = np.zeros(len(years))
-        CO2_emitted_land['Forest'] = cum_emission
+        CO2_emitted_land[GlossaryCore.Forestry] = cum_emission
 
         witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
@@ -185,12 +183,6 @@ class DataStudy():
             self.year_start, self.year_end, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
-        # -- load data from agriculture
-        dc_agriculture_mix = datacase_agriculture_mix(
-            self.year_start, self.year_end, agri_techno_list=self.techno_dict)
-        dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
-        dc_agriculture_mix.study_name = self.study_name
-
         # -- load data from sectorization process
         uc_sectorization = usecase_sectorization()
         uc_sectorization.study_name = self.study_name
@@ -202,9 +194,6 @@ class DataStudy():
 
         land_use_list = dc_landuse.setup_usecase()
         setup_data_list = setup_data_list + land_use_list
-
-        agriculture_list = dc_agriculture_mix.setup_usecase()
-        setup_data_list = setup_data_list + agriculture_list
 
         # WITNESS
         # setup objectives

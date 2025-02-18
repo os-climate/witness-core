@@ -43,7 +43,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_agriculture': ns_scatter,
                    GlossaryCore.NS_MACRO: f'{self.ee.study_name}.Macroeconomics',
-                   'ns_forest': ns_scatter}
+                   'ns_forestry': ns_scatter}
 
         mods_dict = {
             'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
