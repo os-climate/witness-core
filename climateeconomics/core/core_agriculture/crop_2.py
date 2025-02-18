@@ -152,10 +152,12 @@ class Crop(SubSectorModel):
         for ghg in GlossaryCore.GreenHouseGases:
             self.outputs[f"{GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)}:{self.ft}"] = \
                 self.temp_variables[f"production_before_waste:{self.ft}"] * \
-                self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)][self.ft] * self.temp_variables[f"share_dedicated_to_food:{self.ft}"] / 1e3  # Mt * kgCO2eq / kg = 10^9 kg * kgCO2eq / kg / 10^3 = G kgCO2eq = 10-3 Gt
+                self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)][self.ft] * self.temp_variables[f"share_dedicated_to_food:{self.ft}"]\
+                * GlossaryCore.conversion_dict['Mt'][GlossaryCore.FoodTypeEnergyEmissionsVar['unit']]  # Mt * kg ghg / kg = 10^9 kg * kg ghg / kg / 10^3 = G kg ghg = Mt ghg, to be converted to Gt ghg
             self.outputs[f"{GlossaryCore.FoodTypeEnergyEmissionsName.format(ghg)}:{self.ft}"] = \
                 self.temp_variables[f"production_before_waste:{self.ft}"] * \
-                self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)][self.ft] * (1 - self.temp_variables[f"share_dedicated_to_food:{self.ft}"]) / 1e3  # Mt * kgCO2eq / kg = 10^9 kg * kgCO2eq / kg / 10^3 = G kgCO2eq = 10-3 Gt
+                self.inputs[GlossaryCore.FoodTypeEmissionsByProdUnitName.format(ghg)][self.ft] * (1 - self.temp_variables[f"share_dedicated_to_food:{self.ft}"]) \
+                * GlossaryCore.conversion_dict['Mt'][GlossaryCore.FoodTypeEnergyEmissionsVar['unit']]  # Mt * kg ghg / kg = 10^9 kg * kg ghg / kg / 10^3 = G kg ghg = Mt ghg, to be converted to Gt ghg
             self.outputs[f"{GlossaryCore.FoodTypeFoodGWPEmissionsName}:{self.ft}"] = \
                 self.outputs[f"{GlossaryCore.FoodTypeFoodGWPEmissionsName}:{self.ft}"] + \
                 self.outputs[f"{GlossaryCore.FoodTypeFoodEmissionsName.format(ghg)}:{self.ft}"] * ClimateEcoDiscipline.GWP_100_default[ghg]
@@ -166,12 +168,12 @@ class Crop(SubSectorModel):
         # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
         self.outputs[f"{GlossaryCore.CropFoodLandUseName}_breakdown:{self.ft}"] = \
             self.temp_variables[f"share_dedicated_to_food:{self.ft}"] * self.temp_variables[f"production_raw:{self.ft}"] * \
-            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] / (10 ** 4)
+            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] * GlossaryCore.conversion_dict['m²']['ha']
 
         # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
         self.outputs[f"{GlossaryCore.CropEnergyLandUseName}_breakdown:{self.ft}"] = \
             (1 - self.temp_variables[f"share_dedicated_to_food:{self.ft}"]) * self.temp_variables[f"production_raw:{self.ft}"] * \
-            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] / (10 ** 4)
+            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] * GlossaryCore.conversion_dict['m²']['ha']
 
     def split_production_between_energy_and_consumers(self):
         net_production = self.temp_variables[f"production_before_waste:{self.ft}"] - self.outputs[f"{GlossaryCore.FoodTypeWasteByClimateDamagesName}:{self.ft}"]  # Mt
@@ -293,12 +295,11 @@ class Crop(SubSectorModel):
         # compute gross output for crop:
         self.outputs[f"{GlossaryCore.DamagesFromProductivityLoss}_breakdown:{self.ft}"] = \
             self.outputs[f"{GlossaryCore.FoodTypeNotProducedDueToClimateChangeName}:{self.ft}"] *\
-            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] / 1e3  # Mt * $ / kg = G kg * $ / kg so divide by 1e3 to get T$
+            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] # Mt * $ / kg = G kg * $ / kg = G$
 
         self.outputs[f"{GlossaryCore.DamagesFromClimate}_breakdown:{self.ft}"] = \
             self.outputs[f"{GlossaryCore.FoodTypeWasteByClimateDamagesName}:{self.ft}"] *\
-            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] / 1e3
-
+            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] # Mt * $ / kg = G kg * $ / kg = G$
 
         self.outputs[f"{GlossaryCore.Damages}_breakdown:{self.ft}"] = \
             self.outputs[f"{GlossaryCore.DamagesFromProductivityLoss}_breakdown:{self.ft}"] + \
@@ -307,11 +308,11 @@ class Crop(SubSectorModel):
     def compute_economics(self):
         self.outputs[f"{GlossaryCore.CropFoodNetGdpName}_breakdown:{self.ft}"] = \
             self.outputs[f"{GlossaryCore.FoodTypeDeliveredToConsumersName}:{self.ft}"] * \
-            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] / 1e3
+            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] # Mt * $ / kg = G kg * $ / kg = G$
 
         self.outputs[f"{GlossaryCore.CropEnergyNetGdpName}_breakdown:{self.ft}"] = \
             self.outputs[f"{GlossaryCore.CropProdForAllStreamName}:{self.ft}"] *\
-            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] / 1e3
+            self.outputs[f"{GlossaryCore.FoodTypesPriceName}:{self.ft}"] # Mt * $ / kg = G kg * $ / kg = G$
 
         self.outputs[f"{GlossaryCore.OutputNetOfDamage}_breakdown:{self.ft}"] = \
             self.outputs[f"{GlossaryCore.CropFoodNetGdpName}_breakdown:{self.ft}"] + \

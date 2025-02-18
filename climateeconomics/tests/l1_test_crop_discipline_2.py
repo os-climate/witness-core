@@ -35,6 +35,11 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         Initialize third data needed for testing
         '''
         self.name = 'Test'
+        self.model_name = 'Agriculture.Crop'
+        self.override_dump_jacobian = False
+        self.show_graphs = True
+        self.jacobian_test = False
+        self.pickle_directory = dirname(__file__)
 
         self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest
@@ -43,12 +48,12 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
         self.crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(0, 12, year_range),  # fake
+            GlossaryCore.CropProductivityReductionName: - np.linspace(0, 12/ 100, year_range) * 0.,  # fake
         })
 
         self.damage_fraction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range), # 2020 value
+            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range) * 0., # 2020 value
         })
 
         self.investments_food_types = pd.DataFrame({
@@ -57,7 +62,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         })
         self.workforce_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 0.7, year_range),  # millions of people (2020 value)
+            GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 1000, year_range),  # millions of people (2020 value)
         })
         population_2021 = 7_954_448_391
         self.population_df = pd.DataFrame({
@@ -67,7 +72,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
         self.enegy_agri = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: np.linspace(2591. /1000, 2591. /1000 * 0.7, year_range),  # PWh, 2020 value
+            GlossaryCore.TotalProductionValue: np.linspace(2591. /1000, 2591. /1000 * 1000, year_range),  # PWh, 2020 value
         })
 
         self.energy_mean_price = pd.DataFrame({
@@ -101,9 +106,25 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         '''
         Check discipline setup and run
         '''
-        self.model_name = 'Agriculture.Crop'
-        self.override_dump_jacobian = False
-        self.show_graphs = False
         self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-        self.jacobian_test = False
-        self.pickle_directory = dirname(__file__)
+
+    def test_crop_discipline_2_mda_mode(self):
+        '''
+        Check discipline setup and run
+        '''
+        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
+        economics_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.OutputNetOfDamage: 136., GlossaryCore.GrossOutput: 0.})
+        share_sector_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value})
+        share_sub_sector_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Crop: 95.})
+        crop_share_invests = pd.DataFrame({
+            GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
+            **{food_type: GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] for food_type in GlossaryCore.DefaultFoodTypesV2}
+        })
+        self.inputs_dicts = {
+            f'{self.name}.mdo_sectors_invest_level': 0,
+            f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+            f'{self.name}.{GlossaryCore.ShareSectorInvestmentDfValue}': share_sector_invest,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': share_sub_sector_invest,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SubShareSectorInvestDfValue}': share_sub_sector_invest,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.Crop}.{GlossaryCore.SubShareSectorInvestDfValue}': crop_share_invests,
+        }

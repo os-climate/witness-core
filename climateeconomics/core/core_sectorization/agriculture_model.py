@@ -59,12 +59,13 @@ class AgricultureModel(DifferentiableModel):
 
     def compute_sector_investments(self):
         if self.inputs["mdo_sectors_invest_level"] == 0:
+            conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SubSectorInvestDf['unit']][GlossaryCore.InvestmentDf['unit']]
             self.outputs[f"{self.name}.{GlossaryCore.InvestmentDfValue}:{GlossaryCore.Years}"] = self.years
             self.outputs[f"{self.name}.{GlossaryCore.InvestmentDfValue}:{GlossaryCore.InvestmentsValue}"] = self.zeros_array
             for subsector in self.sub_sectors:
                 self.outputs[f"{self.name}.{GlossaryCore.InvestmentDfValue}:{GlossaryCore.InvestmentsValue}"] = \
                     self.outputs[f"{self.name}.{GlossaryCore.InvestmentDfValue}:{GlossaryCore.InvestmentsValue}"] + \
-                    self.inputs[f"{self.name}.{subsector}.{GlossaryCore.InvestmentDfValue}:{GlossaryCore.InvestmentsValue}"]
+                    self.inputs[f"{self.name}.{subsector}.{GlossaryCore.InvestmentDfValue}:{GlossaryCore.InvestmentsValue}"] * conversion_factor
 
         else:
             raise NotImplementedError("")

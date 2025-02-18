@@ -206,13 +206,13 @@ class CropDiscipline(SubSectorDiscipline):
                     "food_per_capita_per_year": {"type": "dataframe", "unit": "kg/pers/year", "description": "Quantity of food available for consumption per capita by year"},
 
                     # non coupling
-                    GlossaryCore.Damages + "_breakdown": {"type": "dataframe", "unit": "T$", "description": "Applied damages for each food types", },
-                    GlossaryCore.GrossOutput + "_breakdown": {"type": "dataframe", "unit": "T$", "description": "Gross output for each food type", },
-                    GlossaryCore.OutputNetOfDamage + "_breakdown": {"type": "dataframe", "unit": "T$", "description": "Output net of damage for each food type", },
-                    GlossaryCore.CropFoodNetGdpName + "_breakdown": {"type": "dataframe", "unit": "T$", "description": "Output net of damage for each food type (from food production)", },
-                    GlossaryCore.CropEnergyNetGdpName + "_breakdown": {"type": "dataframe", "unit": "T$", "description": "Output net of damage for each food type (from food production)", },
-                    GlossaryCore.DamagesFromClimate + "_breakdown": {"type": "dataframe", "unit": "T$", "description": "Damages due to extreme climate events breakdown", },
-                    GlossaryCore.DamagesFromProductivityLoss + "_breakdown": {"type": "dataframe", "unit": "T$", "description": "Damages due to productivity loss breakdown", },
+                    GlossaryCore.Damages + "_breakdown": {"type": "dataframe", "unit": "G$", "description": "Applied damages for each food types", },
+                    GlossaryCore.GrossOutput + "_breakdown": {"type": "dataframe", "unit": "G$", "description": "Gross output for each food type", },
+                    GlossaryCore.OutputNetOfDamage + "_breakdown": {"type": "dataframe", "unit": "G$", "description": "Output net of damage for each food type", },
+                    GlossaryCore.CropFoodNetGdpName + "_breakdown": {"type": "dataframe", "unit": "G$", "description": "Output net of damage for each food type (from food production)", },
+                    GlossaryCore.CropEnergyNetGdpName + "_breakdown": {"type": "dataframe", "unit": "G$", "description": "Output net of damage for each food type (from food production)", },
+                    GlossaryCore.DamagesFromClimate + "_breakdown": {"type": "dataframe", "unit": "G$", "description": "Damages due to extreme climate events breakdown", },
+                    GlossaryCore.DamagesFromProductivityLoss + "_breakdown": {"type": "dataframe", "unit": "G$", "description": "Damages due to productivity loss breakdown", },
                     GlossaryCore.FoodTypesPriceName: GlossaryCore.FoodTypesPriceVar,
                 }
 
@@ -293,7 +293,7 @@ class CropDiscipline(SubSectorDiscipline):
             new_chart = self.get_breakdown_charts_on_food_type(
                 df_all_food_types=outputs[GlossaryCore.OutputNetOfDamage + "_breakdown"],
                 charts_name="Crop sector net output breakdown",
-                unit=GlossaryCore.SectorProductionDf['unit'],
+                unit=GlossaryCore.SubsectorProductionDf['unit'],
                 df_total=outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"],
                 column_total=GlossaryCore.OutputNetOfDamage,
                 post_proc_category="Economical output"
@@ -724,11 +724,11 @@ class CropDiscipline(SubSectorDiscipline):
         total_capital = capital[food_types].values.sum(axis=1)
         total_non_use_capital = non_use_capital[food_types].values.sum(axis=1)
 
-        new_chart = TwoAxesInstanciatedChart('Years', "T$", stacked_bar=True, chart_name="Crop capital stock")
+        new_chart = TwoAxesInstanciatedChart('Years', GlossaryCore.SubsectorCapitalDf['unit'], stacked_bar=True, chart_name="Crop capital stock")
 
-        new_series = InstanciatedSeries(years, total_capital / 1e3, 'Capital stock', 'lines', True)
+        new_series = InstanciatedSeries(years, total_capital, 'Capital stock', 'lines', True)
         new_chart.add_series(new_series)
-        new_series = InstanciatedSeries(years, total_non_use_capital / 1e3, 'Unused capital', 'bar', True)
+        new_series = InstanciatedSeries(years, total_non_use_capital, 'Unused capital', 'bar', True)
         new_chart.add_series(new_series)
 
         new_chart.post_processing_section_name = "Investments and capital"
@@ -810,7 +810,7 @@ class CropDiscipline(SubSectorDiscipline):
         }
         total_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"]
         years = total_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorProductionDf["unit"], stacked_bar=True, chart_name="Net output breakdown (food & energy)", y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorProductionDf["unit"], stacked_bar=True, chart_name="Net output breakdown (food & energy)", y_min_zero=True)
         for key, varname  in variables.items():
             df = outputs[varname]
             new_series = InstanciatedSeries(years, df["Total"], key, 'bar', True)
@@ -826,7 +826,7 @@ class CropDiscipline(SubSectorDiscipline):
         damage_detailed_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDetailedDfValue}"]
         damage_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}"]
         years = damage_detailed_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Damages", y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorDamagesDf["unit"], stacked_bar=True, chart_name="Damages", y_min_zero=True)
         variables_bar_plot = {
             "Extreme climate events": GlossaryCore.DamagesFromClimate,
             "Productivity loss": GlossaryCore.DamagesFromProductivityLoss,
@@ -844,7 +844,7 @@ class CropDiscipline(SubSectorDiscipline):
         production_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"]
         damage_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}"]
         years = production_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorProductionDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)
         variables_bar_plot = {
             "Gross output": GlossaryCore.GrossOutput,
             "Output net of damages": GlossaryCore.OutputNetOfDamage,
