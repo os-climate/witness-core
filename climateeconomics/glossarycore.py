@@ -925,6 +925,16 @@ class GlossaryCore:
     }
 
     EnergyPricesValue = "energy_prices"  # todo : rename streams_prices, but it will break all l1
+
+    EnergyPrices = {
+        'type': 'dataframe',
+        'unit': '$/MWh',
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "description": "energy price per each type of energy",
+        "dynamic_dataframe_columns": True,
+    }
     ResourcesPriceValue = "resources_price"
 
     ResourcesPrice = {
@@ -2354,6 +2364,45 @@ class GlossaryCore:
             CO2: ('float', None, False),
             N2O: ('float', None, False),
             CH4: ('float', None, False), }
+    }
+
+    CCUS_CO2EmissionsDfValue = "CCUS_co2_emissions_df"
+    CCUS_CO2EmissionsDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_CCS,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "Gt",
+        "user_level": 2,
+        "description": "Total CO2 captured and stored by CCUS sector",
+        'dataframe_descriptor': {
+            Years: ('float', None, False),
+            CO2: ('float', None, False),}
+    }
+
+    CCUS_CarbonStorageCapacityValue = "ccus_carbon_storage_capacity"
+    CCUS_CarbonStorageCapacity = {
+        "type": "dataframe",
+        "unit": "Gt",
+        "user_level": 2,
+        "description": "Total CO2 storage capacity of CCUS sector",
+        'dataframe_descriptor': {
+            Years: ('float', None, False),
+            CO2: ('float', None, False), }
+    }
+
+    CCUSPriceValue = "ccus_price"
+    CCUSPrice = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_CCS,
+        "unit": "$/tCO2",
+        "user_level": 2,
+        "description": "Average price of CCUS sector for capturing and storing one ton of CO2",
+        'dataframe_descriptor': {
+            Years: ('float', None, False),
+            "Price": ('float', None, False), }
     }
 
     EnergyMixRawProductionDetailedValue = 'energy_production_brut_detailed'
