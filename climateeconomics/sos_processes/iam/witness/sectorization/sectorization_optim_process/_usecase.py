@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -53,13 +53,13 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.witness_sect_uc = witness_sect_usecase(self.year_start, self.year_end,
-                                                    execution_engine=execution_engine)
+                                                    execution_engine=execution_engine, main_study=False)
+        self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
-        INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
 
         dspace_dict = {
@@ -224,16 +224,17 @@ class Study(StudyManager):
         disc_dict[f"{ns_optim}.{'energy_eff_xzero_indus_in'}"] = np.array([2015])
         disc_dict[f"{ns_optim}.{'energy_eff_max_indus_in'}"] = np.array([4.18])
 
-        func_df = pd.DataFrame(
-            columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
-        func_df['variable'] = ['error_pib_total',
-                               'Industry.gdp_error', 'Agriculture.gdp_error', 'Services.gdp_error',
-                               'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error']
-        func_df['ftype'] = [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE]
-        func_df['weight'] = [1, 1, 1, 1, 1, 1, 1]
-        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,
-                              AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,]
-        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj']
+        func_df = pd.DataFrame({
+            'variable': ['error_pib_total', 'Industry.gdp_error', 'Agriculture.gdp_error',
+                         'Services.gdp_error', 'Industry.energy_eff_error',
+                         'Agriculture.energy_eff_error', 'Services.energy_eff_error'],
+            'ftype': [OBJECTIVE] * 7,
+            'parent': ['parent'] * 7,
+            'weight': [1] * 7,
+            AGGR_TYPE: [AGGR_TYPE_SUM] * 7,
+            'namespace': ['ns_obj'] * 7
+        })
+
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -244,16 +245,12 @@ class Study(StudyManager):
 
         # Inputs for objective 
         data_dir = join(
-            dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
+            dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data/sectorization_fitting')
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         extra_data = pd.read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
         weights = pd.read_csv(join(data_dir, 'weights_df.csv'))
-        hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
-        services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorServices: hist_invest[GlossaryCore.SectorServices]})
-        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
         long_term_energy_eff = pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
         lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
                                      GlossaryCore.EnergyEfficiency: long_term_energy_eff[
@@ -270,7 +267,11 @@ class Study(StudyManager):
             GlossaryCore.SectorServices: long_term_energy_eff[GlossaryCore.Years],
             GlossaryCore.SectorAgriculture: long_term_energy_eff[GlossaryCore.Years],
         })
-
+        workforce_df = workforce_df.loc[workforce_df[GlossaryCore.Years] <= self.year_end]
+        workforce_df = workforce_df.loc[workforce_df[GlossaryCore.Years] >= self.year_start]
+        ns_industry_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}"
+        ns_agriculture_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}"
+        ns_services_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorServices}"
         sect_input = {}
         sect_input[f"{ns_coupling}.{'workforce_df'}"] = workforce_df
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
@@ -279,12 +280,9 @@ class Study(StudyManager):
         sect_input[f"{ns_coupling}.{self.macro_name}.{'prod_function_fitting'}"] = False
         sect_input[f"{ns_coupling}.{self.obj_name}.{'data_for_earlier_energy_eff'}"] = extra_data
         sect_input[f"{ns_coupling}.{self.obj_name}.{'weights_df'}"] = weights
-        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = agri_invest
-        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = services_invest
-        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = indus_invest
-        sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
-        sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
-        sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
+        sect_input[f"{ns_industry_macro}.{'longterm_energy_efficiency'}"] = lt_enef_indus
+        sect_input[f"{ns_agriculture_macro}.{'longterm_energy_efficiency'}"] = lt_enef_agri
+        sect_input[f"{ns_services_macro}.{'longterm_energy_efficiency'}"] = lt_enef_services
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
@@ -356,5 +354,5 @@ class ComplexJsonEncoder(_json.JSONEncoder):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    #uc_cls.load_data()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

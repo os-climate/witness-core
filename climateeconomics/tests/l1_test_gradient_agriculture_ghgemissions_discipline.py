@@ -71,9 +71,9 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
-                       f'{self.name}.{GlossaryCore.techno_list}': ['Crop', 'Forest'],
+                       f'{self.name}.{GlossaryCore.techno_list}': ['Crop', GlossaryCore.Forestry],
                        f'{self.name}.Crop.CO2_land_emission_df': CO2_land_emissions,
-                       f'{self.name}.Forest.CO2_land_emission_df': CO2_land_emissions,
+                       f'{self.name}.Forestry.CO2_land_emission_df': CO2_land_emissions,
                        f'{self.name}.Crop.CH4_land_emission_df': CH4_land_emissions,
                        f'{self.name}.Crop.N2O_land_emission_df': N2O_land_emissions,
                        }
@@ -86,7 +86,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename='jacobian_agriculture_ghg_emission_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.Crop.CO2_land_emission_df',
-                                    f'{self.name}.Forest.CO2_land_emission_df',
+                                    f'{self.name}.Forestry.CO2_land_emission_df',
                                     f'{self.name}.Crop.CH4_land_emission_df',
                                     f'{self.name}.Crop.N2O_land_emission_df'],
                             outputs=[f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}',

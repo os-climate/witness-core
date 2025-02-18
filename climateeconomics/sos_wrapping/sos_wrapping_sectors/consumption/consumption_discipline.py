@@ -66,7 +66,7 @@ class ConsumptionDiscipline(SoSWrapp):
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             for sector in sector_list:
                 dynamic_inputs[f"{sector}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-                dynamic_inputs[f"{sector}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
+                dynamic_inputs[f"{sector}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorProductionDf)
                 dynamic_outputs[f"{sector}_consumption_breakdown"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ConsumptionSectorBreakdown)
 
         self.add_inputs(dynamic_inputs)

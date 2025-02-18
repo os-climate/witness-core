@@ -178,12 +178,12 @@ class Study(ClimateEconomicsStudyManager):
         }
 
         constraints_secto = {
-            'variable': [f"{sector}.{GlossaryCore.ConstraintUpperBoundUsableCapital}" for sector in GlossaryCore.SectorsPossibleValues],
-            'parent': ["Usable capital constraints"] * 3,
-            'ftype': [FunctionManagerDisc.INEQ_CONSTRAINT] * 3,
-            'weight': [.01] * 3,
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT] * 3,
-            'namespace': [GlossaryCore.NS_FUNCTIONS] * 3
+            'variable': [f"{sector}.{GlossaryCore.ConstraintUpperBoundUsableCapital}" for sector in GlossaryCore.SectorListWoSubsector["default"]],
+            'parent': ["Usable capital constraints"] * 2,
+            'ftype': [FunctionManagerDisc.INEQ_CONSTRAINT] * 2,
+            'weight': [.01] * 2,
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT] * 2,
+            'namespace': [GlossaryCore.NS_FUNCTIONS] * 2
         }
 
         func_df = pd.concat([pd.DataFrame(var) for var in [
@@ -208,7 +208,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict = {}
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGSNewton'
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-10
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
@@ -242,9 +242,19 @@ class Study(ClimateEconomicsStudyManager):
         values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode'] = True
         values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
+
         self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.ShareSectorInvestmentDfValue)
         self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.ShareSectorEnergyDfValue)
         self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.EnergyInvestmentsWoTaxValue)
+
+
+        agri_subsector_invests = pd.DataFrame({
+            GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
+            GlossaryCore.Crop: 90.,
+            GlossaryCore.Forestry: 10.,
+        })
+        values_dict_out[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
+        values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
         return values_dict_out
 
 

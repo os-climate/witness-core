@@ -14,32 +14,31 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
-from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
-    AutodifferentiedDisc,
-)
 
-from climateeconomics.core.core_forest.forest import ForestAutodiff
+from climateeconomics.core.core_forest.forest import ForestryModel
 from climateeconomics.core.core_witness.climateeco_discipline import (
     ClimateEcoDiscipline,
 )
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.subsector_discipline import (
+    SubSectorDiscipline,
+)
 
 
-class ForestDiscipline(AutodifferentiedDisc):
-    ''' Forest discipline
-    '''
-
+class ForestryDiscipline(SubSectorDiscipline):
+    """Forestry discipline"""
+    sector_name = GlossaryCore.SectorAgriculture
+    subsector_name = GlossaryCore.Forestry
     # ontology information
     _ontology_data = {
-        'label': 'Forest',
+        'label': 'Forestry sub-sector model',
         'type': '',
         'source': '',
         'validated': '',
@@ -51,25 +50,8 @@ class ForestDiscipline(AutodifferentiedDisc):
         'version': 'Version 0',
     }
 
-    autoconfigure_gradient_variables = False
-    coupling_inputs = [
-        'deforestation_investment',
-        'reforestation_investment',
-        GlossaryCore.CropProductivityReductionName,
-        'managed_wood_investment',
-    ]
-    coupling_outputs = [
-        'forest_surface_df',
-        'land_use_required',
-        'CO2_land_emission_df',
-        'CO2_emissions',
-        'techno_production',
-        'techno_consumption',
-        GlossaryCore.TechnoConsumptionWithoutRatioValue,
-        'techno_prices',
-        'forest_lost_capital',
-        'forest_lost_capital',
-    ]
+    DYNAMIC_VAR_NAMESPACE_LIST = [GlossaryCore.NS_SECTORS]
+    autoconfigure_gradient_variables = True
     AGRI_CAPITAL_TECHNO_LIST = []
     biomass_cal_val = BiomassDry.data_energy_dict[
         'calorific_value']
@@ -162,37 +144,15 @@ class ForestDiscipline(AutodifferentiedDisc):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        'deforestation_investment': {'type': 'dataframe', 'unit': 'G$',
-                                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                   GlossaryCore.InvestmentsValue: (
-                                                                       'float', [0, 1e9], True)},
-                                          'dataframe_edition_locked': False,
-                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                          'namespace': 'ns_forest'},
         'initial_co2_emissions': {'type': 'float', 'unit': 'GtCO2'},
-        'co2_per_ha': {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
-        'reforestation_cost_per_ha': {'type': 'float', 'unit': '$/ha', 'default': 13800,
-                                           'namespace': 'ns_forest'},
-        'reforestation_investment': {'type': 'dataframe', 'unit': 'G$',
-                                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                   'reforestation_investment': ('float', [0, 1e9], True)},
-                                          'dataframe_edition_locked': False,
-                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                          'namespace': 'ns_invest'},
-        'params': {'type': 'dict', 'unit': '-', 'default': wood_techno_dict,
-                                  'namespace': 'ns_forest'},
-        'managed_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'default': wood_production_surface,
-                                    'namespace': 'ns_forest'},
+        'co2_per_ha': {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000,},
+        'reforestation_cost_per_ha': {'type': 'float', 'unit': '$/ha', 'default': 13800,},
+        'params': {'type': 'dict', 'unit': '-', 'default': wood_techno_dict,},
+        'managed_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'default': wood_production_surface,},
         'managed_wood_invest_before_year_start': {'type': 'dataframe', 'unit': 'G$',
                                              'dataframe_descriptor': {GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)},
                                              'dataframe_edition_locked': False,
-                                             'default': invest_before_year_start,
-                                             'namespace': 'ns_forest'},
-        'managed_wood_investment': {'type': 'dataframe', 'unit': 'G$',
-                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                        GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)},
-                               'dataframe_edition_locked': False,
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+                                             'default': invest_before_year_start,},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'namespace': GlossaryCore.NS_WITNESS,
                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -203,76 +163,62 @@ class ForestDiscipline(AutodifferentiedDisc):
                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                  'margin': ('float', [0, 1e9], True)},
                         'dataframe_edition_locked': False},
-        'initial_unmanaged_forest_surface': {'type': 'float', 'unit': 'Gha', 'default': initial_unmanaged_forest_surface,
-                                  'namespace': 'ns_forest'},
-        'initial_protected_forest_surface': {'type': 'float', 'unit': 'Gha', 'default': initial_protected_forest_surface,
-                                  'namespace': 'ns_forest'},
-        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                              'namespace': 'ns_public', 'user_level': 2},
-        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                             'namespace': 'ns_public', 'user_level': 2},
+        'initial_unmanaged_forest_surface': {'type': 'float', 'unit': 'Gha', 'default': initial_unmanaged_forest_surface,},
+        'initial_protected_forest_surface': {'type': 'float', 'unit': 'Gha', 'default': initial_protected_forest_surface,},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.CropProductivityReductionName: GlossaryCore.CropProductivityReductionDf
     }
+    DESC_IN.update(SubSectorDiscipline.DESC_IN)
     subsector_production_df = GlossaryCore.get_dynamic_variable(GlossaryCore.SubsectorProductionDf)
     subsector_production_df["namespace"] = GlossaryCore.NS_AGRI
 
-    damages_df = GlossaryCore.get_dynamic_variable(GlossaryCore.SubsectorDamagesDf)
-    damages_df["namespace"] = GlossaryCore.NS_AGRI
     DESC_OUT = {
         'CO2_emissions_detail_df': {
-            'type': 'dataframe', 'unit': 'GtCO2', 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'GtCO2'},
         'forest_surface_detail_df': {
             'type': 'dataframe', 'unit': 'Gha'},
         'forest_surface_df': {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': GlossaryCore.NS_WITNESS},
-        'CO2_land_emission_df': {
-            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_forest'},
+        f'{GlossaryCore.Forestry}.CO2_land_emission_df': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': "Shared", 'namespace': GlossaryCore.NS_AGRI, SubSectorDiscipline.GRADIENTS: True},
         'biomass_dry_df': {
             'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': GlossaryCore.NS_WITNESS},
         'managed_wood_df': {
-            'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'Gha'},
         'biomass_dry_detail_df': {
-            'type': 'dataframe', 'unit': '-', 'namespace': 'ns_forest'},
-
-        'techno_production': {
+            'type': 'dataframe', 'unit': '-',},
+        f"{GlossaryCore.Forestry}.biomass_dry_price": GlossaryCore.get_subsector_variable(subsector_name='Crop', sector_namespace=GlossaryCore.NS_AGRI, var_descr=GlossaryCore.PriceDf),
+        f'{GlossaryCore.Forestry}.techno_production': {
             'type': 'dataframe', 'unit': 'TWh or Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_forest'},
-        'techno_prices': {
+            'namespace': GlossaryCore.NS_AGRI},
+        f'{GlossaryCore.Forestry}.techno_prices': {
             'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_forest'},
-        'techno_consumption': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest',
-            'unit': 'TWh or Mt'},
-        'techno_consumption_woratio': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest',
-            'unit': 'TWh or Mt',
-        },
-        'land_use_required': {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_forest'},
-        'CO2_emissions': {
+            'namespace': GlossaryCore.NS_AGRI},
+        'techno_consumption': {'type': 'dataframe', 'unit': 'TWh or Mt'},
+        'techno_consumption_woratio': {'type': 'dataframe', 'unit': 'TWh or Mt',},
+        f'{GlossaryCore.Forestry}.land_use_required': {'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                              'namespace': GlossaryCore.NS_AGRI, SubSectorDiscipline.GRADIENTS: True,},
+        f'{GlossaryCore.Forestry}.CO2_emissions': {
             'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_forest'},
-        'forest_lost_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_forest'},
+            'namespace': GlossaryCore.NS_AGRI},
+        'forestry_lost_capital': {
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_AGRI},
         'yields': {'type': 'dataframe', 'unit': 'm^3/Ha', 'description': 'evolution of yields. Yields are affected by temperature change'},
-        f"{GlossaryCore.Forest}.{GlossaryCore.ProductionDfValue}": subsector_production_df,
-        f"{GlossaryCore.Forest}.{GlossaryCore.DamageDfValue}": damages_df,
+        f"{GlossaryCore.Forestry}.{GlossaryCore.ProductionDfValue}": subsector_production_df,
+        f"{GlossaryCore.Forestry}.{GlossaryCore.DamageDfValue}": GlossaryCore.get_subsector_damage_df(subsector_name=GlossaryCore.Forestry, sector_namespace=GlossaryCore.NS_AGRI),
         GlossaryCore.DamageDetailedDfValue: {'type': 'dataframe', 'unit': 'G$', 'description': 'Economical damages details.'},
         GlossaryCore.EconomicsDetailDfValue: {'type': 'dataframe', 'unit': 'G$', 'description': 'Net economical output details.'},
+        "Forestry." + GlossaryCore.ProdForStreamName.format('biomass_dry'): GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.ProdForStreamVar, sector_namespace=GlossaryCore.NS_AGRI, subsector_name=GlossaryCore.Forestry),
+        "Forestry." + GlossaryCore.ProdForStreamName.format('wet_biomass'): GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.ProdForStreamVar, sector_namespace=GlossaryCore.NS_AGRI, subsector_name=GlossaryCore.Forestry),
+        "Forestry." + GlossaryCore.CapitalDfValue: GlossaryCore.get_subsector_variable(var_descr=GlossaryCore.CapitalDf, sector_namespace=GlossaryCore.NS_AGRI, subsector_name=GlossaryCore.Forestry),
     }
 
-    FOREST_CHARTS = 'Forest chart'
+    FORESTRY_CHARTS = 'Forestry chart'
 
-    def setup_sos_disciplines(self):
+    def add_additionnal_dynamic_variables(self):
         self.update_default_values()
+        return {}, {}
 
     def update_default_values(self):
         disc_in = self.get_data_in()
@@ -282,7 +228,7 @@ class ForestDiscipline(AutodifferentiedDisc):
                 self.update_default_value('initial_co2_emissions', 'in', DatabaseWitnessCore.ForestEmissions.get_value_at_year(year_start))
 
     def init_execution(self):
-        self.model = ForestAutodiff()
+        self.model = ForestryModel()
 
     def get_chart_filter_list(self):
 
@@ -291,7 +237,7 @@ class ForestDiscipline(AutodifferentiedDisc):
 
         chart_filters = []
 
-        chart_list = [ForestDiscipline.FOREST_CHARTS,
+        chart_list = [ForestryDiscipline.FORESTRY_CHARTS,
                       "Economical output",
                       "Investments",
                       "Surface",
@@ -324,13 +270,13 @@ class ForestDiscipline(AutodifferentiedDisc):
         managed_wood_df = self.get_sosdisc_outputs('managed_wood_df')
         years = managed_wood_df[GlossaryCore.Years]
         if "Economical output" in chart_list:
-            economical_output_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forest}.{GlossaryCore.ProductionDfValue}")
-            economical_damages_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forest}.{GlossaryCore.DamageDfValue}")
+            economical_output_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forestry}.{GlossaryCore.ProductionDfValue}")
+            economical_damages_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forestry}.{GlossaryCore.DamageDfValue}")
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorProductionDf['unit'], chart_name='Economical output of forestry', stacked_bar=True)
 
             for col in economical_output_df.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, economical_output_df[col], pimp_string(col), "lines"))
+                    new_chart.add_series(InstanciatedSeries(years, economical_output_df[col], self.pimp_string(col), "lines"))
 
             new_chart.add_series(InstanciatedSeries(years, -economical_damages_df[GlossaryCore.Damages], "Damages", "bar"))
             new_chart.post_processing_section_name = "Economical output"
@@ -338,25 +284,25 @@ class ForestDiscipline(AutodifferentiedDisc):
 
         if "Economical output" in chart_list:
             economical_detail = self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue)
-            economical_output_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forest}.{GlossaryCore.ProductionDfValue}")
+            economical_output_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forestry}.{GlossaryCore.ProductionDfValue}")
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorProductionDf['unit'], chart_name='Net economical output breakdown', stacked_bar=True)
 
             for col in economical_detail.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, economical_detail[col], pimp_string(col), "bar"))
+                    new_chart.add_series(InstanciatedSeries(years, economical_detail[col], self.pimp_string(col), "bar"))
 
             new_chart.add_series(InstanciatedSeries(years, economical_output_df[GlossaryCore.OutputNetOfDamage], "Total", "lines"))
             new_chart.post_processing_section_name = "Economical output"
             instanciated_charts.append(new_chart)
 
         if "Damages" in chart_list:
-            economical_damages_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forest}.{GlossaryCore.DamageDfValue}")
+            economical_damages_df = self.get_sosdisc_outputs(f"{GlossaryCore.Forestry}.{GlossaryCore.DamageDfValue}")
             economical_damages_df_detailed = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorDamagesDf['unit'], chart_name='Economical damages', stacked_bar=True)
 
             for col in economical_damages_df_detailed.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, economical_damages_df_detailed[col], pimp_string(col), "bar"))
+                    new_chart.add_series(InstanciatedSeries(years, economical_damages_df_detailed[col], self.pimp_string(col), "bar"))
 
             new_chart.add_series(InstanciatedSeries(years, economical_damages_df[GlossaryCore.Damages], "Total", "lines"))
             new_chart.post_processing_section_name = "Damages"
@@ -368,7 +314,7 @@ class ForestDiscipline(AutodifferentiedDisc):
 
             for col in yields_df.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, yields_df[col], pimp_string(col), "lines"))
+                    new_chart.add_series(InstanciatedSeries(years, yields_df[col], self.pimp_string(col), "lines"))
 
             new_chart.post_processing_section_name = "Damages"
             instanciated_charts.append(new_chart)
@@ -379,22 +325,13 @@ class ForestDiscipline(AutodifferentiedDisc):
 
             for col in crop_productivity_reduction.columns:
                 if col != GlossaryCore.Years:
-                    new_chart.add_series(InstanciatedSeries(years, - crop_productivity_reduction[col], pimp_string(col), "lines"))
+                    new_chart.add_series(InstanciatedSeries(years, crop_productivity_reduction[col], self.pimp_string(col), "lines"))
 
             new_chart.post_processing_section_name = "Damages"
             instanciated_charts.append(new_chart)
 
         if "Investments" in chart_list:
-            reforestation_investment_df = self.get_sosdisc_inputs('reforestation_investment')
-            managed_wood_investment_df = self.get_sosdisc_inputs('managed_wood_investment')
-            deforestation_investment_df = self.get_sosdisc_inputs('deforestation_investment')
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Investments [G$]',
-                                                 chart_name='Investments in forests activities', stacked_bar=True)
-
-            new_chart.add_series(InstanciatedSeries(years, reforestation_investment_df['reforestation_investment'], 'Reforestation invests', 'bar'))
-            new_chart.add_series(InstanciatedSeries(years, managed_wood_investment_df[GlossaryCore.InvestmentsValue], 'Managed wood invests', 'bar'))
-            new_chart.add_series(InstanciatedSeries(years, deforestation_investment_df[GlossaryCore.InvestmentsValue], 'Deforestation invests', 'bar'))
-            new_chart.post_processing_section_name = "Investments & Capital"
+            new_chart = self.get_investment_chart()
             instanciated_charts.append(new_chart)
 
         if "Surface" in chart_list:
@@ -468,7 +405,7 @@ class ForestDiscipline(AutodifferentiedDisc):
 
             # in Gt
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emission & capture [GtCO2]',
-                                                 chart_name='Forest CO2 emissions', stacked_bar=True)
+                                                 chart_name='Forestry CO2 emissions', stacked_bar=True)
             new_chart.add_series(InstanciatedSeries(years, deforestation.tolist(), 'Deforestation emissions', InstanciatedSeries.BAR_DISPLAY))
             new_chart.add_series(InstanciatedSeries(years, reforestation.tolist(), 'Reforestation emissions', InstanciatedSeries.BAR_DISPLAY))
             new_chart.add_series(InstanciatedSeries(years, global_surface.tolist(), 'Global CO2 balance', InstanciatedSeries.LINES_DISPLAY))
@@ -503,10 +440,10 @@ class ForestDiscipline(AutodifferentiedDisc):
                                                  chart_name='Break down of biomass dry production for energy',
                                                  stacked_bar=True)
             mw_residues_energy_twh = managed_wood_df[
-                                         'residues_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
-            mw_wood_energy_twh = managed_wood_df['wood_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
-            biomass_dry_energy_twh = biomass_dry_df['biomass_dry_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
-            deforestation_energy_twh = biomass_dry_df['deforestation_for_energy'] * ForestDiscipline.biomass_cal_val
+                                         'residues_production_for_energy (Mt)'] * ForestryDiscipline.biomass_cal_val
+            mw_wood_energy_twh = managed_wood_df['wood_production_for_energy (Mt)'] * ForestryDiscipline.biomass_cal_val
+            biomass_dry_energy_twh = biomass_dry_df['biomass_dry_for_energy (Mt)'] * ForestryDiscipline.biomass_cal_val
+            deforestation_energy_twh = biomass_dry_df['deforestation_for_energy'] * ForestryDiscipline.biomass_cal_val
 
             new_chart.add_series(InstanciatedSeries(years, mw_residues_energy_twh.tolist(), 'Residues from managed wood', InstanciatedSeries.BAR_DISPLAY))
             new_chart.add_series(InstanciatedSeries(years, mw_wood_energy_twh.tolist(), 'Wood from managed wood', InstanciatedSeries.BAR_DISPLAY))
@@ -566,18 +503,13 @@ class ForestDiscipline(AutodifferentiedDisc):
 
         if "Capital" in chart_list:
             # lost capital graph
-            lost_capital_df = self.get_sosdisc_outputs('forest_lost_capital')
+            lost_capital_df = self.get_sosdisc_outputs('forestry_lost_capital')
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Lost capital [G$]',
                                                  chart_name='Lost capital due to deforestation', stacked_bar=True)
 
             new_chart.add_series(InstanciatedSeries(years, lost_capital_df['deforestation'], 'Deforestation Lost Capital', 'bar'))
-            new_chart.post_processing_section_name = "Investments & Capital"
+            new_chart.post_processing_section_name = "Investments and capital"
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-
-def pimp_string(val: str):
-    val = val.replace("_", ' ')
-    val = val.capitalize()
-    return val

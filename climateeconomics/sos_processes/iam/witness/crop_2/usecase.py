@@ -35,7 +35,7 @@ class Study(StudyManager):
         if self.data is not None:
             return self.data
         ns_study = self.ee.study_name
-        model_name = 'AgricultureMix.Crop'
+        model_name = 'Agriculture.Crop'
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
@@ -81,6 +81,24 @@ class Study(StudyManager):
             GlossaryCore.Years: years,
             GlossaryCore.EnergyPriceValue: np.linspace(70, 120, year_range)
         })
+        share_investments_between_agri_subsectors = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.Crop: 90.,
+            GlossaryCore.Forestry: 10.,
+        })
+
+        share_investments_inside_crop = pd.DataFrame({
+            GlossaryCore.Years: years,
+            **GlossaryCore.crop_calibration_data["invest_food_type_share_start"]
+        })
+
+        economics_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.OutputNetOfDamage: 1.015 ** np.arange(0,
+                                                               len(years)) * DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(
+                self.year_start) * 0.98,
+        })
 
 
         inputs_dict = {
@@ -93,6 +111,9 @@ class Study(StudyManager):
             f'{ns_study}.{GlossaryCore.DamageFractionDfValue}': damage_fraction,
             f'{ns_study}.Macroeconomics.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': enegy_agri,
             f'{ns_study}.{model_name}.{GlossaryCore.FoodTypesInvestName}': investments,
+            f'{ns_study}.{GlossaryCore.EconomicsDfValue}': economics_df,
+            f'{ns_study}.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}': share_investments_between_agri_subsectors,
+            f'{ns_study}.Macroeconomics.Agriculture.Crop.{GlossaryCore.SubShareSectorInvestDfValue}': share_investments_inside_crop,
         }
 
         return inputs_dict
@@ -100,4 +121,5 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

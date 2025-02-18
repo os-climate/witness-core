@@ -111,7 +111,7 @@ class SectorModel:
         self.years = np.arange(self.year_start, self.year_end + 1)
         default_index = self.years
         self.capital_df = pd.DataFrame(index=default_index, columns=GlossaryCore.CapitalDf['dataframe_descriptor'].keys(), dtype=float)
-        self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductionDf['dataframe_descriptor'].keys(), dtype=float)
+        self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectorProductionDf['dataframe_descriptor'].keys(), dtype=float)
         self.section_gdp_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys(), dtype=float)
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys(), dtype=float)
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys(), dtype=float)

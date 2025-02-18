@@ -19,28 +19,26 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_optimization_plugins.tools.discipline_tester import (
-    discipline_test_function,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc import (
-    ForestDiscipline,
-)
 
 
-class ForestJacobianDiscTest(unittest.TestCase):
+class ForestryJacobianDiscTest(GenericDisciplinesTestClass):
 
     def setUp(self):
         self.name = 'Test'
-        self.model_name = 'Forest'
+        self.model_name = "Agriculture.Forestry"
+        self.pickle_directory = dirname(__file__)
         self.ns_dict = {'ns_public': f'{self.name}',
-                   GlossaryCore.NS_WITNESS: f'{self.name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
-                   'ns_forest': f'{self.name}.{self.model_name}',
-                   'ns_agriculture': f'{self.name}.{self.model_name}',
-                   'ns_invest': f'{self.name}.{self.model_name}'}
+                        GlossaryCore.NS_WITNESS: f'{self.name}',
+                        GlossaryCore.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
+                        'ns_forestry': f'{self.name}.{self.model_name}',
+                        'ns_sectors': f'{self.name}',
+                        'ns_agriculture': f'{self.name}.{self.model_name}',
+                        'ns_invest': f'{self.name}.{self.model_name}'}
 
+    def get_inputs_dict(self) -> dict:
         year_start = GlossaryCore.YearStartDefault
         year_end = GlossaryCore.YearEndDefaultTest
         years = np.arange(year_start, year_end + 1, 1)
@@ -52,46 +50,29 @@ class ForestJacobianDiscTest(unittest.TestCase):
         years = np.arange(year_start, year_end + 1, 1)
         year_range = year_end - year_start + 1
 
-        reforestation_invest_df = pd.DataFrame({
+        invest_df = pd.DataFrame({
             GlossaryCore.Years: years,
-            "reforestation_investment": np.linspace(2, 10, year_range)
-        })
-        deforest_invest_df = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.InvestmentsValue: np.linspace(10, 1, year_range)
+            'Reforestation': np.linspace(2, 10, year_range),
+            'Deforestation': np.linspace(10, 1, year_range),
+            'Managed wood': np.linspace(1, 10, year_range),
         })
 
-        mw_invest_df = pd.DataFrame({GlossaryCore.Years: years,
-                                          GlossaryCore.InvestmentsValue: np.linspace(1, 10, year_range)})
         transport_df = pd.DataFrame({GlossaryCore.Years: years, "transport": 7.6})
         margin = pd.DataFrame({GlossaryCore.Years: years, 'margin': 110.})
-
-        self.inputs_dict = {
+        return {
+            f'{self.name}.mdo_sectors_invest_level': 2,
             f'{self.name}.{GlossaryCore.YearStart}': year_start,
             f'{self.name}.{GlossaryCore.YearEnd}': year_end,
-            f'{self.name}.{self.model_name}.deforestation_investment': deforest_invest_df,
-            f'{self.name}.{self.model_name}.reforestation_investment': reforestation_invest_df,
-            f'{self.name}.{self.model_name}.managed_wood_investment': mw_invest_df,
+            f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentDetailsDfValue}': invest_df,
             f'{self.name}.transport_cost': transport_df,
             f'{self.name}.margin': margin,
             f'{self.name}.{GlossaryCore.CropProductivityReductionName}': crop_reduction_productivity_df,
         }
 
-    def test_forest(self):
-        discipline_test_function(
-            module_path='climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline',
-            model_name=self.model_name,
-            name=self.name,
-            jacobian_test=True,
-            coupling_inputs=ForestDiscipline.coupling_inputs,
-            coupling_outputs=ForestDiscipline.coupling_outputs,
-            show_graphs=False,
-            inputs_dict=self.inputs_dict,
-            namespaces_dict=self.ns_dict,
-            pickle_directory=dirname(__file__),
-            pickle_name='jacobian_forest_autodiff.pkl',
-            override_dump_jacobian=False
-        )
+    def test_forestry(self):
+        self.jacobian_test = True
+        self.override_dump_jacobian = True
+        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestryDiscipline'
 
 
 if __name__ == "__main__":

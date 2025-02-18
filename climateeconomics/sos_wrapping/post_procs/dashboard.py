@@ -93,6 +93,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             if chart_filter.filter_key == "Charts":
                 chart_list = chart_filter.selected_values
 
+    pop_df = get_scenario_value(execution_engine, "population_detail_df", scenario_name)
+    years = pop_df[GlossaryCore.Years]
     if "gdp vs energy evolution" in chart_list:
         raw_iea_df = pd.merge(
             DatabaseWitnessCore.IEANZEEnergyProduction.value,
@@ -432,11 +434,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if "investment distribution" in chart_list:
-        reforestation_investment = get_scenario_value(
-            execution_engine, GlossaryEnergy.ReforestationInvestmentValue, scenario_name
-        )
-        years = reforestation_investment[GlossaryEnergy.Years]
-
         chart_name_energy = "Distribution of investments on each energy "
 
         new_chart_energy = TwoAxesInstanciatedChart(
@@ -476,7 +473,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 total_invest = list(np.sum(list_energy, axis=0))
                 new_chart_energy.add_trace(
                     go.Scatter(
-                        x=years.tolist(),
+                        x=years,
                         y=total_invest,
                         opacity=0.7,
                         line=dict(width=1.25),
@@ -491,7 +488,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         instanciated_charts.append(new_chart_energy)
 
-    if "land use" in chart_list:
+    if "land use" in chart_list and not sectorization:
         chart_name = (
             "Surface for forest and food production vs available land over time"
         )
@@ -502,6 +499,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         new_chart = new_chart.to_plotly()
 
         # total crop surface
+
         surface_df = get_scenario_value(
             execution_engine, f"{CROP_DISC}.food_land_surface_df", scenario_name
         )
@@ -630,7 +628,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             f"{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}",
             scenario_name,
         )
-        years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
 
         energy_list = get_scenario_value(
             execution_engine, GlossaryCore.energy_list, scenario_name

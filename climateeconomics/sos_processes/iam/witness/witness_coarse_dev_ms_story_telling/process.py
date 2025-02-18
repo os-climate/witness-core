@@ -53,7 +53,7 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_invest',
                                          'ns_agriculture',
                                          'ns_crop',
-                                         'ns_forest',
+                                         'ns_forestry',
                                          'ns_coal_resource',
                                          'ns_natural_gas_resource',
                                          'ns_oil_resource',

@@ -28,6 +28,7 @@ from climateeconomics.glossarycore import GlossaryCore
 class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
 
     def setUp(self):
+        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start =GlossaryCore.YearStartDefault
@@ -35,7 +36,7 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
         n_years = len(self.years)
 
-        self.sector_list = GlossaryCore.SectorsPossibleValues
+        self.sector_list = GlossaryCore.SectorListWoSubsector["default"]
 
         time = self.years - self.year_start
         self.economics_df = pd.DataFrame({

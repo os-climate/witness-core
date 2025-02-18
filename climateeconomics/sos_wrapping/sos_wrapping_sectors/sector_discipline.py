@@ -154,7 +154,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionPercentageDfValue}"] = section_energy_consumption_percentage_var
 
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorProductionDf)
         capital_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)
         capital_df_disc[self.NAMESPACE] = self.NS_SECTORS
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}"] = capital_df_disc
@@ -213,7 +213,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             #'growth_rate_df': self.model.growth_rate_df,
             f"{self.sector_name}.{GlossaryCore.DamageDfValue}": self.model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": self.model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
-            f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": self.model.production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
+            f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": self.model.production_df[GlossaryCore.SectorProductionDf['dataframe_descriptor'].keys()],
             f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": self.model.capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
             f"{self.sector_name}.{GlossaryCore.SectionEnergyConsumptionDfValue}": self.model.section_energy_consumption_df,
             f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}": self.model.section_gdp_df,
