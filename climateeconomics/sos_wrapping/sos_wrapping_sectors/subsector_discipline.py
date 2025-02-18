@@ -68,11 +68,10 @@ class SubSectorDiscipline(AutodifferentiedDisc):
                 dynamic_inputs[f'{self.sector_name}.{self.subsector_name}.{GlossaryCore.SubShareSectorInvestDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.SubShareSectorInvestDf)
                 dynamic_outputs[f'{self.sector_name}.{self.subsector_name}.{GlossaryCore.InvestmentDetailsDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.SubSectorInvestDf)
             elif values_dict['mdo_sectors_invest_level'] == 2:
-                # then invests in subsectors are in G$
                 dynamic_inputs[f'{self.sector_name}.{self.subsector_name}.{GlossaryCore.InvestmentDetailsDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.SubSectorInvestDf)
             else:
                 raise NotImplementedError('')
-            dynamic_outputs[f'{self.sector_name}.{self.subsector_name}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
+            dynamic_outputs[f'{self.sector_name}.{self.subsector_name}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.SubSectorInvestDf)
         di, do = self.add_additionnal_dynamic_variables()
         di.update(dynamic_inputs)
         do.update(dynamic_outputs)
