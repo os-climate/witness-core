@@ -254,7 +254,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.OutputNetOfDamage in chart_list:
             chart_name = 'Global Output net of damage breakdown by sector'
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'T$', stacked_bar=True,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorProductionDf["unit"], stacked_bar=True,
                                                  chart_name=chart_name)
 
             for sector in sector_list:

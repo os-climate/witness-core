@@ -55,8 +55,10 @@ class GlossaryCore:
     # PWh = 1e3 TWh
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
-    conversion_dict = {"G$":{"G$": 1, 'T$': 1e-3},
-                       'Mt':{'Mt':1 }}
+    conversion_dict = {"G$": {"G$": 1, 'T$': 1e-3},
+                       "T$": {"T$": 1, 'G$': 1e3},
+                       'Mt': {'Mt': 1, 'Gt': 1e-3},
+                       'm²': {'ha': 1e-4}}
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
@@ -658,7 +660,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Damages: ("float", [0, 1e30], False),
@@ -1410,12 +1412,12 @@ class GlossaryCore:
         },
     }
 
-    SectorizedEconomicsDf = {  # todo: miss per capita consumption !
+    SectorizedEconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
