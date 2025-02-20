@@ -137,8 +137,8 @@ class Study(ClimateEconomicsStudyManager):
         # InvestmentsProfileBuilderDisc inputs
         columns_names = [f'{GlossaryCore.clean_energy}.{GlossaryCore.CleanEnergySimpleTechno}',
                          f'{GlossaryEnergy.fossil}.{GlossaryEnergy.FossilSimpleTechno}',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
-                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}',
+                         f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.direct_air_capture}.{GlossaryEnergy.DirectAirCaptureTechno}',
+                         f'{GlossaryEnergy.carbon_captured}.{GlossaryEnergy.flue_gas_capture}.{GlossaryEnergy.FlueGasTechno}',
                          f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno']
 
         n_profiles = 2 #* len(columns_names) # 2 generic profiles for each of the variables, one growing and one decreasing profile

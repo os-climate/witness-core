@@ -58,8 +58,10 @@ class GlossaryCore:
 
     conversion_dict = {"G$":{"G$": 1, 'T$': 1e-3},
                        'Mt':{'Mt':1 , 'Gt': 1e-3},
+                       'Gt':{'Gt':1 , 'Mt': 1e3},
                        'TWh':{'TWh': 1, 'PWh': 1e-3},
                        'PWh':{'PWh': 1, 'TWh': 1e3},
+                       'Gha':{'Gha': 1}
                        }
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
@@ -86,7 +88,7 @@ class GlossaryCore:
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
-    ccus_type = "CCUS"
+    CCUS = "CCUS"
     CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
@@ -924,9 +926,9 @@ class GlossaryCore:
         "unit": "-",
     }
 
-    EnergyPricesValue = "energy_prices"  # todo : rename streams_prices, but it will break all l1
+    StreamPricesValue = "stream_prices"
 
-    EnergyPrices = {
+    StreamPrices = {
         'type': 'dataframe',
         'unit': '$/MWh',
         AutodifferentiedDisc.GRADIENTS: True,
@@ -956,7 +958,6 @@ class GlossaryCore:
     EnergyPriceValue = "energy_price"
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
-        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         AutodifferentiedDisc.GRADIENTS: True,
         "visibility": "Shared",
@@ -968,21 +969,46 @@ class GlossaryCore:
         },
     }
 
+    ccus_stream_unit = 'Mt'
     StreamProductionValue = "stream_production"
     StreamProductionDetailedValue = "energy_production_detailed"
 
     StreamEnergyConsumptionValue = "stream_energy_consumption"
     StreamResourceConsumptionValue = "stream_resource_consumption"
-    StreamEnergyConsumption = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies consumptions in stream", "dynamic_dataframe_columns": True,}
+    StreamEnergyConsumption = {'type': 'dataframe', 'unit': 'TWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies consumptions in stream", "dynamic_dataframe_columns": True,}
     StreamResourceConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources consumptions in stream", "dynamic_dataframe_columns": True,}
 
     StreamEnergyDemandValue = "stream_energy_demand"
     StreamResourceDemandValue = "stream_resource_demand"
-    StreamEnergyDemand = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies demand in stream", "dynamic_dataframe_columns": True,}
+    StreamEnergyDemand = {'type': 'dataframe', 'unit': 'TWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies demand in stream", "dynamic_dataframe_columns": True,}
     StreamResourceDemand = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources demand in stream", "dynamic_dataframe_columns": True,}
 
+    StreamCCSDemandValue = "stream_ccs_demand"
+    StreamCCSDemand = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "demand for ccs streams by techno", "dynamic_dataframe_columns": True, }
+    StreamCCSConsumptionValue = "stream_ccs_consumption"
+    StreamCCSConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "consumption of ccs streams by techno", "dynamic_dataframe_columns": True, }
+
+    StreamProductionDf = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "dynamic_dataframe_columns": True}
+    StreamLandUseDf = {'type': 'dataframe', 'unit': 'Gha', "dynamic_dataframe_columns": True}
 
     LandUseRequiredValue = "land_use_required"
+
+    EnergyDemandValue = "energy_demand"
+    EnergyDemandDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "TWh",
+        "namespace": NS_PUBLIC,
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyConsumptionValue = "energies_consumption_value"
+    EnergyConsumptionDf = {
+        "type": "dataframe",
+        "unit": "TWh",
+        "dynamic_dataframe_columns": True,
+    }
+
     NonUseCapital = "non_use_capital"
 
     TotalProductionValue = "Total production"
@@ -2380,16 +2406,7 @@ class GlossaryCore:
             CO2: ('float', None, False),}
     }
 
-    CCUS_CarbonStorageCapacityValue = "ccus_carbon_storage_capacity"
-    CCUS_CarbonStorageCapacity = {
-        "type": "dataframe",
-        "unit": "Gt",
-        "user_level": 2,
-        "description": "Total CO2 storage capacity of CCUS sector",
-        'dataframe_descriptor': {
-            Years: ('float', None, False),
-            CO2: ('float', None, False), }
-    }
+
 
     CCUSPriceValue = "ccus_price"
     CCUSPrice = {
@@ -2399,7 +2416,7 @@ class GlossaryCore:
         "namespace": NS_CCS,
         "unit": "$/tCO2",
         "user_level": 2,
-        "description": "Average price of CCUS sector for capturing and storing one ton of CO2",
+        "description": "Price of CCUS sector for capturing and storing one ton of CO2",
         'dataframe_descriptor': {
             Years: ('float', None, False),
             "Price": ('float', None, False), }
@@ -2413,8 +2430,8 @@ class GlossaryCore:
         "description": "Raw production of each energy within the energy sector",
         "dynamic_dataframe_columns": True,
     }
-    EnergyMixAllDemandsDfValue = 'energy_mix_all_demands_df'
-    EnergyMixAllDemandsDf = {
+    EnergyMixEnergiesDemandsDfValue = 'energy_mix_energies_demands_df'
+    EnergyMixEnergiesDemandsDf = {
         "type": "dataframe",
         "unit": "TWh",
         "user_level": 2,
@@ -2428,6 +2445,30 @@ class GlossaryCore:
         "unit": "TWh",
         "user_level": 2,
         "description": "Consumptions each energy within the Energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMixCCSDemandsDfValue = 'energy_mix_ccs_demands_df'
+    EnergyMixCCSDemandsDf = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "Gt",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "user_level": 2,
+        "description": "Demands for ccs within the Energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMixCCSConsumptionDfValue = 'energy_mix_ccs_consumption_df'
+    EnergyMixCCSConsumptionDf = {
+        "type": "dataframe",
+        "unit": "Gt",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "user_level": 2,
+        "description": "Consumption of ccs within the Energy sector",
         "dynamic_dataframe_columns": True,
     }
 

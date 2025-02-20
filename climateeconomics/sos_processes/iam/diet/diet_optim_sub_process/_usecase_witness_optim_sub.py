@@ -60,7 +60,7 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        GlossaryCore.ccus_type = 'CCUS'
+        GlossaryCore.CCUS = 'CCUS'
         self.bspline = bspline
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level

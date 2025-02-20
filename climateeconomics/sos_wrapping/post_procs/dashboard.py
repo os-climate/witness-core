@@ -391,7 +391,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                     GlossaryEnergy.TotalProductionValue,
                     "Total production (uncut)",
                 ]
-                and GlossaryEnergy.carbon_capture not in reactant
+                and GlossaryEnergy.carbon_captured not in reactant
                 and GlossaryEnergy.carbon_storage not in reactant
             ):
                 energy_twh = energy_production_detailed[reactant].values

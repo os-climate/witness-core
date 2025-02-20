@@ -1323,14 +1323,14 @@ class Crop():
                                                       self.mix_detailed_production['Crop residues (TWh)']
 
     def compute_techno_consumption(self):
-        self.techno_consumption[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.inputs['techno_infos_dict']['CO2_from_production'] / \
-                                                                    self.data_fuel_dict['high_calorific_value'] * \
-                                                                    self.mix_detailed_production['Total (TWh)']
-        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_capture} ({self.mass_unit})'] = -self.inputs['techno_infos_dict'][
+        self.techno_consumption[f'{GlossaryEnergy.carbon_captured} ({self.mass_unit})'] = -self.inputs['techno_infos_dict']['CO2_from_production'] / \
+                                                                                          self.data_fuel_dict['high_calorific_value'] * \
+                                                                                          self.mix_detailed_production['Total (TWh)']
+        self.techno_consumption_woratio[f'{GlossaryEnergy.carbon_captured} ({self.mass_unit})'] = -self.inputs['techno_infos_dict'][
             'CO2_from_production'] / \
-                                                                            self.data_fuel_dict[
+                                                                                                  self.data_fuel_dict[
                                                                                 'high_calorific_value'] * \
-                                                                            self.mix_detailed_production['Total (TWh)']
+                                                                                                  self.mix_detailed_production['Total (TWh)']
 
     def rescale_production_and_consumption(self):
         # Scale production TWh -> PWh

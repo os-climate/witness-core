@@ -717,91 +717,91 @@ class CropDiscipline(ClimateEcoDiscipline):
         # --------------------------------------------------------------
         # Techno consumption gradients
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dveg_carbs_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),
             -CO2_from_production / high_calorific_value * dprod_deggs_milk_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
             -CO2_from_production / high_calorific_value * d_prod_dfish_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
             -CO2_from_production / high_calorific_value * d_prod_dother_cal)
 
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('crop_investment', GlossaryCore.InvestmentsValue),
             -CO2_from_production / high_calorific_value *dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
 
         # --------------------------------------------------------------
         # Techno consumption wo ratio gradients
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dveg_carbs_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),
             -CO2_from_production / high_calorific_value * dprod_deggs_milk_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
             -CO2_from_production / high_calorific_value * d_prod_dfish_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
             -CO2_from_production / high_calorific_value * d_prod_dother_cal)
 
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_capture} (Mt)'),
+            ('techno_consumption_woratio', f'{GlossaryEnergy.carbon_captured} (Mt)'),
             ('crop_investment', GlossaryCore.InvestmentsValue),
             -CO2_from_production / high_calorific_value * dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
 

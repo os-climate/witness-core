@@ -466,22 +466,22 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_names = [
             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_prices' for energy in energy_list if
-            energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
+            energy not in [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]]
         inputs_names.extend([
             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.{GlossaryCore.StreamProductionValue}' for energy in
-            energy_list if energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
+            energy_list if energy not in [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_consumption' for energy in
-             energy_list if energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
+             energy_list if energy not in [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_consumption' for energy in
-             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
+             [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.{GlossaryCore.StreamProductionValue}' for energy in
-             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
+             [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
             f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_prices' for energy in
-            [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
+            [GlossaryEnergy.carbon_captured, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.syngas.syngas_ratio'])
         i = 0

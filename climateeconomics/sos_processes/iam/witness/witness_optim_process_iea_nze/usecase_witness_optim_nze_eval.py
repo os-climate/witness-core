@@ -302,7 +302,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{ns}.{IEA_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
             # energy prices
             f'{ns}.{IEA_DISC}.{GlossaryEnergy.electricity}_energy_prices': electricity_prices_df,
-            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.EnergyPricesValue}': natural_gas_price_df
+            f'{ns}.{IEA_DISC}.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}': natural_gas_price_df
             })
 
         return [values_dict] + [optim_values_dict]
