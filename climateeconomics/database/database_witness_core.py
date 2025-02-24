@@ -269,7 +269,7 @@ class DatabaseWitnessCore:
     )
 
     # read json for countries per region
-    with open(join(dirname(dirname(__file__)) , 'data', 'countries_per_region.json'), 'r') as fp:
+    with open(join(dirname(dirname(__file__)), 'data', 'countries_per_region.json'), 'r') as fp:
         countries_per_region = json.load(fp)
 
     CountriesPerRegionIMF = ColectedData(
@@ -281,7 +281,7 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 3, 18)
     )
 
-    gdp_percentage_per_country = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'mean_gdp_country_percentage_in_group.csv'))
+    gdp_percentage_per_country = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'mean_gdp_country_percentage_in_group.csv'))
     GDPPercentagePerCountry = ColectedData(
         value=gdp_percentage_per_country,
         unit="%",
@@ -290,27 +290,26 @@ class DatabaseWitnessCore:
         source="mean percentages were computed based on official GDP data from international organizations and on the IMF grouping",
         last_update_date=date(2024, 3, 18)
     )
-    energy_consumption_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_services_sections.csv'))
-    energy_consumption_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_agriculture_sections.csv'))
-    energy_consumption_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'energy_consumption_percentage_industry_sections.csv'))
+    energy_consumption_services = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'energy_consumption_percentage_services_sections.csv'))
+    energy_consumption_agriculture = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'energy_consumption_percentage_agriculture_sections.csv'))
+    energy_consumption_industry = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'energy_consumption_percentage_industry_sections.csv'))
     energy_consumption_household = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'energy_consumption_percentage_household_sections.csv'))
 
-
     EnergyConsumptionPercentageSectionsDict = ColectedData(
-        value= {"Agriculture": energy_consumption_agriculture,
+        value={"Agriculture": energy_consumption_agriculture,
                  "Services": energy_consumption_services,
                  "Industry": energy_consumption_industry,
                 "Household": energy_consumption_household},
         unit="%",
         description="energy consumption of each section for all sectors",
         link="",
-        source="", # multiples sources TODO
-        last_update_date=date(2024,3,26)
+        source="",  # multiples sources TODO
+        last_update_date=date(2024, 3, 26)
     )
 
-    non_energy_emissions_services = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_services_sections.csv'))
-    non_energy_emissions_agriculture = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_agriculture_sections.csv'))
-    non_energy_emissions_industry = pd.read_csv(join(dirname(dirname(__file__)) , 'data', 'non_energy_emission_gdp_industry_sections.csv'))
+    non_energy_emissions_services = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'non_energy_emission_gdp_services_sections.csv'))
+    non_energy_emissions_agriculture = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'non_energy_emission_gdp_agriculture_sections.csv'))
+    non_energy_emissions_industry = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'non_energy_emission_gdp_industry_sections.csv'))
     non_energy_emissions_household = pd.read_csv(join(dirname(dirname(__file__)), 'data', 'non_energy_emission_gdp_household_sections.csv'))
 
     SectionsNonEnergyEmissionsDict = ColectedData(
@@ -321,8 +320,8 @@ class DatabaseWitnessCore:
         unit="tCO2eq/M$",
         description="Non energy CO2 emission per $GDP",
         link="",
-        source="", # multiples sources TODO
-        last_update_date=date(2024,3,26)
+        source="",  # multiples sources TODO
+        last_update_date=date(2024, 3, 26)
     )
 
     EnergyConsumptionPercentageSectorDict = HeavyCollectedData(
@@ -330,8 +329,8 @@ class DatabaseWitnessCore:
         unit="%",
         description="energy consumption of each sector",
         link="",
-        source="", # multiples sources TODO
-        last_update_date=date(2024,3,26),
+        source="",  # multiples sources TODO
+        last_update_date=date(2024, 3, 26),
     )
 
     atmosphere_total_mass_kg = 5.1480 * 10 ** 18
@@ -361,7 +360,7 @@ class DatabaseWitnessCore:
         unit="TWh",
         description="Production of crop for energy (2010-2020)",
         link="https://www.iea.org/articles/what-does-net-zero-emissions-by-2050-mean-for-bioenergy-and-land-use",
-        source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050", # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops. So we sum them and then convert exajoules (EJ) to TWh
+        source="IEA Global bioenergy supply in the Net Zero Scenario, 2010-2050",  # considered as crop for our model : Conventional bioenergy crops, short-rotation woody crops. So we sum them and then convert exajoules (EJ) to TWh
         last_update_date=date(2024, 7, 24),
         critical_at_year_start=True,
         column_to_pick="prod"
@@ -395,13 +394,13 @@ class DatabaseWitnessCore:
         description="repartition of the population by age",
         link="https://population.un.org/dataportal/home?df=8b604e23-cef9-4a48-b4cb-b1b5f3aefea9",
         critical_at_year_start=True,
-        column_to_pick=["0-4","5-9","10-14","15-19","20-24","25-29","30-34","35-39","40-44","45-49","50-54","55-59","60-64","65-69","70-74","75-79","80-84","85-89","90-94","95-99","100_over"],
+        column_to_pick=["0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80-84", "85-89", "90-94", "95-99", "100_over"],
         source="United Nations Population division",
         last_update_date=date(2024, 8, 14),
     )
 
     MacroProductivityStart = HeavyCollectedData(
-        value= join(data_folder, "productivity.csv"),
+        value=join(data_folder, "productivity.csv"),
         unit="-",
         description="Productivity factor at year start",
         column_to_pick="productivity",
@@ -412,7 +411,7 @@ class DatabaseWitnessCore:
     )
 
     MacroInitGrossOutput = HeavyCollectedData(
-        value= join(data_folder, "world-gpp-ppp.csv"),
+        value=join(data_folder, "world-gpp-ppp.csv"),
         column_to_pick="GDP, PPP (Trillion USD$2020)",
         unit="G$",
         description="Global GDP",
@@ -423,7 +422,7 @@ class DatabaseWitnessCore:
     )
 
     MacroNonEnergyCapitalStart = HeavyCollectedData(
-        value= join(data_folder, "capitals.csv"),
+        value=join(data_folder, "capitals.csv"),
         unit="G$ constant $ 2020",
         description="Global energy capital ",
         link="",
@@ -434,7 +433,7 @@ class DatabaseWitnessCore:
     )
 
     MacroProductivityGrowthStart = HeavyCollectedData(
-        value= join(data_folder, "productivity.csv"),
+        value=join(data_folder, "productivity.csv"),
         unit="-",
         description="Productivity growth at year start",
         link="",
@@ -521,36 +520,26 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 7, 26),
     )
 
-    SectorAgricultureCapital2022 = ColectedData(
-        value=6.5,
-        unit="T$",
-        description="Sector Agriculture capital",
-        year_value=2022,
-        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content",
-        critical_at_year_start=False,
-        source="",
-        last_update_date=date(2024, 11, 13),
+    SectorAgricultureCapital = HeavyCollectedData(
+        value=join(data_folder, "agriculture_sector_capital.csv"),
+        unit="Trillion US$ 2015",
+        description="Sector of Agriculture, forestry and fishing",
+        link="https://www.fao.org/statistics/highlights-archive/highlights-detail/agricultural-investments-and-capital-stock.-global-and-regional-trends-(2012-2022)/en",
+        critical_at_year_start=True,
+        source="FAO annual global reports",
+        last_update_date=date(2024, 12, 13),
+        column_to_pick="capital"
     )
 
-    SectorAgricultureCapital2021 = ColectedData(
-        value=6.2,
-        unit="T$",
-        description="Sector Agriculture capital",
-        year_value=2021,
-        link="https://openknowledge.fao.org/server/api/core/bitstreams/19617d9a-65a5-4c83-b7a6-3e6b7dc7cbf5/content",
-        critical_at_year_start=False,
-        source="",
-        last_update_date=date(2024, 11, 19),
-    )
-
-    SectorAgricultureInvest2021 = ColectedData(
-        year_value=2021,
-        value=0.571,
-        unit='T$',  # constant 2015 USD
-        source='FAO',
-        description="Investment in the agricultural sector in 2021",
-        link="https://openknowledge.fao.org/server/api/core/bitstreams/a18945c6-aca1-4628-aefb-4c9fca4043ed/content",
-        last_update_date=date(2024, 11, 19),
+    SectorAgricultureInvest = HeavyCollectedData(
+        value=join(data_folder, "agriculture_sector_investments.csv"),
+        unit="Trillion US$ 2015",
+        description="Sector of Agriculture, forestry and fishing",
+        link="https://www.fao.org/statistics/highlights-archive/highlights-detail/agricultural-investments-and-capital-stock.-global-and-regional-trends-(2012-2022)/en",
+        critical_at_year_start=True,
+        source="FAO annual global reports",
+        last_update_date=date(2024, 12, 13),
+        column_to_pick="investment"
     )
 
     SectorAgricultureProductivityStart = ColectedData(
@@ -597,9 +586,42 @@ class DatabaseWitnessCore:
         last_update_date=date(2024, 8, 11),
     )
 
+    IEANZEFinalEnergyConsumption = HeavyCollectedData(
+        value=join(data_folder, "IEA_NZE_energy_final_consumption.csv"),
+        unit="-",
+        description="Final Consumption of energy for IEA NZE scenario",
+        link="",
+        critical_at_year_start=False,
+        column_to_pick="Final Consumption",
+        source="IEA",
+        last_update_date=date(2025, 1, 9),
+    )
+
+    IEANZEEnergyProduction = HeavyCollectedData(
+        value=join(data_folder, "IEA_NZE_energy_production_brut.csv"),
+        unit="-",
+        description="Final Consumption of energy for IEA NZE scenario",
+        link="",
+        critical_at_year_start=False,
+        column_to_pick="Total production",
+        source="IEA",
+        last_update_date=date(2025, 1, 9),
+    )
+
+    IEANZEGDPNetOfDamage = HeavyCollectedData(
+        value=join(data_folder, "IEA_NZE_output_net_of_d.csv"),
+        unit="-",
+        description="GDP net of damage for IEA NZE scenario",
+        link="",
+        critical_at_year_start=False,
+        column_to_pick="output_net_of_d",
+        source="IEA",
+        last_update_date=date(2025, 1, 9),
+    )
+
     @classmethod
-    def get_forest_invest_before_year_start(cls, year_start: int, construction_delay: int,
-                                            is_available_at_year: bool = False):
+    def get_reforestation_invest_before_year_start(cls, year_start: int, construction_delay: int,
+                                                   is_available_at_year: bool = False):
 
         path_to_csv = os.path.join(data_folder, "forest_invests") + ".csv"
         df = pd.read_csv(path_to_csv)
@@ -621,4 +643,3 @@ class DatabaseWitnessCore:
             out_df = heavy_collected_data.get_between_years(year_start=year_start - construction_delay,
                                                             year_end=year_start - 1)
         return out_df, heavy_collected_data
-

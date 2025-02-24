@@ -16,20 +16,24 @@ limitations under the License.
 import copy
 
 import numpy as np
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+import pandas as pd
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
     TwoAxesInstanciatedChart,
 )
 
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invests_model import (
     SectorRedistributionInvestsModel,
 )
 
 
-class SectorsRedistributionInvestsDiscipline(SoSWrapp):
+class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
     """Discipline redistributing energy production and global investment into sectors"""
     _ontology_data = {
         'label': 'Demand WITNESS Model',
@@ -46,32 +50,48 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
     _maturity = 'Research'
 
     DESC_IN = {
-        "mdo_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False},
-        GlossaryCore.SectorListValue: GlossaryCore.SectorList,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
+        "mdo_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False, 'structuring': True},
+        "mdo_sub_sector_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False, 'structuring': True},
+        "sector_list_wo_subsector": GlossaryCore.SectorListWoSubsector,
     }
 
     DESC_OUT = {
         GlossaryCore.RedistributionInvestmentsDfValue: GlossaryCore.RedistributionInvestmentsDf
     }
 
+    def _run(self):
+        self.run()
+
     def setup_sos_disciplines(self):
         """setup dynamic inputs and outputs"""
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if "mdo_mode" in self.get_data_in():
-            mdo_mode = self.get_sosdisc_inputs(["mdo_mode"])
-            if mdo_mode is not None:
-                if mdo_mode:
-                    for sector in GlossaryCore.SectorsPossibleValues:
-                        dynamic_inputs[f'{sector}.invest_mdo_df'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-                        dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-                else:
-                    economics_df = copy.deepcopy(GlossaryCore.EconomicsDf)
-                    del economics_df["dataframe_descriptor"][GlossaryCore.PerCapitaConsumption]
-                    dynamic_inputs[GlossaryCore.EconomicsDfValue] = economics_df
-                    for sector in GlossaryCore.SectorsPossibleValues:
-                        dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorInvestmentDf)
-                        dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
+        values_dict, go = self.collect_var_for_dynamic_setup(['mdo_mode', "sector_list_wo_subsector", GlossaryCore.YearStart, GlossaryCore.YearEnd])
+        if go:
+            if values_dict["mdo_mode"]:
+                for sector in values_dict["sector_list_wo_subsector"]:
+                    dynamic_inputs[f'{sector}.invest_mdo_df'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
+                    dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
+            else:
+                economics_df = copy.deepcopy(GlossaryCore.EconomicsDf)
+                del economics_df["dataframe_descriptor"][GlossaryCore.PerCapitaConsumption]
+                dynamic_inputs[GlossaryCore.EconomicsDfValue] = economics_df
+                default_values = {
+                    GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value,
+                    GlossaryCore.SectorIndustry: DatabaseWitnessCore.InvestInduspercofgdp2020.value,
+                    GlossaryCore.SectorServices: DatabaseWitnessCore.InvestServicespercofgdpYearStart.value,
+                }
+                for sector in values_dict["sector_list_wo_subsector"]:
+                    default_df = pd.DataFrame({
+                        GlossaryCore.Years: np.arange(values_dict[GlossaryCore.YearStart], values_dict[GlossaryCore.YearEnd] + 1),
+                        sector: default_values[sector]
+                    })
+                    share_sector_invest_df_var = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorInvestmentDf)
+                    share_sector_invest_df_var["default"] = default_df
+                    dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'] = share_sector_invest_df_var
+                    dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
 
             self.add_inputs(dynamic_inputs)
             self.add_outputs(dynamic_outputs)
@@ -88,7 +108,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
             GlossaryCore.RedistributionInvestmentsDfValue: all_sectors_invests_df,
         }
 
-        for sector in GlossaryCore.SectorsPossibleValues:
+        for sector in inputs["sector_list_wo_subsector"]:
             outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = sectors_invests[sector]
 
         self.store_sos_outputs_values(outputs)
@@ -97,7 +117,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
         """compute gradients"""
         inputs = self.get_sosdisc_inputs()
 
-        sectors_list = inputs[GlossaryCore.SectorListValue]
+        sectors_list = inputs["sector_list_wo_subsector"]
 
         if inputs["mdo_mode"]:
             for sector in sectors_list:
@@ -141,7 +161,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
             charts = filters
 
         instanciated_charts = []
-
+        inputs = self.get_sosdisc_inputs()
         if all_filters or GlossaryCore.InvestmentsValue:
             # first graph
             all_sectors_invests_df = self.get_sosdisc_outputs(
@@ -155,7 +175,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
                                                  chart_name=chart_name)
 
             years = list(all_sectors_invests_df[GlossaryCore.Years])
-            for sector in GlossaryCore.SectorsPossibleValues:
+            for sector in inputs["sector_list_wo_subsector"]:
                 sector_invest = all_sectors_invests_df[sector].values
                 new_series = InstanciatedSeries(years,
                                                 list(sector_invest),
@@ -177,7 +197,7 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
                                                  stacked_bar=True,
                                                  chart_name=chart_name)
 
-            for sector in GlossaryCore.SectorsPossibleValues:
+            for sector in inputs["sector_list_wo_subsector"]:
                 sector_invest = all_sectors_invests_df[sector].values
                 share_sector = sector_invest / total_invests * 100.
                 new_series = InstanciatedSeries(years,

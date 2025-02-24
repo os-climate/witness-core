@@ -16,7 +16,7 @@ limitations under the License.
 '''
 
 from climateeconomics.calibration.crop.productions import (
-    dict_of_production_in_megatons_2021,
+    dict_of_raw_production_in_megatons_2021,
 )
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -44,12 +44,12 @@ land_use_by_ft = {
     GlossaryCore.SugarCane: round(10 / 72.24, 2),
 }
 # Mt * m2 / kg = G m² => divide by 10^4 to get G ha
-total_modeled_land_use = sum(dict_of_production_in_megatons_2021[ft] * land_use_by_ft[ft] / 1e4 for ft in GlossaryCore.DefaultFoodTypesV2)
+total_modeled_land_use = sum(dict_of_raw_production_in_megatons_2021[ft] * land_use_by_ft[ft] / 1e4 for ft in GlossaryCore.DefaultFoodTypesV2)
 
 factor_to_apply = actual_crop_land_use_2021 / total_modeled_land_use
 
 land_use_by_ft = {ft: round(land_use_by_ft[ft] * factor_to_apply, 2) for ft in GlossaryCore.DefaultFoodTypesV2}
-total_modeled_land_use = sum(dict_of_production_in_megatons_2021[ft] * land_use_by_ft[ft] / 1e4 for ft in GlossaryCore.DefaultFoodTypesV2)
+total_modeled_land_use = sum(dict_of_raw_production_in_megatons_2021[ft] * land_use_by_ft[ft] / 1e4 for ft in GlossaryCore.DefaultFoodTypesV2)
 
 print("Relative error on land use:", abs(actual_crop_land_use_2021 - total_modeled_land_use) / actual_crop_land_use_2021)
 

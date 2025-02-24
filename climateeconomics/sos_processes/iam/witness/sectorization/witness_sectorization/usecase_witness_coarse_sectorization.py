@@ -18,7 +18,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as datacase_energy,
 )
-from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
 )
@@ -26,6 +25,9 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
     FunctionManagerDisc,
 )
 
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
+    ClimateEconomicsStudyManager,
+)
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.sectorization.witness_sect_wo_energy.datacase_witness_wo_energy import (
     DataStudy as datacase_witness,
@@ -46,7 +48,7 @@ DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 ) if value['type'] == 'CCUS']
 
 
-class Study(StudyManager):
+class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=True, run_usecase=True,
                  execution_engine=None,
@@ -98,16 +100,23 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.inner_mda_name': 'MDAGSNewton',
+            f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel',
             f'{self.study_name}.cache_type': 'SimpleCache'}
 
         setup_data_list.append(numerical_values_dict)
 
-        return setup_data_list
+        out_dict = {}
+        for data_dict in setup_data_list:
+            out_dict.update(data_dict)
+
+        invest_mix = self.get_var_in_values_dict(out_dict, varname="invest_mix")[0]
+        out_dict[f'{self.study_name}.EnergyMix.invest_mix'] = invest_mix
+
+        return [out_dict]
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
-    #             for graph in graph_list:
-    #                 graph.to_plotly().show()
+    uc_cls.load_data()
+    uc_cls.run()
+    a = 1

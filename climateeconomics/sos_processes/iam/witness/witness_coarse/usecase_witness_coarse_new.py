@@ -20,7 +20,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
     Study as datacase_energy,
 )
-from pandas import DataFrame
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
 )
@@ -72,32 +71,6 @@ class Study(ClimateEconomicsStudyManager):
     def setup_process(self):
         datacase_energy.setup_process(self)
 
-    def setup_constraint_land_use(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            ['land_demand_constraint_df'])
-        list_parent.extend([None])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
-        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
-
-        return func_df
-
     def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
@@ -131,7 +104,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.inner_mda_name': 'MDAGSNewton',
+            f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel',
             f'{self.study_name}.cache_type': 'SimpleCache'}
 
         setup_data_list.append(numerical_values_dict)

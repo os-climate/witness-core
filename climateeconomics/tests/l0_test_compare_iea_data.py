@@ -46,8 +46,11 @@ class PostProcessEnergy(unittest.TestCase):
         self.usecase = Study()
         self.usecase.study_name = self.study_name
         values_dict = self.usecase.setup_usecase()
+        values_dict_final = {}
         for values_dict_i in values_dict:
-            self.ee.load_study_from_input_dict(values_dict_i)
+            values_dict_final.update(values_dict_i)
+
+        self.ee.load_study_from_input_dict(values_dict_final)
 
         self.namespace_list = ['usecase_witness_optim_nze_eval']
 
@@ -74,7 +77,8 @@ class PostProcessEnergy(unittest.TestCase):
                                                               as_json=False)
 
             for graph in graph_list:
-                graph.to_plotly().show()
+                #graph.to_plotly().show()
+                pass
 
 
 

@@ -88,8 +88,8 @@ class YearStartTest(unittest.TestCase):
                         missing_variables.append(attribute_name)
 
         # forest invest before year start :
-        is_available = DatabaseWitnessCore.get_forest_invest_before_year_start(year_start=year, construction_delay=3,
-                                                                               is_available_at_year=True)
+        is_available = DatabaseWitnessCore.get_reforestation_invest_before_year_start(year_start=year, construction_delay=3,
+                                                                                      is_available_at_year=True)
         if not is_available:
             missing_variables.append("Forest.managed_wood_invest_before_year_start")
 

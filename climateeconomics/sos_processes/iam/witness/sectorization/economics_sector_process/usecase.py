@@ -20,6 +20,7 @@ import pandas as pd
 from scipy.interpolate import interp1d
 from sostrades_core.study_manager.study_manager import StudyManager
 
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
@@ -54,18 +55,22 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2000, year_end=GlossaryCore.YearStartDefault, name='', execution_engine=None):
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, name='', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = 'Macroeconomics'
         self.year_start = year_start
         self.year_end = year_end
         self.nb_poles = 8
-        self.test_post_procs = False
+        self.test_post_procs = True
 
     def setup_usecase(self, study_folder_path=None):
 
+
         setup_data_list = []
+
+        data_agri = {}
+        setup_data_list.append(data_agri)
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
@@ -74,12 +79,21 @@ class Study(StudyManager):
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
 
+        # Energy
+        brut_net = 1 / 1.45
+        energy_outlook = pd.DataFrame({
+            GlossaryCore.Years: [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
+            'energy': [118.112, 134.122, 149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084,
+                       197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
+        f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy'])
+        # Find values for 2020, 2050 and concat dfs
+        energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
+        energy_supply_values = energy_supply * brut_net
         if self.year_start == 2000 and self.year_end == 2020:
             data_dir = join(
                 dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data/sectorization_fitting')
             # Energy
             hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
-            agri_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy[GlossaryCore.SectorAgriculture]})
             services_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy[GlossaryCore.SectorServices]})
             indus_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy[GlossaryCore.SectorIndustry]})
             # Workforce
@@ -88,30 +102,16 @@ class Study(StudyManager):
             #Tshare sectors invest
 
         else:
-            # Energy
-            brut_net = 1 / 1.45
-            energy_outlook = pd.DataFrame({
-                GlossaryCore.Years: [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
-                'energy': [118.112, 134.122, 149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084,
-                           197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
-            f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy'])
-            # Find values for 2020, 2050 and concat dfs
-            energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
-            energy_supply_values = energy_supply * brut_net
             indus_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.2894})
-            agri_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.02136})
             services_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.37})
 
-            total_workforce_df = pd.read_csv(join(data_dir, 'workingage_population_df.csv'))
-            # multiply ageworking pop by employment rate
-            workforce = total_workforce_df[GlossaryCore.Population1570] * 0.659
-            workforce = workforce[:self.nb_per]
-            # 2020: 3389556200, 2021: 3450067707
+            workforce = np.ones_like(years) * 3389
             workforce[0] = 3389.556200
             workforce[1] = 3450.067707
             workforce_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: workforce * 0.274,
                                          GlossaryCore.SectorServices: workforce * 0.509, GlossaryCore.SectorIndustry: workforce * 0.217})
 
+        agri_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.02136})
         # Damage
         damage_df = pd.DataFrame(
             {GlossaryCore.Years: years,
@@ -125,9 +125,6 @@ class Study(StudyManager):
             {GlossaryCore.Years: years,
              GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1/6})
 
-        invest_agriculture = pd.DataFrame(
-            {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))* 1/2})
 
         invest_energy_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: years,
@@ -145,7 +142,6 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         sect_input[f"{self.study_name}.{GlossaryCore.WorkforceDfValue}"] = workforce_df
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
-        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}"] = invest_agriculture
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
@@ -201,9 +197,64 @@ class Study(StudyManager):
 
         if self.year_start == 2000:
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'capital_start'}"] = 31.763
-            sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{'capital_start'}"] = 4.035565
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{'capital_start'}"] = 139.1369
             sect_input[f"{self.study_name}.{GlossaryCore.DamageToProductivity}"] = True
+
+
+        transport_df = pd.DataFrame({GlossaryCore.Years: years, "transport": 7.6})
+        margin = pd.DataFrame({GlossaryCore.Years: years, 'margin': 110.})
+
+        population_2021 = 7_954_448_391
+        population_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.PopulationValue: np.linspace(population_2021 / 1e6, 7870 * 1.2, self.nb_per),
+        })
+        crop_productivity_reduction = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.CropProductivityReductionName: np.linspace(0., -4.5 * 0., len(years)) ,  # fake
+        })
+        energy_mean_price = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.EnergyPriceValue: np.linspace(70, 120, self.nb_per)
+        })
+
+        share_investments_between_agri_subsectors = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.Crop: 90.,
+            GlossaryCore.Forestry: 10.,
+        })
+
+        share_investments_inside_forestry = pd.DataFrame({
+            GlossaryCore.Years: years,
+            "Managed wood": 33.,
+            "Deforestation": 33.,
+            "Reforestation": 33.,
+        })
+
+        share_investments_inside_crop = pd.DataFrame({
+            GlossaryCore.Years: years,
+            **GlossaryCore.crop_calibration_data["invest_food_type_share_start"]
+        })
+
+        economics_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.GrossOutput: 0.,
+            GlossaryCore.OutputNetOfDamage: 1.015 ** np.arange(0,
+                                                               len(years)) * DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(
+                self.year_start) * 0.98,
+        })
+        sect_input.update({
+            f'{self.study_name}.transport_cost': transport_df,
+            f'{self.study_name}.margin': margin,
+            f'{self.study_name}.mdo_sectors_invest_level': 0,
+            f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
+            f'{self.study_name}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
+            f'{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
+            f'{self.study_name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+            f'{self.study_name}.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}': share_investments_between_agri_subsectors,
+            f'{self.study_name}.Macroeconomics.Agriculture.Crop.{GlossaryCore.SubShareSectorInvestDfValue}': share_investments_inside_crop,
+            f'{self.study_name}.Macroeconomics.Agriculture.Forestry.{GlossaryCore.SubShareSectorInvestDfValue}': share_investments_inside_forestry,
+        })
 
         setup_data_list.append(sect_input)
 
@@ -214,3 +265,4 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     uc_cls.run()
+    a = 1

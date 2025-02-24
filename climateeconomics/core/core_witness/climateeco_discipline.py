@@ -16,6 +16,7 @@ limitations under the License.
 '''
 from os.path import join
 from pathlib import Path
+from typing import Union
 
 import numpy as np
 import pandas as pd
@@ -66,6 +67,18 @@ class ClimateEcoDiscipline(SoSWrapp):
         'icon': '',
         'version': '',
     }
+
+    def collect_var_for_dynamic_setup(self, variable_names: Union[str, list[str]]):
+        """easy method for setup sos dynamic variable gathering"""
+        values_dict = {}
+        if isinstance(variable_names, str):
+            variable_names = [variable_names]
+        go = set(self.get_data_in().keys()).issuperset(variable_names)
+        if go:
+            values_dict = {vn: self.get_sosdisc_inputs(vn) for vn in variable_names}
+            go = not any(val is None for val in values_dict.values())
+
+        return values_dict, go
 
     def _run(self):
         """
@@ -218,3 +231,13 @@ class ClimateEcoDiscipline(SoSWrapp):
                     # If the variable type is not supported, raise a TypeError
                     else:
                         raise TypeError(f"Unsupported type for variable '{key}'")
+
+    def set_gradients_from_autodiff(self, gradients: dict[str: dict[str: dict[str: dict[str: np.ndarray]]]]):
+        for output_name in gradients:
+            for output_col in gradients[output_name]:
+                for input_name in gradients[output_name][output_col]:
+                    for input_col, value in gradients[output_name][output_col][input_name].items():
+                        self.set_partial_derivative_for_other_types(
+                            (output_name, output_col),
+                            (input_name, input_col),
+                            value)

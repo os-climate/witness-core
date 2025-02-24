@@ -18,19 +18,13 @@ from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import (
-    AbstractJacobianUnittest,
-)
+from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2 import (
-    CropDiscipline,
-)
 
 
-class Crop2JacobianTestCase(AbstractJacobianUnittest):
+class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
     def analytic_grad_entry(self):
         return []
@@ -41,7 +35,11 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.name = 'Test'
-        self.model_name = 'crop_food'
+        self.model_name = 'Agriculture.Crop'
+        self.override_dump_jacobian = False
+        self.show_graphs = True
+        self.jacobian_test = False
+        self.pickle_directory = dirname(__file__)
 
         self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest
@@ -50,21 +48,21 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
 
         self.crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(0, 12, year_range),  # fake
+            GlossaryCore.CropProductivityReductionName: - np.linspace(0, 12/ 100, year_range) * 0.,  # fake
         })
 
         self.damage_fraction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range), # 2020 value
+            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range) * 0., # 2020 value
         })
 
         self.investments_food_types = pd.DataFrame({
             GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
-            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest2021.value * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
+            **{food_type: DatabaseWitnessCore.SectorAgricultureInvest.get_value_at_year(2021) * GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] / 100. * 1000. for food_type in GlossaryCore.DefaultFoodTypesV2}  # convert to G$
         })
         self.workforce_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 1.2, year_range),  # millions of people (2020 value)
+            GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 1000, year_range),  # millions of people (2020 value)
         })
         population_2021 = 7_954_448_391
         self.population_df = pd.DataFrame({
@@ -74,79 +72,59 @@ class Crop2JacobianTestCase(AbstractJacobianUnittest):
 
         self.enegy_agri = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: 2591. /1000.,  # PWh, 2020 value
+            GlossaryCore.TotalProductionValue: np.linspace(2591. /1000, 2591. /1000 * 1000, year_range),  # PWh, 2020 value
         })
 
-        inputs_dict = {
+        self.energy_mean_price = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.EnergyPriceValue: 50.
+        })
+
+        self.ns_dict = {
+            'ns_public': self.name,
+            GlossaryCore.NS_WITNESS: self.name,
+            GlossaryCore.NS_CROP: f'{self.name}',
+            'ns_sectors': f'{self.name}',
+            GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+            GlossaryCore.NS_AGRI: f'{self.name}',
+        }
+
+    def get_inputs_dict(self) -> dict:
+        return  {
+            f'{self.name}.mdo_sectors_invest_level': 2,
             f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
             f'{self.name}.{GlossaryCore.CropProductivityReductionName}': self.crop_productivity_reduction,
             f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
+            f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
             f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': self.enegy_agri,
-            f'{self.name}.{GlossaryCore.FoodTypesInvestName}': self.investments_food_types,
+            f'{self.name}.Agriculture.Crop.{GlossaryCore.InvestmentDetailsDfValue}': self.investments_food_types,
         }
-
-        self.inputs_dict = inputs_dict
-
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {
-            'ns_public': self.name,
-            GlossaryCore.NS_WITNESS: self.name,
-            GlossaryCore.NS_CROP: f'{self.name}',
-            'ns_sectors': f'{self.name}',
-        }
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        self.coupling_inputs = [
-            f'{self.name}.{GlossaryCore.CropProductivityReductionName}',
-            f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-            f'{self.name}.{GlossaryCore.PopulationDfValue}',
-            f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
-            f'{self.name}.{GlossaryCore.FoodTypesInvestName}',
-        ]
-        self.coupling_outputs = [
-            f"{self.name}.{GlossaryCore.CropFoodLandUseName}",
-            f"{self.name}.{GlossaryCore.CropFoodEmissionsName}",
-            f"{self.name}.{GlossaryCore.CaloriesPerCapitaValue}",
-            f"{self.name}.{self.model_name}.non_used_capital",
-            f"{self.name}.{GlossaryCore.FoodTypeDeliveredToConsumersName}",
-            f"{self.name}.{GlossaryCore.FoodTypeCapitalName}",
-        ]
-        self.coupling_outputs.extend(
-            [f'{self.name}.{GlossaryCore.CropProdForStreamName.format(stream)}' for stream in CropDiscipline.streams_energy_prod]
-        )
-
     def test_crop_discipline_2(self):
         '''
         Check discipline setup and run
         '''
-        self.ee.load_study_from_input_dict(self.inputs_dict)
+        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
 
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
-        filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            #graph.to_plotly().show()
-            pass
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        #self.override_dump_jacobian = 1
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_crop_discipline_2.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=self.coupling_inputs,
-                            outputs=self.coupling_outputs)
+    def test_crop_discipline_2_mda_mode(self):
+        '''
+        Check discipline setup and run
+        '''
+        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
+        economics_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.OutputNetOfDamage: 136., GlossaryCore.GrossOutput: 0.})
+        share_sector_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value})
+        share_sub_sector_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Crop: 95.})
+        crop_share_invests = pd.DataFrame({
+            GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
+            **{food_type: GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] for food_type in GlossaryCore.DefaultFoodTypesV2}
+        })
+        self.inputs_dicts = {
+            f'{self.name}.mdo_sectors_invest_level': 0,
+            f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+            f'{self.name}.{GlossaryCore.ShareSectorInvestmentDfValue}': share_sector_invest,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': share_sub_sector_invest,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SubShareSectorInvestDfValue}': share_sub_sector_invest,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.Crop}.{GlossaryCore.SubShareSectorInvestDfValue}': crop_share_invests,
+        }

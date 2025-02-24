@@ -41,11 +41,11 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {GlossaryCore.NS_WITNESS: self.ee.study_name,
                    GlossaryCore.NS_ENERGY_MIX: self.ee.study_name,
-                   GlossaryCore.NS_MACRO: self.ee.study_name,
+                   GlossaryCore.NS_MACRO: f'{self.ee.study_name}.Macroeconomics',
                    f'ns_{GlossaryCore.Households.lower()}_emissions':f"{self.ee.study_name}.{GHGemissionsDiscipline.name}.{GlossaryCore.EconomicSectors}.{GlossaryCore.Households}",
                    'ns_agriculture': self.ee.study_name,
                    'ns_dashboard': self.ee.study_name,
-                   'ns_forest': self.ee.study_name}
+                   'ns_forestry': self.ee.study_name}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'GHGCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.ghgcycle.ghgcycle_discipline.GHGCycleDiscipline',
@@ -76,9 +76,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        '''
-        Add emissions disciplines
-        '''
         mods_dict = {GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline',
                      AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',
                      }

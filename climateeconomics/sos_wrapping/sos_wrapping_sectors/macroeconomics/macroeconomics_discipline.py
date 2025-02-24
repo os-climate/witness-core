@@ -84,7 +84,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     capital_df_disc[self.NAMESPACE] = GlossaryCore.NS_SECTORS
 
                     dynamic_inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'] = capital_df_disc
-                    dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
+                    dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorProductionDf)
                     dynamic_inputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
 
                     damage_df = GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDf)
@@ -160,10 +160,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
                 (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.Damages),
                 identity_mat)
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
-                (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.EstimatedDamages),
-                identity_mat)
+            try:
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+                    (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.EstimatedDamages),
+                    identity_mat)
+            except:
+                pass
 
         # gradient of constraint and invest_df wrt output net damage for each
         self.set_partial_derivative_for_other_types(
@@ -251,7 +254,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.OutputNetOfDamage in chart_list:
             chart_name = 'Global Output net of damage breakdown by sector'
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'T$', stacked_bar=True,
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorProductionDf["unit"], stacked_bar=True,
                                                  chart_name=chart_name)
 
             for sector in sector_list:

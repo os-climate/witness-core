@@ -72,9 +72,9 @@ class DataStudy():
         nb_per = self.year_end - self.year_start + 1
         years = arange(self.year_start, self.year_end + 1)
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": reforestation_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -91,7 +91,7 @@ class DataStudy():
         # Relax constraint for 15 first years
         witness_input[f"{self.study_name}.{'Damage'}.{'damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
-        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.{'forest_investment'}"] = self.forest_invest_df
+        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.{'reforestation_investment'}"] = self.reforestation_investment_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')
@@ -120,22 +120,22 @@ class DataStudy():
         diet_mortality['overnutrition'] = 0.
         witness_input[f'{self.study_name}.Population.{GlossaryCore.DietMortalityParamDf["var_name"]}'] = diet_mortality
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.red_meat_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.red_meat_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'red_meat_calories_per_day': [CropDiscipline.red_meat_average_ca_daily_intake] * len(years)}
         )
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.white_meat_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.white_meat_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'white_meat_calories_per_day': [CropDiscipline.white_meat_average_ca_daily_intake] * len(years)}
         )
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.vegetables_and_carbs_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.vegetables_and_carbs_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'vegetables_and_carbs_calories_per_day': [CropDiscipline.vegetables_and_carbs_average_ca_daily_intake] * len(years)}
         )
 
-        witness_input[f'{self.study_name}.AgricultureMix.Crop.milk_and_eggs_calories_per_day'] = DataFrame(
+        witness_input[f'{self.study_name}.Agriculture.Crop.milk_and_eggs_calories_per_day'] = DataFrame(
             {GlossaryCore.Years: years,
              'milk_and_eggs_calories_per_day': [CropDiscipline.milk_eggs_average_ca_daily_intake] * len(years)}
         )
@@ -165,7 +165,7 @@ class DataStudy():
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)
         CO2_emitted_land['Crop'] = np.zeros(len(years))
-        CO2_emitted_land['Forest'] = cum_emission
+        CO2_emitted_land[GlossaryCore.Forestry] = cum_emission
 
         witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
@@ -181,9 +181,9 @@ class DataStudy():
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": reforestation_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(

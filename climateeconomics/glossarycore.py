@@ -14,11 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import json
-from copy import copy, deepcopy
+from copy import deepcopy
 from os import path
 
 import numpy as np
 import pandas as pd
+from sostrades_optimization_plugins.models.autodifferentiated_discipline import (
+    AutodifferentiedDisc,
+)
 
 from climateeconomics.database import DatabaseWitnessCore
 
@@ -52,6 +55,10 @@ class GlossaryCore:
     # PWh = 1e3 TWh
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
+    conversion_dict = {"G$": {"G$": 1, 'T$': 1e-3},
+                       "T$": {"T$": 1, 'G$': 1e3},
+                       'Mt': {'Mt': 1, 'Gt': 1e-3},
+                       'm²': {'ha': 1e-4}}
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
@@ -70,6 +77,9 @@ class GlossaryCore:
         "namespace": "ns_public",
         "range": [2000, 2300],
     }
+    Forestry = "Forestry"
+    biomass_dry = "biomass_dry"
+    Crop = "Crop"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
@@ -174,7 +184,7 @@ class GlossaryCore:
     FruitsAndVegetables = 'fruits and vegetables'
     Fish = "fish"
     OtherFood = "other"
-    
+
     DefaultFoodTypesV2 = [
         RedMeat,
         WhiteMeat,
@@ -188,7 +198,7 @@ class GlossaryCore:
         SugarCane,
         OtherFood,
     ]
-    
+
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
@@ -207,6 +217,7 @@ class GlossaryCore:
     NS_ENERGY_MIX = "ns_energy_mix"
     NS_FUNCTIONS = "ns_functions"
     NS_CCS = "ns_ccs"
+    NS_AGRI = "ns_agriculture"
     NS_REGIONALIZED_POST_PROC = "ns_regionalized"
     NS_SECTORS_POST_PROC_EMISSIONS = "ns_sectors_postproc"
     NS_SECTORS_POST_PROC_GDP = "ns_sectors_postproc_gdp"
@@ -370,6 +381,28 @@ class GlossaryCore:
         "structuring": True,
     }
 
+    SectorListWoSubsector = {
+        "type": "list",
+        "description": "List of sectors without subsectors",
+        "subtype_descriptor": {"list": "string"},
+        "default": [SectorServices, SectorIndustry],
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "editable": False,
+        "structuring": True,
+    }
+
+    SectorListWithSubsector = {
+        "type": "list",
+        "description": "List of sectors with subsectors",
+        "subtype_descriptor": {"list": "string"},
+        "default": [SectorAgriculture],
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "editable": False,
+        "structuring": True,
+    }
+
     MissingSectorNameValue = "sector_name_deduced_share"
     MissingSectorName = {
         "var_name": MissingSectorNameValue,
@@ -383,6 +416,7 @@ class GlossaryCore:
 
     CaloriesPerCapitaValue = "calories_pc_df"
     CaloriesPerCapita = {
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -605,6 +639,7 @@ class GlossaryCore:
     BaseCarbonPrice = "base_carbon_price"
     DamageFractionDf = {
         "var_name": DamageFractionDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -614,17 +649,18 @@ class GlossaryCore:
             DamageFractionOutput: ("float", [0.0, 1.0], False),
         },
     }
-    Damages = "Damages [G$]"
+    Damages = "Damages"
     DamageDfValue = "damage_df"
-    DamagesFromClimate = "Damages from climate [G$]"
-    DamagesFromProductivityLoss = "Damages from productivity loss [G$]"
-    EstimatedDamages = "Estimated damages [G$]"
+    DamagesFromClimate = "Damages from climate"
+    DamagesFromProductivityLoss = "Damages from productivity loss"
+    EstimatedDamages = "Estimated damages"
     DamageDf = {
         "var_name": DamageDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Damages: ("float", [0, 1e30], False),
@@ -632,12 +668,25 @@ class GlossaryCore:
         },
     }
 
-    EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied) [G$]"
-    EstimatedDamagesFromClimate = "Estimated damages from climate (not applied) [G$]"
+    SubsectorDamagesDf = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Damages: ("float", [0, 1e30], False),
+        },
+        "description": "Economical damages data for sub-sector {}"
+    }
+
+    EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied)"
+    EstimatedDamagesFromClimate = "Estimated damages from climate (not applied)"
     DamageDetailedDfValue = "damage_detailed_df"
     DamageDetailedDf = {
         "var_name": DamageDetailedDfValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_MACRO,
         "visibility": "Shared",
         "unit": "T$",
@@ -783,6 +832,7 @@ class GlossaryCore:
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "unit": "-",
         "dataframe_descriptor": {
@@ -823,6 +873,7 @@ class GlossaryCore:
     PopulationDf = {
         "var_name": PopulationDfValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "millions of people",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -898,6 +949,7 @@ class GlossaryCore:
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "unit": "$/MWh",
@@ -928,6 +980,20 @@ class GlossaryCore:
         },
     }
 
+    FinalConsumptionValue = "Final Consumption"
+    EnergyFinalConsumptionName = "energy_final_consumption_df"
+    EnergyFinalConsumptionDf = {
+        "var_name": EnergyFinalConsumptionName,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "PWh",
+        "namespace": NS_ENERGY_MIX,
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            FinalConsumptionValue: ("float", [0, 1e30], False),
+        },
+    }
+
     EnergyProductionDetailedDf = {
         "var_name": EnergyProductionValue,
         "type": "dataframe",
@@ -951,6 +1017,7 @@ class GlossaryCore:
         "var_name": EnergyProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "PWh",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
@@ -1038,6 +1105,32 @@ class GlossaryCore:
         },
     }
 
+    SubSectorGHGEmissionsDf = {
+        "type": "dataframe",
+        "unit": "Gt",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "description": "GHG emissions of sub-sector {}",
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YearEndDefault], False),
+            CO2: ("float", [0, 1e30], False),
+            CH4: ("float", [0, 1e30], False),
+            N2O: ("float", [0, 1e30], False),
+        },
+    }
+
+    SectorGHGEmissionsDf = {
+        "type": "dataframe",
+        "unit": "Gt",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "description": "GHG emissions of sector {}",
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YearEndDefault], False),
+            CO2: ("float", [0, 1e30], False),
+            CH4: ("float", [0, 1e30], False),
+            N2O: ("float", [0, 1e30], False),
+        },
+    }
+
     GWPEmissionsDfValue = "GWP_emissions"
     TotalGWPEmissionsDfValue = "Total GWP emissions"
     GWPEmissionsDf = {
@@ -1111,6 +1204,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "%",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -1197,8 +1291,9 @@ class GlossaryCore:
     }
 
     ProductionDfValue = "production_df"
-    ProductionDf = {
+    SectorProductionDf = {
         "var_name": ProductionDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_SECTORS,
         "visibility": "Shared",
         "type": "dataframe",
@@ -1209,6 +1304,24 @@ class GlossaryCore:
             OutputNetOfDamage: ("float", [0, 1e30], False),
         },
     }
+    SubsectorProductionDf = {
+        "visibility": "Shared",
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            GrossOutput: ("float", [0, 1e30], False),
+            OutputNetOfDamage: ("float", [0, 1e30], False),
+        },
+        "description": "Economical output data for sub-sector {}"
+    }
+
+    SubsectorProductionDetailedDf = {
+        "type": "dataframe",
+        "unit": "G$",
+    }
+
     ConsumptionSectorBreakdown = {
         "type": "dataframe",
         "unit": "T$",
@@ -1226,10 +1339,38 @@ class GlossaryCore:
     NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "visibility": "Shared",
         "type": "dataframe",
         "unit": "G$",
+        "description": "Capital of sector {}",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Capital: ("float", [0, 1e30], False),
+            UsableCapital: ("float", [0, 1e30], False),
+        },
+    }
+
+    SectorCapitalDf = {
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "type": "dataframe",
+        "unit": "T$",
+        "description": "Capital of sector {}",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Capital: ("float", [0, 1e30], False),
+            UsableCapital: ("float", [0, 1e30], False),
+        },
+    }
+
+    SubsectorCapitalDf = {
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "type": "dataframe",
+        "unit": "G$",
+        "description": "Capital of sub-sector {}",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
@@ -1271,12 +1412,12 @@ class GlossaryCore:
         },
     }
 
-    SectorizedEconomicsDf = {  # todo: miss per capita consumption !
+    SectorizedEconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
@@ -1378,6 +1519,24 @@ class GlossaryCore:
         },
     }
 
+    SubSectorInvestDf = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
+        "dynamic_dataframe_columns": True,
+    }
+
+    SubShareSectorInvestDfValue = "sub_sector_share_invest_df"
+    SubShareSectorInvestDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "visibility": "Shared",
+        "namespace": NS_SECTORS,
+        "dynamic_dataframe_columns": True,
+    }
+
     ShareSectorEnergyDfValue = "share_sector_energy_df"
     ShareSectorEnergy = "Share of total energy production [%]"
     ShareSectorEnergyDf = {
@@ -1475,6 +1634,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
@@ -1492,14 +1652,16 @@ class GlossaryCore:
             Population1570: ("float", [0, 1e30], False),
         },
     }
-
+    InvestmentDetailsDfValue = "investment_details_df"
     InvestmentDfValue = "investment_df"
     InvestmentDf = {
         "var_name": InvestmentDfValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "T$",
         "visibility": "Shared",
         "namespace": NS_SECTORS,
+        'description': "Total investements in sector {}",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             InvestmentsValue: ("float", [0, 1e30], False),
@@ -1731,7 +1893,6 @@ class GlossaryCore:
     FoodTypesVar = {
         "var_name": FoodTypesName,
         'type': 'list', 'subtype_descriptor': {'list': 'string'},
-        'namespace': NS_CROP,
         "user_level": 3,
         'default': DefaultFoodTypesV2
     }
@@ -1739,6 +1900,7 @@ class GlossaryCore:
     FoodTypesInvestName = "invest_food_type"
     FoodTypesInvestVar = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_CROP,
         "unit": "G$",
         "user_level": 2,
@@ -1746,24 +1908,25 @@ class GlossaryCore:
         "description": "Investments in each food type (Billion $)",
     }
 
+    FoodTypesPriceName = "food_type_price"
+    FoodTypesPriceVar = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "$/kg",
+        "description": "Price of different food price",
+    }
+
+    with open(path.join(path.dirname(__file__), "calibration", "output_calibration_agriculture.json"), 'r') as json_file:
+        crop_calibration_data = json.load(json_file)
+
     FoodTypesPriceMarginShareName = "food_type_margin_share"
     FoodTypesPriceMarginShareVar = {
         "type": "dict",
         "unit": "%",
         "user_level": 3,
         "description": "Share of the final price that is margin",
-        "default": {ft: 20 for ft in DefaultFoodTypesV2}
+        "default": crop_calibration_data[FoodTypesPriceMarginShareName] if FoodTypesPriceMarginShareName in crop_calibration_data else None,
     }
-
-    FoodTypesPriceName = "food_type_price"
-    FoodTypesPriceVar = {
-        "type": "dataframe",
-        "unit": "$/kg",
-        "description": "Price of different food price",
-    }
-
-    with open(path.join(path.dirname(__file__), "calibration", "crop", "output_calibration.json"), 'r') as json_file:
-        crop_calibration_data = json.load(json_file)
 
     FoodTypeCapitalStartName = "food_type_capital_start"
     FoodTypeCapitalStartVar = {
@@ -1772,7 +1935,7 @@ class GlossaryCore:
         "unit": "G$",
         "user_level": 3,
         "description": "Capital start for each food type, in billion dollars",
-        "default": crop_calibration_data["capital_start_food_type"]
+        "default": crop_calibration_data["capital_start_food_type"][str(YearStartDefault)] if "capital_start_food_type" in crop_calibration_data else None
     }
 
     FoodTypeCapitalIntensityName = "food_type_capital_intensity"
@@ -1782,7 +1945,7 @@ class GlossaryCore:
         "unit": "ton/k$ or kg/$",
         "user_level": 3,
         "description": "Capital intensity: metric tons produced by k$ of capital",
-        "default": crop_calibration_data["capital_intensity_food_type"]
+        "default": crop_calibration_data["capital_intensity_food_type"] if "capital_intensity_food_type" in crop_calibration_data else None
     }
 
     FoodTypeCapitalDepreciationRateName = "food_type_capital_depreciation_rate"
@@ -1792,7 +1955,7 @@ class GlossaryCore:
         "unit": "%",
         "user_level": 3,
         "description": "Depreciation rate of capital each year for each food type",
-        "default": {food_type: 5.8 for food_type in DefaultFoodTypesV2}
+        "default": {food_type: 8.2 for food_type in DefaultFoodTypesV2}
     }
 
     FoodTypeWasteSupplyChainShareName = "food_type_waste_at_supply_chain_share"
@@ -1801,7 +1964,7 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
         "user_level": 3,
-        "default": crop_calibration_data[FoodTypeWasteSupplyChainShareName],
+        "default": crop_calibration_data[FoodTypeWasteSupplyChainShareName] if FoodTypeWasteSupplyChainShareName in crop_calibration_data else None,
         "description": "Indicates what percentage of the production is wasted during supply chain. It does not include waste by consumers",
     }
 
@@ -1811,7 +1974,7 @@ class GlossaryCore:
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "%",
         "user_level": 3,
-        "default": crop_calibration_data[FoodTypeWasteByConsumersShareName],
+        "default": crop_calibration_data[FoodTypeWasteByConsumersShareName] if FoodTypeWasteByConsumersShareName in crop_calibration_data else None,
         "description": "Indicates what percentage of the production is wasted by the consumers for each food type",
     }
 
@@ -1837,8 +2000,6 @@ class GlossaryCore:
     FoodTypeNotProducedDueToClimateChangeVar = {
         "var_name": FoodTypeNotProducedDueToClimateChangeName,
         "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
         "unit": "Mt",
         "description": "Food that is not produced due to loss of productivity (caused by climate change)",
     }
@@ -1848,7 +2009,7 @@ class GlossaryCore:
         "var_name": FoodTypeNotProducedDueToClimateChangeName,
         "type": "dataframe",
         "unit": "Mt",
-        "description": "Dedicated production", # for energy production
+        "description": "Dedicated production",  # for energy production
     }
 
     FoodTypeWasteByClimateDamagesName = "food_type_waste_by_climate_change"
@@ -1856,8 +2017,6 @@ class GlossaryCore:
         "var_name": FoodTypeWasteByClimateDamagesName,
         "type": "dataframe",
         "unit": "Mt",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
         "description": "Production wasted due to immediate climate change",
     }
 
@@ -1913,13 +2072,15 @@ class GlossaryCore:
         "unit": "Mt",
         "description": "Crop dedicated production of {}",
     }
-    CropProdForStreamName = "crop_prod_for_stream_{}"
-    CropProdForStreamVar = {
-        "var_name": CropProdForStreamName,
+    ProdForStreamName = "prod_for_stream_{}"
+    ProdForStreamVar = {
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "unit": "Mt",
-        "namespace": NS_CROP,
-        "visibility": "Shared",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            "Total": ("float", [0., 1e30], False),
+        },
         "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
     }
 
@@ -1929,8 +2090,6 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Mt",
         "user_level": 3,
-        "namespace": NS_CROP,
-        "visibility": "Shared",
         "description": "Amount of {} (dedicated production + waste of food production before distribution reused + waste of users reused) to be used for energy production",
     }
 
@@ -1939,8 +2098,6 @@ class GlossaryCore:
         "var_name": FoodTypeDeliveredToConsumersName,
         "type": "dataframe",
         "unit": "Mt",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Production delivered to consumers",
     }
 
@@ -1961,19 +2118,19 @@ class GlossaryCore:
         # from capgemini sharepoint
         "default": {
             RedMeat: 2880,  # https://www.fatsecret.com/calories-nutrition/generic/beef-cooked-ns-as-to-fat-eaten?portionid=50030&portionamount=100.000
-            #https://www.fatsecret.com/calories-nutrition/generic/pork-cooked-ns-as-to-fat-eaten?portionid=50101&portionamount=100.000
-            #https://www.fatsecret.com/calories-nutrition/generic/chicken-ns-as-to-skin-eaten
+            # https://www.fatsecret.com/calories-nutrition/generic/pork-cooked-ns-as-to-fat-eaten?portionid=50101&portionamount=100.000
+            # https://www.fatsecret.com/calories-nutrition/generic/chicken-ns-as-to-skin-eaten
             WhiteMeat: (237 * 16.96 + 271 * 13.89) / (16.96 + 13.89) * 10,  # weighted average for chicken and pork
             Milk: 650,  # https://www.dudhsagardairy.coop/health-nutrition/nutritional-facts/#:~:text=The%20calorie%2Fenergy%20content%20of,fat)%20provides%2035kcals%20%2F100ml.
             Eggs: 1470,  # https://www.fatsecret.com/calories-nutrition/usda/egg-(whole)?portionid=56523&portionamount=100.000
-            Rice: 1350, #https://www.fatsecret.com/calories-nutrition/generic/rice-cooked?portionid=53182&portionamount=1000.000
-            Maize: 960, #https://www.healthline.com/nutrition/foods/corn#:~:text=Here%20are%20the%20nutrition%20facts,Calories%3A%2096
-            Cereals: 3670, # https://www.fatsecret.com/calories-nutrition/generic/cereal?portionid=53258&portionamount=100.000
+            Rice: 1350,  # https://www.fatsecret.com/calories-nutrition/generic/rice-cooked?portionid=53182&portionamount=1000.000
+            Maize: 960,  # https://www.healthline.com/nutrition/foods/corn#:~:text=Here%20are%20the%20nutrition%20facts,Calories%3A%2096
+            Cereals: 3670,  # https://www.fatsecret.com/calories-nutrition/generic/cereal?portionid=53258&portionamount=100.000
             # 200 for vegetables https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
             # 580 for fruits  https://www.fatsecret.co.in/calories-nutrition/generic/fruit?portionid=54046&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2058%20calories%20in%20100%20grams%20of%20Fruit.
             FruitsAndVegetables: (580 * 86.40 + 147.04 * 200) / (86.40 + 147.04),
             Fish: 840,  # https://www.fatsecret.com/calories-nutrition/generic/fish-raw?portionid=50616&portionamount=100.000
-            SugarCane: 3750, # https://www.terrafreshfoods.com/products/sugar-cane#:~:text=in%20Latin%20America.-,Nutritional%20Value,and%20to%20increase%20our%20energy.
+            SugarCane: 3750,  # https://www.terrafreshfoods.com/products/sugar-cane#:~:text=in%20Latin%20America.-,Nutritional%20Value,and%20to%20increase%20our%20energy.
             OtherFood: 2000,  # assumed
         }
     }
@@ -1983,42 +2140,16 @@ class GlossaryCore:
         "unit": "kWh/ton",
         "user_level": 3,
         "description": "kwh consumed per ton produced",
-        # TODO
-        "default": {
-            RedMeat: 15000,  # High due to feed production, transport, and low feed-to-meat conversion efficiency.
-            WhiteMeat: 8000,  # Lower than red meat; poultry has a better feed conversion ratio.
-            Milk: 500,  # Includes energy for milking systems, feed, and water use.
-            Eggs: 3500,  # Energy includes feed production and poultry farm operation.
-            Rice: 2000,  # High irrigation energy, fertilizer needs; varies by water management.
-            Maize: 1000,  # Moderate; efficient large-scale production, but fertilizer-intensive.
-            Cereals: 1200,  # Includes wheat, barley; slightly higher energy than maize.
-            FruitsAndVegetables: 500,  # Highly variable; greenhouse cultivation can increase energy significantly.
-            Fish: 6000,  # For aquaculture; includes feed production, water circulation, and operations.
-            SugarCane: 500,  # Relatively low due to efficient growth in tropical climates.
-            OtherFood: 1500,  # Varies widely depending on type (e.g., processed foods, specialty crops).
-        }
+        "default": crop_calibration_data[FoodTypeEnergyIntensityByProdUnitName] if FoodTypeEnergyIntensityByProdUnitName in crop_calibration_data else None
     }
 
-    FoodTypeLaborIntensityByProdUnitName = "food_type_labor_cost_by_prod_unit"
+    FoodTypeLaborCostByProdUnitName = "food_type_labor_cost_by_prod_unit"
     FoodTypeLaborCostByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
         "unit": "$/ton",
         "description": "Labor cost per ton of food produced",
         "user_level": 3,
-        # TODO
-        "default": {
-            RedMeat: 800.0,  # Median of $400 - $1,200; labor-intensive due to feeding, herding, slaughtering, and processing.
-            WhiteMeat: 525.0,  # Median of $250 - $800; poultry production is generally more industrialized, reducing costs.
-            Milk: 125.0,  # Median of $50 - $200; lower labor requirements with automation in milking processes.
-            Eggs: 165.0,  # Median of $80 - $250; cage-free systems tend to have higher costs than automated systems.
-            Rice: 175.0,  # Median of $50 - $300; costs vary based on manual vs. mechanized planting and harvesting.
-            Maize: 65.0,  # Median of $30 - $100; mechanized systems result in lower labor input per ton.
-            Cereals: 65.0,  # Median of $30 - $100; includes wheat, barley, and oats with typically low labor costs in mechanized systems.
-            FruitsAndVegetables: 850.0,  # Median of $200 - $1,500; high variability, labor-intensive crops like berries are more costly.
-            Fish: 600.0,  # Median of $200 - $1,000; costs depend on aquaculture (lower) vs. wild catch (higher).
-            SugarCane: 175.0,  # Median of $50 - $300; mechanized harvesting reduces costs compared to manual cutting.
-            OtherFood: 550.0,  # Median of $100 - $1,000; varies widely based on product type, including specialty or processed foods.
-        }
+        "default": crop_calibration_data[FoodTypeLaborCostByProdUnitName] if FoodTypeLaborCostByProdUnitName in crop_calibration_data else None
     }
 
     FoodTypeCapitalMaintenanceCostName = "food_type_capital_maintenance_cost"
@@ -2027,8 +2158,7 @@ class GlossaryCore:
         "unit": "$/ton",
         "user_level": 3,
         "description": "Cost of capital maintenance",
-        # TODO
-        "default":  {key: 0.4 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+        "default": crop_calibration_data[FoodTypeCapitalMaintenanceCostName] if FoodTypeCapitalMaintenanceCostName in crop_calibration_data else None
     }
 
     FoodTypeCapitalAmortizationCostName = "food_type_capital_amortization_cost"
@@ -2037,8 +2167,7 @@ class GlossaryCore:
         "unit": "$/ton",
         "user_level": 3,
         "description": "Cost of capital amortization",
-        # TODO
-        "default": {key: 0.3 / val for key, val in crop_calibration_data["capital_intensity_food_type"].items()}
+        "default": crop_calibration_data[FoodTypeCapitalAmortizationCostName] if FoodTypeCapitalAmortizationCostName in crop_calibration_data else None
     }
 
     FoodTypeFeedingCostsName = "food_type_feeding_costs"
@@ -2047,15 +2176,16 @@ class GlossaryCore:
         "unit": "$/ton",
         "user_level": 3,
         "description": "Feeding costs for food type",
-        # TODO
-        "default": {
-            **{key: 0 for key in DefaultFoodTypesV2},
-            **{RedMeat: 1.5 },
-            **{WhiteMeat: 0.3 },
-            **{Fish: 0.2 },
-            **{Eggs: 0.1 },
-            **{Milk: 0.15 },
-        }
+        "default": crop_calibration_data[FoodTypeFeedingCostsName] if FoodTypeFeedingCostsName in crop_calibration_data else None
+    }
+
+    FoodTypeFertilizationAndPesticidesCostsName = "food_type_fertilization_and_pesticides_costs"
+    FoodTypeFertilizationAndPesticidesCostsVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "$/ton",
+        "user_level": 3,
+        "description": "Fertilization and pesticides costs for food type",
+        "default": crop_calibration_data[FoodTypeFertilizationAndPesticidesCostsName] if FoodTypeFertilizationAndPesticidesCostsName in crop_calibration_data else None
     }
 
     FoodTypeLandUseByProdUnitName = "food_type_prod_unit_land_use"
@@ -2064,10 +2194,10 @@ class GlossaryCore:
         "unit": "m²/kg produced",
         "user_level": 3,
         "description": "Land used by kg produced for each food type",
-        #Sources:
-        #[1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
-        #[2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
-        "default": crop_calibration_data[FoodTypeLandUseByProdUnitName]
+        # Sources:
+        # [1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+        # [2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
+        "default": crop_calibration_data[FoodTypeLandUseByProdUnitName] if FoodTypeLandUseByProdUnitName in crop_calibration_data else None
     }
 
     CropFoodLandUseName = "crop_for_food_land_use"
@@ -2075,8 +2205,6 @@ class GlossaryCore:
         "var_name": CropFoodLandUseName,
         "type": "dataframe",
         "unit": "Gha",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
     }
 
@@ -2104,8 +2232,6 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "Gha",
         "user_level": 3,
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Land used by each food type for food energy production",
     }
 
@@ -2114,8 +2240,6 @@ class GlossaryCore:
         "var_name": FoodTypeCapitalName,
         "type": "dataframe",
         "unit": "G$",
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Capital of each food type",
     }
 
@@ -2148,15 +2272,16 @@ class GlossaryCore:
         "description": "Food type {} emissions by food type for energy production",
     }
 
-    CropFoodEmissionsName = "crop_food_emissions"
-    CropFoodEmissionsVar = {
-        "var_name": CropFoodEmissionsName,
+    FoodEmissionsName = "food_emissions"
+    FoodEmissionsVar = {
+        "var_name": FoodEmissionsName,
+        "visibility": "Shared",
+        "namespace": NS_AGRI,
         "type": "dataframe",
         "unit": "Gt",
-        "visibility": "Shared",
         "user_level": 3,
-        "namespace": NS_CROP,
-        "description": "Crop for food emissions for each GHG",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "description": "Emissions of food production in crop model, by GHG",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             CO2: ("float", None, True),
@@ -2165,14 +2290,14 @@ class GlossaryCore:
         },
     }
 
-    CropEnergyEmissionsName = "crop_energy_emissions"
+    CropEnergyEmissionsName = f"{Crop}.energy_emissions"
     CropEnergyEmissionsVar = {
-        "var_name": CropEnergyEmissionsName,
         "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_AGRI,
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "Gt",
         "user_level": 3,
-        "visibility": "Shared",
-        "namespace": NS_CROP,
         "description": "Crop for energy emissions for each GHG",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -2182,10 +2307,24 @@ class GlossaryCore:
         },
     }
 
+    SubsectorsDict = {SectorAgriculture: [Crop, Forestry]}
+    MDOSectorsLevel = {"visibility": "Shared", "default": 0, "namespace": NS_PUBLIC, "type": "int", "range": [0, 2], 'structuring': True}
+
+    PriceDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_AGRI,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "$/ton",
+        "user_level": 2,
+        "description": "Price",
+        "dynamic_dataframe_columns": True,
+    }
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
-        return copy(variable)
+        return deepcopy(variable)
 
     @staticmethod
     def delete_namespace(variable: dict):
@@ -2226,3 +2365,29 @@ class GlossaryCore:
     @classmethod
     def get_deduced_sector(cls) -> str:
         return list(set(cls.SectorsPossibleValues).difference(set(cls.SectorsValueOptim)))[0]
+
+    @classmethod
+    def get_subsector_production_df(cls, subsector_name: str, sector_namespace: str):
+        subsector_production_df = cls.get_dynamic_variable(GlossaryCore.SubsectorProductionDf)
+        subsector_production_df["namespace"] = sector_namespace
+        subsector_production_df["description"] = f"Economical output data for sub-sector {subsector_name}"
+
+        return subsector_production_df
+
+    @classmethod
+    def get_subsector_damage_df(cls, subsector_name: str, sector_namespace: str):
+        subsector_production_df = cls.get_dynamic_variable(GlossaryCore.SubsectorDamagesDf)
+        subsector_production_df["namespace"] = sector_namespace
+        subsector_production_df["description"] = f"Economical damages data for sub-sector {subsector_name}"
+
+        return subsector_production_df
+
+    @classmethod
+    def get_subsector_variable(cls, var_descr: dict, subsector_name: str, sector_namespace: str):
+        subsector_production_df = deepcopy(var_descr)
+        subsector_production_df["visibility"] = "Shared"
+        subsector_production_df[AutodifferentiedDisc.GRADIENTS] = True
+        subsector_production_df["namespace"] = sector_namespace
+        subsector_production_df["description"] = subsector_production_df["description"].format(subsector_name)
+
+        return subsector_production_df

@@ -109,7 +109,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
     for energy in energy_list:
         if energy == GlossaryEnergy.biomass_dry:
-            namespace_disc = f'{WITNESS_ns}.AgricultureMix'
+            namespace_disc = f'{WITNESS_ns}.Agriculture'
         else:
             namespace_disc = f'{WITNESS_ns}.EnergyMix.{energy}'
 

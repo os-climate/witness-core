@@ -31,9 +31,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
 )
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
-    Study as datacase_agriculture_mix,
-)
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import (
     Study as datacase_landuse,
 )
@@ -70,9 +67,9 @@ class DataStudy():
         nb_per = self.year_end - self.year_start + 1
         years = arange(self.year_start, self.year_end + 1)
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": reforestation_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -90,7 +87,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{'Damage.damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
         #         witness_input[f"{self.study_name}.{}#                      '.Damage.damage_constraint_factor'}" = np.asarray([1] * len(years))
-        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.forest_investment"] = self.forest_invest_df
+        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.reforestation_investment"] = self.reforestation_investment_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[5], 'data')
@@ -152,8 +149,9 @@ class DataStudy():
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)
+        CO2_emitted_land[GlossaryCore.Years] = years
         CO2_emitted_land['Crop'] = np.zeros(len(years))
-        CO2_emitted_land['Forest'] = cum_emission
+        CO2_emitted_land[GlossaryCore.Forestry] = cum_emission
 
         witness_input[f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}"] = CO2_emitted_land
 
@@ -171,9 +169,9 @@ class DataStudy():
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "reforestation_investment": reforestation_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(
@@ -184,12 +182,6 @@ class DataStudy():
         dc_landuse = datacase_landuse(
             self.year_start, self.year_end, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
-
-        # -- load data from agriculture
-        dc_agriculture_mix = datacase_agriculture_mix(
-            self.year_start, self.year_end, agri_techno_list=self.techno_dict)
-        dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
-        dc_agriculture_mix.study_name = self.study_name
 
         # -- load data from sectorization process
         uc_sectorization = usecase_sectorization()
@@ -202,9 +194,6 @@ class DataStudy():
 
         land_use_list = dc_landuse.setup_usecase()
         setup_data_list = setup_data_list + land_use_list
-
-        agriculture_list = dc_agriculture_mix.setup_usecase()
-        setup_data_list = setup_data_list + agriculture_list
 
         # WITNESS
         # setup objectives

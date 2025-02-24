@@ -35,7 +35,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         year_range = self.year_end - self.year_start + 1
-        self.technology_list = ['Crop', 'Forest']
+        self.technology_list = ['Crop', GlossaryCore.Forestry]
 
         # ----------------------------------------------------
         # Crop related inputs
@@ -98,9 +98,9 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         deforestation_surface = np.linspace(10, 5, year_range)
         self.deforestation_surface_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, "deforested_surface": deforestation_surface})
-        forest_invest = np.linspace(5, 8, year_range)
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "forest_investment": forest_invest})
+        reforestation_invest = np.linspace(5.0, 8.0, len(self.years))
+        self.reforestation_investment_df = pd.DataFrame(
+            {GlossaryCore.Years: self.years, "reforestation_investment": reforestation_invest})
         mw_invest = np.linspace(1, 4, year_range)
         uw_invest = np.linspace(0, 1, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -123,15 +123,15 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         techno_prices = np.linspace(9, 9, year_range)
         techno_prices_wotaxes = np.linspace(9, 9, year_range)
         self.techno_prices_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest': techno_prices, 'Forest_wotaxes': techno_prices_wotaxes})
+            {GlossaryCore.Years: self.years, GlossaryCore.Forestry: techno_prices, 'Forestry_wotaxes': techno_prices_wotaxes})
 
         CO2_emissions = np.linspace(0, 0, year_range)
-        self.CO2_emissions_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest': CO2_emissions})
+        self.CO2_emissions_forestry = pd.DataFrame(
+            {GlossaryCore.Years: self.years, GlossaryCore.Forestry: CO2_emissions})
 
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'Forest (Gha)': land_use_required})
+            {GlossaryCore.Years: self.years, 'Forestry (Gha)': land_use_required})
         # -----------------------------------------------------
         # Agriculture mix related inputs
         self.margin = pd.DataFrame(
@@ -156,7 +156,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         Check discipline setup and run
         '''
         test_name = 'Test'
-        disc_name = 'AgricultureMix'
+        disc_name = 'Agriculture'
         ee = ExecutionEngine(test_name)
         ns_dict = {'ns_agriculture': f'{test_name}',
                    'ns_energy_study': f'{test_name}',
@@ -186,13 +186,13 @@ class AgricultureMixModelTestCase(unittest.TestCase):
                        f'{test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
                        f'{test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
                        f'{test_name}.{disc_name}.Crop.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
-                       f'{test_name}.{disc_name}.Forest.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
-                       f'{test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
-                       f'{test_name}.{disc_name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.techno_consumption_woratio_forest,
-                       f'{test_name}.{disc_name}.Forest.techno_production': self.techno_production_forest,
-                       f'{test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
-                       f'{test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
-                       f'{test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
+                       f'{test_name}.{disc_name}.Forestry.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{test_name}.{disc_name}.Forestry.techno_consumption': self.techno_consumption_forest,
+                       f'{test_name}.{disc_name}.Forestry.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.techno_consumption_woratio_forest,
+                       f'{test_name}.{disc_name}.Forestry.techno_production': self.techno_production_forest,
+                       f'{test_name}.{disc_name}.Forestry.techno_prices': self.techno_prices_forest,
+                       f'{test_name}.{disc_name}.Forestry.CO2_emissions': self.CO2_emissions_forestry,
+                       f'{test_name}.{disc_name}.Forestry.land_use_required': self.land_use_required_forest,
                        f'{test_name}.{GlossaryCore.techno_list}': self.technology_list,
                        f'{test_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                       }

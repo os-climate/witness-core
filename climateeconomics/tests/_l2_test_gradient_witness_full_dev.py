@@ -76,7 +76,7 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_detailed_techno_prices',
                             f'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.{GlossaryCore.StreamProductionDetailedValue}',
                             ]
-        disc_to_test_list = ['WITNESS.Resources'] #'WITNESS.AgricultureMix.Forest'
+        disc_to_test_list = ['WITNESS.Resources'] #'WITNESS.Agriculture.Forest'
                                      
 
         self.all_usecase_disciplines_jacobian_test(usecase,
