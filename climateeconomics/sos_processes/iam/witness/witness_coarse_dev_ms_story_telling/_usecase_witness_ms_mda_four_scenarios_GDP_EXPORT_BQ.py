@@ -203,11 +203,13 @@ if '__main__' == __name__:
     from sostrades_core.datasets.datasets_connectors.datasets_connector_manager import (
         DatasetsConnectorManager,
     )
+
+    # the repo sostrades-datasets-plugins needs to be connected to this repo
     connector_args = {
         "project_id": "gcp-businessplanet"
     }
     DatasetsConnectorManager.register_connector(connector_identifier="bigquery_datasets_connector",
-                                                connector_type=DatasetConnectorType.get_enum_value("Bigquery"),
+                                                connector_type="sostrades_datasets_plugins.datasets_connectors.BigQuery",
                                                 **connector_args)
 
 
