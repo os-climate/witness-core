@@ -22,7 +22,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import (
 
 class SimpleTest(AbstractJacobianUnittest):
     '''    
-    Very simple (and quick) test to setup the jenkins jobs for l2 test 
+    Very simple (and quick) test to setup the CI/CD jobs for l2 test 
     and the launch at stable merge
     '''
 
