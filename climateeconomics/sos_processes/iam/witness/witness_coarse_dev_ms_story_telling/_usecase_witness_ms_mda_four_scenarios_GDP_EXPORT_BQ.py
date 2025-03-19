@@ -13,14 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import os
 
-from sostrades_core.datasets.dataset_mapping import DatasetsMapping
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios import (
-    __file__ as module_file,
-)
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tp35 import (
     Study as StudyMSmdaTippingPoint35,
 )
@@ -193,28 +188,24 @@ class Study(StudyMSmdaTippingPoint35):
             raise AssertionError(f'Check range de valeurs invalide pour {self.study_name}:\n {error_msg}')
 
 
-if '__main__' == __name__:
-    # FIXME: CONNECTORS INSTANTIATIONS TO REMOVE WHEN CONNECTORS ON PLATFORMS
-    os.environ[
-        "GOOGLE_APPLICATION_CREDENTIALS"] = r"C:\Users\ybekkali\Documents\SoSTrades\gcp-businessplanet-b0018b9d9a11.json"
-    from sostrades_core.datasets.datasets_connectors.datasets_connector_factory import (
-        DatasetConnectorType,
-    )
-    from sostrades_core.datasets.datasets_connectors.datasets_connector_manager import (
-        DatasetsConnectorManager,
-    )
-    connector_args = {
-        "project_id": "gcp-businessplanet"
-    }
-    DatasetsConnectorManager.register_connector(connector_identifier="bigquery_datasets_connector",
-                                                connector_type=DatasetConnectorType.get_enum_value("Bigquery"),
-                                                **connector_args)
+# if '__main__' == __name__:
+    
+#     from sostrades_core.datasets.datasets_connectors.datasets_connector_manager import (
+#         DatasetsConnectorManager,
+#     )
+#     connector_args = {
+#         "project_id": "gcp-businessplanet"
+#     }
+#     TODO: change connector registration with new format
+#     DatasetsConnectorManager.register_connector(connector_identifier="bigquery_datasets_connector",
+#                                                 connector_type=DatasetConnectorType.get_enum_value("Bigquery"),
+#                                                 **connector_args)
 
 
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    datasets_mapping_path = os.path.realpath(os.path.join(os.path.dirname(module_file),
-                                                          "four_scenarios_biquery_datasets_mapping_GDP_only.json"))
-    datasets_mapping = DatasetsMapping.from_json_file(datasets_mapping_path)
-    uc_cls.execution_engine.dm.export_data_in_datasets(datasets_mapping)
+#     uc_cls = Study(run_usecase=True)
+#     uc_cls.load_data()
+#     uc_cls.run()
+#     datasets_mapping_path = os.path.realpath(os.path.join(os.path.dirname(module_file),
+#                                                           "four_scenarios_biquery_datasets_mapping_GDP_only.json"))
+#     datasets_mapping = DatasetsMapping.from_json_file(datasets_mapping_path)
+#     uc_cls.execution_engine.dm.export_data_in_datasets(datasets_mapping)
