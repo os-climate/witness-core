@@ -39,10 +39,10 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.year_end = 2053
         years = np.arange(self.year_start, self.year_end + 1)
         self.GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4,
+                                                   GlossaryCore.CO2: np.linspace(37., 10., len(years)),
+                                                   GlossaryCore.N2O: np.linspace(1.7e-3, 5.e-4,
                                                                                                len(years)),
-                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
+                                                   GlossaryCore.CH4: np.linspace(0.17, 0.01, len(years))})
         self.CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
                                            GlossaryCore.Forestry: np.linspace(3., 4., len(years))})
@@ -57,11 +57,11 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.energy_production = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.TotalProductionValue: 100.
+            "Total": 100.
         })
 
         self.residential_energy_consumption = pd.DataFrame({GlossaryCore.Years: years,
-                                                               GlossaryCore.TotalProductionValue: 1.2})
+                                                            "Total": 1.2})
 
         def generate_energy_consumption_df_sector(sector_name):
             out = {GlossaryCore.Years: years}
@@ -85,15 +85,14 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}',
             f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}',
             f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}',
-            f'{self.name}.GHG_total_energy_emissions',
-            f"{self.name}.{GlossaryCore.StreamProductionValue}",
+            f'{self.name}.{GlossaryCore.GHGEnergyEmissionsDfValue}',
+            f"{self.name}.{GlossaryCore.EnergyMixNetProductionsDfValue}",
         ]
 
         self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionEnergyConsumptionDfValue}" for sector in GlossaryCore.DefaultSectorListGHGEmissions]
         self.inputs_cheked += [f"{self.name}.{sector}.{GlossaryCore.SectionGdpDfValue}" for sector in GlossaryCore.DefaultSectorListGHGEmissions]
 
         self.outputs_checked = [
-            f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
             f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
             f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}",
             f"{self.name}.{self.model_name}.{GlossaryCore.EconomicsEmissionDfValue}",
@@ -137,9 +136,9 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
-                       f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
+                       f'{self.name}.{GlossaryCore.GHGEnergyEmissionsDfValue}': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
-                       f"{self.name}.{GlossaryCore.StreamProductionValue}": self.energy_production,
+                       f"{self.name}.{GlossaryCore.EnergyMixNetProductionsDfValue}": self.energy_production,
                        f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
                        **self.ghg_eenergy_consumptions_sectors,
                        **self.ghg_sections_gdp,
@@ -182,10 +181,10 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': self.CO2_land_emissions,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
-                       f'{self.name}.GHG_total_energy_emissions': self.GHG_total_energy_emissions,
+                       f'{self.name}.{GlossaryCore.GHGEnergyEmissionsDfValue}': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.affine_co2_objective": False,
-                       f"{self.name}.{GlossaryCore.StreamProductionValue}": self.energy_production,
+                       f"{self.name}.{GlossaryCore.EnergyMixNetProductionsDfValue}": self.energy_production,
                        f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
                        **self.ghg_eenergy_consumptions_sectors,
                        **self.ghg_sections_gdp,

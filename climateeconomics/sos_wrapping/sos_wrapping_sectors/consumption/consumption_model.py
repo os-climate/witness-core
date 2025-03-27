@@ -28,9 +28,7 @@ class SectorizedConsumptionModel:
 
     def compute_sectors_consumption(self):
         """Sector Consumption S = Net output of sector S - invest in sector S - total energy invest X share energy prod attributed to sector S"""
-        total_energy_invest = self.inputs[GlossaryCore.EnergyInvestmentsWoTaxValue][GlossaryCore.EnergyInvestmentsWoTaxValue].values
-        share_energy_consumption_sector_df = self.inputs[GlossaryCore.AllSectorsShareEnergyDfValue]
-        years = share_energy_consumption_sector_df[GlossaryCore.Years].values
+        years = self.inputs[f"{self.inputs[GlossaryCore.SectorListValue][0]}.{GlossaryCore.ProductionDfValue}"][GlossaryCore.OutputNetOfDamage].values
 
         sectors_consumption_df = pd.DataFrame({GlossaryCore.Years: years})
 
@@ -39,14 +37,13 @@ class SectorizedConsumptionModel:
             sector_breakdown_df = pd.DataFrame({GlossaryCore.Years: years})
             net_output_sector = self.inputs[f"{sector}.{GlossaryCore.ProductionDfValue}"][GlossaryCore.OutputNetOfDamage].values
             invest_sector =  - self.inputs[f"{sector}.{GlossaryCore.InvestmentDfValue}"][GlossaryCore.InvestmentsValue].values
-            invest_in_energy_attributed_to_sector = - share_energy_consumption_sector_df[sector].values /100. * total_energy_invest
 
-            consumption_sector = net_output_sector + invest_sector + invest_in_energy_attributed_to_sector
+            consumption_sector = net_output_sector + invest_sector
             sectors_consumption_df[sector] = consumption_sector
 
             sector_breakdown_df["Output net of damage"] = net_output_sector
             sector_breakdown_df["Investment in sector"] = invest_sector
-            sector_breakdown_df["Attributed investment in energy"] = invest_in_energy_attributed_to_sector
+            #sector_breakdown_df["Attributed investment in energy"] = invest_in_energy_attributed_to_sector
             sector_breakdown_df["Consumption"] = consumption_sector
 
             self.output_dict[f"{sector}_consumption_breakdown"] = sector_breakdown_df

@@ -41,11 +41,11 @@ END_YEAR_NAME = 'Ending year'
 # to use raw IEA data, use SUFFIX_VAR_IEA = ''
 SUFFIX_VAR_IEA = ''  # IEADataPreparationDiscipline.SUFFIX_VAR_INTERPOLATED
 
-WITNESS_RAW_ENERGY_DF_NAME = "EnergyMix.energy_production_brut"
-WITNESS_RAW_ENERGY_COL_NAME = f"{GlossaryCore.TotalProductionValue}"
+WITNESS_RAW_ENERGY_DF_NAME = f"EnergyMix.{GlossaryEnergy.EnergyMixRawProductionValue}"
+WITNESS_RAW_ENERGY_COL_NAME = "Total"
 
-WITNESS_NET_ENERGY_DF_NAME = f"EnergyMix.{GlossaryEnergy.StreamProductionValue}"
-WITNESS_NET_ENERGY_COL_NAME = f"{GlossaryCore.TotalProductionValue}"
+WITNESS_NET_ENERGY_DF_NAME = f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}"
+WITNESS_NET_ENERGY_COL_NAME = "Total"
 
 
 def get_shared_value(execution_engine, short_name_var: str):
@@ -287,7 +287,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Population",
             y_axis_name="Population (Millions)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.PopulationDfValue}{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.population_df",
+            witness_variable="population_df",
             columns_to_plot=["population"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -301,7 +301,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Economics",
             y_axis_name="GDP net of damage (G$)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.EconomicsDfValue}{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.Macroeconomics.economics_detail_df",
+            witness_variable="Macroeconomics.economics_detail_df",
             columns_to_plot=["output_net_of_d"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -316,7 +316,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Temperature",
             y_axis_name="Increase in atmospheric temperature (°C)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.TemperatureDfValue}{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.temperature_df",
+            witness_variable="temperature_df",
             columns_to_plot=["temp_atmo"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -331,8 +331,8 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="CO2 emissions of the energy sector",
             y_axis_name="Total CO2 emissions (Gt)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.CO2EmissionsGtValue}{SUFFIX_VAR_IEA}",
-            witness_variable="EnergyMix.co2_emissions_Gt",
-            columns_to_plot=["Total CO2 emissions"],
+            witness_variable=f"{GlossaryCore.GHGEnergyEmissionsDfValue}",
+            columns_to_plot=[GlossaryCore.CO2],
             args_to_plot={
                 "args_1": {"df_label": "WITNESS"},
                 "args_2": {"display_type": "scatter", "df_label": "IEA"},
@@ -345,7 +345,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="CO2 Taxes",
             y_axis_name="CO2 taxes ($/ton of CO2)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.CO2TaxesValue}{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.CO2_taxes",
+            witness_variable="CO2_taxes",
             columns_to_plot=["CO2_tax"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -363,7 +363,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="GDP vs energy production evolution",
         )
         x_witness_df, _ = get_shared_value(execution_engine, WITNESS_RAW_ENERGY_DF_NAME)
-        y_witness_df, _ = get_shared_value(execution_engine, "WITNESS.Macroeconomics.economics_detail_df")
+        y_witness_df, _ = get_shared_value(execution_engine, "Macroeconomics.economics_detail_df")
         x_witness = x_witness_df.loc[x_witness_df[GlossaryCore.Years] <= year_end][
                         WITNESS_RAW_ENERGY_COL_NAME] / 1e3  # Value is in TWh, plot in PWh
         y_witness = y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end]["output_net_of_d"]
@@ -387,7 +387,7 @@ def post_processings(execution_engine, namespace, filters):
         years_x = x_iea_df.loc[x_iea_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years]
         years_y = y_iea_df.loc[y_iea_df[GlossaryCore.Years] <= year_end][GlossaryCore.Years]
         common_years = sorted(list(set(years_x).intersection(set(years_y))))
-        x_iea = x_iea_df.loc[x_iea_df[GlossaryCore.Years].isin(common_years)][GlossaryCore.TotalProductionValue]
+        x_iea = x_iea_df.loc[x_iea_df[GlossaryCore.Years].isin(common_years)]["Total"]
         y_iea = y_iea_df.loc[y_iea_df[GlossaryCore.Years].isin(common_years)]["output_net_of_d"]
 
         new_series = InstanciatedSeries(
@@ -421,7 +421,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="GDP vs energy production evolution",
         )
         x_witness_df, _ = get_shared_value(execution_engine, WITNESS_NET_ENERGY_DF_NAME)
-        y_witness_df, _ = get_shared_value(execution_engine, "WITNESS.Macroeconomics.economics_detail_df")
+        y_witness_df, _ = get_shared_value(execution_engine, "Macroeconomics.economics_detail_df")
         x_witness = x_witness_df.loc[x_witness_df[GlossaryCore.Years] <= year_end][
                         WITNESS_NET_ENERGY_COL_NAME]
         y_witness = y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end]["output_net_of_d"]
@@ -475,17 +475,17 @@ def post_processings(execution_engine, namespace, filters):
         # total
         new_chart = create_chart_comparing_WITNESS_and_IEA(
             chart_name="Raw Energy Production",
-            y_axis_name="Energy (PWh)",
+            y_axis_name=f"Energy ({GlossaryEnergy.EnergyMixRawProduction['unit']})",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.StreamProductionValue}{SUFFIX_VAR_IEA}",
             witness_variable=WITNESS_RAW_ENERGY_DF_NAME,
-            columns_to_plot=[GlossaryCore.TotalProductionValue],
+            columns_to_plot=["Total"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_1": {"df_label": "WITNESS"},
                 "args_2": {"display_type": "scatter", "df_label": "IEA"},
             },
             witness_scaling={WITNESS_RAW_ENERGY_DF_NAME: {
-                GlossaryCore.TotalProductionValue: 1 / 1e3  # value in TWh, plot in PWh
+                "Total": 1.
             }}
         )
         instanciated_charts.append(new_chart)
@@ -495,7 +495,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Energy from Coal",
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="EnergyMix.solid_fuel.CoalExtraction.techno_detailed_production",
+            witness_variable=f"EnergyMix.solid_fuel.CoalExtraction.{GlossaryEnergy.TechnoProductionValue}",
             columns_to_plot=["solid_fuel (TWh)"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -509,7 +509,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Energy from Nuclear",
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="EnergyMix.electricity.Nuclear.techno_detailed_production",
+            witness_variable=f"EnergyMix.electricity.Nuclear.{GlossaryEnergy.TechnoProductionValue}",
             columns_to_plot=["electricity (TWh)", "heat.hightemperatureheat (TWh)"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -524,7 +524,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Energy from Hydro",
             y_axis_name="Electricity (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="EnergyMix.electricity.Hydropower.techno_detailed_production",
+            witness_variable=f"EnergyMix.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}",
             columns_to_plot=["electricity (TWh)"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -540,8 +540,8 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=[
-                "EnergyMix.electricity.SolarPv.techno_detailed_production",
-                "EnergyMix.electricity.SolarThermal.techno_detailed_production",
+                f"EnergyMix.electricity.SolarPv.{GlossaryEnergy.TechnoProductionValue}",
+                f"EnergyMix.electricity.SolarThermal.{GlossaryEnergy.TechnoProductionValue}",
             ],
             columns_to_plot=[["electricity (TWh)"], ["electricity (TWh)"]],
             args_to_plot={
@@ -558,8 +558,8 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=[
-                "EnergyMix.electricity.WindOnshore.techno_detailed_production",
-                "EnergyMix.electricity.WindOffshore.techno_detailed_production",
+                f"EnergyMix.electricity.WindOnshore.{GlossaryEnergy.TechnoProductionValue}",
+                f"EnergyMix.electricity.WindOffshore.{GlossaryEnergy.TechnoProductionValue}",
             ],
             columns_to_plot=[["electricity (TWh)"], ["electricity (TWh)"]],
             args_to_plot={
@@ -575,8 +575,8 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Energy from gaseous bionergy",
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="EnergyMix.biogas.energy_production_detailed",
-            columns_to_plot=["biogas AnaerobicDigestion (TWh)"],
+            witness_variable=f"EnergyMix.biogas.{GlossaryEnergy.StreamProductionValue}",
+            columns_to_plot=["biogas (TWh)"],
             args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
             # sum_columns="WITNESS"
         )
@@ -587,7 +587,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Energy from Forest",
             y_axis_name="Energy (PWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.ForestProduction}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.Agriculture.Forestry.techno_production",
+            witness_variable="Agriculture.Forestry.techno_production",
             columns_to_plot=["biomass_dry (TWh)"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -597,11 +597,12 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
         # "crop energy"
+        """
         new_chart = create_chart_comparing_WITNESS_and_IEA(
             chart_name="Energy from crop",
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.CropEnergy}_techno_production{SUFFIX_VAR_IEA}",
-            witness_variable="WITNESS.Agriculture.Crop.mix_detailed_production",
+            witness_variable=f"Agriculture.Crop.mix_detailed_production",
             columns_to_plot=["Total (TWh)"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -609,6 +610,7 @@ def post_processings(execution_engine, namespace, filters):
             # sum_columns="WITNESS"
         )
         instanciated_charts.append(new_chart)
+        """
 
         # SSR: I do not know which one goes here
         # # "Oil"
@@ -616,7 +618,7 @@ def post_processings(execution_engine, namespace, filters):
         #     chart_name="Energy from Oil",
         #     y_axis_name="Energy (TWh)",
         #     iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production",
-        #     witness_variable="EnergyMix.energy_production_brut_detailed",
+        #     witness_variable=f"EnergyMix.energy_production_brut_detailed",
         #     columns_to_plot=["production fuel.liquid_fuel (TWh)"],
         #     args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
         #     # sum_columns="WITNESS"
@@ -628,7 +630,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Natural gas price",
             y_axis_name="$/MWh",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}{SUFFIX_VAR_IEA}",
-            witness_variable=f"WITNESS.EnergyMix.methane.{GlossaryEnergy.FossilGas}.techno_prices",
+            witness_variable=f"EnergyMix.methane.{GlossaryEnergy.FossilGas}.techno_prices",
             columns_to_plot=[GlossaryEnergy.FossilGas],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -647,7 +649,7 @@ def post_processings(execution_engine, namespace, filters):
                 chart_name=f"Electricity price for {techno}",
                 y_axis_name="$/MWh",
                 iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.StreamPricesValue}{SUFFIX_VAR_IEA}",
-                witness_variable=f"WITNESS.EnergyMix.electricity.{techno}.techno_prices",
+                witness_variable=f"EnergyMix.electricity.{techno}.techno_prices",
                 columns_to_plot=[techno],
                 args_to_plot={
                     "args_0": {'y_min_zero': True},
@@ -665,7 +667,7 @@ def post_processings(execution_engine, namespace, filters):
                 chart_name="Land use",
                 y_axis_name=f"{surface}",
                 iea_variable=f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}{SUFFIX_VAR_IEA}",
-                witness_variable="WITNESS.Land Use.land_surface_detail_df",
+                witness_variable="Land Use.land_surface_detail_df",
                 columns_to_plot=[surface],
                 args_to_plot={
                     "args_0": {'y_min_zero': True},

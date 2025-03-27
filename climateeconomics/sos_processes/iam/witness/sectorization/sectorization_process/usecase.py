@@ -75,7 +75,7 @@ class Study(StudyManager):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        setup_data_list = []
+        setup_data_list = {}
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
@@ -169,7 +169,12 @@ class Study(StudyManager):
             energy_supply_values = energy_supply * brut_net
 
             energy_production = pd.DataFrame(
-                {GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.7})
+                {GlossaryCore.Years: years, "Total": energy_supply_values * 0.7})
+
+            energy_market_ratios = pd.DataFrame({
+                GlossaryCore.Years: years,
+                "Total": 100.,
+            })
 
             # data for consumption
             temperature = np.linspace(1, 3, len(years))
@@ -194,12 +199,9 @@ class Study(StudyManager):
             CO2_emitted_land['Crop'] = np.zeros(len(years))
             CO2_emitted_land[GlossaryCore.Forestry] = cum_emission
             GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                       GlossaryCore.TotalCO2Emissions: np.linspace(37., 10.,
-                                                                                                   len(years)),
-                                                       GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4,
-                                                                                                   len(years)),
-                                                       GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01,
-                                                                                                   len(years))})
+                                                       GlossaryCore.CO2: np.linspace(37., 10., len(years)),
+                                                       GlossaryCore.N2O: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                       GlossaryCore.CH4: np.linspace(0.17, 0.01, len(years))})
             CO2_indus_emissions_df = pd.DataFrame({
                 GlossaryCore.Years: years,
                 "indus_emissions": 0.
@@ -228,12 +230,13 @@ class Study(StudyManager):
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_agriculture,
                 f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
                 f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
-                f"{self.study_name}.{GlossaryCore.StreamProductionValue}": energy_production,
+                f"{self.study_name}.{GlossaryCore.EnergyMixNetProductionsDfValue}": energy_production,
+                f"{self.study_name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}": energy_market_ratios,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": CO2_emitted_land,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}": CO2_emitted_land,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}": CO2_emitted_land,
                 f"{self.study_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
-                f"{self.study_name}.GHG_total_energy_emissions": GHG_total_energy_emissions,
+                f"{self.study_name}.{GlossaryCore.GHGEnergyEmissionsDfValue}": GHG_total_energy_emissions,
                 f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': damage_df,
                 f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': damage_df,
                 f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': damage_df,
@@ -245,7 +248,7 @@ class Study(StudyManager):
                 f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}_shift_scurve': -0.25,
             })
 
-        setup_data_list.append(cons_input)
+        setup_data_list.update(cons_input)
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
@@ -255,14 +258,13 @@ class Study(StudyManager):
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel'}
 
-        setup_data_list.append(numerical_values_dict)
+        setup_data_list.update(numerical_values_dict)
         study_economic_process = StudyEconomicSectors(year_start=self.year_start, year_end=self.year_end)
         study_economic_process.study_name = self.study_name
-        setup_data_list.extend(study_economic_process.setup_usecase())
+        setup_data_list.update(study_economic_process.setup_usecase())
         return setup_data_list
 
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

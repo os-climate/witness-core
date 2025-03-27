@@ -37,7 +37,10 @@ class PopDiscTest(unittest.TestCase):
 
         self.model_name = GlossaryCore.PopulationValue
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}'}
+                   'ns_public': f'{self.name}',
+                   'ns_energy_market': f'{self.name}',
+                   GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
+                   }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -63,12 +66,18 @@ class PopDiscTest(unittest.TestCase):
             GlossaryCore.PerCapitaConsumption: 0.,
         })
 
+        self.energy_market_ratios = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            "Total": 100.,
+        })
+
     def test_execute(self):
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -101,7 +110,8 @@ class PopDiscTest(unittest.TestCase):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -132,7 +142,8 @@ class PopDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
-                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -167,6 +178,7 @@ class PopDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        f'{self.name}.assumptions_dict': assumptions_dict
                        }
 

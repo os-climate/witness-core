@@ -53,7 +53,7 @@ class Study(StudyManager):
     def setup_usecase(self, study_folder_path=None):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
-        setup_data_list = []
+        setup_data_list = {}
         # private values economics operator pyworld3
         landuse_input = {}
         landuse_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
@@ -95,7 +95,7 @@ class Study(StudyManager):
         landuse_input[self.study_name +
                       '.forest_surface_df'] = self.forest_surface_df
 
-        setup_data_list.append(landuse_input)
+        setup_data_list.update(landuse_input)
 
         return setup_data_list
 

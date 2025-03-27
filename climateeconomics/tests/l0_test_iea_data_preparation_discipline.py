@@ -47,7 +47,7 @@ class IEADataPreparationTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         CO2_emissions_df = pd.DataFrame({Glossary.Years: years,
-                                         Glossary.TotalCO2Emissions: [60, 40, 20, 30]})
+                                         "CO2": [60, 40, 20, 30]})
         GDP_values = [120, 140, 145, 160]
         GDP_df = pd.DataFrame({Glossary.Years: years,
                                Glossary.OutputNetOfDamage: GDP_values,
@@ -58,7 +58,7 @@ class IEADataPreparationTest(unittest.TestCase):
                                    Glossary.CO2Tax: [370, 500, 700, 800]})
 
         energy_production_df = pd.DataFrame({Glossary.Years: years,
-                                             Glossary.TotalProductionValue: [40, 70, 80, 10]})
+                                             "Total": [40, 70, 80, 10]})
 
         energy_consumption_df = pd.DataFrame({Glossary.Years: years,
                                              Glossary.FinalConsumptionValue: [40, 70, 80, 10]})
@@ -83,7 +83,7 @@ class IEADataPreparationTest(unittest.TestCase):
                             f'{Glossary.electricity}_{Glossary.WindOnshoreAndOffshore}',
                             f'{Glossary.solid_fuel}_{Glossary.CoalExtraction}',
                             f'{Glossary.methane}_{Glossary.FossilGas}',
-                            f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}', f'{Glossary.CropEnergy}',
+                            f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}',
                             f'{Glossary.ForestProduction}'
                             ]
 
@@ -98,6 +98,7 @@ class IEADataPreparationTest(unittest.TestCase):
             f'{self.name}.{self.model_name}.{Glossary.TemperatureDfValue}': temperature_df,
             f'{self.name}.{self.model_name}.{Glossary.PopulationDfValue}': population_df,
             f'{self.name}.{self.model_name}.{LandUseV2.LAND_SURFACE_DETAIL_DF}': land_use_df,
+            f'{self.name}.{self.model_name}.{Glossary.electricity}_{Glossary.StreamPricesValue}': natural_gas_price,
             f'{self.name}.{self.model_name}.{Glossary.methane}_{Glossary.StreamPricesValue}': natural_gas_price,
         }
         # random values for techno

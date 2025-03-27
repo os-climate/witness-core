@@ -100,7 +100,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             energy_list = self.get_sosdisc_inputs(GlossaryCore.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name:
+                    if energy == GlossaryCore.biomass_dry:
                         pass
                     else:
                         dynamic_inputs[f'{energy}.{GlossaryCore.techno_list}'] = {'type': 'list',

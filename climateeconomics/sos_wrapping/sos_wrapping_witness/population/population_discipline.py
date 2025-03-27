@@ -113,6 +113,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.PandemicParamDfValue: GlossaryCore.PandemicParamDf,
+        GlossaryCore.EnergyMarketRatioAvailabilitiesValue: GlossaryCore.EnergyMarketRatioAvailabilities,
+        "household_energy_consumption_per_capita": {'type': 'float', 'default': 2.67, 'user_level': 2, 'unit': 'MWh/capita/year', "description": "household energy consumption per capita per year"},
     }
 
     DESC_OUT = {
@@ -124,11 +126,13 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'death_rate_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': '-'},
         'death_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': 'people' },
         'birth_df': {'type': 'dataframe', 'unit': 'people'},
-        'life_expectancy_df': {'type': 'dataframe', 'unit': 'age'}
+        'life_expectancy_df': {'type': 'dataframe', 'unit': 'age'},
+        f"{GlossaryCore.PopulationValue}_{GlossaryCore.EnergyDemandValue}": GlossaryCore.EnergyDemandDf,
+        GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf,
     }
 
     _maturity = 'Research'
-        
+
 
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
@@ -185,6 +189,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                     "life_expectancy_df": life_expectancy_df}
 
         
+        out_dict.update(self.model.outputs)
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

@@ -20,10 +20,6 @@ from energy_models.sos_processes.witness_sub_process_builder import (
     WITNESSSubProcessBuilder,
 )
 
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
-    OPTIM_NAME,
-)
-
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
@@ -38,7 +34,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     def get_builders(self):
 
-        optim_name = OPTIM_NAME
+        optim_name = "MDO"
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them

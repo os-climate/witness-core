@@ -71,7 +71,6 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     """
     CROP_DISC = "Crop"
     LANDUSE_DISC = "Land Use"
-    ENERGYMIX_DISC = "EnergyMix"
     DAMAGE_DISC = "Damage"
 
     sectorization: bool = (
@@ -113,8 +112,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             "WITNESS": {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": "EnergyMix.energy_production_brut",
-                "x_column_name": GlossaryCore.TotalProductionValue,
+                "x_var_name": GlossaryEnergy.EnergyMixRawProductionValue,
+                "x_column_name": "Total",
                 "x_data_scale": 1e-3,
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
@@ -135,7 +134,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             "IEA": {
                 "data_type": "dataframe",
                 "data": raw_iea_df,
-                "x_column_name": "Total production",
+                "x_column_name": "Total",
                 "y_column_name": "output_net_of_d",
                 "marker_symbol": "square",
                 "text_column": "years",
@@ -146,8 +145,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             "WITNESS": {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": f"EnergyMix.{GlossaryEnergy.StreamProductionValue}",
-                "x_column_name": GlossaryCore.TotalProductionValue,
+                "x_var_name": GlossaryEnergy.EnergyMixNetProductionsDfValue,
+                "x_column_name": "Total",
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
                 "text_column": GlossaryCore.Years,
@@ -196,16 +195,13 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
     if "temperature and ghg evolution" in chart_list:
         temperature_df = get_scenario_value(
-            execution_engine, GlossaryCore.TemperatureDfValue, scenario_name
+            execution_engine, GlossaryCore.TemperatureDfValue, scenario_name, split_scenario_name=False
         )
         total_ghg_df = get_scenario_value(
-            execution_engine, GlossaryCore.GHGEmissionsDfValue, scenario_name
+            execution_engine, GlossaryCore.GHGEmissionsDfValue, scenario_name, split_scenario_name=False
         )
-        carbon_captured = get_scenario_value(
-            execution_engine, GlossaryEnergy.CarbonCapturedValue, scenario_name
-        )
-        co2_emissions = get_scenario_value(
-            execution_engine, "co2_emissions_ccus_Gt", scenario_name
+        ccus_output = get_scenario_value(
+            execution_engine, GlossaryEnergy.CCUSOutputValue, scenario_name, split_scenario_name=False
         )
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
@@ -224,70 +220,32 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
 
         # Creating list of values according to CO2 storage limited by CO2 captured
         graph_gross_co2 = []
-        graph_dac = []
-        graph_flue_gas = []
         for year_index, year in enumerate(years):
-            storage_limit = co2_emissions["carbon_storage Limited by capture (Gt)"][
+            carbon_captured = ccus_output[GlossaryEnergy.carbon_captured][
                 year_index
             ]
             graph_gross_co2.append(
-                total_ghg_df["Total CO2 emissions"][year_index] + storage_limit
+                total_ghg_df[GlossaryCore.CO2][year_index] + carbon_captured
             )
-            captured_total = (
-                carbon_captured["DAC"][year_index] * 0.001
-                + carbon_captured["flue gas"][year_index] * 0.001
-            )
-            if captured_total > 0.0:
-                proportion_stockage = storage_limit / captured_total
-                graph_dac.append(
-                    proportion_stockage * carbon_captured["DAC"][year_index] * 0.001
-                )
-                graph_flue_gas.append(
-                    proportion_stockage
-                    * carbon_captured["flue gas"][year_index]
-                    * 0.001
-                )
-            else:
-                graph_dac.append(0)
-                graph_flue_gas.append(0)
 
         fig.add_trace(
             go.Scatter(
                 x=years,
-                y=total_ghg_df["Total CO2 emissions"].to_list(),
+                y=total_ghg_df[GlossaryCore.CO2].to_list(),
                 fill="tonexty",  # fill area between trace0 and trace1
                 mode="lines",
                 fillcolor="rgba(200, 200, 200, 0.0)",
-                name="Net CO2 emissions",
+                name="Net CO2 emissions (after CCUS)",
                 stackgroup="one",
             ),
             secondary_y=False,
         )
 
-        fig.add_trace(
-            go.Scatter(
-                x=years,
-                y=graph_dac,
-                name="CO2 captured by DAC and stored",
-                stackgroup="one",
-            ),
-            secondary_y=False,
-        )
-
-        fig.add_trace(
-            go.Scatter(
-                x=years,
-                y=graph_flue_gas,
-                name="CO2 captured by flue gas and stored",
-                stackgroup="one",
-            ),
-            secondary_y=False,
-        )
         fig.add_trace(
             go.Scatter(
                 x=years,
                 y=graph_gross_co2,
-                name="Total CO2 emissions",
+                name="Total CO2 emissions (before CCUS)",
             ),
             secondary_y=False,
         )
@@ -330,34 +288,27 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             )
             and compute_climate_impact_on_gdp
         )
-        if sectorization:
-            damage_df = get_scenario_value(
-                execution_engine,
-                f"Macroeconomics.{GlossaryCore.DamageDetailedDfValue}",
-                scenario_name,
-            )
-            df_non_energy_invest = get_scenario_value(
-                execution_engine,
-                GlossaryCore.RedistributionInvestmentsDfValue,
-                scenario_name,
-            )
-            df_energy_invest = get_scenario_value(
-                execution_engine,
-                GlossaryCore.EnergyInvestmentsWoTaxValue,
-                scenario_name,
-            )
-            df_consumption = get_scenario_value(
-                execution_engine, "consumption_detail_df", scenario_name
-            )
-            economics_df = complete_economics_df_for_sectorization(
-                economics_df, df_non_energy_invest, df_energy_invest, df_consumption
-            )
-        else:
-            damage_df = get_scenario_value(
-                execution_engine,
-                f"Macroeconomics.{GlossaryCore.DamageDetailedDfValue}",
-                scenario_name,
-            )
+        damage_df = get_scenario_value(
+            execution_engine,
+            f"Macroeconomics.{GlossaryCore.DamageDetailedDfValue}",
+            scenario_name,
+        )
+        df_non_energy_invest = get_scenario_value(
+            execution_engine,
+            GlossaryCore.RedistributionInvestmentsDfValue,
+            scenario_name,
+        )
+        df_energy_invest = get_scenario_value(
+            execution_engine,
+            GlossaryCore.EnergyInvestmentsWoTaxValue,
+            scenario_name,
+        )
+        df_consumption = get_scenario_value(
+            execution_engine, "consumption_detail_df", scenario_name
+        )
+        economics_df = complete_economics_df_for_sectorization(
+            economics_df, df_non_energy_invest, df_energy_invest, df_consumption
+        )
         new_chart = MacroEconomics.breakdown_gdp(
             economics_df,
             damage_df,
@@ -369,7 +320,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     if "energy mix" in chart_list:
         energy_production_detailed = get_scenario_value(
             execution_engine,
-            f"{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}",
+            f"{GlossaryEnergy.EnergyMixNetProductionsDfValue}",
             scenario_name,
         )
         energy_mean_price = get_scenario_value(
@@ -384,20 +335,8 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
         for reactant in energy_production_detailed.columns:
-            if (
-                reactant
-                not in [
-                    GlossaryEnergy.Years,
-                    GlossaryEnergy.TotalProductionValue,
-                    "Total production (uncut)",
-                ]
-                and GlossaryEnergy.carbon_captured not in reactant
-                and GlossaryEnergy.carbon_storage not in reactant
-            ):
+            if reactant not in [GlossaryEnergy.Years, "Total"]:
                 energy_twh = energy_production_detailed[reactant].values
-                legend_title = f"{reactant}".replace("(TWh)", "").replace(
-                    "production", ""
-                )
 
                 fig.add_trace(
                     go.Scatter(
@@ -405,7 +344,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                         y=energy_twh.tolist(),
                         opacity=0.7,
                         line=dict(width=1.25),
-                        name=legend_title,
+                        name=reactant,
                         stackgroup="one",
                     ),
                     secondary_y=False,
@@ -422,7 +361,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
 
         fig.update_yaxes(
-            title_text="Net Energy [TWh]", secondary_y=False, rangemode="tozero"
+            title_text=f"Net Energy [{GlossaryEnergy.EnergyMixNetProductionsDf['unit']}]", secondary_y=False, rangemode="tozero"
         )
         fig.update_yaxes(
             title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero"
@@ -453,7 +392,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         # add a chart per energy with breakdown of investments in every technology of the energy
         for energy in energy_list + ccs_list:
             list_energy = []
-            if energy != BiomassDry.name:
+            if energy != GlossaryEnergy.biomass_dry:
                 techno_list = get_scenario_value(
                     execution_engine,
                     f"{energy}.{GlossaryEnergy.TechnoListName}",
@@ -624,7 +563,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         # dataframe of energy production by energy in TWh
         energy_production_detailed = get_scenario_value(
             execution_engine,
-            f"{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}",
+            GlossaryCore.EnergyMixNetProductionsDfValue,
             scenario_name,
         )
 
@@ -661,9 +600,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 )
                 for techno in techno_list:
                     if techno in green_energies_and_technos[energy]:
-                        clean_energy_df[techno] += energy_production_df[
-                            f"{energy} {techno} (TWh)"
-                        ]
+                        clean_energy_df[techno] += energy_production_df[f"{techno} (TWh)"]
 
         # total clean energy production
         clean_energy_df["Total"] = clean_energy_df.drop(
@@ -757,21 +694,19 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
     if "KPI2" in chart_list:
         # KPI2 is the energy efficiency, ie the variation of GDP/TotalEnergyProduction
         #  dataframe of energy production in PWh
-        energy_production = get_scenario_value(
-            execution_engine,
-            f"{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionValue}",
-            scenario_name,
+        energy_production = get_scenario_value(execution_engine,
+            GlossaryCore.EnergyMixNetProductionsDfValue, scenario_name,
         )
         years = energy_production[GlossaryEnergy.Years].values.tolist()
         gdp = get_scenario_value(
-            execution_engine, GlossaryCore.EconomicsDfValue, scenario_name
+            execution_engine, GlossaryCore.EconomicsDfValue, scenario_name, split_scenario_name=False
         )
         gdp = gdp.reset_index(drop=True)
         energy_efficiency = pd.DataFrame()
         energy_efficiency[GlossaryEnergy.Years] = years
         energy_efficiency["energy efficiency"] = (
             gdp[GlossaryCore.OutputNetOfDamage]
-            / energy_production[GlossaryEnergy.TotalProductionValue]
+            / energy_production["Total"]
         )
         energy_efficiency["variation"] = 0
         # computing variation of energy efficiency
@@ -834,23 +769,18 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         # dataframe of energy production by energy in TWh
         energy_production_detailed = get_scenario_value(
             execution_engine,
-            f"{ENERGYMIX_DISC}.{GlossaryEnergy.StreamProductionDetailedValue}",
+            GlossaryCore.EnergyMixNetProductionsDfValue,
             scenario_name,
         )
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
         if (
-            f"production {GlossaryEnergy.electricity} (TWh)"
+            f"{GlossaryEnergy.electricity}"
             in energy_production_detailed.columns
         ):
             energy_electrification = pd.DataFrame()
             energy_electrification[GlossaryEnergy.Years] = years
             energy_electrification["value"] = (
-                energy_production_detailed[
-                    f"production {GlossaryEnergy.electricity} (TWh)"
-                ]
-                / energy_production_detailed[
-                    f"{GlossaryEnergy.TotalProductionValue} (uncut)"
-                ]
+                energy_production_detailed[f"{GlossaryEnergy.electricity}"]/ energy_production_detailed["Total"]
                 * 100
             )
 
@@ -908,26 +838,26 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             f"Macroeconomics.{GlossaryCore.EconomicsDetailDfValue}",
             scenario_name,
         )
-        if sectorization:
-            df_non_energy_invest = get_scenario_value(
-                execution_engine,
-                GlossaryCore.RedistributionInvestmentsDfValue,
-                scenario_name,
-            )
-            df_energy_invest = get_scenario_value(
-                execution_engine,
-                GlossaryCore.EnergyInvestmentsWoTaxValue,
-                scenario_name,
-            )
-            df_consumption = get_scenario_value(
-                execution_engine, "consumption_detail_df", scenario_name
-            )
-            economics_detailed_df = complete_economics_df_for_sectorization(
-                economics_detailed_df,
-                df_non_energy_invest,
-                df_energy_invest,
-                df_consumption,
-            )
+
+        df_non_energy_invest = get_scenario_value(
+            execution_engine,
+            GlossaryCore.RedistributionInvestmentsDfValue,
+            scenario_name,
+        )
+        df_energy_invest = get_scenario_value(
+            execution_engine,
+            GlossaryCore.EnergyInvestmentsWoTaxValue,
+            scenario_name,
+        )
+        df_consumption = get_scenario_value(
+            execution_engine, "consumption_detail_df", scenario_name
+        )
+        economics_detailed_df = complete_economics_df_for_sectorization(
+            economics_detailed_df,
+            df_non_energy_invest,
+            df_energy_invest,
+            df_consumption,
+        )
         economics_detailed_df = economics_detailed_df.reset_index(drop=True)
         years = economics_detailed_df[GlossaryCore.Years].values.tolist()
         roi = pd.DataFrame()

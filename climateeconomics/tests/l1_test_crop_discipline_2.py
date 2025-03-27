@@ -26,16 +26,15 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
-    def analytic_grad_entry(self):
-        return []
-
-
     def setUp(self):
         '''
         Initialize third data needed for testing
         '''
         self.name = 'Test'
-
+        self.override_dump_jacobian = False
+        self.show_graphs = False
+        self.jacobian_test = False
+        self.pickle_directory = dirname(__file__)
         self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -65,9 +64,9 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             GlossaryCore.PopulationValue: np.linspace(population_2021 / 1e6, 7870 * 1.2, year_range),  # millions of people (2021 value)
         })
 
-        self.enegy_agri = pd.DataFrame({
+        self.energy_market_ratios = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: np.linspace(2591. /1000, 2591. /1000 * 0.7, year_range),  # PWh, 2020 value
+            "Total": 100.
         })
 
         self.energy_mean_price = pd.DataFrame({
@@ -77,6 +76,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
         self.ns_dict = {
             'ns_public': self.name,
+            'ns_energy_market': self.name,
             GlossaryCore.NS_WITNESS: self.name,
             GlossaryCore.NS_CROP: f'{self.name}',
             'ns_sectors': f'{self.name}',
@@ -94,57 +94,13 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}': self.enegy_agri,
-            f'{self.name}.{GlossaryCore.FoodTypesInvestName}': self.investments_food_types,
-        }
-
-        self.inputs_dict = inputs_dict
-
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {
-            'ns_public': self.name,
-            GlossaryCore.NS_WITNESS: self.name,
-            GlossaryCore.NS_CROP: f'{self.name}',
-            'ns_sectors': f'{self.name}',
-        }
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        self.coupling_inputs = [
-            f'{self.name}.{GlossaryCore.CropProductivityReductionName}',
-            f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-            f'{self.name}.{GlossaryCore.PopulationDfValue}',
-            f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}',
-            f'{self.name}.{GlossaryCore.FoodTypesInvestName}',
-        ]
-        self.coupling_outputs = [
-            f"{self.name}.{GlossaryCore.CropFoodLandUseName}",
-            f"{self.name}.{GlossaryCore.CropFoodEmissionsName}",
-            f"{self.name}.{GlossaryCore.CaloriesPerCapitaValue}",
-            f"{self.name}.{self.model_name}.non_used_capital",
-            f"{self.name}.{GlossaryCore.FoodTypeDeliveredToConsumersName}",
-            f"{self.name}.{GlossaryCore.FoodTypeCapitalName}",
-        ]
-        self.coupling_outputs.extend(
-            [f'{self.name}.{GlossaryCore.CropProdForStreamName.format(stream)}' for stream in CropDiscipline.streams_energy_prod]
-        )
+            f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
+            f'{self.name}.Agriculture.{GlossaryCore.Crop}.{GlossaryCore.InvestmentDetailsDfValue}': self.investments_food_types
+            }
 
     def test_crop_discipline_2(self):
         '''
         Check discipline setup and run
         '''
         self.model_name = 'Agriculture.Crop'
-        self.override_dump_jacobian = False
-        self.show_graphs = False
-        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-        self.jacobian_test = False
-        self.pickle_directory = dirname(__file__)
+        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'

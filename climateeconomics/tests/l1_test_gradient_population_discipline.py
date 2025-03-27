@@ -36,8 +36,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.model_name = GlossaryCore.PopulationValue
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}'}
+        ns_dict = {
+            GlossaryCore.NS_WITNESS: f'{self.name}',
+            GlossaryCore.NS_GHGEMISSIONS: f'{self.name}',
+            'ns_public': f'{self.name}',
+            'ns_energy_market': f'{self.name}'
+        }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -71,6 +75,11 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.economics_df_y.index = years
         self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         self.temperature_df.index = years
+        self.energy_market_ratios = pd.DataFrame({
+            GlossaryCore.Years: years,
+            "Total": 100.,
+        })
+
 
         self.calories_pc = pd.DataFrame({GlossaryCore.Years: years,
                                                    'kcal_pc': 2400.})
@@ -79,6 +88,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                             f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                             f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': self.calories_pc,
                             }
 
@@ -114,7 +124,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -139,6 +150,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -161,7 +173,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -186,7 +199,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -235,7 +249,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -286,7 +301,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -337,7 +353,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -392,7 +409,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -447,7 +465,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -482,6 +501,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df
                        }
 
@@ -517,6 +537,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        f'{self.name}.assumptions_dict': assumptions_dict,
                        }
 
@@ -544,6 +565,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
                        f'{self.name}.assumptions_dict': assumptions_dict,
                        }
 

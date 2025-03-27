@@ -52,8 +52,8 @@ class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=True, run_usecase=True,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT):
-        super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, file_path=__file__):
+        super().__init__(file_path, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.bspline = bspline
@@ -70,7 +70,7 @@ class Study(ClimateEconomicsStudyManager):
 
 
     def setup_usecase(self, study_folder_path=None):
-        setup_data_list = []
+        setup_data = {}
 
         # -- load data from energy pyworld3
         # -- Start with energy to have it at first position in the list...
@@ -83,10 +83,10 @@ class Study(ClimateEconomicsStudyManager):
         dc_witness.study_name = self.study_name
 
         witness_input_list = dc_witness.setup_usecase()
-        setup_data_list = setup_data_list + witness_input_list
+        setup_data.update(witness_input_list)
 
         energy_input_list = self.dc_energy.setup_usecase()
-        setup_data_list = setup_data_list + energy_input_list
+        setup_data.update(energy_input_list)
 
         self.dict_technos = self.dc_energy.dict_technos
         dspace_energy = self.dc_energy.dspace
@@ -103,18 +103,18 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.inner_mda_name': 'MDAGaussSeidel',
             f'{self.study_name}.cache_type': 'SimpleCache'}
 
-        setup_data_list.append(numerical_values_dict)
+        setup_data.update(numerical_values_dict)
 
-        out_dict = {}
-        for data_dict in setup_data_list:
-            out_dict.update(data_dict)
 
-        invest_mix = self.get_var_in_values_dict(out_dict, varname="invest_mix")[0]
-        out_dict[f'{self.study_name}.EnergyMix.invest_mix'] = invest_mix
+        invest_mix = self.get_var_in_values_dict(setup_data, varname="invest_mix")[0]
+        setup_data[f'{self.study_name}.EnergyMix.invest_mix'] = invest_mix
+        setup_data[f'{self.study_name}.consumers_actors'] = [GlossaryCore.CCUS, GlossaryCore.SectorIndustry, GlossaryCore.SectorServices, GlossaryCore.Crop]
 
-        return [out_dict]
+
+        return setup_data
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

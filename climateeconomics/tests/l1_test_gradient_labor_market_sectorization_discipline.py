@@ -29,7 +29,6 @@ from climateeconomics.glossarycore import GlossaryCore
 class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start =GlossaryCore.YearStartDefault

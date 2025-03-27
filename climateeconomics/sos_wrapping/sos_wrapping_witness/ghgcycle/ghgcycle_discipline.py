@@ -158,15 +158,15 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         }
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2),
             d_ghg_ppm_d_emissions[GlossaryCore.CO2])
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.GHGCycleDfValue, GlossaryCore.CH4Concentration),
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CH4),
             d_ghg_ppm_d_emissions[GlossaryCore.CH4])
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.GHGCycleDfValue, GlossaryCore.N2OConcentration),
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.N2O),
             d_ghg_ppm_d_emissions[GlossaryCore.N2O])
 
         # derivative gwp20 objective
@@ -181,11 +181,11 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie=GlossaryCore.N2O)
 
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions), d_gwp20_objective_d_total_co2_emissions)
+            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2), d_gwp20_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions), d_gwp20_objective_d_total_ch4_emissions)
+            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CH4), d_gwp20_objective_d_total_ch4_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions), d_gwp20_objective_d_total_n2o_emissions)
+            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.N2O), d_gwp20_objective_d_total_n2o_emissions)
 
         # derivative gwp100 objective
         d_gwp100_objective_d_total_co2_emissions = self.ghg_cycle.d_gwp100_objective_d_ppm(
@@ -199,37 +199,37 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie=GlossaryCore.N2O)
 
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2),
             d_gwp100_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions),
+            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CH4),
             d_gwp100_objective_d_total_ch4_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions),
+            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.N2O),
             d_gwp100_objective_d_total_n2o_emissions)
 
         self.set_partial_derivative_for_other_types(
-            ('rockstrom_limit_constraint',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            ('rockstrom_limit_constraint',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2),
             -d_ghg_ppm_d_emissions[GlossaryCore.CO2] / self.ghg_cycle.rockstrom_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('minimum_ppm_constraint',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            ('minimum_ppm_constraint',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2),
             d_ghg_ppm_d_emissions[GlossaryCore.CO2] / self.ghg_cycle.minimum_ppm_constraint_ref)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue,),
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2),
             self.ghg_cycle.d_total_co2_equivalent_d_conc(d_conc=d_ghg_ppm_d_emissions[GlossaryCore.CO2], specie=GlossaryCore.CO2, gwp=self.ghg_cycle.gwp_20)
         )
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue,),
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CH4),
             self.ghg_cycle.d_total_co2_equivalent_d_conc(d_conc=d_ghg_ppm_d_emissions[GlossaryCore.CH4], specie=GlossaryCore.CH4, gwp=self.ghg_cycle.gwp_20)
         )
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue,),
-            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.N2O),
             self.ghg_cycle.d_total_co2_equivalent_d_conc(d_conc=d_ghg_ppm_d_emissions[GlossaryCore.N2O], specie=GlossaryCore.N2O, gwp=self.ghg_cycle.gwp_20)
         )
 

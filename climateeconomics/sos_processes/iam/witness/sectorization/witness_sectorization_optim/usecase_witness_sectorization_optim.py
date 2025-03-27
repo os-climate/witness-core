@@ -25,7 +25,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim_sub_process.usecase import (
     COUPLING_NAME,
     EXTRA_NAME,
-    OPTIM_NAME,
 )
 from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim_sub_process.usecase import (
     Study as witness_sectorization_optim_sub_usecase,
@@ -39,7 +38,7 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
-        self.optim_name = OPTIM_NAME
+        self.optim_name = "MDO"
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
         self.bspline = bspline
@@ -105,6 +104,7 @@ class Study(ClimateEconomicsStudyManager):
                                                           "wait_time_between_fork": 0},
              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False})
 
+        self.get_fullname_in_values_dict(values_dict, 'invest_level')
         return values_dict
 
 

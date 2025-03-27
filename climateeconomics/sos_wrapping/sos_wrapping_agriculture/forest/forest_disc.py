@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import (
     InstanciatedSeries,
@@ -50,28 +50,10 @@ class ForestryDiscipline(SubSectorDiscipline):
         'version': 'Version 0',
     }
 
-    autoconfigure_gradient_variables = False
-    coupling_inputs = [
-        'deforestation_investment',
-        'reforestation_investment',
-        GlossaryCore.CropProductivityReductionName,
-        'managed_wood_investment',
-    ]
-    coupling_outputs = [
-        'forest_surface_df',
-        'land_use_required',
-        'CO2_land_emission_df',
-        'CO2_emissions',
-        'techno_production',
-        'techno_consumption',
-        GlossaryCore.TechnoEnergyDemandsValue,
-        'techno_prices',
-        'forest_lost_capital',
-        'forest_lost_capital',
-    ]
+    autoconfigure_gradient_variables = True
+
     AGRI_CAPITAL_TECHNO_LIST = []
-    biomass_cal_val = BiomassDry.data_energy_dict[
-        'calorific_value']
+    biomass_cal_val = BiomassDry.data_energy_dict['calorific_value']
     default_year_start = GlossaryCore.YearStartDefault
     default_year_end = 2050
 

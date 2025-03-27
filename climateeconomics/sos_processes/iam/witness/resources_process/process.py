@@ -72,6 +72,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_copper_resource': f'{ns_scatter}.{self.COPPER_NAME}',
                    #'ns_platinum_resource': f'{ns_scatter}.{self.PLATINUM_NAME}',
                    'ns_public': self.ee.study_name,
+                   'ns_witness': self.ee.study_name,
                    'ns_resource': ns_scatter,
                    }
         #'oil_availability_and_price': f'{ns_scatter}.oil.oil_availability_and_price',

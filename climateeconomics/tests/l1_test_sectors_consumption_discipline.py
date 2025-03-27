@@ -28,6 +28,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class SectorsConsumptionDiscipline(AbstractJacobianUnittest):
     def setUp(self):
+        self.override_dump_jacobian = 1
         self.name = "Test"
         self.ee = ExecutionEngine(self.name)
         self.year_start = GlossaryCore.YearStartDefault
@@ -112,7 +113,6 @@ class SectorsConsumptionDiscipline(AbstractJacobianUnittest):
         ee.display_treeview_nodes()
 
         inputs_dict = {f'{name}.{model_name}.{GlossaryCore.SectorListValue}': self.sector_list,
-                       f'{name}.{GlossaryCore.AllSectorsShareEnergyDfValue}': self.all_sectors_energy_supply,
                        f'{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
 
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invest_agriculture,
@@ -126,7 +126,7 @@ class SectorsConsumptionDiscipline(AbstractJacobianUnittest):
         }
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
-        inputs_checked = [f"{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}", f"{name}.{GlossaryCore.AllSectorsShareEnergyDfValue}", ]
+        inputs_checked = []
         inputs_checked += [f"{name}.{sector}.{GlossaryCore.InvestmentDfValue}" for sector in self.sector_list ]
         inputs_checked += [f"{name}.{sector}.{GlossaryCore.ProductionDfValue}" for sector in self.sector_list ]
 
