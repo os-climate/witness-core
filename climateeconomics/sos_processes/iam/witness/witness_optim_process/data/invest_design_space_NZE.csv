@@ -1,4 +1,0 @@
-variable,value,lower_bnd,upper_bnd,enable_variable,activated_elem
-crop_investment_array_mix,"[5.3, 5.3, 5.3, 3.0, 0.1, 5.3, 5.3, 5.3]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
-deforestation_investment_ctrl,"[38.6, 30.0, 21.42, 12.83, 12.83, 12.83, 12.83, 12.83]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
-managed_wood_investment_array_mix,"[50.0, 65.0, 80.0, 1.e-06, 1.e-06, 1.e-06, 1.e-06, 1.e-06]",[1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06 1.e-06],[3000. 3000. 3000. 3000. 3000. 3000. 3000. 3000.],True,"[True, True, True, True, True, True, True, True]"
