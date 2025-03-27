@@ -147,6 +147,7 @@ class AllResourceModelTestCase(unittest.TestCase):
         model_name = 'All_resource'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
+                   GlossaryCore.NS_WITNESS: f'{name}',
                    'ns_coal_resource': f'{name}.{model_name}',
                    'ns_oil_resource': f'{name}.{model_name}',
                    'ns_natural_gas_resource': f'{name}.{model_name}',

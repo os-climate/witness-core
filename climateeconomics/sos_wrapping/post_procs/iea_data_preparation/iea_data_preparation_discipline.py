@@ -119,7 +119,6 @@ class IEADataPreparationDiscipline(SoSWrapp):
                         f'{Glossary.solid_fuel}_{Glossary.CoalExtraction}',
                         f'{Glossary.methane}_{Glossary.FossilGas}',
                         f'{Glossary.biogas}_{Glossary.AnaerobicDigestion}',
-                        f'{Glossary.CropEnergy}',
                         f'{Glossary.ForestProduction}',
                         ]
     # get techno production metadata from glossary and modify them with the correct name

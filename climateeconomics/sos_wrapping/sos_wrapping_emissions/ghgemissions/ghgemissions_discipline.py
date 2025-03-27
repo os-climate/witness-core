@@ -82,23 +82,17 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O): {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),}},
-        'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
-                                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                 GlossaryCore.TotalCO2Emissions: ('float', None, False),
-                                                                 GlossaryCore.TotalN2OEmissions: ('float', None, False),
-                                                                 GlossaryCore.TotalCH4Emissions: ('float', None, False), }
-                                        },
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
         'affine_co2_objective': {'type': 'bool','default': True, 'user_level': 2, 'namespace': GlossaryCore.NS_WITNESS},
         'constraint_nze_2050_ref': {'type': 'float', 'default': 15, 'user_level': 2},
-        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
+        GlossaryCore.EnergyMixNetProductionsDfValue: GlossaryCore.EnergyMixNetProductionsDf,
         GlossaryCore.SectorListValue: sector_list_variable,
+        GlossaryCore.GHGEnergyEmissionsDfValue: GlossaryCore.GHGEnergyEmissionsDf,
         GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf
     }
 
     DESC_OUT = {
-        GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         GlossaryCore.GHGEmissionsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt'},
         GlossaryCore.GHGEmissionsDetailedDfValue: {'type': 'dataframe', 'unit': 'Gt'},
         GlossaryCore.TotalGWPEmissionsDfValue: GlossaryCore.GWPEmissionsDf,
@@ -189,7 +183,6 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         dict_values = {
             GlossaryCore.GHGEmissionsDetailedDfValue: self.emissions_model.ghg_emissions_df,
-            GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]],
             GlossaryCore.GHGEmissionsDfValue: self.emissions_model.ghg_emissions_df[GlossaryCore.GHGEmissionsDf['dataframe_descriptor'].keys()],
             GlossaryCore.TotalGWPEmissionsDfValue: self.emissions_model.gwp_emissions,
             GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
@@ -230,56 +223,53 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             for column in ghg_land_emissions.columns:
                 if column != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
-                        (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                        (GlossaryCore.GHGEmissionsDfValue, ghg),
                         (GlossaryCore.insertGHGAgriLandEmissions.format(ghg), column),
                         np.identity(len(years)))
                     if ghg == GlossaryCore.CO2:
                         d_constraint_2050 = self.emissions_model.d_2050_carbon_negative_constraint(np.identity(len(years)))
                         self.set_partial_derivative_for_other_types(
-                            (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
+                            (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.CO2),
                             (GlossaryCore.insertGHGAgriLandEmissions.format(ghg), column),
                             d_constraint_2050)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(ghg)),
-                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                (GlossaryCore.GHGEmissionsDfValue, ghg),
+                (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                 np.identity(len(years)))
 
             if ghg == GlossaryCore.CO2:
                 d_constraint_2050 = self.emissions_model.d_2050_carbon_negative_constraint(np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
-                    ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                    (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.CO2),
+                    (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                     d_constraint_2050)
 
             d_constraint_2050 = self.emissions_model.d_2050_energy_carbon_negative_constraint(np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.ConstraintEnergyCarbonNegative2050, GlossaryCore.TotalEnergyEmissions),
-                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                 d_constraint_2050 * self.emissions_model.gwp_100[ghg])
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.TotalEnergyEmissions, GlossaryCore.TotalEnergyEmissions),
-                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                 np.identity(len(years))* self.emissions_model.gwp_100[ghg])
 
             d_energy_carbon_intensity_d_ghg_total_emissions[ghg] = self.emissions_model.d_carbon_intensity_of_energy_mix_d_ghg_energy_emissions(ghg=ghg)
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
-                ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                 d_energy_carbon_intensity_d_ghg_total_emissions[ghg])
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
-            ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),  np.identity(len(years)))
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2EmissionsObjectiveValue,), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),
+            (GlossaryCore.CO2EmissionsObjectiveValue,), (GlossaryCore.GHGEnergyEmissionsDfValue, GlossaryCore.CO2),
             self.emissions_model.d_CO2_emissions_objective_d_total_co2_emissions())
 
         d_carbon_intensity_d_energy_prod = self.emissions_model.d_carbon_intensity_of_energy_mix_d_energy_production()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyCarbonIntensityDfValue, GlossaryCore.EnergyCarbonIntensityDfValue),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.EnergyMixNetProductionsDfValue, "Total"),
             d_carbon_intensity_d_energy_prod)
 
         d_sector_energy_emissions_d_ghg_emissions = {}
@@ -313,11 +303,11 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
                     d_sector_section_non_energy_emissions_d_section_gdp)
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
+                    (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2),
                     (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
                     d_sector_section_non_energy_emissions_d_section_gdp)
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.insertGHGTotalEmissions.format(GlossaryCore.CO2)),
+                    (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.CO2),
                     (f"{sector}.{GlossaryCore.SectionGdpDfValue}", section),
                     self.emissions_model.d_2050_carbon_negative_constraint(d_sector_section_non_energy_emissions_d_section_gdp))
                 self.set_partial_derivative_for_other_types(
@@ -329,7 +319,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                     d_sections_energy_emissions_d_ghg_emisssions[ghg].append(self.emissions_model.d_section_energy_emissions_d_user_input(section_name=section, sector_name=sector, d_carbon_intensity_d_user_input=d_energy_carbon_intensity_d_ghg_total_emissions[ghg]))
                     self.set_partial_derivative_for_other_types(
                         (f"{sector}.{GlossaryCore.SectionEnergyEmissionDfValue}", section),
-                        ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                        (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                         d_sections_energy_emissions_d_ghg_emisssions[ghg][-1])
 
             d_sector_energy_emissions_d_energy_prod[sector] = np.sum(d_energy_emissions_sections_d_energy_prod_list, axis=0)
@@ -340,23 +330,23 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         if self.emissions_model.economic_sectors_except_agriculture:
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                (GlossaryCore.EnergyMixNetProductionsDfValue, "Total"),
                 np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
-                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                (GlossaryCore.EnergyMixNetProductionsDfValue, "Total"),
                 np.sum(list(d_sector_energy_emissions_d_energy_prod.values()), axis=0))
 
             for ghg in GlossaryCore.GreenHouseGases:
                 temp = [d_sector_energy_emissions_d_ghg_emissions[sector][ghg] for sector in self.emissions_model.economic_sectors_except_agriculture]
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.EnergyEmissions),
-                    ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                    (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                     np.sum(temp, axis=0))
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.EconomicsEmissionDfValue, GlossaryCore.TotalEmissions),
-                    ('GHG_total_energy_emissions', GlossaryCore.insertGHGTotalEmissions.format(ghg)),
+                    (GlossaryCore.GHGEnergyEmissionsDfValue, ghg),
                     np.sum(temp, axis=0))
 
     def get_chart_filter_list(self):
@@ -479,8 +469,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         new_serie = InstanciatedSeries(
             list(GHG_emissions_detail_df[GlossaryCore.Years].values),
-            list(GHG_emissions_detail_df[GlossaryCore.insertGHGTotalEmissions.format(ghg)].values),
-            GlossaryCore.insertGHGTotalEmissions.format(ghg),
+            list(GHG_emissions_detail_df[ghg].values),
+            ghg,
             'lines')
 
         new_chart.series.append(new_serie)

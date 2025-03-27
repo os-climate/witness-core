@@ -39,6 +39,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_SECTORS: ns_macro,
                    GlossaryCore.NS_AGRI: f'{ns_macro}.Agriculture',
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
+                   "ns_energy_market": ns_scatter,
                    GlossaryCore.NS_GHGEMISSIONS: ns_scatter,
                    GlossaryCore.NS_HOUSEHOLDS_EMISSIONS: self.ee.study_name}
 
@@ -51,7 +52,7 @@ class ProcessBuilder(BaseProcessBuilder):
             f'Macroeconomics.{GlossaryCore.SectorServices}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline',
             f'Macroeconomics.{GlossaryCore.SectorIndustry}': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline',
             "Macroeconomics.Agriculture": "climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureSectorDiscipline",
-            "Macroeconomics.Agriculture.Crop": 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline',
+            "Macroeconomics.Agriculture.Crop": 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline',
             "Macroeconomics.Agriculture.Forestry": 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestryDiscipline',
             }
 

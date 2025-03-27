@@ -22,7 +22,6 @@ import numpy as np
 import pandas as pd
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_chart_template import (
@@ -35,20 +34,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase import (
-    Study as usecase_ms_mdo,
-)
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2_tipping_point_2023 import (
-    Study as usecase_ms_mdo_iamc,
-)
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_optim_process.usecase_ms_2023_with_nze import (
-    Study as usecase_ms_mdo_with_nze,
-)
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import (
-    Study as usecase_ms_mda,
-)
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda_four_scenarios_tipping_points import (
-    Study as usecase_ms_mda_tipping_point,
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorized_ms_optim_process.usecase import (
+    Study as study_ms_mdo_sect,
 )
 from climateeconomics.sos_wrapping.post_procs.dashboard import create_xy_chart
 
@@ -62,9 +49,9 @@ CHART_NAME = 'Charts'
 END_YEAR_NAME = 'Ending year'
 SCENARIO_NAME = 'Scenarios'
 SCATTER_SCENARIO = 'mda_scenarios'
-TIPPING_POINT = usecase_ms_mda_tipping_point.TIPPING_POINT
-SEP = usecase_ms_mda_tipping_point.SEP
-UNIT = usecase_ms_mda_tipping_point.UNIT
+TIPPING_POINT = "Tipping point"
+SEP = ' '
+UNIT = "deg C"
 # list of graphs to be plotted and filtered
 graphs_list = ['GDP vs Energy',
                'Temperature',
@@ -161,7 +148,7 @@ def post_processings(execution_engine, namespace, filters):
                     else:
                         selected_scenarios = [scenario for scenario in selected_scenarios
                                               if damage_tax_activation_status_dict[scenario][effect]]
-            if chart_filter.filter_key == usecase_ms_mda_tipping_point.TIPPING_POINT:
+            if chart_filter.filter_key == TIPPING_POINT:
                 # Keep scenarios with selected tipping points + scenarios without tipping point defined (ex: reference scenario without damage)
                 # => remove from selected scenarios the "tipping point scenarios" that do not respect the filtering condition
                 tp_dict = get_all_scenarios_values(execution_engine, 'Damage.tp_a3')
@@ -253,7 +240,7 @@ def post_processings(execution_engine, namespace, filters):
 
         co2_emissions_dict = {}
         for scenario in scenario_list:
-            co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].values.tolist(
+            co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.CO2].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, co2_emissions_dict,
@@ -370,8 +357,8 @@ def post_processings(execution_engine, namespace, filters):
             if energy in energy_list:
                 energy_disc = EnergyMix.name
             else:
-                energy_disc = CCUS.name
-            if energy != BiomassDry.name:
+                energy_disc = GlossaryEnergy.CCUS
+            if energy != GlossaryCore.biomass_dry:
                 techno_list, _ = get_shared_value(execution_engine, f"{energy}.{GlossaryEnergy.TechnoListName}")
 
                 for techno in techno_list:
@@ -649,8 +636,8 @@ def post_processings(execution_engine, namespace, filters):
         raw_data_dict = {scenario_name: {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": "EnergyMix.energy_production_brut",
-                "x_column_name": GlossaryCore.TotalProductionValue,
+                "x_var_name": f"{GlossaryEnergy.EnergyMixRawProductionValue}",
+                "x_column_name": "Total",
                 "x_data_scale": 1e-3,
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
@@ -680,7 +667,7 @@ def post_processings(execution_engine, namespace, filters):
             scenario_name: {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": f"EnergyMix.{GlossaryEnergy.EnergyProductionValue}",
+                "x_var_name": f"EnergyMix.{GlossaryEnergy.StreamProductionValue}",
                 "x_column_name": GlossaryCore.TotalProductionValue,
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
@@ -790,44 +777,36 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
 
     # Define colors for curves
     color_mapping = {
-        # MDA multiscenario coarse dev:
-        usecase_ms_mda.USECASE2: dict(color='red'),
-        usecase_ms_mda.USECASE2B: dict(color='red'),
-        usecase_ms_mda.USECASE3: dict(color='orange'),
-        usecase_ms_mda.USECASE4: dict(color='orange'),
-        usecase_ms_mda.USECASE5: dict(color='orange'),
-        usecase_ms_mda.USECASE6: dict(color='green'),
-        usecase_ms_mda.USECASE7: dict(color='green'),
 
-        # MDO multiscenario coarse dev:
-        usecase_ms_mdo.UC1: dict(color='red'),
-        usecase_ms_mdo.UC2: dict(color='red'),
-        usecase_ms_mdo.UC3: dict(color='orange'),
-        usecase_ms_mdo.UC4: dict(color='green'),
-        usecase_ms_mdo.UC5: dict(color='cyan'),
+        # MDO multiscenario coarse sectorisé:
+        study_ms_mdo_sect.UC1: dict(color='red'),
+        study_ms_mdo_sect.UC2: dict(color='red'),
+        study_ms_mdo_sect.UC3: dict(color='orange'),
+        study_ms_mdo_sect.UC4: dict(color='green'),
 
-        # Tipping point scenarios:
-        usecase_ms_mda_tipping_point.USECASE2: dict(color='red'),  # Red
-        usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
-        usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
-        usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
-        usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
-        usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
-        usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
-
-        # the lower the TP, the darker the color
-        usecase_ms_mdo_iamc.UC1: dict(color='red'),  # Red
-        usecase_ms_mdo_iamc.UC3_tp1: dict(color='#FFD633'),  # Light Orange
-        usecase_ms_mdo_iamc.UC3_tp2: dict(color='#FFA533'),  # orange
-        usecase_ms_mdo_iamc.UC4_tp1: dict(color='#89CFF0'),  # Light blue
-        usecase_ms_mdo_iamc.UC4_tp2: dict(color='#0047AB'),  # Dark blue
-        usecase_ms_mdo_iamc.UC_NZE_tp1: dict(color='#7FFF00'),  # Light green
-        usecase_ms_mdo_iamc.UC_NZE_tp2: dict(color='#2E8B57'),  # Dark Green
-
-        usecase_ms_mdo_with_nze.NO_CCUS: dict(color='#FFD633'),  # Light Orange
-        usecase_ms_mdo_with_nze.ALL_TECHNOS: dict(color='#0047AB'),  # Dark blue
-        usecase_ms_mdo_with_nze.ALL_TECHNOS_NZE: dict(color='#7FFF00'),  # Light green
     }
+    """
+    usecase_ms_mda_tipping_point.USECASE2: dict(color='red'),  # Red
+    usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
+    usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
+    usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
+    usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
+    usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
+    usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
+
+    # the lower the TP, the darker the color
+    usecase_ms_mdo_iamc.UC1: dict(color='red'),  # Red
+    usecase_ms_mdo_iamc.UC3_tp1: dict(color='#FFD633'),  # Light Orange
+    usecase_ms_mdo_iamc.UC3_tp2: dict(color='#FFA533'),  # orange
+    usecase_ms_mdo_iamc.UC4_tp1: dict(color='#89CFF0'),  # Light blue
+    usecase_ms_mdo_iamc.UC4_tp2: dict(color='#0047AB'),  # Dark blue
+    usecase_ms_mdo_iamc.UC_NZE_tp1: dict(color='#7FFF00'),  # Light green
+    usecase_ms_mdo_iamc.UC_NZE_tp2: dict(color='#2E8B57'),  # Dark Green
+
+    usecase_ms_mdo_with_nze.NO_CCUS: dict(color='#FFD633'),  # Light Orange
+    usecase_ms_mdo_with_nze.ALL_TECHNOS: dict(color='#0047AB'),  # Dark blue
+    usecase_ms_mdo_with_nze.ALL_TECHNOS_NZE: dict(color='#7FFF00'),  # Light green
+    """
     line_color = None
 
     for scenario, y_values in y_dict.items():

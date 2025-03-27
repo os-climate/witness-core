@@ -38,6 +38,7 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_MACRO: ns_macro,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
+                   "ns_energy_market": ns_scatter,
                    'ns_public': ns_scatter,
                    GlossaryCore.NS_FUNCTIONS: ns_scatter,
                    GlossaryCore.NS_SECTORS: ns_macro,
@@ -54,7 +55,6 @@ class ProcessBuilder(BaseProcessBuilder):
                      'Utility':'climateeconomics.sos_wrapping.sos_wrapping_sectors.utility.sectorized_utility_discipline.SectorizedUtilityDiscipline',
                      'Consumption':'climateeconomics.sos_wrapping.sos_wrapping_sectors.consumption.consumption_discipline.ConsumptionDiscipline',
                      'SectorsInvestDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invest_discipline.SectorsRedistributionInvestsDiscipline',
-                     'SectorsEnergyDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_energy.sectors_redistribution_energy_discipline.SectorsRedistributionEnergyDiscipline',
                      GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline'}
                            
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)

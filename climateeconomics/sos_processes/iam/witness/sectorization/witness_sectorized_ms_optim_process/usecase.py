@@ -97,10 +97,13 @@ class Study(ClimateEconomicsStudyManager):
 
             values_dict.update(scenarioData)
 
-        values_dict.update({f"{self.study_name}.{scatter_scenario}.{self.UC1}.WITNESS_MDO.WITNESS_Eval.WITNESS.co2_damage_price_percentage": 0.0})
+        values_dict.update({f"{self.study_name}.{scatter_scenario}.{self.UC1}.MDO.WITNESS_Eval.WITNESS.co2_damage_price_percentage": 0.0})
+
         return values_dict
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.ee.display_treeview_nodes(True)
+    a = 1

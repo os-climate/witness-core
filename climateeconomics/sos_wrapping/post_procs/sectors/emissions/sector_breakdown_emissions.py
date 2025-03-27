@@ -61,11 +61,10 @@ def post_processings(execution_engine, scenario_name, sector, chart_filters=None
             if chart_filter.filter_key == 'Charts':
                 chart_list = chart_filter.selected_values
 
-    economics_df = get_scenario_value(execution_engine, GlossaryCore.EconomicsDfValue, scenario_name)
-    years = list(economics_df[GlossaryCore.Years].values)
+    breakdown_emission_sector = get_scenario_value(execution_engine, f"{sector}.{GlossaryCore.EmissionsDfValue}", scenario_name)
+    years = list(breakdown_emission_sector[GlossaryCore.Years].values)
     if GlossaryCore.TotalEmissions in chart_list:
 
-        breakdown_emission_sector = get_scenario_value(execution_engine, f"{sector}.{GlossaryCore.EmissionsDfValue}", scenario_name)
 
         chart_name = f"Breakdown of emissions for sector {sector} [{GlossaryCore.EmissionDf['unit']}]"
 

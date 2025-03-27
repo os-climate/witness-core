@@ -26,21 +26,15 @@ from climateeconomics.glossarycore import GlossaryCore
 
 class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
-    def analytic_grad_entry(self):
-        return []
-
-
     def setUp(self):
         '''
         Initialize third data needed for testing
         '''
         self.name = 'Test'
-        self.model_name = 'Agriculture.Crop'
         self.override_dump_jacobian = False
-        self.show_graphs = True
+        self.show_graphs = False
         self.jacobian_test = False
         self.pickle_directory = dirname(__file__)
-
         self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -70,9 +64,9 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             GlossaryCore.PopulationValue: np.linspace(population_2021 / 1e6, 7870 * 1.2, year_range),  # millions of people (2021 value)
         })
 
-        self.enegy_agri = pd.DataFrame({
+        self.energy_market_ratios = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalProductionValue: np.linspace(2591. /1000, 2591. /1000 * 1000, year_range),  # PWh, 2020 value
+            "Total": 100.
         })
 
         self.energy_mean_price = pd.DataFrame({
@@ -82,6 +76,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
         self.ns_dict = {
             'ns_public': self.name,
+            'ns_energy_market': self.name,
             GlossaryCore.NS_WITNESS: self.name,
             GlossaryCore.NS_CROP: f'{self.name}',
             'ns_sectors': f'{self.name}',
@@ -99,32 +94,13 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
             f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction,
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}': self.enegy_agri,
-            f'{self.name}.Agriculture.Crop.{GlossaryCore.InvestmentDetailsDfValue}': self.investments_food_types,
-        }
+            f'{self.name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': self.energy_market_ratios,
+            f'{self.name}.Agriculture.{GlossaryCore.Crop}.{GlossaryCore.InvestmentDetailsDfValue}': self.investments_food_types
+            }
+
     def test_crop_discipline_2(self):
         '''
         Check discipline setup and run
         '''
-        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-
-    def test_crop_discipline_2_mda_mode(self):
-        '''
-        Check discipline setup and run
-        '''
-        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop_2.crop_disc_2.CropDiscipline'
-        economics_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.OutputNetOfDamage: 136., GlossaryCore.GrossOutput: 0.})
-        share_sector_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value})
-        share_sub_sector_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Crop: 95.})
-        crop_share_invests = pd.DataFrame({
-            GlossaryCore.Years: self.years,  # 0.61 T$ (2020 value)
-            **{food_type: GlossaryCore.crop_calibration_data['invest_food_type_share_start'][food_type] for food_type in GlossaryCore.DefaultFoodTypesV2}
-        })
-        self.inputs_dicts = {
-            f'{self.name}.mdo_sectors_invest_level': 0,
-            f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
-            f'{self.name}.{GlossaryCore.ShareSectorInvestmentDfValue}': share_sector_invest,
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': share_sub_sector_invest,
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SubShareSectorInvestDfValue}': share_sub_sector_invest,
-            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.Crop}.{GlossaryCore.SubShareSectorInvestDfValue}': crop_share_invests,
-        }
+        self.model_name = 'Agriculture.Crop'
+        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'

@@ -472,6 +472,9 @@ class Population:
             self.death_dict[effect].fillna(0.0)
             self.death_rate_dict[effect].fillna(0.0)
 
+        self.compute_households_energy_demands(in_dict)
+        self.compute_households_energy_consumption(in_dict)
+
         return self.population_df.fillna(0.0), self.birth_rate.fillna(0.0), self.death_rate_dict, \
             self.birth_df.fillna(
                 0.0), self.death_dict, self.life_expectancy_df.fillna(0.0), self.working_age_population_df.fillna(0.0)
@@ -1121,3 +1124,23 @@ class Population:
                 d_diet_deathrate_d_kcal_pc[age_range] = (u_prime*v - v_prime * u)/(v**2)
 
         return d_diet_deathrate_d_kcal_pc
+
+    def compute_households_energy_consumption(self, in_dict):
+        """Households energy consumption = demand * ratios of energy availability"""
+        conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.EnergyDemandDf['unit']][GlossaryCore.ResidentialEnergyConsumptionDf['unit']]
+        self.outputs[GlossaryCore.ResidentialEnergyConsumptionDfValue] = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            # million * 1e6 * MWh = MWh/
+            "Total": self.outputs[f"{GlossaryCore.PopulationValue}_{GlossaryCore.EnergyDemandValue}"]["Total"].values * in_dict[GlossaryCore.EnergyMarketRatioAvailabilitiesValue]['Total'].values / 100. * conversion_factor,
+        })
+
+    def compute_households_energy_demands(self, in_dict):
+        """Households energy demand = population * househols energy demand per capita"""
+        self.outputs = {}
+        conversion_factor = GlossaryCore.conversion_dict['MWh'][GlossaryCore.EnergyDemandDf['unit']]
+        self.outputs[f"{GlossaryCore.PopulationValue}_{GlossaryCore.EnergyDemandValue}"] = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            # people * MWh = MWh
+            "Total": self.population_df["total"].values * in_dict[
+                "household_energy_consumption_per_capita"] * conversion_factor,
+        })

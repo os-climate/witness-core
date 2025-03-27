@@ -51,5 +51,12 @@ data_to_save = {
     **to_export_prices,
 }
 
+# (kWh / ton) * (ton/k$ of capital) = # kWh / (k$ of capital)
+data_to_save.update({
+    'food_type_capital_energy_intensity': { key:
+        round(to_export_prices["food_type_energy_intensity_by_prod_unit"][key] * to_export_capital['capital_intensity_food_type'][key], 2) for key in to_export_capital['capital_intensity_food_type'].keys()
+    }}
+)
+
 with open('output_calibration_agriculture.json', 'w') as json_file:
     json.dump(data_to_save, json_file, indent=4)

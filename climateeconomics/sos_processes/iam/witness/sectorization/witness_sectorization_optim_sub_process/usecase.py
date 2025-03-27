@@ -37,7 +37,7 @@ INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
-OPTIM_NAME = "WITNESS_MDO"
+OPTIM_NAME = "MDO"
 COUPLING_NAME = "WITNESS_Eval"
 EXTRA_NAME = "WITNESS"
 
@@ -150,14 +150,7 @@ class Study(ClimateEconomicsStudyManager):
         return dv_arrays_dict, design_var_descriptor
 
     def setup_func_df(self):
-        constraints_energy_mix = {
-            'variable': [GlossaryCore.ConstraintEnergyNonUseCapital],
-            'parent': [GlossaryCore.ConstraintEnergyNonUseCapital],
-            'ftype': [INEQ_CONSTRAINT],
-            'weight': [.01],
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.INEQ_NEGATIVE_WHEN_SATIFIED_AND_SQUARE_IT],
-            'namespace': [GlossaryCore.NS_FUNCTIONS]
-        }
+        constraints_energy_mix = {}
 
         anti_decreasing_net_gdp_obj = {
             'variable': [GlossaryCore.DecreasingGdpIncrementsObjectiveValue],
@@ -177,17 +170,9 @@ class Study(ClimateEconomicsStudyManager):
             'namespace': [GlossaryCore.NS_FUNCTIONS] * 3
         }
 
-        constraints_secto = {
-            'variable': [f"{sector}.{GlossaryCore.ConstraintUpperBoundUsableCapital}" for sector in GlossaryCore.SectorListWoSubsector["default"]],
-            'parent': ["Usable capital constraints"] * 2,
-            'ftype': [FunctionManagerDisc.INEQ_CONSTRAINT] * 2,
-            'weight': [.01] * 2,
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.INEQ_POSITIVE_WHEN_SATIFIED_AND_SQUARE_IT] * 2,
-            'namespace': [GlossaryCore.NS_FUNCTIONS] * 2
-        }
 
         func_df = pd.concat([pd.DataFrame(var) for var in [
-            welfare_secto, constraints_secto, constraints_energy_mix, anti_decreasing_net_gdp_obj
+            welfare_secto, constraints_energy_mix, anti_decreasing_net_gdp_obj
         ]])
 
         return func_df
@@ -197,30 +182,24 @@ class Study(ClimateEconomicsStudyManager):
 
         @return list of dictionary: [{str: *}]
         """
-        setup_data_list = []
+        setup_data_list = {}
 
         # -- retrieve energy input data
 
         self.witness_uc.study_name = f'{self.study_name}.{self.coupling_name}.{self.extra_name}'
         self.witness_uc.study_name_wo_extra_name = f'{self.study_name}.{self.coupling_name}'
         witness_data_list = self.witness_uc.setup_usecase()
-        setup_data_list = setup_data_list + witness_data_list
+        setup_data_list.update(witness_data_list)
 
-        values_dict = {}
-        values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
-        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
-        values_dict[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-10
-        values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
-        values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
-        values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
+        setup_data_list[f'{self.study_name}.epsilon0'] = 1.0
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-10
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
+        setup_data_list[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
 
-        setup_data_list.append(values_dict)
-        values_dict_out = {}
-        for valdict in setup_data_list:
-            values_dict_out.update(valdict)
-
-        values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.function_df'] = self.setup_func_df()
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.function_df'] = self.setup_func_df()
 
         dspace_energy_mix = self.witness_uc.dspace
         dspace_sectorization = self.dspace_sectorization()
@@ -232,20 +211,20 @@ class Study(ClimateEconomicsStudyManager):
         design_var_descriptor.update(design_var_descriptor_energy_mix)
         design_var_descriptor.update(design_var_descriptor_sectorization)
 
-        values_dict_out.update(dv_arrays_dict_energy_mix)
-        values_dict_out.update(dv_arrays_dict_sectorization)
+        setup_data_list.update(dv_arrays_dict_energy_mix)
+        setup_data_list.update(dv_arrays_dict_sectorization)
 
         dspace = self.merge_design_spaces_dict(dspace_list=[dspace_energy_mix, dspace_sectorization])
         self.dspace_size, self.dspace = self.dspace_dict_to_dataframe(dspace)
 
-        values_dict_out[f'{self.study_name}.design_space'] = self.dspace
-        values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode'] = True
-        values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
+        setup_data_list[f'{self.study_name}.design_space'] = self.dspace
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode'] = True
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
 
-        self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.ShareSectorInvestmentDfValue)
-        self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.ShareSectorEnergyDfValue)
-        self.remove_all_variables_in_values_dict(values_dict=values_dict_out, shortvarname=GlossaryCore.EnergyInvestmentsWoTaxValue)
+        self.remove_all_variables_in_values_dict(values_dict=setup_data_list, shortvarname=GlossaryCore.ShareSectorInvestmentDfValue)
+        self.remove_all_variables_in_values_dict(values_dict=setup_data_list, shortvarname=GlossaryCore.ShareSectorEnergyDfValue)
+        self.remove_all_variables_in_values_dict(values_dict=setup_data_list, shortvarname=GlossaryCore.EnergyInvestmentsWoTaxValue)
 
 
         agri_subsector_invests = pd.DataFrame({
@@ -253,9 +232,9 @@ class Study(ClimateEconomicsStudyManager):
             GlossaryCore.Crop: 90.,
             GlossaryCore.Forestry: 10.,
         })
-        values_dict_out[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
-        values_dict_out[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-        return values_dict_out
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
+        return setup_data_list
 
 
 if '__main__' == __name__:

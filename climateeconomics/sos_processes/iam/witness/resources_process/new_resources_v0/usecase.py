@@ -33,7 +33,7 @@ class Study(StudyManager):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        setup_data_list = []
+        setup_data_list = {}
 
         year, year_end = GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault
 
@@ -54,7 +54,7 @@ class Study(StudyManager):
 
         config_data = {f'{self.study_name}.CopperModel.copper_demand': copper_demand,
                        f'{self.study_name}.CopperModel.annual_extraction': annual_extraction}
-        setup_data_list.append(config_data)
+        setup_data_list.update(config_data)
         return setup_data_list
 
 

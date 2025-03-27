@@ -32,12 +32,6 @@ class SectorConsumptionDisciplineTest(unittest.TestCase):
         self.nb_per = len(self.years)
         
         self.sector_list = GlossaryCore.SectorsPossibleValues
-        self.all_sectors_energy_supply = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.SectorServices: 15.,
-            GlossaryCore.SectorAgriculture: 3.,
-            GlossaryCore.SectorIndustry: 20.,
-        })
         self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
                                           GlossaryCore.InvestmentsValue: 5 * 1.02 ** np.arange(self.nb_per)})
 
@@ -104,9 +98,6 @@ class SectorConsumptionDisciplineTest(unittest.TestCase):
         ee.display_treeview_nodes()
 
         inputs_dict = {f'{name}.{model_name}.{GlossaryCore.SectorListValue}': self.sector_list,
-                       f'{name}.{GlossaryCore.AllSectorsShareEnergyDfValue}': self.all_sectors_energy_supply,
-                       f'{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
-
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invest_agriculture,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invest_indus,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}': self.invest_services,

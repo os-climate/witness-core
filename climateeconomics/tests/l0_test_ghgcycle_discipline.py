@@ -34,9 +34,9 @@ class GHGCycleDiscTest(unittest.TestCase):
 
         self.ghg_emissions_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years)),
-            GlossaryCore.TotalCH4Emissions: np.linspace(35, 0, len(self.years)) * 0.3 / 40,
-            GlossaryCore.TotalN2OEmissions: np.linspace(35, 0, len(self.years)) * 0.008 / 40,
+            GlossaryCore.CO2: np.linspace(35, 0, len(self.years)),
+            GlossaryCore.CH4: np.linspace(35, 0, len(self.years)) * 0.3 / 40,
+            GlossaryCore.N2O: np.linspace(35, 0, len(self.years)) * 0.008 / 40,
         })
 
     def test_execute(self):
