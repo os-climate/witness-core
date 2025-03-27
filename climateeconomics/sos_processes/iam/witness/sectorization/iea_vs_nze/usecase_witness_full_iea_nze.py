@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import os.path
 from pathlib import Path
 
 import numpy as np
@@ -124,10 +125,10 @@ class Study(ClimateEconomicsStudyManager):
         setup_data[f'{self.study_name}.consumers_actors'] = [GlossaryCore.CCUS, GlossaryCore.SectorIndustry, GlossaryCore.SectorServices, GlossaryCore.Crop]
 
         # loading IEA vs nze data:
-        invest_mix = pd.read_csv('data/invest_mix.csv')
+        invest_mix = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'invest_mix.csv'))
         setup_data[f'{self.study_name}.EnergyMix.invest_mix'] = invest_mix
 
-        utilisation_ratio = pd.read_csv('data/utilisation_ratio.csv')
+        utilisation_ratio = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'utilisation_ratio.csv'))
         for col in utilisation_ratio.columns:
             setup_data[f'{self.study_name}.EnergyMix.{col}.{GlossaryEnergy.UtilisationRatioValue}'] = \
                 pd.DataFrame({GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
@@ -159,8 +160,8 @@ class Study(ClimateEconomicsStudyManager):
         invest_mix[f'{GlossaryEnergy.methane}.{GlossaryEnergy.Methanation}'] = 0.
         invest_mix[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.{GlossaryEnergy.BiomassFermentation}'] = 0.
 
-        diet_mortality_df = pd.read_csv('data/diet_mortality.csv')
-        forest_invest = pd.read_csv('data/forest_investment.csv')
+        diet_mortality_df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'diet_mortality.csv'))
+        forest_invest = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'forest_investment.csv'))
 
         setup_data.update({
             f'{self.study_name}.InvestmentDistribution.invest_mix': invest_mix,

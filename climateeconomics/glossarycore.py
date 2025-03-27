@@ -57,6 +57,7 @@ class GlossaryCore:
 
     Macroeconomics = "Macroeconomics"
     conversion_dict = {"G$":{"G$": 1, 'T$': 1e-3},
+                       "T$":{"G$": 1e3, 'T$': 1},
                        'Mt':{'Mt':1 , 'Gt': 1e-3},
                        'Gt':{'Gt':1 , 'Mt': 1e3},
                        'MWh':{'MWh': 1, 'GWh': 1e-3, 'TWh': 1e-6, 'PWh': 1e-9},
@@ -668,7 +669,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             Damages: ("float", [0, 1e30], False),
@@ -1475,12 +1476,12 @@ class GlossaryCore:
         },
     }
 
-    SectorizedEconomicsDf = {  # todo: miss per capita consumption !
+    SectorizedEconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),

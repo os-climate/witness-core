@@ -215,7 +215,7 @@ class Study(StudyManager):
         })
         crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(0., -4.5, len(years)) ,  # fake
+            GlossaryCore.CropProductivityReductionName: np.linspace(0., -4.5 * 0., len(years)) ,  # fake
         })
         energy_mean_price = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -268,4 +268,6 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
+    a = 1

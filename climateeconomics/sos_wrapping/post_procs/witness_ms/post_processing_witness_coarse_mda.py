@@ -357,7 +357,7 @@ def post_processings(execution_engine, namespace, filters):
             if energy in energy_list:
                 energy_disc = EnergyMix.name
             else:
-                energy_disc = CCUS.name
+                energy_disc = GlossaryEnergy.CCUS
             if energy != GlossaryCore.biomass_dry:
                 techno_list, _ = get_shared_value(execution_engine, f"{energy}.{GlossaryEnergy.TechnoListName}")
 

@@ -42,12 +42,12 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
         self.crop_productivity_reduction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.CropProductivityReductionName: np.linspace(0, 12, year_range),  # fake
+            GlossaryCore.CropProductivityReductionName: - np.linspace(0, 12/ 100, year_range) * 0.,  # fake
         })
 
         self.damage_fraction = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range), # 2020 value
+            GlossaryCore.DamageFractionOutput: np.linspace(0 /100., 12 / 100., year_range) * 0., # 2020 value
         })
 
         self.investments_food_types = pd.DataFrame({
@@ -56,7 +56,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         })
         self.workforce_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 0.7, year_range),  # millions of people (2020 value)
+            GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 1000, year_range),  # millions of people (2020 value)
         })
         population_2021 = 7_954_448_391
         self.population_df = pd.DataFrame({
