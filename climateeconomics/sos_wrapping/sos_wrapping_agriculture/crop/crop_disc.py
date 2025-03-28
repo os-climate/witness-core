@@ -1,6 +1,6 @@
 '''
-Copyright 2024 Capgemini
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
+Modifications on 27/03/2025 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 import copy
 import logging
 from typing import Union
@@ -817,7 +818,7 @@ class CropDiscipline(SubSectorDiscipline):
         }
         total_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"]
         years = total_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorProductionDf["unit"], stacked_bar=True, chart_name="Net output breakdown (food & energy)", y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorProductionDf["unit"], stacked_bar=True, chart_name="Net output breakdown (food & energy)", y_min_zero=True)
         for key, varname  in variables.items():
             df = outputs[varname]
             new_series = InstanciatedSeries(years, df["Total"], key, 'bar', True)
@@ -833,7 +834,7 @@ class CropDiscipline(SubSectorDiscipline):
         damage_detailed_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDetailedDfValue}"]
         damage_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}"]
         years = damage_detailed_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Damages", y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorDamagesDf["unit"], stacked_bar=True, chart_name="Damages", y_min_zero=True)
         variables_bar_plot = {
             "Extreme climate events": GlossaryCore.DamagesFromClimate,
             "Productivity loss": GlossaryCore.DamagesFromProductivityLoss,
@@ -851,7 +852,7 @@ class CropDiscipline(SubSectorDiscipline):
         production_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.ProductionDfValue}"]
         damage_df = outputs[f"{GlossaryCore.Crop}.{GlossaryCore.DamageDfValue}"]
         years = production_df[GlossaryCore.Years]
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.DamageDetailedDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SubsectorProductionDf["unit"], stacked_bar=True, chart_name="Gross and net output of Crop sector", y_min_zero=True)
         variables_bar_plot = {
             "Gross output": GlossaryCore.GrossOutput,
             "Output net of damages": GlossaryCore.OutputNetOfDamage,

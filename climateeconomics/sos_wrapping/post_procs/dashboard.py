@@ -205,7 +205,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
-        chart_name = "Temperature and CO2 evolution over the years"
+        chart_name = "Temperature and CO2 evolution"
 
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
