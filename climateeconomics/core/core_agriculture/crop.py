@@ -1,6 +1,6 @@
 '''
-Copyright 2024 Capgemini
-Modifications on 2023/06/21-2024/06/24 Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
+Modifications on 27/03/2025 Copyright 2025 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -161,12 +161,12 @@ class Crop(SubSectorModel):
         # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
         self.outputs[f"{GlossaryCore.CropFoodLandUseName}_breakdown:{self.ft}"] = \
             self.temp_variables[f"share_dedicated_to_food:{self.ft}"] * self.temp_variables[f"production_raw:{self.ft}"] * \
-            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] / (10 ** 4)
+            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] * GlossaryCore.conversion_dict['m²']['ha']
 
         # Mt * m² / kg = 10^9 kg * m² / kg / 10^4= G m² / 10^4 = G ha
         self.outputs[f"{GlossaryCore.CropEnergyLandUseName}_breakdown:{self.ft}"] = \
             (1 - self.temp_variables[f"share_dedicated_to_food:{self.ft}"]) * self.temp_variables[f"production_raw:{self.ft}"] * \
-            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] / (10 ** 4)
+            self.inputs[GlossaryCore.FoodTypeLandUseByProdUnitName][self.ft] * GlossaryCore.conversion_dict['m²']['ha']
 
     def split_production_between_energy_and_consumers(self):
         net_production = self.temp_variables[f"production_before_waste:{self.ft}"] - self.outputs[f"{GlossaryCore.FoodTypeWasteByClimateDamagesName}:{self.ft}"]  # Mt
