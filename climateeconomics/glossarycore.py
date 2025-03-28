@@ -64,6 +64,7 @@ class GlossaryCore:
                        'GWh':{'GWh': 1, 'TWh': 1e-3, 'PWh': 1e-6},
                        'TWh':{'TWh': 1, 'PWh': 1e-3},
                        'PWh':{'PWh': 1, 'TWh': 1e3},
+                       'm²':{'ha': 1e-4,},
                        'Gha':{'Gha': 1}
                        }
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
