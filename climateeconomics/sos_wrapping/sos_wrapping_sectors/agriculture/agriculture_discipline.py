@@ -163,8 +163,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
                 agri_emissions = self.get_sosdisc_outputs(
                     GlossaryCore.insertGHGAgriLandEmissions.format(ghg))
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
-                                                     stacked_bar=True, chart_name=f"{ghg} Emissions of Agriculture sector",
-                                                     y_min_zero=True)
+                                                     stacked_bar=True, chart_name=f"{ghg} Emissions of Agriculture sector")
 
                 for subsector in AgricultureModel.sub_sectors:
                     if subsector in agri_emissions:
@@ -192,6 +191,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "Economical data"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Economical damages" in charts:
@@ -210,6 +210,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "Economical data"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Biomass dry production" in charts:
@@ -228,6 +229,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "Biomass dry"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Biomass dry price" in charts:
