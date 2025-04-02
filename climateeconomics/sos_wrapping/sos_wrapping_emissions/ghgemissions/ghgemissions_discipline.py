@@ -431,9 +431,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GWP_emissions = self.get_sosdisc_outputs(
             GlossaryCore.TotalGWPEmissionsDfValue)
 
-        chart_name = f'Global warming potential at {gwp_year} years - GHG breakdown'
+        chart_name = f'Emissions in CO2eq  ({gwp_year}-year basis) GHG breakdown'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryCore.Years, f"GWP {GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, f"{GlossaryCore.GWPEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
 
         for ghg in GHGEmissions.GHG_TYPE_LIST:
             new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values), list(GWP_emissions[f'{ghg}_{gwp_year}'].values),
@@ -453,9 +453,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GHG_emissions_detail_df = self.get_sosdisc_outputs(
             GlossaryCore.GHGEmissionsDetailedDfValue)
 
-        chart_name = f'{ghg} emissions per source'
+        chart_name = f'{ghg} emissions'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryCore.Years, f"{ghg} Emissions [{GlossaryCore.GHGEmissionsDf['unit']}]", chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, f"{GlossaryCore.GHGEmissionsDf['unit']}", chart_name=chart_name, stacked_bar=True)
 
         emission_type = [GlossaryCore.insertGHGAgriLandEmissions,
                          GlossaryCore.insertGHGEnergyEmissions,

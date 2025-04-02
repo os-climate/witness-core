@@ -56,8 +56,11 @@ class GlossaryCore:
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
     Macroeconomics = "Macroeconomics"
-    conversion_dict = {"G$":{"G$": 1, 'T$': 1e-3},
+    conversion_dict = {"M$":{"M$": 1, 'G$': 1e-3},
+                       "G$":{"G$": 1, 'T$': 1e-3, 'M$': 1e3},
                        "T$":{"G$": 1e3, 'T$': 1},
+                       "TWh or Mt": {"PWh or Gt": 1e-3, "TWh or Mt": 1, "PWh": 1e-3, "Gt": 1e-3, "Mt": 1, "TWh": 1},
+                       "PWh or Gt": {"TWh or Mt": 1e3, "PWh or Gt": 1, "PWh": 1, "Gt": 1, "Mt": 1e3, "TWh": 1e3},
                        'Mt':{'Mt':1 , 'Gt': 1e-3},
                        'Gt':{'Gt':1 , 'Mt': 1e3},
                        'MWh':{'MWh': 1, 'GWh': 1e-3, 'TWh': 1e-6, 'PWh': 1e-9},
@@ -991,7 +994,7 @@ class GlossaryCore:
     StreamCCSConsumptionValue = "stream_ccs_consumption"
     StreamCCSConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "consumption of ccs streams by techno", "dynamic_dataframe_columns": True, }
 
-    StreamProductionDf = {'type': 'dataframe', 'unit': 'PWh', AutodifferentiedDisc.GRADIENTS: True, "dynamic_dataframe_columns": True}
+    StreamProductionDf = {'type': 'dataframe', 'unit': 'PWh or Gt', AutodifferentiedDisc.GRADIENTS: True, "dynamic_dataframe_columns": True}
     StreamLandUseDf = {'type': 'dataframe', 'unit': 'Gha', "dynamic_dataframe_columns": True}
 
     LandUseRequiredValue = "land_use_required"
@@ -1045,7 +1048,7 @@ class GlossaryCore:
     StreamProductionDetailedDf = {
         "var_name": StreamProductionValue,
         "type": "dataframe",
-        "unit": "TWh",
+        "unit": "TWh or Mt",
         "dynamic_dataframe_columns": True,
         AutodifferentiedDisc.GRADIENTS: True,
     }
@@ -2415,7 +2418,7 @@ class GlossaryCore:
     EnergyMixEnergiesDemandsDfValue = 'energy_mix_energies_demands_df'
     EnergyMixEnergiesDemandsDf = {
         "type": "dataframe",
-        "unit": "TWh",
+        "unit": "PWh",
         "user_level": 2,
         "description": "Demands for each energy within the Energy sector",
         "dynamic_dataframe_columns": True,

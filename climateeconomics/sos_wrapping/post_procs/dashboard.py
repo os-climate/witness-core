@@ -600,7 +600,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 )
                 for techno in techno_list:
                     if techno in green_energies_and_technos[energy]:
-                        clean_energy_df[techno] += energy_production_df[f"{techno} (TWh)"]
+                        clean_energy_df[techno] += energy_production_df[f"{techno}"]
 
         # total clean energy production
         clean_energy_df["Total"] = clean_energy_df.drop(
