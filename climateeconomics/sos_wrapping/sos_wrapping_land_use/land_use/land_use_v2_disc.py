@@ -100,7 +100,7 @@ class LandUseV2Discipline(SoSWrapp):
         land_demand_df = inputs_dict['land_demand_df']
         total_food_land_surface = inputs_dict.pop('total_food_land_surface')
         total_forest_surface_df = deepcopy(inputs_dict['forest_surface_df'])
-        total_forest_surface_df.index = land_demand_df[GlossaryCore.Years]
+        #total_forest_surface_df.index = land_demand_df[GlossaryCore.Years]
         self.land_use_model.compute(
             land_demand_df, total_food_land_surface, total_forest_surface_df)
 

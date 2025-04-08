@@ -1,3 +1,0 @@
-# Crop
-
-Bla bla crop

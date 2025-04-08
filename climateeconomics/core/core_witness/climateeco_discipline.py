@@ -36,7 +36,7 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 'activate_pandemic_effects': False,
                                                 }
 
-    YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YearStartDefault,
+    YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YearStartDefault, "structuring": True,
                           'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950, 2080]}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                      'user_level': 1, 'unit': '-'}

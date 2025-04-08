@@ -35,7 +35,7 @@ class Study(StudyManager):
         self.test_post_procs = False
 
     def setup_usecase(self, study_folder_path=None):
-        setup_data_list = []
+        setup_data_list = {}
 
         data_dir_resource = join(
             dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data')
@@ -46,7 +46,7 @@ class Study(StudyManager):
                        f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end}
 
-        setup_data_list.append(config_data)
+        setup_data_list.update(config_data)
 
         return setup_data_list
 

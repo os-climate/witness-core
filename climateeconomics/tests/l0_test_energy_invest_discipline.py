@@ -66,7 +66,7 @@ class EnergyInvestDiscTest(unittest.TestCase):
 
         co2_emissions_gt = DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.TotalCO2Emissions: np.linspace(34, 55, n_years)})
+             "CO2": np.linspace(34, 55, n_years)})
 
         energy_investment_wo_tax = DataFrame(
             {GlossaryCore.Years: years,

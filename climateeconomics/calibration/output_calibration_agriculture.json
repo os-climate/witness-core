@@ -353,5 +353,18 @@
         "fish": 20,
         "sugar cane": 35,
         "other": 30
+    },
+    "food_type_capital_energy_intensity": {
+        "fruits and vegetables": 4049.97,
+        "maize": 1814.76,
+        "rice": 1905.54,
+        "sugar cane": 1597.56,
+        "cereals": 2400.27,
+        "eggs": 2080.3,
+        "milk": 962.17,
+        "white meat": 1951.7,
+        "other": 563.01,
+        "fish": 913.9,
+        "red meat": 978.63
     }
 }

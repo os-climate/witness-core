@@ -19,15 +19,6 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import (
-    AgricultureSectorDiscipline,
-)
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import (
-    IndustrialDiscipline,
-)
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import (
-    ServicesDiscipline,
-)
 
 
 class LaborMarketModel():
@@ -37,8 +28,7 @@ class LaborMarketModel():
 
     #Units conversion
     conversion_factor=1.0
-    SECTORS_DISC_LIST = [AgricultureSectorDiscipline, ServicesDiscipline, IndustrialDiscipline]
-    SECTORS_LIST = [disc.sector_name for disc in SECTORS_DISC_LIST]
+    SECTORS_LIST = GlossaryCore.SectorsPossibleValues
 
     def __init__(self, inputs_dict):
         '''
@@ -170,7 +160,7 @@ class LaborMarketModel():
         #drop years for computation
         working_age_pop = self.working_age_population_df[GlossaryCore.Population1570].values
         employment_rate = self.employment_df[GlossaryCore.EmploymentRate].values
-        sector_list = self.SECTORS_LIST
+        sector_list = GlossaryCore.SectorsPossibleValues
         workforce_share = self.workforce_share_per_sector
         for sector in sector_list: 
             share = workforce_share[sector]/100

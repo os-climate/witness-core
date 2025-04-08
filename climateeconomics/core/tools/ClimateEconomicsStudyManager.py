@@ -157,7 +157,7 @@ class ClimateEconomicsStudyManager(StudyManager):
                 activated_dvar = dspace[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
                 activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
 
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
                     activated_value
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': GlossaryCore.invest_mix,
@@ -170,8 +170,8 @@ class ClimateEconomicsStudyManager(StudyManager):
                 }
 
                 design_var_utilization_ratio_value = dspace[f'{ccs}.{technology}_utilization_ratio_array']['value']
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.ccus_type}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
                     data={GlossaryCore.Years: years,
                           GlossaryCore.UtilisationRatioValue: 100.})
                 # add design variable for utilization ratio per technology

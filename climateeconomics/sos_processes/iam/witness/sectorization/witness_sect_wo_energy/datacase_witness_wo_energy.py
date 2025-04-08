@@ -28,9 +28,6 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 )
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import (
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
-)
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import (
     Study as datacase_landuse,
 )
@@ -52,18 +49,16 @@ AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 
 class DataStudy():
-    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault,
-                 agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault):
         self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
-        self.techno_dict = agri_techno_list
         self.study_name_wo_extra_name = self.study_name
         self.dspace = {}
         self.dspace['dspace_size'] = 0
 
     def setup_usecase(self, study_folder_path=None):
-        setup_data_list = []
+        setup_data_list = {}
         nb_per = self.year_end - self.year_start + 1
         years = arange(self.year_start, self.year_end + 1)
 
@@ -187,13 +182,13 @@ class DataStudy():
         uc_sectorization = usecase_sectorization()
         uc_sectorization.study_name = self.study_name
         data_sect = uc_sectorization.setup_usecase()
-        setup_data_list = setup_data_list + data_sect
+        setup_data_list.update(data_sect)
 
         resource_input_list = dc_resource.setup_usecase()
-        setup_data_list = setup_data_list + resource_input_list
+        setup_data_list.update(resource_input_list)
 
         land_use_list = dc_landuse.setup_usecase()
-        setup_data_list = setup_data_list + land_use_list
+        setup_data_list.update(land_use_list)
 
         # WITNESS
         # setup objectives
@@ -222,9 +217,15 @@ class DataStudy():
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
-        witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
-        setup_data_list.append(witness_input)
+                                                   GlossaryCore.CO2: np.linspace(37., 10., len(years)),
+                                                   GlossaryCore.N2O: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   GlossaryCore.CH4: np.linspace(0.17, 0.01, len(years))})
+
+        witness_input[f'{self.study_name}.{GlossaryCore.GHGEnergyEmissionsDfValue}'] = GHG_total_energy_emissions
+
+        ccs_price = pd.DataFrame({GlossaryCore.Years: years,
+                                  "ccs_price_per_tCO2": 500.,})
+
+        witness_input[f'{self.study_name}.CCS_price'] = ccs_price
+        setup_data_list.update(witness_input)
         return setup_data_list

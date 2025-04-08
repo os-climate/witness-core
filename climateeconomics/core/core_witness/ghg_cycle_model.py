@@ -264,7 +264,7 @@ class GHGCycle():
     def compute_concentration_co2(self):
         conc_boxes = self.boxes_conc
         boxes_list = [conc_boxes]
-        for emission_year_Gt in self.ghg_emissions_df[GlossaryCore.TotalCO2Emissions].values[1:]:
+        for emission_year_Gt in self.ghg_emissions_df[GlossaryCore.CO2].values[1:]:
             emission_year_Mt = emission_year_Gt * 1e3
             conc_boxes = [decay * box_conc + 0.000471 * em_ratio * emission_year_Mt for (decay, box_conc, em_ratio) in zip(self.decays, conc_boxes, self.em_ratios)]
             boxes_list.append(conc_boxes)
@@ -285,7 +285,7 @@ class GHGCycle():
                                                           conc_pre_indus=self.pre_indus_conc_ch4,
                                                           emissions_to_pp=self.gt_to_pp[GlossaryCore.CH4],
                                                           emissions=self.ghg_emissions_df[
-                                                              GlossaryCore.TotalCH4Emissions].values)
+                                                              GlossaryCore.CH4].values)
 
         self.ghg_cycle_df[GlossaryCore.CH4Concentration] = ch4_concentrations
 
@@ -295,7 +295,7 @@ class GHGCycle():
                                                           conc_pre_indus=self.pre_indus_conc_n2o,
                                                           emissions_to_pp=self.gt_to_pp[GlossaryCore.N2O],
                                                           emissions=self.ghg_emissions_df[
-                                                              GlossaryCore.TotalN2OEmissions].values)
+                                                              GlossaryCore.N2O].values)
 
         self.ghg_cycle_df[GlossaryCore.N2OConcentration] = n2o_concentrations
 

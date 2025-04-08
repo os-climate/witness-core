@@ -154,7 +154,7 @@ _agriculture_surface = {FILE_NAME: 'land_cover_pasture+cropland_global.csv',
 
 FINAL_ENERGY = 'energy'
 _final_energy = {FILE_NAME: 'final_energy_global.csv',
-                 VAR_NAME: f'EnergyMix.{GlossaryCore.EnergyProductionValue}',
+                 VAR_NAME: f'EnergyMix.{GlossaryCore.StreamProductionValue}',
                  COLUMN: GlossaryCore.TotalProductionValue,
                  CHART_TITLE: 'World Energy Production: WITNESS vs. SSP scenarios (IPCC)',
                  UNIT_CONV_FACTOR: 0.27777777777,

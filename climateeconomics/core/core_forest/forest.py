@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -297,18 +295,18 @@ class ForestryModel(SubSectorModel):
 
     def compute_production_for_energy(self):
         # techno production in TWh
-        self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})'] = (self.outputs['managed_wood_df:wood_production_for_energy (Mt)'] +
+        self.outputs[f'{GlossaryCore.Forestry}.techno_production:{GlossaryCore.biomass_dry} (TWh)'] = (self.outputs['managed_wood_df:wood_production_for_energy (Mt)'] +
                                                                                     self.outputs['biomass_dry_detail_df:deforestation_for_energy']) * self.inputs['params']['biomass_dry_calorific_value'] + self.outputs['managed_wood_df:residues_production_for_energy (Mt)'] * self.inputs['params']['residue_calorific_value']
 
     def compute_carbon_consumption(self):
         # CO2 consumed
-        self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_capture} (Mt)'] = \
+        self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_captured} (Mt)'] = \
             -self.inputs['params']['CO2_from_production'] / self.inputs['params']['biomass_dry_high_calorific_value'] * \
-            self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})']
+            self.outputs[f'{GlossaryCore.Forestry}.techno_production:{GlossaryCore.biomass_dry} (TWh)']
 
-        self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_capture} (Mt)'] = \
+        self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_captured} (Mt)'] = \
             - self.inputs['params']['CO2_from_production'] / self.inputs['params']['biomass_dry_high_calorific_value'] * \
-            self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})']
+            self.outputs[f'{GlossaryCore.Forestry}.techno_production:{GlossaryCore.biomass_dry} (TWh)']
 
     def compute_forest_constraint_evolution(self):
         # compute forest constrain evolution: reforestation + deforestation
@@ -392,9 +390,9 @@ class ForestryModel(SubSectorModel):
         self.outputs[f'{GlossaryCore.Forestry}.land_use_required:{GlossaryCore.Forestry} (Gha)'] = self.outputs['managed_wood_df:cumulative_surface']
 
     def rescale_techno_production_and_consumption(self):
-        self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})'] = self.outputs[f'{GlossaryCore.Forestry}.techno_production:{BiomassDry.name} ({BiomassDry.unit})'] /1e3
-        self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_capture} (Mt)'] = self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_capture} (Mt)'] /1e3
-        self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_capture} (Mt)'] = self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_capture} (Mt)'] /1e3
+        self.outputs[f'{GlossaryCore.Forestry}.techno_production:{GlossaryCore.biomass_dry} (TWh)'] = self.outputs[f'{GlossaryCore.Forestry}.techno_production:{GlossaryCore.biomass_dry} (TWh)'] /1e3
+        self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_captured} (Mt)'] = self.outputs[f'techno_consumption:{GlossaryEnergy.carbon_captured} (Mt)'] / 1e3
+        self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_captured} (Mt)'] = self.outputs[f'techno_consumption_woratio:{GlossaryEnergy.carbon_captured} (Mt)'] / 1e3
 
     def compute_coupling_dfs(self):
         self.outputs[f'biomass_dry_df:{GlossaryCore.Years}'] = self.years

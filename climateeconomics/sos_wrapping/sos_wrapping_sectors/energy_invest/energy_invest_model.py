@@ -30,7 +30,7 @@ class EnergyInvestModel:
 
     def compute_added_energy_investments_in_renewables(self):
         """added investments in renewables = emission * co2 taxes * co2 tax efficiency"""
-        emissions = self.co2_emissions_Gt[GlossaryCore.TotalCO2Emissions] * 1e9  # t CO2
+        emissions = self.co2_emissions_Gt[GlossaryCore.CO2] * 1e9  # t CO2
         co2_taxes = self.co2_taxes[GlossaryCore.CO2Tax]  # $/t
         co2_tax_eff = self.co2_tax_efficiency[GlossaryCore.CO2TaxEfficiencyValue] / 100.  # %
         renewables_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$

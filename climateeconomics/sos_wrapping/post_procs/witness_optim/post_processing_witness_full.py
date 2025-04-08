@@ -320,9 +320,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace_disc}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                'techno_production')[f'{energy} (TWh)'].values * \
-                                techno_disc.get_sosdisc_inputs(
-                                    'scaling_factor_techno_production')  # TODO: check if scaling required
+                'techno_production')[f'{energy} (TWh)'].values * 1e3  # TODO: check if scaling required
             # crop had not invest_level but crop_investment. Same for Forest
             # data_fuel_dict is missing in Forest and is a copy of biomass_dry for Crop
             # no detailed CO2_emissions_df for Crop and Forest => CO2_from_other_consumption = 0
