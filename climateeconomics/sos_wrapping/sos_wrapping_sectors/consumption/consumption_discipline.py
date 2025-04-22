@@ -48,8 +48,6 @@ class ConsumptionDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
-        GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
-        GlossaryCore.AllSectorsShareEnergyDfValue: GlossaryCore.AllSectorsShareEnergyDf,
     }
 
     DESC_OUT = {
@@ -85,9 +83,7 @@ class ConsumptionDiscipline(SoSWrapp):
     def compute_sos_jacobian(self):
         """compute gradients"""
         inputs = self.get_sosdisc_inputs()
-        total_energy_invest = inputs[GlossaryCore.EnergyInvestmentsWoTaxValue][GlossaryCore.EnergyInvestmentsWoTaxValue].values
-        share_energy_consumption_sector_df = inputs[GlossaryCore.AllSectorsShareEnergyDfValue]
-        years = share_energy_consumption_sector_df[GlossaryCore.Years].values
+        years = inputs[f"{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"][GlossaryCore.Years].values
         identity = np.eye(len(years))
         for sector in inputs[GlossaryCore.SectorListValue]:
             self.set_partial_derivative_for_other_types(
@@ -99,16 +95,6 @@ class ConsumptionDiscipline(SoSWrapp):
                 (GlossaryCore.SectorizedConsumptionDfValue, sector),
                 (f"{sector}.{GlossaryCore.InvestmentDfValue}", GlossaryCore.InvestmentsValue),
                 -identity)
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.SectorizedConsumptionDfValue, sector),
-                (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsWoTaxValue),
-                np.diag(- share_energy_consumption_sector_df[sector].values / 100))
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.SectorizedConsumptionDfValue, sector),
-                (GlossaryCore.AllSectorsShareEnergyDfValue, sector),
-                np.diag(- total_energy_invest / 100.))
 
     def get_chart_filter_list(self):
         chart_filters = []
@@ -152,7 +138,6 @@ class ConsumptionDiscipline(SoSWrapp):
                 bar_col = [
                     "Output net of damage",
                     "Investment in sector",
-                    "Attributed investment in energy",
                 ]
                 breakdown_df_sector = outputs[f"{sector}_consumption_breakdown"]
                 for col in bar_col:

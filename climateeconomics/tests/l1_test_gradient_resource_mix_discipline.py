@@ -145,7 +145,9 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{self.model_name}.{ResourceMixModel.NON_MODELED_RESOURCE_PRICE}': self.non_modeled_resource_df
                             }
 
-        self.ns_dict = {'ns_public': f'{self.name}',
+        self.ns_dict = {
+            'ns_public': f'{self.name}',
+            GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                         'ns_coal_resource': f'{self.name}.{self.model_name}',
                         'ns_oil_resource': f'{self.name}.{self.model_name}',
                         'ns_natural_gas_resource': f'{self.name}.{self.model_name}',

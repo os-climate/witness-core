@@ -36,7 +36,7 @@ workforce_agri_2021 = CalibrationData(  # Share of people working in agriculture
         link="https://data.worldbank.org/indicator/SL.TLF.TOTL.IN")
 
 energy_consumption_agri_2021 = CalibrationData(  # share of total final energy consumption in agriculture
-        varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
+        varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}',
         column_name=GlossaryCore.TotalProductionValue,
         year=2021,
         value=4 / 100.,
@@ -44,7 +44,7 @@ energy_consumption_agri_2021 = CalibrationData(  # share of total final energy c
         source='FAO',
         link="https://www.fao.org/4/x8054e/x8054e05.htm") * \
                                CalibrationData(  # total global final energy consumption
-        varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
+        varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}',
         column_name=GlossaryCore.TotalProductionValue,
         year=2021,
         value=170.66,
@@ -53,7 +53,7 @@ energy_consumption_agri_2021 = CalibrationData(  # share of total final energy c
         link="https://www.iea.org/world/energy-mix")
 
 forestry_gdp_usd_2015 = CalibrationData(  # total global final energy consumption
-        varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}',
+        varname=f'{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}',
         column_name=GlossaryCore.TotalProductionValue,
         year=2015,
         value=75.36,

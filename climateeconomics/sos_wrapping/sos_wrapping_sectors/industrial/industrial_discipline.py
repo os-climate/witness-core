@@ -23,7 +23,6 @@ from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import
 
 class IndustrialDiscipline(SectorDiscipline):
     "Industrial sector discpline"
-    sector_name = GlossaryCore.SectorIndustry
 
     # ontology information
     _ontology_data = {
@@ -42,7 +41,6 @@ class IndustrialDiscipline(SectorDiscipline):
 
     #Update default values
     def setup_sos_disciplines(self):
-        SectorDiscipline.setup_sos_disciplines(self)
         self.update_default_value('capital_start', 'in', DatabaseWitnessCore.SectorIndustryCapitalStart.value)
         self.update_default_value('productivity_start', 'in', DatabaseWitnessCore.SectorIndustryProductivityStart.value)
         self.update_default_value('productivity_gr_start', 'in', DatabaseWitnessCore.SectorIndustryProductivityGrowthStart.value)
@@ -53,5 +51,6 @@ class IndustrialDiscipline(SectorDiscipline):
         self.update_default_value('energy_eff_max', 'in',3.1562276)
         self.update_default_value('output_alpha', 'in', 0.909985)
         self.update_default_value('depreciation_capital', 'in', 0.075)
-        self.update_default_value('usable_capital_ref', 'in', 1.12)
+        self.update_default_value('sector_name', 'in', GlossaryCore.SectorIndustry)
+        SectorDiscipline.setup_sos_disciplines(self)
 

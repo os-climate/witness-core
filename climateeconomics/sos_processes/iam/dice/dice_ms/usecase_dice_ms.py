@@ -38,9 +38,9 @@ class Study(StudyManager):
         self.scatter_scenario = 'Control rate scenarios'
         # Set public values at a specific namespace
         dice_ms_usecase.study_name = f'{self.study_name}.{self.scatter_scenario}'
-        setup_data_list = dice_ms_usecase.setup_usecase()
+        setup_data = dice_ms_usecase.setup_usecase()
 
-        # setup_data_list[0].update(public_values)
+        # setup_data[0].update(public_values)
         year_start = 2015
         year_end = GlossaryCore.YearEndDefault
         years = np.arange(year_start, year_end + 1)
@@ -116,9 +116,9 @@ class Study(StudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_C}.emissions_control_rate'] = control_rate_C
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_D}.emissions_control_rate'] = control_rate_D
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_E}.emissions_control_rate'] = control_rate_E
-        setup_data_list[0].update(values_dict)
+        setup_data.update(values_dict)
 
-        return setup_data_list
+        return setup_data
 
 
 if '__main__' == __name__:

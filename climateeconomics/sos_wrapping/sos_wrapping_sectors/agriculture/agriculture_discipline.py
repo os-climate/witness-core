@@ -143,18 +143,15 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
         food_emissions_df = self.get_sosdisc_inputs(GlossaryCore.FoodEmissionsName)
         years = food_emissions_df[GlossaryCore.Years]
         if "Emissions" in charts:
-            forest_co2_emissions = self.get_sosdisc_inputs(f"{GlossaryCore.Forestry}.CO2_land_emission_df")["emitted_CO2_evol_cumulative"]
-            # CO2 chart:
-            agri_co2_emissions = self.get_sosdisc_outputs(GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2))
+            agri_emissions = self.get_sosdisc_outputs(GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2))
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
-                                                 stacked_bar=True, chart_name="CO2 Emissions of Agriculture sector")
-            new_series = InstanciatedSeries(years, food_emissions_df[GlossaryCore.CO2], "Crop for food production", 'bar', True)
+                                                 stacked_bar=True, chart_name="CO2 Emissions of Agriculture sector",
+                                                 y_min_zero=True)
+            new_series = InstanciatedSeries(years, agri_emissions[GlossaryCore.Forestry], "Forestry", 'bar', True)
             new_chart.add_series(new_series)
-            new_series = InstanciatedSeries(years, forest_co2_emissions, "Forest emissions", 'bar', True)
+            new_series = InstanciatedSeries(years, agri_emissions[GlossaryCore.Crop], "Crop", 'bar', True)
             new_chart.add_series(new_series)
 
-            new_series = InstanciatedSeries(years, agri_co2_emissions, "Total", 'lines', True)
-            new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "GHG Emissions"
             new_chart.annotation_upper_left = {"Note": "does not include Crop for energy emissions (they are associated to energy sector emissions)"}
@@ -167,11 +164,11 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
                     GlossaryCore.insertGHGAgriLandEmissions.format(ghg))
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.FoodEmissionsVar["unit"],
                                                      stacked_bar=True, chart_name=f"{ghg} Emissions of Agriculture sector")
-                new_series = InstanciatedSeries(years, food_emissions_df[ghg], "Crop for food production",
-                                                'bar', True)
-                new_chart.add_series(new_series)
-                new_series = InstanciatedSeries(years, agri_emissions, "Total", 'lines', True)
-                new_chart.add_series(new_series)
+
+                for subsector in AgricultureModel.sub_sectors:
+                    if subsector in agri_emissions:
+                        new_series = InstanciatedSeries(years, agri_emissions[subsector], subsector.capitalize(), 'bar', True)
+                        new_chart.add_series(new_series)
 
                 new_chart.post_processing_section_name = "GHG Emissions"
                 new_chart.annotation_upper_left = {
@@ -194,6 +191,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "Economical data"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Economical damages" in charts:
@@ -212,6 +210,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "Economical data"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Biomass dry production" in charts:
@@ -230,6 +229,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
             new_chart.add_series(new_series)
 
             new_chart.post_processing_section_name = "Biomass dry"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Biomass dry price" in charts:

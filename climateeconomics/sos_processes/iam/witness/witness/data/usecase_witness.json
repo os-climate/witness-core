@@ -1,9 +1,0 @@
-{
-    "US": {
-        "authorize_self_coupled_disciplines": false
-    },
-    "UE": {
-        "authorize_self_coupled_disciplines": false
-    },
-    "id": "usecase_witness"
-}

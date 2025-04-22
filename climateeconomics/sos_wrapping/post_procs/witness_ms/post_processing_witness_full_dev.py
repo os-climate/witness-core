@@ -26,11 +26,6 @@ from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciat
 )
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import (
-    COUPLING_NAME,
-    EXTRA_NAME,
-    OPTIM_NAME,
-)
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -81,8 +76,8 @@ def post_processings(execution_engine, namespace, filters):
 
         selected_scenarios = scenario_list
 
-    df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.YearStart}',
-                f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.YearEnd}', ]
+    df_paths = [f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.YearStart}',
+                f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.YearEnd}', ]
     year_start_dict, year_end_dict = get_df_per_scenario_dict(
         execution_engine, df_paths, scenario_list)
     year_start, year_end = year_start_dict[scenario_list[0]
@@ -103,8 +98,8 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Temperature increase since industrial revolution' + u'[\u00B0C]'
         y_axis_name = 'Welfare [-]'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature change.temperature_detail_df',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}'
+        df_paths = ['MDO.WITNESS_Eval.WITNESS.Temperature change.temperature_detail_df',
+                    f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}'
                     ]
         (temperature_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths, scenario_list)
@@ -127,8 +122,8 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Summed Global Warning Potential at 20 years [GtCO2eq]'
         y_axis_name = f'Welfare in {year_end} [-]'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHGEmissions.GWP_emissions',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
+        df_paths = ['MDO.WITNESS_Eval.WITNESS.GHGEmissions.GWP_emissions',
+                    f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}',
                     ]
         (gwp_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
@@ -152,8 +147,8 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Summed Global Warning Potential at 20 years [GtCO2eq]'
         y_axis_name = 'min( Utility ) [-]'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHGEmissions.GWP_emissions',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
+        df_paths = ['MDO.WITNESS_Eval.WITNESS.GHGEmissions.GWP_emissions',
+                    f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}',
                     ]
         (gwp_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
@@ -178,8 +173,8 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Mean CO2 ppm'
         y_axis_name = f'Welfare in {year_end}'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHGCycle.ghg_cycle_df_detailed',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
+        df_paths = ['MDO.WITNESS_Eval.WITNESS.GHGCycle.ghg_cycle_df_detailed',
+                    f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}',
                     ]
         (ghgcycle_detail_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
@@ -211,7 +206,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Price ($/tCO2)'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.CO2TaxesValue}', ]
+        df_paths = [f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.CO2TaxesValue}', ]
         (co2_taxes_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         co2_tax_dict = {}
@@ -232,7 +227,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature change.temperature_detail_df', ]
+            'MDO.WITNESS_Eval.WITNESS.Temperature change.temperature_detail_df', ]
         (temperature_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         temperature_dict = {}
@@ -251,7 +246,7 @@ def post_processings(execution_engine, namespace, filters):
         chart_name = 'Welfare per scenario'
         y_axis_name = f'Welfare in {year_end}'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
+        df_paths = [f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}',
                     ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
@@ -283,7 +278,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Discounted Utility (trill $)'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}', ]
+        df_paths = [f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}', ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         utility_dict = {}
@@ -304,7 +299,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'GWP emissions [GtCO2eq]'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHGEmissions.GWP_emissions']
+            'MDO.WITNESS_Eval.WITNESS.GHGEmissions.GWP_emissions']
         (gwp_emissions_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -327,7 +322,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Atmospheric concentrations parts per million'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.ghg_cycle_df_detailed']
+            'MDO.WITNESS_Eval.WITNESS.ghg_cycle_df_detailed']
         (ghgcycle_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -361,7 +356,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = GlossaryCore.TotalProductionValue
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.{GlossaryCore.StreamProductionDetailedValue}']
+            f'MDO.WITNESS_Eval.WITNESS.EnergyMix.{GlossaryCore.StreamProductionDetailedValue}']
         (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -384,7 +379,7 @@ def post_processings(execution_engine, namespace, filters):
         # Get the total energy investment
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.EnergyInvestmentsValue}']
+            f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.EnergyInvestmentsValue}']
         (energy_investment_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
