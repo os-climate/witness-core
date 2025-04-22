@@ -19,12 +19,6 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import (
-    IndustrialDiscipline,
-)
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import (
-    ServicesDiscipline,
-)
 
 
 class MacroeconomicsModel():
@@ -33,10 +27,7 @@ class MacroeconomicsModel():
     General implementation of sector pyworld3
     """
 
-    SECTORS_DISC_LIST = [ServicesDiscipline, IndustrialDiscipline]
     SECTORS_LIST = GlossaryCore.SectorsPossibleValues
-    SECTORS_OUT_UNIT = {disc.sector_name: disc.prod_cap_unit for disc in SECTORS_DISC_LIST}
-    SECTORS_OUT_UNIT.update({GlossaryCore.SectorAgriculture: 'T$'})
 
     def __init__(self):
         """Constructor"""

@@ -29,7 +29,7 @@ class Study(StudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
 
     def setup_usecase(self, study_folder_path=None):
-        setup_data_list = []
+        setup_data_list = {}
         # private values economics operator pyworld3
         dice_input = {}
 
@@ -126,7 +126,7 @@ class Study(StudyManager):
 
         dice_input[self.study_name + f'.{GlossaryCore.EconomicsDfValue}'] = df_eco
 
-        setup_data_list.append(dice_input)
+        setup_data_list.update(dice_input)
 
         return setup_data_list
 

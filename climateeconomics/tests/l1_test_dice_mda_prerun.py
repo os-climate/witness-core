@@ -47,9 +47,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
         self.ee.display_treeview_nodes(True)
         usecase = Study(execution_engine=self.ee)
         usecase.study_name = self.name
-        values_dict = {}
-        for dict_item in usecase.setup_usecase():
-            values_dict.update(dict_item)
+        values_dict = usecase.setup_usecase()
 
         print('first execution with eco_df as input')
         self.ee.load_study_from_input_dict(values_dict)
@@ -69,9 +67,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
         ee2.display_treeview_nodes(True)
         usecase = Study(execution_engine=ee2)
         usecase.study_name = self.name
-        values_dict = {}
-        for dict_item in usecase.setup_usecase():
-            values_dict.update(dict_item)
+        values_dict = usecase.setup_usecase()
         values_dict.pop(usecase.study_name + f'.{GlossaryCore.EconomicsDfValue}')
 
         dice_input = {}
@@ -139,9 +135,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
         ee2.display_treeview_nodes(True)
         usecase = Study(execution_engine=ee2)
         usecase.study_name = self.name
-        values_dict = {}
-        for dict_item in usecase.setup_usecase():
-            values_dict.update(dict_item)
+        values_dict = usecase.setup_usecase()
 
         dice_input = {}
         dice_input[f"{usecase.study_name}.{GlossaryCore.CO2EmissionsDfValue}"] = CO2_emissions_df
@@ -167,9 +161,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
         ee2.display_treeview_nodes(True)
         usecase = Study(execution_engine=ee2)
         usecase.study_name = self.name
-        values_dict = {}
-        for dict_item in usecase.setup_usecase():
-            values_dict.update(dict_item)
+        values_dict = usecase.setup_usecase()
 
         dice_input = {}
         dice_input[f"{usecase.study_name}.{GlossaryCore.CarbonCycleDfValue}"] = carboncycle_df

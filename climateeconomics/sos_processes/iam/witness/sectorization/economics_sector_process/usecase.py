@@ -67,10 +67,10 @@ class Study(StudyManager):
     def setup_usecase(self, study_folder_path=None):
 
 
-        setup_data_list = []
+        setup_data_list = {}
 
         data_agri = {}
-        setup_data_list.append(data_agri)
+        setup_data_list.update(data_agri)
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
@@ -136,6 +136,10 @@ class Study(StudyManager):
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
 
+        energy_market_ratios = pd.DataFrame({
+            GlossaryCore.Years: years,
+            "Total": 100.,
+        })
 
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
@@ -143,9 +147,9 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.WorkforceDfValue}"] = workforce_df
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
-        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
-        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
-        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
+        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.StreamProductionValue}"] = indus_energy
+        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.StreamProductionValue}"] = agri_energy
+        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.StreamProductionValue}"] = services_energy
         sect_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = invest_energy_wo_tax
         sect_input[f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}"] = energy_emission_df
@@ -247,6 +251,7 @@ class Study(StudyManager):
             f'{self.study_name}.transport_cost': transport_df,
             f'{self.study_name}.margin': margin,
             f'{self.study_name}.mdo_sectors_invest_level': 0,
+            f'{self.study_name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}': energy_market_ratios,
             f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
             f'{self.study_name}.{GlossaryCore.CropProductivityReductionName}': crop_productivity_reduction,
             f'{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
@@ -256,7 +261,7 @@ class Study(StudyManager):
             f'{self.study_name}.Macroeconomics.Agriculture.Forestry.{GlossaryCore.SubShareSectorInvestDfValue}': share_investments_inside_forestry,
         })
 
-        setup_data_list.append(sect_input)
+        setup_data_list.update(sect_input)
 
         return setup_data_list
 

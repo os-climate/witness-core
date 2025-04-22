@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from os.path import dirname, join
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -80,13 +79,11 @@ class Study(ClimateEconomicsStudyManager):
 
     def setup_usecase(self, study_folder_path=None):
 
-        setup_data_list = []
+        values_dict = {}
 
 
         year_range = self.year_end - self.year_start
         years = arange(self.year_start, self.year_end + 1, 1)
-
-        global_data_dir = join(Path(__file__).parents[4], 'data')
 
         # ALL_RESOURCE
         resource_input = {}
@@ -104,7 +101,7 @@ class Study(ClimateEconomicsStudyManager):
                        '.non_modeled_resource_price'] = non_modeled_resource_price
         resource_input[f'{self.study_name}.{GlossaryCore.YearStart}'] = self.year_start
         resource_input[f'{self.study_name}.{GlossaryCore.YearEnd}'] = self.year_end
-        setup_data_list.append(resource_input)
+        values_dict.update(resource_input)
         data_dir_resource = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
         resource_demand = pd.read_csv(
@@ -118,9 +115,9 @@ class Study(ClimateEconomicsStudyManager):
             resource_input[self.study_name + self.all_resource_name + '.resources_CO2_emissions'] = resources_CO2_emissions
             resource_input[self.study_name + self.all_resource_name + '.resources_demand'] = resource_demand
             resource_input[self.study_name + self.all_resource_name + '.resources_demand_woratio'] = resource_demand
-        setup_data_list.append(resource_input)
+        values_dict.update(resource_input)
 
-        return setup_data_list
+        return values_dict
 
 
 if '__main__' == __name__:

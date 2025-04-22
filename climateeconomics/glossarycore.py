@@ -55,10 +55,21 @@ class GlossaryCore:
     # PWh = 1e3 TWh
     # 1 TWh  = 1e9 kWh = 1e12 Wh
 
-    conversion_dict = {"G$": {"G$": 1, 'T$': 1e-3},
-                       "T$": {"T$": 1, 'G$': 1e3},
-                       'Mt': {'Mt': 1, 'Gt': 1e-3},
-                       'm²': {'ha': 1e-4}}
+    Macroeconomics = "Macroeconomics"
+    conversion_dict = {"M$":{"M$": 1, 'G$': 1e-3},
+                       "G$":{"G$": 1, 'T$': 1e-3, 'M$': 1e3},
+                       "T$":{"G$": 1e3, 'T$': 1},
+                       "TWh or Mt": {"PWh or Gt": 1e-3, "TWh or Mt": 1, "PWh": 1e-3, "Gt": 1e-3, "Mt": 1, "TWh": 1},
+                       "PWh or Gt": {"TWh or Mt": 1e3, "PWh or Gt": 1, "PWh": 1, "Gt": 1, "Mt": 1e3, "TWh": 1e3},
+                       'Mt':{'Mt':1 , 'Gt': 1e-3},
+                       'Gt':{'Gt':1 , 'Mt': 1e3},
+                       'MWh':{'MWh': 1, 'GWh': 1e-3, 'TWh': 1e-6, 'PWh': 1e-9},
+                       'GWh':{'GWh': 1, 'TWh': 1e-3, 'PWh': 1e-6},
+                       'TWh':{'TWh': 1, 'PWh': 1e-3},
+                       'PWh':{'PWh': 1, 'TWh': 1e3},
+                       'm²':{'ha': 1e-4,},
+                       'Gha':{'Gha': 1}
+                       }
     NB_POLES_COARSE: int = 7  # number of poles in witness coarse
     NB_POLES_SECTORS_DVAR = 8
     NB_POLES_UTILIZATION_RATIO = 10  # number of poles for bspline design variables utilization ratio
@@ -84,7 +95,7 @@ class GlossaryCore:
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
-    ccus_type = "CCUS"
+    CCUS = "CCUS"
     CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
@@ -100,6 +111,7 @@ class GlossaryCore:
     SectionEnergyConsumptionPartTWh = "Part of the energy consumption per section [TWh]"
     EconomicSectors = "Economic sectors"
     Households = "Households"
+    CO2FromFlueGas = "CO2 from Flue Gas"
 
     AgricultureAndLandUse = "Agriculture & Land Use"
     Energy = "Energy"
@@ -108,17 +120,11 @@ class GlossaryCore:
     ChartGDPPerGroup = "GDP-PPP adjusted per group [T$]"
     ChartPercentagePerGroup = "Percentage per group [%]"
     ChartGDPBiggestEconomies = "Chart of the biggest countries GDP-PPP adjusted per year[G$]"
-    ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
-    ConstraintUpperBoundUsableCapital = "upper_bound_usable_capital_constraint"
     ConstraintEnergyNonUseCapital = "constraint_non_use_capital_energy"
-    ObjectiveEnergyNonUseCapital = "objective_non_use_capital_energy"
-    ObjectiveEnergyNonUseCapitalByStream = "objective_non_use_capital_energy_by_stream"
     ConstraintCarbonNegative2050 = "constraint_carbon_negative_2050"
     ConstraintEnergyCarbonNegative2050 = "constraint_energy_carbon_negative_2050"
     CleanEnergySimpleTechno = "CleanEnergySimpleTechno"
     clean_energy = "clean_energy"
-    ConsumptionObjective = "consumption_objective"
-
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -145,8 +151,6 @@ class GlossaryCore:
     energy_list = "energy_list"
     techno_list = "technologies_list"
     ccs_list = "ccs_list"
-    UsableCapitalObjectiveName = "usable_capital_objective"
-    UsableCapitalObjectiveRefName = "usable_capital_objective_ref"
     invest_mix = "invest_mix"
     SectorServices = "Services"
     SectorAgriculture = "Agriculture"
@@ -159,7 +163,6 @@ class GlossaryCore:
     GDPCountryDFName = "gdp_per_country_df"
     CountryName = "country_name"
     GroupName = "group"
-    GDPName = "gdp"
     MeanPercentageName = "mean_percentage"
     TotalEnergyConsumptionSectorName = "total_energy_consumption_sector"
     TotalEnergyConsumptionAllSectorsName = "total_energy_consumption_all_sectors"
@@ -168,9 +171,10 @@ class GlossaryCore:
     TotalEnergyEmissionsSectorName = "total_energy_emissions_sector"
     TotalNonEnergyEmissionsSectorName = "total_non_energy_emissions_sector"
     TotalEmissionsName = "total_emissions"
-    ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
-    ConsumptionObjectiveRef = get_ref_variable(var_name=ConsumptionObjectiveRefValue, unit="T$", default_value=250)
 
+    TechnoEnergyConsumptionValue = "techno_energy_consumption"
+    TechnoResourceConsumptionValue = "techno_resource_consumption"
+    TechnoScope1GHGEmissionsValue = "techno_scope_1_emissions"
     # Diet
     RedMeat = "red meat"
     WhiteMeat = "white meat"
@@ -203,7 +207,8 @@ class GlossaryCore:
     OtherDailyCal = "other_calories_per_day"
 
     TechnoCapitalValue = "techno_capital"
-    TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
+    TechnoResourceDemandsValue = "techno_resources_demands"
+    TechnoEnergyDemandsValue = "techno_energy_demands"
     ConstructionDelay = "construction_delay"
     LifetimeName = "lifetime"
     IsTechnoMainstream = "is_mainstream"
@@ -297,6 +302,12 @@ class GlossaryCore:
         SectorServices: SectionsServices,
     }
 
+    SimplifiedMarketEnergyDemandValue = "simplified_market_energy_demand"
+    SimplifiedMarketEnergyDemand = {
+        "visibility": "Shared", "namespace": NS_PUBLIC, "type": "bool",
+        "default": True,
+        "description": "if true, energy demand is not distinguished between all energies forms, its just a total of energy"}
+
     SectionListValue = "section_list"
 
     SectionList = {
@@ -318,6 +329,7 @@ class GlossaryCore:
         "description": "Percentage of the GDP for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
+        AutodifferentiedDisc.GRADIENTS: True,
         "dataframe_descriptor": {Years: ("int", [1900, YearEndDefault], False)},
     }
     SectionEnergyConsumptionPercentageDf = {
@@ -539,7 +551,7 @@ class GlossaryCore:
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            TotalCO2Emissions: ("float", None, False),
+            "CO2": ("float", None, False),
         },
     }
     CO2TaxEfficiencyValue = "CO2_tax_efficiency"
@@ -558,6 +570,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "$/tCO2Eq",
         "visibility": "Shared",
+        AutodifferentiedDisc.GRADIENTS: True,
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -806,9 +819,7 @@ class GlossaryCore:
         },
     }
 
-    AllSectionsGdpDfValue = "all_sections_gdp_df"
     AllSectionsGdpDf = {
-        "var_name": AllSectionsGdpDfValue,
         "type": "dataframe",
         "description": "GDP of all sections",
         "unit": "G$",
@@ -819,7 +830,6 @@ class GlossaryCore:
 
     AllSectionsEmissionsDfValue = "all_sections_emissions_df"
     AllSectionsEmissionsDf = {
-        "var_name": AllSectionsGdpDfValue,
         "type": "dataframe",
         "description": "CO2 equivalent emissions of all sections",
         "unit": "GtCO2eq",
@@ -921,28 +931,34 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
         "unit": "-",
     }
-    EnergyMeanPriceObjectiveRefValue = get_ref_var_name(EnergyMeanPriceObjectiveValue)
-    EnergyMeanPriceObjectiveRef = get_ref_variable(
-        var_name=EnergyMeanPriceObjectiveRefValue,
-        unit="$",
-        default_value=100.0,
-    )
 
-    StreamPricesValue = "energy_prices"  # todo : rename streams_prices, but it will break all l1
+    StreamPricesValue = "stream_prices"
+
+    StreamPrices = {
+        'type': 'dataframe',
+        'unit': '$/MWh',
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "description": "energy price per each type of energy",
+        "dynamic_dataframe_columns": True,
+    }
     ResourcesPriceValue = "resources_price"
 
     ResourcesPrice = {
         "type": "dataframe",
         "unit": "$/t",
         "visibility": "Shared",
-        "namespace": "ns_resource",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "namespace": NS_WITNESS,
     }
 
     ResourcesCO2Emissions = {
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "kgCO2/kg",
         "visibility": "Shared",
-        "namespace": "ns_resource",
+        "namespace": NS_WITNESS,
     }
 
     EnergyPriceValue = "energy_price"
@@ -959,24 +975,59 @@ class GlossaryCore:
         },
     }
 
-    EnergyProductionValue = "energy_production"
+    ccus_stream_unit = 'Mt'
+    StreamProductionValue = "stream_production"
     StreamProductionDetailedValue = "energy_production_detailed"
-    StreamProductionWithoutRatioValue = "energy_production_woratio"
-    StreamConsumptionValue = "energy_consumption"
-    StreamConsumptionWithoutRatioValue = "energy_consumption_woratio"
+
+    StreamEnergyConsumptionValue = "stream_energy_consumption"
+    StreamResourceConsumptionValue = "stream_resource_consumption"
+    StreamEnergyConsumption = {'type': 'dataframe', 'unit': 'TWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies consumptions in stream", "dynamic_dataframe_columns": True,}
+    StreamResourceConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources consumptions in stream", "dynamic_dataframe_columns": True,}
+
+    StreamEnergyDemandValue = "stream_energy_demand"
+    StreamResourceDemandValue = "stream_resource_demand"
+    StreamEnergyDemand = {'type': 'dataframe', 'unit': 'TWh', AutodifferentiedDisc.GRADIENTS: True, "description": "All energies demand in stream", "dynamic_dataframe_columns": True,}
+    StreamResourceDemand = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "All resources demand in stream", "dynamic_dataframe_columns": True,}
+
+    StreamCCSDemandValue = "stream_ccs_demand"
+    StreamCCSDemand = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "demand for ccs streams by techno", "dynamic_dataframe_columns": True, }
+    StreamCCSConsumptionValue = "stream_ccs_consumption"
+    StreamCCSConsumption = {'type': 'dataframe', 'unit': 'Mt', AutodifferentiedDisc.GRADIENTS: True, "description": "consumption of ccs streams by techno", "dynamic_dataframe_columns": True, }
+
+    StreamProductionDf = {'type': 'dataframe', 'unit': 'PWh or Gt', AutodifferentiedDisc.GRADIENTS: True, "dynamic_dataframe_columns": True}
+    StreamLandUseDf = {'type': 'dataframe', 'unit': 'Gha', "dynamic_dataframe_columns": True}
+
     LandUseRequiredValue = "land_use_required"
+
+    EnergyDemandValue = "energy_demand"
+    EnergyDemandDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "PWh",
+        "namespace": "ns_energy_market",
+        "dynamic_dataframe_columns": True,
+        AutodifferentiedDisc.GRADIENTS: True,
+    }
+
+    EnergyConsumptionValue = "energies_consumption_value"
+    EnergyConsumptionDf = {
+        "type": "dataframe",
+        "unit": "TWh",
+        "dynamic_dataframe_columns": True,
+    }
+
     NonUseCapital = "non_use_capital"
 
     TotalProductionValue = "Total production"
     EnergyProductionDf = {
-        "var_name": EnergyProductionValue,
+        "var_name": StreamProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "PWh",
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            TotalProductionValue: ("float", [0, 1e30], False),
+            "Total": ("float", [0, 1e30], False),
         },
     }
 
@@ -994,11 +1045,12 @@ class GlossaryCore:
         },
     }
 
-    EnergyProductionDetailedDf = {
-        "var_name": EnergyProductionValue,
+    StreamProductionDetailedDf = {
+        "var_name": StreamProductionValue,
         "type": "dataframe",
-        "unit": "TWh",
+        "unit": "TWh or Mt",
         "dynamic_dataframe_columns": True,
+        AutodifferentiedDisc.GRADIENTS: True,
     }
 
     EnergyCarbonIntensityDfValue = "energy_carbon_intensity_df"
@@ -1014,7 +1066,7 @@ class GlossaryCore:
     }
 
     EnergyProductionDfSectors = {
-        "var_name": EnergyProductionValue,
+        "var_name": StreamProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
         AutodifferentiedDisc.GRADIENTS: True,
@@ -1056,6 +1108,7 @@ class GlossaryCore:
     EnergyInvestmentsMinimizationObjective = "Energy invest minimization objective"
     EnergyInvestmentsWoTax = {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
         "var_name": EnergyInvestmentsWoTaxValue,
+        AutodifferentiedDisc.GRADIENTS: True,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -1099,9 +1152,9 @@ class GlossaryCore:
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("float", [1900, YearEndDefault], False),
-            TotalCO2Emissions: ("float", [0, 1e30], False),
-            TotalN2OEmissions: ("float", [0, 1e30], False),
-            TotalCH4Emissions: ("float", [0, 1e30], False),
+            CO2: ("float", [0, 1e30], False),
+            N2O: ("float", [0, 1e30], False),
+            CH4: ("float", [0, 1e30], False),
         },
     }
 
@@ -1173,6 +1226,7 @@ class GlossaryCore:
     ShareNonEnergyInvestment = {
         "var_name": ShareNonEnergyInvestmentsValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "unit": "%",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -1393,6 +1447,20 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
     }
 
+    EnergyMixCapitalDfValue = "energy_sector_capital"
+    EnergyMixCapitalDf = {
+        "type": "dataframe",
+        "unit": "G$",
+        "description": "Capital of Energy sector in G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YearEndDefault], False),
+            Capital: ("float", [0, 1e30], False),
+            NonUseCapital: ("float", [0, 1e30], False),
+        },
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+    }
+
     DetailedCapitalDfValue = "detailed_capital_df"
     Emax = "e_max"
     EnergyEfficiency = "energy_efficiency"
@@ -1424,24 +1492,6 @@ class GlossaryCore:
             OutputNetOfDamage: ("float", [0, 1e30], False),
             Capital: ("float", [0, 1e30], False),
         },
-    }
-
-    AllSectorsShareEnergyDfValue = "all_sectors_share_df"
-    AllSectorsShareEnergyDf = {
-        "type": "dataframe",
-        "unit": "%",
-        "description": "Amount of the total energy production attributed to each sector",
-        "visibility": "Shared",
-        "namespace": NS_SECTORS,
-        # "dataframe_descriptor": {
-        #     Years: ("int", [1900, YearEndDefault], False),
-        #     SectorServices: ("float", [0, 100.0], False),
-        #     SectorIndustry: ("float", [0, 100.0], False),
-        #     SectorAgriculture: ("float", [0, 100.0], False),
-        # },
-        "dataframe_descriptor": {},
-        "dynamic_dataframe_columns": True,
-
     }
 
     SectorizedEconomicsDetailDf = {  # todo: miss per capita consumption !
@@ -1563,9 +1613,9 @@ class GlossaryCore:
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
-    ResidentialEnergyConsumptionDfValue = "residential_energy_production_df"
+    ResidentialEnergyConsumptionDfValue = "residential_energy_consumption_df"
     ResidentialEnergyConsumptionDf = {
-        "var_name": RedistributionEnergyProductionDfValue,
+        "var_name": ResidentialEnergyConsumptionDfValue,
         "type": "dataframe",
         "unit": "PWh",
         "description": "Energy that is consumed by residential sector",
@@ -1573,7 +1623,7 @@ class GlossaryCore:
         "namespace": NS_GHGEMISSIONS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
-            TotalProductionValue: ("float", None, False),
+            "Total": ("float", None, False),
         },
     }
 
@@ -1754,24 +1804,6 @@ class GlossaryCore:
     MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
     MaxBudgetConstraintRef = get_ref_variable(var_name=MaxBudgetConstraintRefValue, unit="T$", default_value=1e4)
 
-    UsableCapitalObjective = {
-        "var_name": UsableCapitalObjectiveName,
-        "type": "array",
-        "unit": "-",
-        "visibility": "Shared",
-        "namespace": NS_FUNCTIONS,
-        "description": "Usable capital objective",
-    }
-
-    UsableCapitalObjectiveRef = {
-        "var_name": UsableCapitalObjectiveRefName,
-        "type": "float",
-        "unit": "T$",
-        "default": 100.0,
-        "user_level": 3,
-        "description": "reference to normalize usable capital objective",
-    }
-
     TargetEnergyProductionValue = "Target energy production"
     TargetProductionConstraintValue = "Target production constraint"
     TargetEnergyProductionDf = {
@@ -1790,6 +1822,7 @@ class GlossaryCore:
     TargetProductionConstraint = {
         "var_name": TargetProductionConstraintValue,
         "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
         "description": "Production Constraint",
         "unit": "TWh",
         "visibility": "Shared",
@@ -1800,10 +1833,6 @@ class GlossaryCore:
         },
     }
 
-    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
-    TargetProductionConstraintRef = get_ref_variable(
-        var_name=TargetProductionConstraintRefValue, unit="TWh", default_value=1e5
-    )
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
@@ -1830,16 +1859,6 @@ class GlossaryCore:
         "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.0),
         "unit": "Gt",
         "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
-    }
-
-    StreamsCO2EmissionsValue = "energy_CO2_emissions"  # todo : rename streams_co2_emissions, but it will break all l1
-    StreamsCO2Emissions = {
-        "var_name": StreamsCO2EmissionsValue,
-        "type": "dataframe",
-        "unit": "kg/kWh ... to be checked for CCUS streams",  # fixme todo
-        "visibility": "Shared",
-        "namespace": NS_ENERGY_MIX,
-        "dynamic_dataframe_columns": True,
     }
 
     TotalEnergyEmissions = "Total Energy emissions"
@@ -2143,6 +2162,16 @@ class GlossaryCore:
         "default": crop_calibration_data[FoodTypeEnergyIntensityByProdUnitName] if FoodTypeEnergyIntensityByProdUnitName in crop_calibration_data else None
     }
 
+    FoodTypeCapitalEnergyIntensityName = "food_type_capital_energy_intensity"
+    FoodTypeCapitalEnergyIntensityVar = {
+        'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+        "unit": "kWh/k$ of capital",
+        "user_level": 3,
+        "description": "kwh consumed per k$ of capital",
+        "default": crop_calibration_data[FoodTypeCapitalEnergyIntensityName] if FoodTypeCapitalEnergyIntensityName in crop_calibration_data else None
+
+    }
+
     FoodTypeLaborCostByProdUnitName = "food_type_labor_cost_by_prod_unit"
     FoodTypeLaborCostByProdUnitVar = {
         'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
@@ -2320,6 +2349,143 @@ class GlossaryCore:
         "description": "Price",
         "dynamic_dataframe_columns": True,
     }
+    GHGEnergyEmissionsDfValue = "ghg_energy_emissions_df"
+    GHGEnergyEmissionsDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "Gt",
+        "user_level": 2,
+        "description": "Emissions of the energy sector",
+        'dataframe_descriptor': {
+            Years: ('float', None, False),
+            CO2: ('float', None, False),
+            N2O: ('float', None, False),
+            CH4: ('float', None, False), }
+    }
+
+    GHGIntensityEnergies = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "Mt/TWh",
+        "user_level": 2,
+        "description": 'emissions intensity at scope 1 level for each energy for a given GHG',
+        "dynamic_dataframe_columns": True,
+    }
+
+
+    CCUS_CO2EmissionsDfValue = "CCUS_co2_emissions_df"
+    CCUS_CO2EmissionsDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_CCS,
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "Gt",
+        "user_level": 2,
+        "description": "Total CO2 captured and stored by CCUS sector",
+        'dataframe_descriptor': {
+            Years: ('float', None, False),
+            CO2: ('float', None, False),}
+    }
+
+
+
+    CCUSPriceValue = "ccus_price"
+    CCUSPrice = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_CCS,
+        "unit": "$/tCO2",
+        "user_level": 2,
+        "description": "Price of CCUS sector for capturing and storing one ton of CO2",
+        'dataframe_descriptor': {
+            Years: ('float', None, False),
+            "Price": ('float', None, False), }
+    }
+
+    EnergyMixRawProductionValue = 'energy_production_brut'
+    EnergyMixRawProduction = {
+        "type": "dataframe",
+        "unit": "PWh",
+        "user_level": 2,
+        "description": "Raw production of each energy within the energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+    EnergyMixEnergiesDemandsDfValue = 'energy_mix_energies_demands_df'
+    EnergyMixEnergiesDemandsDf = {
+        "type": "dataframe",
+        "unit": "PWh",
+        "user_level": 2,
+        "description": "Demands for each energy within the Energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMixNetProductionsDfValue = "energy_mix_net_production"
+    EnergyMixNetProductionsDf = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "unit": "PWh",
+        "user_level": 2,
+        "description": "Net energies production from Energy mix",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMixEnergiesConsumptionDfValue = 'energy_mix_energies_consumption_df'
+    EnergyMixEnergiesConsumptionDf = {
+        "type": "dataframe",
+        "unit": "PWh",
+        "user_level": 2,
+        "description": "Consumptions each energy within the Energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMixCCSDemandsDfValue = 'energy_mix_ccs_demands_df'
+    EnergyMixCCSDemandsDf = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "Gt",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "user_level": 2,
+        "description": "Demands for ccs within the Energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMixCCSConsumptionDfValue = 'energy_mix_ccs_consumption_df'
+    EnergyMixCCSConsumptionDf = {
+        "type": "dataframe",
+        "unit": "Gt",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "user_level": 2,
+        "description": "Consumption of ccs within the Energy sector",
+        "dynamic_dataframe_columns": True,
+    }
+    EnergyMarketRatioAvailabilitiesValue = "energy_market_demand_ratios"
+    EnergyMarketRatioAvailabilities = {
+        "type": "dataframe",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "unit": "%",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "description": "ratios of availability of energy usage between economy, ccus, househould consumption",
+        "dynamic_dataframe_columns": True,
+    }
+
+    EnergyMarketDemandsDf = {
+        "type": "dataframe",
+        "unit": "PWh",
+        "description": "Total demands of each energie",
+        "dynamic_dataframe_columns": True,
+    }
+
 
     @staticmethod
     def get_dynamic_variable(variable: dict):
@@ -2384,10 +2550,11 @@ class GlossaryCore:
 
     @classmethod
     def get_subsector_variable(cls, var_descr: dict, subsector_name: str, sector_namespace: str):
-        subsector_production_df = deepcopy(var_descr)
-        subsector_production_df["visibility"] = "Shared"
-        subsector_production_df[AutodifferentiedDisc.GRADIENTS] = True
-        subsector_production_df["namespace"] = sector_namespace
-        subsector_production_df["description"] = subsector_production_df["description"].format(subsector_name)
+        var_descr_copy = deepcopy(var_descr)
+        var_descr_copy["visibility"] = "Shared"
+        var_descr_copy[AutodifferentiedDisc.GRADIENTS] = True
+        var_descr_copy["namespace"] = sector_namespace
+        if 'description' in var_descr_copy:
+            var_descr_copy["description"] = var_descr_copy["description"].format(subsector_name)
 
-        return subsector_production_df
+        return var_descr_copy
