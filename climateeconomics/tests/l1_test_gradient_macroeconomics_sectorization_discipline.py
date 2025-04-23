@@ -148,9 +148,7 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
                        f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
                        f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
-                       f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{model_name}.{GlossaryCore.ShareMaxInvestName}': self.share_max_invest,
-                       f'{self.name}.{model_name}.{GlossaryCore.MaxInvestConstraintRefName}': self.max_invest_constraint_ref,
                        f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': self.damage_indus[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
                        f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': self.damage_agri[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
                        f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': self.damage_service[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
@@ -177,10 +175,8 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'],
+                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',],
                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                     f'{self.name}.{model_name}.{GlossaryCore.MaxInvestConstraintName}',
                                      f'{self.name}.{GlossaryCore.InvestmentDfValue}',
                                      f'{self.name}.{GlossaryCore.DamageDfValue}',]
                             )

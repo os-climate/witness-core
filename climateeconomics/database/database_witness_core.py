@@ -29,6 +29,14 @@ data_folder = join(dirname(dirname(__file__)), "data")
 class DatabaseWitnessCore:
     '''Stocke les valeurs utilisées dans witness core'''
 
+    ShareInvestEnergy = ColectedData(
+        value=1.6,
+        unit="%",
+        description="Share of the GDP that is invested in the energy sector",
+        link=["https://www.iea.org/reports/world-energy-investment-2024/overview-and-key-findings", "https://www.statista.com/statistics/268750/global-gross-domestic-product-gdp/"],
+        source="IEA",
+        last_update_date=date(2025, 4, 18)
+    )
     ShareInvestNonEnergy = ColectedData(
         value=21.5,
         unit="%",

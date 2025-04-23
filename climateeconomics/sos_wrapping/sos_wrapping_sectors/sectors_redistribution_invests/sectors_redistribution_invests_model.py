@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -22,6 +23,7 @@ class SectorRedistributionInvestsModel:
     """model for energy and investment redistribution between economy sectors"""
     def __init__(self):
         self.inputs = dict()
+        self.outputs = dict()
 
     def compute_invest_redistribution(self) -> tuple[dict, pd.DataFrame]:
         """distrubute total energy production between sectors"""
@@ -29,11 +31,12 @@ class SectorRedistributionInvestsModel:
         sectors_invests = {}
         all_sectors_invests_df = {}
         for sector in self.inputs["sector_list_wo_subsector"]:
-            if not self.inputs["mdo_mode"]:
+            if not self.inputs["mdo_mode_sectors"]:
                 economics_df: pd.DataFrame = self.inputs[GlossaryCore.EconomicsDfValue]
                 net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
+                conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SectorizedEconomicsDf['unit']][GlossaryCore.InvestmentDf['unit']]
                 sector_invests_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
-                                            GlossaryCore.ShareInvestment].values / 100. * net_output
+                                            GlossaryCore.ShareInvestment].values / 100. * net_output * conversion_factor
                 sector_invests_df = pd.DataFrame(
                     {GlossaryCore.Years: economics_df[GlossaryCore.Years].values,
                      GlossaryCore.InvestmentsValue: sector_invests_values}
@@ -53,7 +56,22 @@ class SectorRedistributionInvestsModel:
 
     def compute(self, inputs: dict):
         self.inputs = inputs
+        self.years = np.arange(inputs[GlossaryCore.YearStart], inputs[GlossaryCore.YearEnd] + 1)
 
         sectors_invests, all_sectors_invests_df = self.compute_invest_redistribution()
 
+        if not inputs["mdo_mode_energy"]:
+            self.compute_invest_ccus_and_energy()
+
         return sectors_invests, all_sectors_invests_df
+
+    def compute_invest_ccus_and_energy(self):
+        """If in MDA mode, invests in energy and ccus sectors are proportional to net gdp output"""
+        net_output = self.inputs[GlossaryCore.EconomicsDfValue][GlossaryCore.OutputNetOfDamage].values
+        conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SectorizedEconomicsDf['unit']][GlossaryCore.InvestmentDf['unit']]
+        for sector in [GlossaryCore.CCUS, GlossaryCore.EnergyMix]:
+            self.outputs[f"{sector}.{GlossaryCore.InvestmentsValue}"] = pd.DataFrame({
+                GlossaryCore.Years: self.years,
+                GlossaryCore.InvestmentsValue: net_output * self.inputs[f"{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}"][GlossaryCore.ShareInvestment] /100. * conversion_factor
+            })
+

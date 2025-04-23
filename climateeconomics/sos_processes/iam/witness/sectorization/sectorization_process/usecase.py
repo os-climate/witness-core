@@ -117,12 +117,22 @@ class Study(StudyManager):
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
 
+        share_invest_ccus = pd.DataFrame({GlossaryCore.Years: years,
+                                                    GlossaryCore.ShareInvestment: 0.01})
+
+        share_invests_energy = pd.DataFrame({GlossaryCore.Years: years,
+                                                    GlossaryCore.ShareInvestment: DatabaseWitnessCore.ShareInvestEnergy.value})
+
         cons_input = {
             f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryCore.YearEnd}": self.year_end,
+            f"{self.study_name}.mdo_mode_sectors": False,
+            f"{self.study_name}.mdo_mode_energy": False,
             f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}": total_invests,
             f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}": damage_fraction_df,
             f"{self.study_name}.{GlossaryCore.EconomicsDfValue}": economics_df,
+            f"{self.study_name}.{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": share_invest_ccus,
+            f"{self.study_name}.{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": share_invests_energy,
             f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
              f'{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_of_energy_mix,
         }

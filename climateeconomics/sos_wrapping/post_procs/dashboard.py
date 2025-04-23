@@ -300,7 +300,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
         df_energy_invest = get_scenario_value(
             execution_engine,
-            GlossaryCore.EnergyInvestmentsWoTaxValue,
+            f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}",
             scenario_name,
         )
         df_consumption = get_scenario_value(
@@ -846,7 +846,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
         df_energy_invest = get_scenario_value(
             execution_engine,
-            GlossaryCore.EnergyInvestmentsWoTaxValue,
+            f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}",
             scenario_name,
         )
         df_consumption = get_scenario_value(
@@ -1000,7 +1000,7 @@ def complete_economics_df_for_sectorization(
         df_non_energy_invest[GlossaryCore.InvestmentsValue].values
     )
     economics_detail_df_completed[GlossaryCore.EnergyInvestmentsValue] = (
-        df_energy_invest[GlossaryCore.EnergyInvestmentsWoTaxValue].values
+        df_energy_invest[GlossaryCore.InvestmentsValue].values
     )
     economics_detail_df_completed[GlossaryCore.InvestmentsValue] = (
         economics_detail_df_completed[GlossaryCore.EnergyInvestmentsValue]

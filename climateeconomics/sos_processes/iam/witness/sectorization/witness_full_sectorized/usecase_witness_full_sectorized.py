@@ -36,7 +36,7 @@ class Study(StudyCoarse):
         setup_data = super().setup_usecase()
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 200,
+            f'{self.study_name}.max_mda_iter': 400,
             f'{self.study_name}.tolerance': 1.0e-12,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
@@ -53,4 +53,4 @@ class Study(StudyCoarse):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.run(for_test=True)

@@ -256,3 +256,9 @@ class ClimateEconomicsStudyManager(StudyManager):
         for sub_disc in disc.proxy_disciplines:
             lin_mode_dict = self.add_auto_linearization_mode_rec(sub_disc, lin_mode_dict)
         return lin_mode_dict
+
+    def set_value_at_namespace(self, varname_short_name: str, value, namespace: str) -> dict:
+        namespace_value = self.ee.ns_manager.shared_ns_dict[namespace].value
+        var_full_path = f"{namespace_value}.{varname_short_name}"
+        return {var_full_path: value}
+
