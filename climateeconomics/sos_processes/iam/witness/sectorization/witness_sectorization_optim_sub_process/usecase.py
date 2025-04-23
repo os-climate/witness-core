@@ -16,6 +16,7 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_optimization_plugins.models.func_manager.func_manager import (
     FunctionManager,
@@ -61,7 +62,7 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
         self.witness_uc = witness_usecase_secto(
             year_start=self.year_start, year_end=self.year_end, bspline=self.bspline,
-            execution_engine=execution_engine, techno_dict=techno_dict)
+            execution_engine=execution_engine, techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2])
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
         self.test_post_procs = True
 
@@ -218,7 +219,7 @@ class Study(ClimateEconomicsStudyManager):
         self.dspace_size, self.dspace = self.dspace_dict_to_dataframe(dspace)
 
         setup_data_list[f'{self.study_name}.design_space'] = self.dspace
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode'] = True
+        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode_sectors'] = True
         setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
 
@@ -234,6 +235,11 @@ class Study(ClimateEconomicsStudyManager):
         })
         setup_data_list[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
         setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
+
+        setup_data_list.update({
+            **self.set_value_at_namespace("mdo_mode_sectors", True,"ns_public"),
+            **self.set_value_at_namespace("mdo_mode_energy", True,"ns_public"),
+        })
         return setup_data_list
 
 

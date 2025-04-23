@@ -249,7 +249,6 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_DEMAND}',
                            ]
 
-        self.override_dump_jacobian = 1
         self.check_jacobian(location=dirname(__file__), filename='jacobian_all_resource_discipline.pkl',
                             discipline=disc_techno, local_data = disc_techno.local_data, inputs=input_names,
                             outputs=resource_output, step=1e-15,

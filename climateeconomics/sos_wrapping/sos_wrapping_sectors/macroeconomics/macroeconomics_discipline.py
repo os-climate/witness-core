@@ -49,8 +49,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_IN = {
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
-        GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
         GlossaryCore.ShareMaxInvestName: GlossaryCore.ShareMaxInvest,
         GlossaryCore.MaxInvestConstraintRefName: GlossaryCore.MaxInvestConstraintRef,
         GlossaryCore.DamageToProductivity: {'type': 'bool', 'default': True,
@@ -63,7 +64,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.EconomicsDfValue: GlossaryCore.SectorizedEconomicsDf,
         GlossaryCore.EconomicsDetailDfValue: GlossaryCore.SectorizedEconomicsDetailDf,
-        GlossaryCore.MaxInvestConstraintName: GlossaryCore.MaxInvestConstraint,
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.DamageDetailedDfValue: GlossaryCore.DamageDetailedDf,
@@ -105,7 +105,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         outputs_dict = {
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
             GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df,
-            GlossaryCore.MaxInvestConstraintName: self.macro_model.max_invest_constraint,
             GlossaryCore.InvestmentDfValue: self.macro_model.sum_invests_df,
             GlossaryCore.DamageDfValue: self.macro_model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             GlossaryCore.DamageDetailedDfValue: self.macro_model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
@@ -121,8 +120,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         sector_list = inputs_dict[GlossaryCore.SectorListValue]
-        share_max_invest = inputs_dict[GlossaryCore.ShareMaxInvestName]
-        max_invest_ref = inputs_dict[GlossaryCore.MaxInvestConstraintRefName]
 
         # Generic gradient wrt each sector : same for all sectors
         identity_mat = self.macro_model.get_derivative_sectors()
@@ -141,17 +138,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 identity_mat)
             # wrt output net damage for each sector
 
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.MaxInvestConstraintName, ),
-                (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
-                identity_mat/100 * share_max_invest / max_invest_ref)
-
             # gradient of constraint and invest_df wrt invest for each sector (except for energy)
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.MaxInvestConstraintName,),
-                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                -1.0 * identity_mat / max_invest_ref)
-
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.InvestmentDfValue,GlossaryCore.InvestmentsValue),
                 (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
@@ -160,24 +147,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
                 (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.Damages),
                 identity_mat)
-            try:
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
-                    (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.EstimatedDamages),
-                    identity_mat)
-            except:
-                pass
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+                (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.EstimatedDamages),
+                identity_mat)
 
-        # gradient of constraint and invest_df wrt output net damage for each
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.MaxInvestConstraintName,),
-            (f'{GlossaryCore.EnergyInvestmentsWoTaxValue}', GlossaryCore.EnergyInvestmentsWoTaxValue),
-            -1.0 * identity_mat / max_invest_ref)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
-            (f'{GlossaryCore.EnergyInvestmentsWoTaxValue}', GlossaryCore.EnergyInvestmentsWoTaxValue),
-            identity_mat)
 
     def get_chart_filter_list(self):
 
@@ -383,7 +357,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'Investments breakdown by sector' in chart_list:
 
-            chart_name = ('Investments breakdown per sector in G$ over years')
+            chart_name = 'Investments breakdown per sector in G$ over years'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Sectors investments [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
@@ -394,13 +368,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_series = InstanciatedSeries(
                     years, ordonate_data, f'{sector} investments', 'bar')
                 new_chart.add_series(new_series)
-
-            # add investments in energy to the chart as well
-            invest_energy = inputs_dict[GlossaryCore.EnergyInvestmentsWoTaxValue]
-            ordonate_data = list(invest_energy[GlossaryCore.EnergyInvestmentsWoTaxValue])
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'energy investments', 'bar')
-            new_chart.add_series(new_series)
 
             #add total investments
             total_invest = self.get_sosdisc_outputs(GlossaryCore.InvestmentDfValue)
