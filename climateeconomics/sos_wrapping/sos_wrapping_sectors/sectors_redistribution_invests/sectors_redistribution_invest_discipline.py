@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import copy
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
@@ -52,7 +52,8 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
-        "mdo_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False, 'structuring': True},
+        "mdo_mode_sectors": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", 'structuring': True, 'description': "set to true if you optim driver controls raw invests in sectors"},
+        "mdo_mode_energy": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", 'structuring': True, 'description': "set to true if you optim driver controls raw invests in each energy/ccus techno"},
         "mdo_sub_sector_mode": {"visibility": "Shared", "namespace": GlossaryCore.NS_PUBLIC, "type": "bool", "default": False, 'structuring': True},
         "sector_list_wo_subsector": GlossaryCore.SectorListWoSubsector,
     }
@@ -68,16 +69,26 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
         """setup dynamic inputs and outputs"""
         dynamic_inputs = {}
         dynamic_outputs = {}
-        values_dict, go = self.collect_var_for_dynamic_setup(['mdo_mode', "sector_list_wo_subsector", GlossaryCore.YearStart, GlossaryCore.YearEnd])
+        values_dict, go = self.collect_var_for_dynamic_setup(['mdo_mode_sectors', 'mdo_mode_energy', "sector_list_wo_subsector", GlossaryCore.YearStart, GlossaryCore.YearEnd])
         if go:
-            if values_dict["mdo_mode"]:
+            if (not values_dict["mdo_mode_energy"]) or (not values_dict["mdo_mode_sectors"]):
+                dynamic_inputs[GlossaryCore.EconomicsDfValue] = GlossaryCore.SectorizedEconomicsDf
+            if not values_dict["mdo_mode_energy"]:
+                share_sector_variable = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorInvestmentDf)
+                share_sector_variable["namespace"] = GlossaryCore.NS_WITNESS
+                dynamic_inputs[f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}"] = deepcopy(share_sector_variable)
+                dynamic_inputs[f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}"] = deepcopy(share_sector_variable)
+
+                investments_df_variable = deepcopy(GlossaryCore.InvestmentDf)
+                investments_df_variable["namespace"] = GlossaryCore.NS_WITNESS
+
+                dynamic_outputs[f"{GlossaryCore.CCUS}.{GlossaryCore.InvestmentsValue}"] = deepcopy(investments_df_variable)
+                dynamic_outputs[f"{GlossaryCore.EnergyMix}.{GlossaryCore.InvestmentsValue}"] = deepcopy(investments_df_variable)
+            if values_dict["mdo_mode_sectors"]:
                 for sector in values_dict["sector_list_wo_subsector"]:
                     dynamic_inputs[f'{sector}.invest_mdo_df'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
                     dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
             else:
-                economics_df = copy.deepcopy(GlossaryCore.EconomicsDf)
-                del economics_df["dataframe_descriptor"][GlossaryCore.PerCapitaConsumption]
-                dynamic_inputs[GlossaryCore.EconomicsDfValue] = economics_df
                 default_values = {
                     GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value,
                     GlossaryCore.SectorIndustry: DatabaseWitnessCore.InvestInduspercofgdp2020.value,
@@ -111,6 +122,7 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
         for sector in inputs["sector_list_wo_subsector"]:
             outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = sectors_invests[sector]
 
+        outputs.update(model.outputs)
         self.store_sos_outputs_values(outputs)
 
     def compute_sos_jacobian(self):
@@ -119,7 +131,7 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
 
         sectors_list = inputs["sector_list_wo_subsector"]
 
-        if inputs["mdo_mode"]:
+        if inputs["mdo_mode_sectors"]:
             for sector in sectors_list:
                 self.set_partial_derivative_for_other_types(
                     (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
@@ -148,6 +160,9 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
         chart_list = [GlossaryCore.RedistributionInvestmentsDfValue,
                       GlossaryCore.ShareSectorInvestmentDfValue,]
 
+        if not self.get_sosdisc_inputs("mdo_mode_sectors"):
+            chart_list.append('Energy & CCUS sectors investments')
+
         chart_filters.append(ChartFilter(
             'Charts filter', chart_list, chart_list, 'charts'))
 
@@ -155,14 +170,15 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
 
     def get_post_processing_list(self, filters=None):
         all_filters = True
-        charts = []
-
+        charts_list = []
         if filters is not None:
-            charts = filters
+            for chart_filter in filters:
+                if chart_filter.filter_key == 'charts':
+                    charts_list = chart_filter.selected_values
 
         instanciated_charts = []
         inputs = self.get_sosdisc_inputs()
-        if all_filters or GlossaryCore.InvestmentsValue:
+        if True:
             # first graph
             all_sectors_invests_df = self.get_sosdisc_outputs(
                 GlossaryCore.RedistributionInvestmentsDfValue)
@@ -182,30 +198,23 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
                                                 sector, 'bar', True)
                 new_chart.series.append(new_series)
 
-            total_invests = all_sectors_invests_df[GlossaryCore.InvestmentsValue].values
-            new_series = InstanciatedSeries(years,
-                                            list(total_invests),
-                                            'Total', 'lines', True)
-            new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-            # second graph
-            chart_name = "Share of total investments production allocated to sectors [%]"
+        if not self.get_sosdisc_inputs("mdo_mode_energy"):
+            if 'Energy & CCUS sectors investments' in charts_list:
+                chart_name = 'Energy & CCUS sectors investments'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                                 '%',
-                                                 stacked_bar=True,
-                                                 chart_name=chart_name)
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.InvestmentDf['unit'],
+                                                     stacked_bar=True,
+                                                     chart_name=chart_name)
 
-            for sector in inputs["sector_list_wo_subsector"]:
-                sector_invest = all_sectors_invests_df[sector].values
-                share_sector = sector_invest / total_invests * 100.
-                new_series = InstanciatedSeries(years,
-                                                list(share_sector),
-                                                sector, 'bar', True)
-                new_chart.series.append(new_series)
+                for sector in [GlossaryCore.CCUS, GlossaryCore.EnergyMix]:
+                    sector_invest = self.get_sosdisc_outputs(f"{sector}.{GlossaryCore.InvestmentsValue}")[GlossaryCore.InvestmentsValue]
+                    new_series = InstanciatedSeries(years, sector_invest, sector, 'bar', True)
+                    new_chart.series.append(new_series)
 
-            instanciated_charts.append(new_chart)
+                instanciated_charts.append(new_chart)
+
 
         return instanciated_charts
 

@@ -37,6 +37,7 @@ class SectorsRedistributionInvestsDisciplineTest(unittest.TestCase):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: 0,
+            GlossaryCore.Capital: 0,
             GlossaryCore.OutputNetOfDamage: 90 * 1.015 ** time,
             GlossaryCore.PerCapitaConsumption: 0
         })
@@ -50,6 +51,12 @@ class SectorsRedistributionInvestsDisciplineTest(unittest.TestCase):
 
         self.share_invests_services = pd.DataFrame({GlossaryCore.Years: self.years,
                                                     GlossaryCore.ShareInvestment: np.linspace(4, 2.7, n_years)})
+
+        self.share_invest_ccus = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                    GlossaryCore.ShareInvestment: np.linspace(0.02, 0.02, n_years)})
+
+        self.share_invests_energy = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                    GlossaryCore.ShareInvestment: np.linspace(1.65, 2, n_years)})
 
     def test(self):
         """Check discipline setup and run"""
@@ -75,9 +82,13 @@ class SectorsRedistributionInvestsDisciplineTest(unittest.TestCase):
 
         inputs_dict = {f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
                        f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
+                       f'{name}.mdo_mode_sectors': False,
+                       f'{name}.mdo_mode_energy': False,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_agriculture,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_industry,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_services,
+                       f'{name}.{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_ccus,
+                       f'{name}.{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_energy,
         }
         ee.load_study_from_input_dict(inputs_dict)
 

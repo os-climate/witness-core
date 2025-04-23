@@ -96,6 +96,7 @@ class GlossaryCore:
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
     CCUS = "CCUS"
+    EnergyMix = "EnergyMix"
     CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
@@ -874,7 +875,7 @@ class GlossaryCore:
             Consumption: ("float", [0, 1e30], False),  # G$
             PerCapitaConsumption: ("float", [0, 1e30], False),
             InvestmentsValue: ("float", [0, 1e30], False),  # G$
-            EnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
+            #EnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
             NonEnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
             OutputGrowth: ("float", None, False),
         },
@@ -1105,7 +1106,6 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
     }
 
-    EnergyInvestmentsMinimizationObjective = "Energy invest minimization objective"
     EnergyInvestmentsWoTax = {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
         "var_name": EnergyInvestmentsWoTaxValue,
         AutodifferentiedDisc.GRADIENTS: True,
@@ -1556,7 +1556,7 @@ class GlossaryCore:
     }
 
     ShareSectorInvestmentDfValue = "share_sector_investment_df"
-    ShareInvestment = "Share of total investments [%]"
+    ShareInvestment = "Share"
     ShareSectorInvestmentDf = {
         "type": "dataframe",
         "unit": "%",

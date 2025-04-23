@@ -28,7 +28,6 @@ from climateeconomics.glossarycore import GlossaryCore
 class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
 
     def setUp(self):
-        self.override_dump_jacobian = 1
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start =GlossaryCore.YearStartDefault
@@ -42,6 +41,7 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: 0,
+            GlossaryCore.Capital: 0,
             GlossaryCore.OutputNetOfDamage: 90 * 1.015 ** time,
             GlossaryCore.PerCapitaConsumption: 0
         })
@@ -65,6 +65,12 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
 
         self.invests_services = pd.DataFrame({GlossaryCore.Years: self.years,
                                                     GlossaryCore.InvestmentsValue: np.linspace(4, 2.7, n_years)})
+
+        self.share_invest_ccus = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                    GlossaryCore.ShareInvestment: np.linspace(0.02, 0.02, n_years)})
+
+        self.share_invests_energy = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                    GlossaryCore.ShareInvestment: np.linspace(1.65, 2, n_years)})
 
     def analytic_grad_entry(self):
         return [
@@ -93,12 +99,17 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
         ee.display_treeview_nodes()
 
         inputs_dict = {
+            f'{name}.{GlossaryCore.YearStart}': self.year_start,
+            f'{name}.{GlossaryCore.YearEnd}': self.year_end,
             f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
             f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-            f'{name}.mdo_mode': False,
+            f'{name}.mdo_mode_sectors': False,
+            f'{name}.mdo_mode_energy': False,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_agriculture,
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_industry,
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_services,
+            f'{name}.{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_ccus,
+            f'{name}.{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_energy,
         }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -114,7 +125,7 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
                             outputs=output_checked
                             )
 
-    def test_analytic_grad_mdo_mode(self):
+    def test_analytic_grad_mdo_mode_sectors(self):
         name = 'Test'
         model_name = 'sectors_redistribution_invests.SectorsRedistributionInvestsDiscipline'
         ee = ExecutionEngine(name)
@@ -138,7 +149,8 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
         inputs_dict = {
             f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
             f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-            f'{name}.mdo_mode': True,
+            f'{name}.mdo_mode_energy': True,
+            f'{name}.mdo_mode_sectors': True,
             f'{name}.{GlossaryCore.SectorAgriculture}.invest_mdo_df': self.invests_agriculture,
             f'{name}.{GlossaryCore.SectorIndustry}.invest_mdo_df': self.invests_industry,
             f'{name}.{GlossaryCore.SectorServices}.invest_mdo_df': self.invests_services,

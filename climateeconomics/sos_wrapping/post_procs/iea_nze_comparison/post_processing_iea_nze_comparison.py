@@ -496,7 +496,7 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=f"EnergyMix.solid_fuel.CoalExtraction.{GlossaryEnergy.TechnoProductionValue}",
-            columns_to_plot=["solid_fuel (TWh)"],
+            columns_to_plot=["solid_fuel"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_1": {"df_label": "WITNESS"},
@@ -510,7 +510,7 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=f"EnergyMix.electricity.Nuclear.{GlossaryEnergy.TechnoProductionValue}",
-            columns_to_plot=["electricity (TWh)", "heat.hightemperatureheat (TWh)"],
+            columns_to_plot=["electricity", "heat.hightemperatureheat"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_1": {"df_label": "WITNESS"},
@@ -525,7 +525,7 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Electricity (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=f"EnergyMix.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}",
-            columns_to_plot=["electricity (TWh)"],
+            columns_to_plot=["electricity"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_1": {"df_label": "WITNESS"},
@@ -543,7 +543,7 @@ def post_processings(execution_engine, namespace, filters):
                 f"EnergyMix.electricity.SolarPv.{GlossaryEnergy.TechnoProductionValue}",
                 f"EnergyMix.electricity.SolarThermal.{GlossaryEnergy.TechnoProductionValue}",
             ],
-            columns_to_plot=[["electricity (TWh)"], ["electricity (TWh)"]],
+            columns_to_plot=[["electricity"], ["electricity"]],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_1": {"df_label": "WITNESS"},
@@ -561,7 +561,7 @@ def post_processings(execution_engine, namespace, filters):
                 f"EnergyMix.electricity.WindOnshore.{GlossaryEnergy.TechnoProductionValue}",
                 f"EnergyMix.electricity.WindOffshore.{GlossaryEnergy.TechnoProductionValue}",
             ],
-            columns_to_plot=[["electricity (TWh)"], ["electricity (TWh)"]],
+            columns_to_plot=[["electricity"], ["electricity"]],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_1": {"df_label": "WITNESS"},
@@ -576,7 +576,7 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=f"EnergyMix.biogas.{GlossaryEnergy.StreamProductionValue}",
-            columns_to_plot=["biogas (TWh)"],
+            columns_to_plot=["biogas"],
             args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
             # sum_columns="WITNESS"
         )
@@ -588,7 +588,7 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Energy (PWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.ForestProduction}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable="Agriculture.Forestry.techno_production",
-            columns_to_plot=["biomass_dry (TWh)"],
+            columns_to_plot=["biomass_dry"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
@@ -603,7 +603,7 @@ def post_processings(execution_engine, namespace, filters):
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.CropEnergy}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=f"Agriculture.Crop.mix_detailed_production",
-            columns_to_plot=["Total (TWh)"],
+            columns_to_plot=["Total"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
                 "args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
@@ -619,7 +619,7 @@ def post_processings(execution_engine, namespace, filters):
         #     y_axis_name="Energy (TWh)",
         #     iea_variable=f"{IEA_NAME}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production",
         #     witness_variable=f"EnergyMix.energy_production_brut_detailed",
-        #     columns_to_plot=["production fuel.liquid_fuel (TWh)"],
+        #     columns_to_plot=["production fuel.liquid_fuel"],
         #     args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
         #     # sum_columns="WITNESS"
         # )

@@ -343,6 +343,7 @@ class CropDiscipline(SubSectorDiscipline):
                                            crop_productivity_reduction[col], self.pimp_string(col), "lines"))
 
             new_chart.post_processing_section_name = "Damages"
+            new_chart.post_processing_is_key_chart = True
             instanciated_charts.append(new_chart)
 
         if "Prices" in charts:
@@ -376,6 +377,7 @@ class CropDiscipline(SubSectorDiscipline):
                 df_total=outputs[GlossaryCore.CaloriesPerCapitaValue],
                 column_total="kcal_pc",
                 post_proc_category="Production",
+                key_chart=True,
             )
             instanciated_charts.append(new_chart)
 
@@ -572,6 +574,7 @@ class CropDiscipline(SubSectorDiscipline):
                     df_total=outputs["Crop." + GlossaryCore.ProdForStreamName.format(stream)],
                     column_total="Total",
                     post_proc_category="Biomass production for energy sector",
+                    key_chart=True
                 )
                 instanciated_charts.append(new_chart)
 
@@ -644,6 +647,7 @@ class CropDiscipline(SubSectorDiscipline):
                                           column_total: Union[None, str],
                                           post_proc_category: Union[None, str],
                                           lines: bool = False,
+                                          key_chart: bool = False,
                                           note: Union[dict, None] = None):
 
 
@@ -671,6 +675,8 @@ class CropDiscipline(SubSectorDiscipline):
 
         if note is not None:
             new_chart.annotation_upper_left = note
+
+        new_chart.post_processing_is_key_chart = key_chart
         return new_chart
 
     def graph_total_prod_for_energy_chart(self, stream: str):
@@ -735,7 +741,7 @@ class CropDiscipline(SubSectorDiscipline):
         total_non_use_capital = non_use_capital[food_types].values.sum(axis=1)
 
         new_chart = TwoAxesInstanciatedChart('Years', "T$", stacked_bar=True, chart_name="Crop capital stock")
-
+        new_chart.post_processing_is_key_chart = True
         new_series = InstanciatedSeries(years, total_capital / 1e3, 'Capital stock', 'lines', True)
         new_chart.add_series(new_series)
         new_series = InstanciatedSeries(years, total_non_use_capital / 1e3, 'Unused capital', 'bar', True)
@@ -846,6 +852,7 @@ class CropDiscipline(SubSectorDiscipline):
         new_series = InstanciatedSeries(years, damage_df[GlossaryCore.Damages], "Damages", 'lines', True)
         new_chart.add_series(new_series)
         new_chart.post_processing_section_name = "Economical output"
+        new_chart.post_processing_is_key_chart = True
         return new_chart
 
     def chart_gross_and_net_output(self, outputs):
@@ -864,6 +871,7 @@ class CropDiscipline(SubSectorDiscipline):
         new_series = InstanciatedSeries(years, -damage_df[GlossaryCore.Damages], "Damages", 'bar', True)
         new_chart.add_series(new_series)
         new_chart.post_processing_section_name = "Economical output"
+        new_chart.post_processing_is_key_chart = True
         new_chart.annotation_upper_left = {"Note": "does not include Forestry activities output."}
         return new_chart
 
