@@ -16,7 +16,9 @@ limitations under the License.
 '''
 import unittest
 
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim.usecase_witness_sectorization_optim import Study
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim.usecase_witness_sectorization_optim import (
+    Study,
+)
 
 
 class WitnessSectorizationOptimStudyTest(unittest.TestCase):
