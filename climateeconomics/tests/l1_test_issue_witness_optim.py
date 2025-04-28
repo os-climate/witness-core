@@ -32,4 +32,4 @@ class WitnessSectorizationOptimStudyTest(unittest.TestCase):
         '''
         uc_cls = Study(run_usecase=True)
         uc_cls.load_data()
-        uc_cls.run(force_run=True)
+        uc_cls.run()
