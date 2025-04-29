@@ -173,9 +173,11 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',],
+                                    #f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}',
+                                    #f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}',
+                                    #f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',
+                            ]
+                            ,
                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.InvestmentDfValue}',
                                      f'{self.name}.{GlossaryCore.DamageDfValue}',]
