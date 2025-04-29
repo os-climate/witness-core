@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import pandas as pd
-
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import (
