@@ -147,10 +147,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
                 (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.Damages),
                 identity_mat)
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
-                (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.EstimatedDamages),
-                identity_mat)
 
 
     def get_chart_filter_list(self):
