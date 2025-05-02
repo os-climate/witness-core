@@ -30,7 +30,7 @@ class DatabaseWitnessCore:
     '''Stocke les valeurs utilisées dans witness core'''
 
     ShareInvestEnergy = ColectedData(
-        value=1.6,
+        value=1.8 * 0.6, # convert PPP to USD becasue energy invest input value are in USD
         unit="%",
         description="Share of the GDP that is invested in the energy sector",
         link=["https://www.iea.org/reports/world-energy-investment-2024/overview-and-key-findings", "https://www.statista.com/statistics/268750/global-gross-domestic-product-gdp/"],
