@@ -26,7 +26,9 @@ from energy_models.sos_processes.witness_sub_process_builder import (
 )
 
 from climateeconomics.glossarycore import GlossaryCore
-
+OPTIM_NAME = "MDO"
+COUPLING_NAME = "WITNESS_Eval"
+EXTRA_NAME = "WITNESS"
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
@@ -48,7 +50,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         designvariable_name = "DesignVariables"
         func_manager_name = "FunctionsManager"
         extra_name = 'WITNESS'
-        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
 
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization', invest_discipline=self.invest_discipline,

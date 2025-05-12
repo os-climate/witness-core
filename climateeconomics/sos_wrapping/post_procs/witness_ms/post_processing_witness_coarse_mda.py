@@ -324,16 +324,16 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Investements in energy' in graphs_list:
 
-        chart_name = 'Energy investments without tax'
+        chart_name = 'Energy investments'
         x_axis_name = 'Years'
-        y_axis_name = f'Energy investments wo tax [{GlossaryCore.EnergyInvestmentsWoTax["unit"]}]'
+        y_axis_name = f'Energy investments [{GlossaryCore.InvestmentDf["unit"]}]'
 
-        df_paths = [GlossaryEnergy.EnergyInvestmentsWoTaxValue, ]
+        df_paths = [f"{GlossaryCore.EnergyMix}.{GlossaryCore.InvestmentsValue}", ]
         (invest_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         invest_dict = {}
         for scenario in scenario_list:
-            invest_dict[scenario] = invest_df_dict[scenario][GlossaryEnergy.EnergyInvestmentsWoTaxValue].values.tolist(
+            invest_dict[scenario] = invest_df_dict[scenario][GlossaryEnergy.InvestmentsValue].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, invest_dict,
@@ -503,17 +503,17 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Total Net Energy production'
         x_axis_name = 'Years'
-        y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
+        y_axis_name = GlossaryCore.EnergyMixNetProductionsDf["unit"]
 
         df_paths = [
-            f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
+            f'{GlossaryCore.EnergyMixNetProductionsDfValue}']
         (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
         energy_production_detailed_dict = {}
         for scenario in scenario_list:
             energy_production_detailed_dict[scenario] = energy_production_detailed_df_dict[
-                scenario]['Total production (uncut)'].values.tolist()
+                scenario]['Total'].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_production_detailed_dict,
                                                   chart_name=chart_name,
@@ -528,15 +528,15 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Total Net Fossil Energy production'
         x_axis_name = 'Years'
-        y_axis_name = 'Fossil energy production [TWh]'
+        y_axis_name =  GlossaryCore.EnergyMixNetProductionsDf["unit"]
 
-        df_paths = [f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
-        (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+        df_paths = [f'{GlossaryCore.EnergyMixNetProductionsDfValue}']
+        (energy_net_prod_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
         for scenario in scenario_list:
-            energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
-                scenario]['production fossil (TWh)'].values.tolist()
+            energy_production_brut_detailed_dict[scenario] = energy_net_prod_dict[
+                scenario]['fossil'].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
                                                   chart_name=chart_name,
@@ -549,17 +549,17 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Clean energy production' in graphs_list:
 
-        chart_name = 'Total Net Clean energy production'
+        chart_name = 'Total Net Clean Energy production'
         x_axis_name = 'Years'
-        y_axis_name = '[TWh]'
+        y_axis_name = GlossaryCore.EnergyMixNetProductionsDf["unit"]
 
-        df_paths = [f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
-        (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+        df_paths = [f'{GlossaryCore.EnergyMixNetProductionsDfValue}']
+        (energy_net_prod_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
         for scenario in scenario_list:
-            energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
-                scenario][f'production {GlossaryCore.clean_energy} (TWh)'].values.tolist()
+            energy_production_brut_detailed_dict[scenario] = energy_net_prod_dict[
+                scenario][GlossaryCore.clean_energy].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
                                                   chart_name=chart_name,
@@ -599,12 +599,12 @@ def post_processings(execution_engine, namespace, filters):
             x_axis_name = 'Years'
             y_axis_name = '[G$]'
 
-            df_paths = [GlossaryCore.EconomicsDetailDfValue]
-            (economics_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+            df_paths = ["consumption_detail_df"]
+            (consumption_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
             consumption_dict = {}
             for scenario in scenario_list:
-                consumption_dict[scenario] = economics_df_dict[
+                consumption_dict[scenario] = consumption_df_dict[
                     scenario][GlossaryCore.Consumption].values.tolist()
 
             new_chart = get_scenario_comparison_chart(years, consumption_dict,
@@ -656,7 +656,7 @@ def post_processings(execution_engine, namespace, filters):
         raw_data_dict["IEA"] = {
                 "data_type": "dataframe",
                 "data": raw_iea_df,
-                "x_column_name": "Total production",
+                "x_column_name": "Total",
                 "y_column_name": "output_net_of_d",
                 "marker_symbol": "square",
                 "text_column": "years",
@@ -666,8 +666,8 @@ def post_processings(execution_engine, namespace, filters):
             scenario_name: {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": f"EnergyMix.{GlossaryEnergy.StreamProductionValue}",
-                "x_column_name": GlossaryCore.TotalProductionValue,
+                "x_var_name": f"{GlossaryCore.EnergyMixNetProductionsDfValue}",
+                "x_column_name": "Total",
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
                 "text_column": GlossaryCore.Years,

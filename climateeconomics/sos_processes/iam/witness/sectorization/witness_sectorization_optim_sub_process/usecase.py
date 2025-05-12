@@ -57,7 +57,7 @@ class Study(ClimateEconomicsStudyManager):
         self.designvariable_name = "DesignVariables"
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
-        self.energy_mix_name = 'EnergyMix'
+        GlossaryCore.EnergyMix = 'EnergyMix'
         self.bspline = bspline
         self.techno_dict = techno_dict
         self.witness_uc = witness_usecase_secto(
@@ -66,181 +66,65 @@ class Study(ClimateEconomicsStudyManager):
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
         self.test_post_procs = True
 
-    def dspace_sectorization(self) -> dict:
-        dspace_dict = {}
-        dspace_size = 0
-
-        invest_val_year_start = {
-            GlossaryCore.SectorServices: DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(year=self.year_start) * DatabaseWitnessCore.InvestServicespercofgdpYearStart.value / 100.,
-            GlossaryCore.SectorAgriculture: DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(year=self.year_start) * DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value / 100.,
-            GlossaryCore.SectorIndustry: DatabaseWitnessCore.MacroInitGrossOutput.get_value_at_year(year=self.year_start) * DatabaseWitnessCore.InvestInduspercofgdp2020.value / 100.
-        }
-
-        for sector, val_year_start in invest_val_year_start.items():
-            design_var_name = f"{sector}_invest_array"
-            dspace_size += GlossaryCore.NB_POLES_SECTORS_DVAR
-            dspace_dict[design_var_name] = {
-                'value': [np.round(val_year_start, 2)] * GlossaryEnergy.NB_POLES_SECTORS_DVAR,
-                'activated_elem': [False] + [True] * (GlossaryEnergy.NB_POLES_SECTORS_DVAR - 1),
-                'lower_bnd': [np.round(val_year_start / 10., 2) ] * GlossaryEnergy.NB_POLES_SECTORS_DVAR,
-                'upper_bnd': [np.round(val_year_start * 5, 2) ] * GlossaryEnergy.NB_POLES_SECTORS_DVAR,
-                'enable_variable': True
-            }
-        share_energy_val_year_start = {
-            GlossaryCore.SectorServices: DatabaseWitnessCore.EnergyshareServicesYearStart.value,
-            GlossaryCore.SectorAgriculture: DatabaseWitnessCore.EnergyshareAgricultureYearStart.value,
-        }
-
-        for sector, val_year_start in share_energy_val_year_start.items():
-            design_var_name = f"{sector}_share_energy_array"
-            dspace_size += GlossaryCore.NB_POLES_SECTORS_DVAR
-            dspace_dict[design_var_name] = {
-                'value': [np.round(val_year_start, 2)] * GlossaryEnergy.NB_POLES_SECTORS_DVAR,
-                'activated_elem': [False] + [True] * (GlossaryEnergy.NB_POLES_SECTORS_DVAR - 1),
-                'lower_bnd': [np.round(val_year_start / 10., 2)] * GlossaryEnergy.NB_POLES_SECTORS_DVAR,
-                'upper_bnd': [np.round(val_year_start * 1.6, 2)] * GlossaryEnergy.NB_POLES_SECTORS_DVAR,
-                'enable_variable': True
-            }
-
-        dspace_dict["dspace_size"] = dspace_size
-        return dspace_dict
-
-    def get_dvar_descriptor_sectorization(self, dspace: dict) -> tuple[dict, dict]:
-        """returns design var array dict and design var descriptor"""
-        years = np.arange(self.year_start, self.year_end + 1)
-        dv_arrays_dict = {}
-        design_var_descriptor = {}
-
-        # share invest dvars
-        for sector in GlossaryCore.SectorsPossibleValues:
-            dvar_value = dspace[f'{sector}_invest_array']['value']
-            activated_dvar = dspace[f'{sector}_invest_array']['activated_elem']
-            activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
-
-            dv_arrays_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.Macroeconomics.{sector}_invest_array'] = activated_value
-
-            design_var_descriptor[f'{sector}_invest_array'] = {
-                'out_name': f"{sector}.invest_mdo_df",
-                'out_type': 'dataframe',
-                'key': GlossaryCore.InvestmentsValue,
-                'index': years,
-                'index_name': GlossaryCore.Years,
-                'namespace_in': GlossaryCore.NS_SECTORS,
-                'namespace_out': GlossaryCore.NS_SECTORS
-            }
-            # share invest dvars
-
-        for sector in GlossaryCore.SectorsValueOptim:
-            dvar_value = dspace[f'{sector}_share_energy_array']['value']
-            activated_dvar = dspace[f'{sector}_share_energy_array']['activated_elem']
-            activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
-
-            dv_arrays_dict[
-                f'{self.study_name}.{self.coupling_name}.{self.extra_name}.Macroeconomics.{sector}_share_energy_array'] = activated_value
-
-            design_var_descriptor[f'{sector}_share_energy_array'] = {
-                'out_name': f"{sector}.{GlossaryCore.ShareSectorEnergyDfValue}",
-                'out_type': 'dataframe',
-                'key': GlossaryCore.ShareSectorEnergy,
-                'index': years,
-                'index_name': GlossaryCore.Years,
-                'namespace_in': GlossaryCore.NS_SECTORS,
-                'namespace_out': GlossaryCore.NS_SECTORS
-            }
-
-        return dv_arrays_dict, design_var_descriptor
 
     def setup_func_df(self):
-        constraints_energy_mix = {}
 
-        anti_decreasing_net_gdp_obj = {
-            'variable': [GlossaryCore.DecreasingGdpIncrementsObjectiveValue],
-            'parent': [GlossaryCore.DecreasingGdpIncrementsObjectiveValue],
-            'ftype': [FunctionManagerDisc.OBJECTIVE],
-            'weight': [3],
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS]
-        }
-
-        welfare_secto = {
-            'variable': [f"{sector}.{GlossaryCore.UtilityObjectiveName}" for sector in GlossaryCore.SectorsPossibleValues],
-            'parent': ["sectorized welfare"] * 3,
-            'ftype': [FunctionManagerDisc.OBJECTIVE] * 3,
-            'weight': [1/3] * 3,
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM] * 3,
-            'namespace': [GlossaryCore.NS_FUNCTIONS] * 3
-        }
-
-
-        func_df = pd.concat([pd.DataFrame(var) for var in [
-            welfare_secto, constraints_energy_mix, anti_decreasing_net_gdp_obj
-        ]])
-
-        return func_df
+        return pd.DataFrame({
+            'variable': [],
+            'parent': [],
+            'ftype': [],
+            'weight': [],
+            FunctionManagerDisc.AGGR_TYPE: [],
+            'namespace': []
+        })
 
     def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
 
         @return list of dictionary: [{str: *}]
         """
-        setup_data_list = {}
+        values_dict = {}
 
         # -- retrieve energy input data
 
         self.witness_uc.study_name = f'{self.study_name}.{self.coupling_name}.{self.extra_name}'
         self.witness_uc.study_name_wo_extra_name = f'{self.study_name}.{self.coupling_name}'
         witness_data_list = self.witness_uc.setup_usecase()
-        setup_data_list.update(witness_data_list)
+        values_dict.update(witness_data_list)
 
-        setup_data_list[f'{self.study_name}.epsilon0'] = 1.0
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-10
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
-        setup_data_list[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
+        values_dict[f'{self.study_name}.epsilon0'] = 1.0
+        values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
+        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
+        values_dict[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-10
+        values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
+        values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
+        values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
 
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.function_df'] = self.setup_func_df()
-
-        dspace_energy_mix = self.witness_uc.dspace
-        dspace_sectorization = self.dspace_sectorization()
-
-        dv_arrays_dict_energy_mix, design_var_descriptor_energy_mix = self.get_dvar_descriptor_energy_mix(dspace=dspace_energy_mix)
-        dv_arrays_dict_sectorization, design_var_descriptor_sectorization = self.get_dvar_descriptor_sectorization(dspace=dspace_sectorization)
-
-        design_var_descriptor = {}
-        design_var_descriptor.update(design_var_descriptor_energy_mix)
-        design_var_descriptor.update(design_var_descriptor_sectorization)
-
-        setup_data_list.update(dv_arrays_dict_energy_mix)
-        setup_data_list.update(dv_arrays_dict_sectorization)
-
-        dspace = self.merge_design_spaces_dict(dspace_list=[dspace_energy_mix, dspace_sectorization])
-        self.dspace_size, self.dspace = self.dspace_dict_to_dataframe(dspace)
-
-        setup_data_list[f'{self.study_name}.design_space'] = self.dspace
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode_sectors'] = True
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
+        values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.function_df'] = self.setup_func_df()
 
 
-        self.remove_all_variables_in_values_dict(values_dict=setup_data_list, shortvarname=GlossaryCore.ShareSectorInvestmentDfValue)
-        self.remove_all_variables_in_values_dict(values_dict=setup_data_list, shortvarname=GlossaryCore.ShareSectorEnergyDfValue)
-        self.remove_all_variables_in_values_dict(values_dict=setup_data_list, shortvarname=GlossaryCore.EnergyInvestmentsWoTaxValue)
-
+        dspace = pd.DataFrame({
+            'variable': [],
+            'value': [],
+            'lower_bnd': [],
+            'upper_bnd': [],
+            'enable_variable': [],
+            'activated_elem': [],
+        })
+        values_dict[f'{self.study_name}.design_space'] = dspace
 
         agri_subsector_invests = pd.DataFrame({
             GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1),
-            GlossaryCore.Crop: 90.,
-            GlossaryCore.Forestry: 10.,
+            GlossaryCore.Crop: 98.,
+            GlossaryCore.Forestry: 2.,
         })
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
-        setup_data_list[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
+        values_dict[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
+        values_dict[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = {}
 
-        setup_data_list.update({
-            **self.set_value_at_namespace("mdo_mode_sectors", True,"ns_public"),
-            **self.set_value_at_namespace("mdo_mode_energy", True,"ns_public"),
-        })
-        return setup_data_list
+        self.set_value_at_namespace("mdo_mode_sectors", False,"ns_public", values_dict)
+        self.set_value_at_namespace("mdo_mode_energy", False,"ns_public", values_dict)
+
+        return values_dict
 
 
 if '__main__' == __name__:

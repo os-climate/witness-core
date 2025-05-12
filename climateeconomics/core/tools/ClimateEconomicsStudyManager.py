@@ -120,8 +120,7 @@ class ClimateEconomicsStudyManager(StudyManager):
                 activated_dvar = dspace[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
                 activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
 
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = activated_value
-
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.EnergyMix}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = activated_value
                 design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': GlossaryCore.invest_mix,
                     'out_type': 'dataframe',
@@ -134,8 +133,8 @@ class ClimateEconomicsStudyManager(StudyManager):
 
                 design_var_utilization_ratio_value = dspace[f'{energy}_{technology}_utilization_ratio_array'][
                     'value']
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.EnergyMix}.{energy}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.EnergyMix}.{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
                     data={GlossaryCore.Years: years,
                           GlossaryCore.UtilisationRatioValue: 100.})
                 # add design variable for utilization ratio per technology
@@ -257,8 +256,8 @@ class ClimateEconomicsStudyManager(StudyManager):
             lin_mode_dict = self.add_auto_linearization_mode_rec(sub_disc, lin_mode_dict)
         return lin_mode_dict
 
-    def set_value_at_namespace(self, varname_short_name: str, value, namespace: str) -> dict:
+    def set_value_at_namespace(self, varname_short_name: str, value, namespace: str, values_dict: dict):
         namespace_value = self.ee.ns_manager.shared_ns_dict[namespace].value
         var_full_path = f"{namespace_value}.{varname_short_name}"
-        return {var_full_path: value}
+        values_dict.update({var_full_path: value})
 

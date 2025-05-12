@@ -154,18 +154,6 @@ class Study(StudyManager):
                  GlossaryCore.ShareInvestment: invest_agri_start})
 
             # Energy
-            share_energy_resi_2020 = DatabaseWitnessCore.EnergyshareResidentialYearStart.value
-            share_energy_other_2020 = DatabaseWitnessCore.EnergyshareOtherYearStart.value
-            share_energy_agri_2020 = DatabaseWitnessCore.EnergyshareAgricultureYearStart.value
-            share_energy_services_2020 = DatabaseWitnessCore.EnergyshareServicesYearStart.value
-            share_energy_agriculture = pd.DataFrame({GlossaryCore.Years: years,
-                                                     GlossaryCore.ShareSectorEnergy: share_energy_agri_2020})
-            share_energy_services = pd.DataFrame({GlossaryCore.Years: years,
-                                                  GlossaryCore.ShareSectorEnergy: share_energy_services_2020})
-            share_energy_resi = pd.DataFrame({GlossaryCore.Years: years,
-                                              GlossaryCore.ShareSectorEnergy: share_energy_resi_2020})
-            share_energy_other = pd.DataFrame({GlossaryCore.Years: years,
-                                               GlossaryCore.ShareSectorEnergy: share_energy_other_2020})
 
             brut_net = 1 / 1.45
             energy_outlook = pd.DataFrame({
@@ -236,10 +224,6 @@ class Study(StudyManager):
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_agriculture,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_services,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_indus,
-                f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_services,
-                f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_agriculture,
-                f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
-                f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
                 f"{self.study_name}.{GlossaryCore.EnergyMixNetProductionsDfValue}": energy_production,
                 f"{self.study_name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}": energy_market_ratios,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": CO2_emitted_land,

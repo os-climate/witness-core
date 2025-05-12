@@ -84,11 +84,8 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
 
                 dynamic_outputs[f"{GlossaryCore.CCUS}.{GlossaryCore.InvestmentsValue}"] = deepcopy(investments_df_variable)
                 dynamic_outputs[f"{GlossaryCore.EnergyMix}.{GlossaryCore.InvestmentsValue}"] = deepcopy(investments_df_variable)
-            if values_dict["mdo_mode_sectors"]:
-                for sector in values_dict["sector_list_wo_subsector"]:
-                    dynamic_inputs[f'{sector}.invest_mdo_df'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-                    dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-            else:
+
+                # share sector investments
                 default_values = {
                     GlossaryCore.SectorAgriculture: DatabaseWitnessCore.InvestAgriculturepercofgdpYearStart.value,
                     GlossaryCore.SectorIndustry: DatabaseWitnessCore.InvestInduspercofgdp2020.value,
@@ -100,7 +97,7 @@ class SectorsRedistributionInvestsDiscipline(ClimateEcoDiscipline):
                         sector: default_values[sector]
                     })
                     share_sector_invest_df_var = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorInvestmentDf)
-                    share_sector_invest_df_var["default"] = default_df
+                    #share_sector_invest_df_var["default"] = default_df
                     dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'] = share_sector_invest_df_var
                     dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
 
