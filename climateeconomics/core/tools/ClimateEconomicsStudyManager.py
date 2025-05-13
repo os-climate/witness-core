@@ -257,6 +257,7 @@ class ClimateEconomicsStudyManager(StudyManager):
         return lin_mode_dict
 
     def set_value_at_namespace(self, varname_short_name: str, value, namespace: str, values_dict: dict):
+        # Do not use in multiscenarios !!
         namespace_value = self.ee.ns_manager.shared_ns_dict[namespace].value
         var_full_path = f"{namespace_value}.{varname_short_name}"
         values_dict.update({var_full_path: value})

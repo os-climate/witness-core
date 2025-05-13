@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from copy import copy
 import pandas as pd
 import numpy as np
 from climateeconomics.database import DatabaseWitnessCore
@@ -46,9 +47,41 @@ class Study(StudyOptim):
         # For energy prod vs demand calibration, remove all invests in individual energy technos,
         # allow utilisation ratio for technos
         # control only global invest in energy sector
-        design_var_descriptor = self.get_var_in_values_dict(values_dict=values_dict, varname="design_var_descriptor")
-        design_space = self.get_var_in_values_dict(values_dict=values_dict, varname="design_space")
-        a = 1
+        design_var_descriptor = self.get_var_in_values_dict(values_dict=values_dict, varname="design_var_descriptor")[0]
+        design_space = self.get_var_in_values_dict(values_dict=values_dict, varname="design_space")[0]
+
+        design_space = design_space.loc[design_space["variable"].apply(lambda x: "utilization_ratio" in x)]
+
+        keys_dict = copy(list(design_var_descriptor.keys()))
+        for k in keys_dict:
+            if "utilization_ratio" not in k:
+                del design_var_descriptor[k]
+
+        # add design var for invest in energy sector
+
+        initial_values = [np.round(DatabaseWitnessCore.ShareInvestEnergy.value, 2)] * GlossaryEnergy.NB_POLES_OPTIM_KU
+        dspace_invest_energy_sector = pd.DataFrame({
+                'variable': ["share_invest_energy_sector"],
+                'value': [initial_values],
+                'activated_elem': [[False] + [True] * (GlossaryEnergy.NB_POLES_OPTIM_KU - 1)],
+                'lower_bnd': [[0.1] * GlossaryEnergy.NB_POLES_OPTIM_KU],
+                'upper_bnd': [[10] * GlossaryEnergy.NB_POLES_OPTIM_KU],
+                'enable_variable': [True]
+            })
+
+        design_space = pd.concat([design_space, dspace_invest_energy_sector])
+        design_var_descriptor["share_invest_energy_sector"] = {
+                'out_name': f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}",
+                'out_type': 'dataframe',
+                'key': GlossaryCore.ShareInvestment,
+                'index': self.years,
+                'index_name': GlossaryCore.Years,
+                'namespace_in': GlossaryCore.NS_WITNESS,
+                'namespace_out': GlossaryCore.NS_WITNESS
+        }
+        values_dict[f'{self.study_name}.{self.optim_name}.design_space'] = design_space
+        values_dict[f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.share_invest_energy_sector'] = np.array(initial_values)
+
         return values_dict
 
 

@@ -33,7 +33,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         self.name = 'Test'
         self.override_dump_jacobian = False
         self.show_graphs = False
-        self.jacobian_test = False
+        self.jacobian_test = True
         self.pickle_directory = dirname(__file__)
         self.year_start = 2021
         self.year_end = GlossaryCore.YearEndDefaultTest
@@ -66,7 +66,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
         self.energy_market_ratios = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            "Total": 100.
+            "Total": 95.
         })
 
         self.energy_mean_price = pd.DataFrame({

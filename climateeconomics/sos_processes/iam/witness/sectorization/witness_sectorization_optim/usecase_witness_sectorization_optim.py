@@ -42,6 +42,7 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(filename, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
+        self.years = np.arange(self.year_start, self.year_end + 1)
         self.optim_name = "MDO"
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
@@ -90,7 +91,7 @@ class Study(ClimateEconomicsStudyManager):
         design_var_descriptor = {}
 
         # share invest dvars
-        for sector in GlossaryCore.SectorsPossibleValues:
+        for sector in [GlossaryCore.SectorIndustry, GlossaryCore.SectorServices]:
             dvar_value = dspace[f'{sector}_invest_array']['value']
             activated_dvar = dspace[f'{sector}_invest_array']['activated_elem']
             activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
@@ -107,6 +108,25 @@ class Study(ClimateEconomicsStudyManager):
                 'namespace_out': GlossaryCore.NS_SECTORS
             }
             # share invest dvars
+
+        # Agriculture
+        sector = GlossaryCore.SectorAgriculture
+        dvar_value = dspace[f'{sector}_invest_array']['value']
+        activated_dvar = dspace[f'{sector}_invest_array']['activated_elem']
+        activated_value = np.array([elem for i, elem in enumerate(dvar_value) if activated_dvar[i]])
+
+        dv_arrays_dict[
+            f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.Macroeconomics.{sector}_invest_array'] = activated_value
+
+        design_var_descriptor[f'{sector}_invest_array'] = {
+            'out_name': f"{GlossaryCore.ShareSectorInvestmentDfValue}",
+            'out_type': 'dataframe',
+            'key': sector,
+            'index': years,
+            'index_name': GlossaryCore.Years,
+            'namespace_in': GlossaryCore.NS_SECTORS,
+            'namespace_out': GlossaryCore.NS_SECTORS
+        }
 
         return dv_arrays_dict, design_var_descriptor
 
@@ -147,7 +167,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
-        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
+        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 2
         values_dict[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-10
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
@@ -173,9 +193,11 @@ class Study(ClimateEconomicsStudyManager):
         dspace = self.merge_design_spaces_dict(dspace_list=[dspace_energy_mix, dspace_sectorization])
         self.dspace_size, self.dspace = self.dspace_dict_to_dataframe(dspace)
 
-        values_dict[f'{self.study_name}.design_space'] = self.dspace
+        self.remove_all_variables_in_values_dict(values_dict=values_dict,shortvarname="design_space")
+        self.remove_all_variables_in_values_dict(values_dict=values_dict,shortvarname="design_var_descriptor")
+
+        values_dict[f'{self.study_name}.{self.optim_name}.design_space'] = self.dspace
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-        values_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode_sectors'] = True
 
 
         agri_subsector_invests = pd.DataFrame({
@@ -185,9 +207,7 @@ class Study(ClimateEconomicsStudyManager):
         })
         values_dict[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
         values_dict[f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-
-        self.set_value_at_namespace("mdo_mode_sectors", True, "ns_public", values_dict)
-        self.set_value_at_namespace("mdo_mode_energy", True, "ns_public", values_dict)
+        values_dict[f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.mdo_mode_energy'] = True
 
 
         values_dict.update(

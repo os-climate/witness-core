@@ -51,6 +51,7 @@ class CropDiscipline(SubSectorDiscipline):
     streams_energy_prod = Crop.streams_energy_prod
     sector_name = GlossaryCore.SectorAgriculture
     subsector_name = GlossaryCore.Crop
+    use_null_gradients_cache = True
 
     food_types_colors = {
         GlossaryCore.RedMeat: 'crimson',
@@ -121,7 +122,7 @@ class CropDiscipline(SubSectorDiscipline):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
-        self.model = Crop()
+        self.model = Crop(sosname="crop_model")
 
     def add_additionnal_dynamic_variables(self):
         dynamic_inputs = {}

@@ -33,7 +33,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorized_ms_optim_process._usecase import (
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorized_ms_optim_process.usecase_ms_opt_story_telling import (
     Study as study_ms_mdo_sect,
 )
 from climateeconomics.sos_wrapping.post_procs.dashboard import create_xy_chart

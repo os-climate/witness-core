@@ -126,7 +126,6 @@ class Study(StudyManager):
         cons_input = {
             f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryCore.YearEnd}": self.year_end,
-            f"{self.study_name}.mdo_mode_sectors": False,
             f"{self.study_name}.mdo_mode_energy": False,
             f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}": total_invests,
             f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}": damage_fraction_df,

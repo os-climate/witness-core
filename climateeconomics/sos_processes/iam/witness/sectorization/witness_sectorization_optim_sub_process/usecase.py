@@ -119,10 +119,8 @@ class Study(ClimateEconomicsStudyManager):
             GlossaryCore.Forestry: 2.,
         })
         values_dict[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
-        values_dict[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = {}
 
-        self.set_value_at_namespace("mdo_mode_sectors", False,"ns_public", values_dict)
-        self.set_value_at_namespace("mdo_mode_energy", False,"ns_public", values_dict)
+        values_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode_energy'] = False
 
         return values_dict
 

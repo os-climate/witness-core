@@ -105,5 +105,4 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    uc_cls.ee.display_treeview_nodes(True)
-    a = 1
+    uc_cls.run()
