@@ -28,6 +28,9 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 )
 
 from climateeconomics.core.core_agriculture.crop import Crop
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.subsector_discipline import (
     SubSectorDiscipline,
@@ -51,7 +54,6 @@ class CropDiscipline(SubSectorDiscipline):
     streams_energy_prod = Crop.streams_energy_prod
     sector_name = GlossaryCore.SectorAgriculture
     subsector_name = GlossaryCore.Crop
-    use_null_gradients_cache = True
 
     food_types_colors = {
         GlossaryCore.RedMeat: 'crimson',
@@ -73,6 +75,7 @@ class CropDiscipline(SubSectorDiscipline):
         GlossaryCore.WorkforceDfValue: GlossaryCore.WorkforceDf,
         GlossaryCore.CropProductivityReductionName: GlossaryCore.CropProductivityReductionDf,
         GlossaryCore.FoodTypesName: GlossaryCore.FoodTypesVar,
+        "assumptions_dict": ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,

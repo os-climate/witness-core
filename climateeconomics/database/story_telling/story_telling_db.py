@@ -13,21 +13,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import datetime
-import json
-import os
 from datetime import date
 from os.path import dirname, join
 
-import pandas as pd
-
-from climateeconomics.database.collected_data import ColectedData, HeavyCollectedData
+from climateeconomics.database.collected_data import HeavyCollectedData
 
 data_folder = dirname(__file__)
 
 
 
-class StoryTellingDatabase:
+class StDB:
+    # Story telling scenario names :
+
+    # classic story telling : optim plays with invest in different technos
+    UC1 = "- Damage, - Tax"
+    UC2 = "+ Damage, + Tax, Fossil only"
+    UC3 = "+ Damage, + Tax, No CCUS"
+    UC4 = "+ Damage, + Tax, CCUS"
+
+    # prod vs demand : optim tries to match energy prod and demand
+    USECASE2 = '- damage - tax, fossil 100%'
+    USECASE2B = '+ damage + tax, fossil 100%'
+    USECASE3 = '- damage + tax, IEA'
+    USECASE4 = '+ damage + tax, fossil 40%'
+    USECASE5 = '+ damage - tax, STEP inspired'
+    USECASE6 = '+ damage - tax, NZE inspired'
+    USECASE7 = '+ damage + tax, NZE'
 
     FullFossilShareEnergyInvest = HeavyCollectedData(
         value=join(data_folder, "uc1_percentage_of_gdp_energy_invest.csv"),
@@ -39,7 +50,7 @@ class StoryTellingDatabase:
     )
 
     FullFossilEnergyInvestMix = HeavyCollectedData(
-        value=join(data_folder, "uc1_techno_invest_percentage.csv"),
+        value=join(data_folder, "uc2_techno_invest_percentage.csv"),
         unit="%",
         description="Distribution of investments between energy production technos",
         link="",
@@ -59,6 +70,24 @@ class StoryTellingDatabase:
 
     BAUEnergyInvestMix = HeavyCollectedData(
         value=join(data_folder, "uc3_techno_invest_percentage.csv"),
+        unit="%",
+        description="Distribution of investments between energy production technos",
+        link="",
+        source="",
+        last_update_date=date(2025, 5, 5),
+    )
+
+    UC4EnergyInvestMix = HeavyCollectedData(
+        value=join(data_folder, "uc4_techno_invest_percentage.csv"),
+        unit="%",
+        description="Distribution of investments between energy production technos",
+        link="",
+        source="",
+        last_update_date=date(2025, 5, 5),
+    )
+
+    UC7EnergyInvestMix = HeavyCollectedData(
+        value=join(data_folder, "uc7_techno_invest_percentage.csv"),
         unit="%",
         description="Distribution of investments between energy production technos",
         link="",

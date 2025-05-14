@@ -32,7 +32,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'icon': "fa-solid fa-square-root-variable",
     }
 
-    def get_builders(self, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2]):
+    def get_builders(self, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1]):
 
         optim_name = "MDO"
 

@@ -26,6 +26,7 @@ from energy_models.sos_processes.witness_sub_process_builder import (
 )
 
 from climateeconomics.glossarycore import GlossaryCore
+
 OPTIM_NAME = "MDO"
 COUPLING_NAME = "WITNESS_Eval"
 EXTRA_NAME = "WITNESS"

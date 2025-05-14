@@ -32,9 +32,10 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 )
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
+from climateeconomics.database.story_telling.story_telling_db import StDB
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorized_ms_optim_process.usecase_ms_opt_story_telling import (
-    Study as study_ms_mdo_sect,
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorized_ms_optim_process_prod_vs_demand.usecase_tipping_points import (
+    Study as study_tp,
 )
 from climateeconomics.sos_wrapping.post_procs.dashboard import create_xy_chart
 
@@ -778,39 +779,32 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
     color_mapping = {
 
         # MDO multiscenario coarse sectorisé:
-        study_ms_mdo_sect.UC1: dict(color='red'),
-        study_ms_mdo_sect.UC2: dict(color='red'),
-        study_ms_mdo_sect.UC3: dict(color='orange'),
-        study_ms_mdo_sect.UC4: dict(color='green'),
+        StDB.UC1: dict(color='red'),
+        StDB.UC2: dict(color='red'),
+        StDB.UC3: dict(color='orange'),
+        StDB.UC4: dict(color='green'),
+
+        StDB.USECASE2B: dict(color='red'),  # Red
+        StDB.USECASE4: dict(color='#FFA533'),  # Orange
+        StDB.USECASE7: dict(color='#32CD32'),  # Red
+
+        # the lower the TP, the darker the color
+        StDB.USECASE2: dict(color='red'),  # Red
+        study_tp.USECASE4_TP3: dict(color='red'),  # Red
+        study_tp.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
+        study_tp.USECASE4_TP1: dict(color='#FFA533'),  # Orange
+        study_tp.USECASE7_TP3: dict(color='#2E8B57'),  # Dark Green
+        study_tp.USECASE7_TP2: dict(color='#32CD32'),  # Green
+        study_tp.USECASE7_TP1: dict(color='#7FFF00'),  # Light Green
 
     }
-    """
-    usecase_ms_mda_tipping_point.USECASE2: dict(color='red'),  # Red
-    usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
-    usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
-    usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
-    usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
-    usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
-    usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
-
-    # the lower the TP, the darker the color
-    usecase_ms_mdo_iamc.UC1: dict(color='red'),  # Red
-    usecase_ms_mdo_iamc.UC3_tp1: dict(color='#FFD633'),  # Light Orange
-    usecase_ms_mdo_iamc.UC3_tp2: dict(color='#FFA533'),  # orange
-    usecase_ms_mdo_iamc.UC4_tp1: dict(color='#89CFF0'),  # Light blue
-    usecase_ms_mdo_iamc.UC4_tp2: dict(color='#0047AB'),  # Dark blue
-    usecase_ms_mdo_iamc.UC_NZE_tp1: dict(color='#7FFF00'),  # Light green
-    usecase_ms_mdo_iamc.UC_NZE_tp2: dict(color='#2E8B57'),  # Dark Green
-
-    usecase_ms_mdo_with_nze.NO_CCUS: dict(color='#FFD633'),  # Light Orange
-    usecase_ms_mdo_with_nze.ALL_TECHNOS: dict(color='#0047AB'),  # Dark blue
-    usecase_ms_mdo_with_nze.ALL_TECHNOS_NZE: dict(color='#7FFF00'),  # Light green
-    """
     line_color = None
 
     for scenario, y_values in y_dict.items():
         if scenario in color_mapping.keys():
             line_color = color_mapping[scenario]
+        else:
+            raise Exception("No color for scenario")
 
         if line_color is not None:  # Check if line_color is assigned
             marker_symbol = 'circle'

@@ -18,17 +18,16 @@ import numpy as np
 import pandas as pd
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.models.func_manager.func_manager import (
-    FunctionManager,
-)
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization.usecase_witness_coarse_sectorization import (
     Study as witness_usecase_secto,
@@ -94,8 +93,8 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.{self.coupling_name}.inner_mda_name'] = 'MDAGaussSeidel'
-        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
-        values_dict[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-10
+        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 100
+        values_dict[f'{self.study_name}.{self.coupling_name}.tolerance'] = 1e-12
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
         values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
@@ -121,6 +120,8 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.coupling_name}.WITNESS.Macroeconomics.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}'] = agri_subsector_invests
 
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.mdo_mode_energy'] = False
+        values_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.tp_a3'] = 3.5
+        values_dict[f'{self.study_name}.{self.coupling_name}.{self.extra_name}.assumptions_dict'] = ClimateEcoDiscipline.assumptions_dict_default
 
         return values_dict
 

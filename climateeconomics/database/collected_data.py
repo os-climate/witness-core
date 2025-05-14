@@ -128,7 +128,7 @@ class HeavyCollectedData(ColectedData):
         df = self.value
         years_int = df['years'].values.astype(int)
         if year in years_int:
-            return float(df.loc[df["years"] == year, column].values)
+            return float(df.loc[df["years"] == year, column].values[0])
 
         if years_int.min() <= year <= years_int.max():
             # we will interpolate missing year data

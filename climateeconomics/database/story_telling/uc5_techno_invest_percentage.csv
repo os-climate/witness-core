@@ -1,4 +1,4 @@
-years,FossilSimpleTechno,CleanEnergySimpleTechno,CarbonStorageTechno,direct_air_capture.DirectAirCaptureTechno,flue_gas_capture.FlueGasTechno
+years,fossil.FossilSimpleTechno,clean_energy.CleanEnergySimpleTechno,carbon_storage.CarbonStorageTechno,carbon_capture.direct_air_capture.DirectAirCaptureTechno,carbon_capture.flue_gas_capture.FlueGasTechno
 2020,39.82295066,59.74704934,0.009772727,0.210113636,0.210113636
 2021,35.88,63.69,0.009772727,0.210113636,0.210113636
 2022,33.34,66.23,0.009772727,0.210113636,0.210113636

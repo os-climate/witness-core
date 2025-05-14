@@ -214,7 +214,7 @@ class Study(ClimateEconomicsStudyManager):
         land_use_df = create_df_from_csv("IEA_NZE_Land_Use.land_surface_detail_df.csv")
 
         setup_data.update({
-            **self.set_value_at_namespace("mdo_mode_energy", True, "ns_public"),
+            f'{self.study_name}.mdo_mode_energy': True,
             f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
             f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
             f'{self.study_name}.IEA.{GlossaryEnergy.CO2EmissionsGtValue}': CO2_emissions_df,

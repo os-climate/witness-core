@@ -20,12 +20,15 @@ import numpy as np
 import pandas as pd
 from sostrades_optimization_plugins.models.test_class import GenericDisciplinesTestClass
 
+from climateeconomics.core.core_witness.climateeco_discipline import (
+    ClimateEcoDiscipline,
+)
 from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 
 
 class Crop2JacobianTestCase(GenericDisciplinesTestClass):
-
+    gradients_tuning = False
     def setUp(self):
         '''
         Initialize third data needed for testing
@@ -36,7 +39,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         self.jacobian_test = True
         self.pickle_directory = dirname(__file__)
         self.year_start = 2021
-        self.year_end = GlossaryCore.YearEndDefaultTest
+        self.year_end = 2023
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
@@ -57,6 +60,9 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         self.workforce_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.SectorAgriculture: np.linspace(935., 935. * 1000, year_range),  # millions of people (2020 value)
+            GlossaryCore.SectorIndustry: np.linspace(935., 935. * 1000, year_range),  # millions of people (2020 value)
+            GlossaryCore.SectorServices: np.linspace(935., 935. * 1000, year_range),  # millions of people (2020 value)
+            "workforce": np.linspace(935., 935. * 1000, year_range),  # millions of people (2020 value)
         })
         population_2021 = 7_954_448_391
         self.population_df = pd.DataFrame({
@@ -66,7 +72,10 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
 
         self.energy_market_ratios = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            "Total": 95.
+            "Total": 95.,
+            GlossaryCore.clean_energy: 95.,
+            "fossil": 95.,
+            **{ft: 95. for ft in GlossaryCore.DefaultFoodTypesV2},
         })
 
         self.energy_mean_price = pd.DataFrame({
@@ -84,6 +93,8 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             GlossaryCore.NS_AGRI: f'{self.name}',
         }
 
+        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
+
     def get_inputs_dict(self) -> dict:
         return  {
             f'{self.name}.mdo_sectors_invest_level': 2,
@@ -98,9 +109,53 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
             f'{self.name}.Agriculture.{GlossaryCore.Crop}.{GlossaryCore.InvestmentDetailsDfValue}': self.investments_food_types
             }
 
+    def test_crop_discipline(self):
+        '''
+        Check discipline setup and run
+        '''
+        self.model_name = 'crop_model1'
+
+
     def test_crop_discipline_2(self):
         '''
         Check discipline setup and run
         '''
-        self.model_name = 'Agriculture.Crop'
-        self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
+
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: 150.,
+            GlossaryCore.OutputNetOfDamage: 150.,
+        })
+        self.share_sector_investment_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.SectorAgriculture: 3.
+        })
+        self.share_subsector_investment_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Crop: 90.,
+            GlossaryCore.Forestry: 10.,
+        })
+        self.share_subssubsector_investment_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            **{ft: 1/len(GlossaryCore.DefaultFoodTypesV2) * 100. for ft in GlossaryCore.DefaultFoodTypesV2}
+        })
+
+
+        self.model_name ="crop_model2"
+        self.inputs_dicts = {
+            f'{self.name}.mdo_sectors_invest_level': 0,
+            f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
+            f'{self.name}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_sector_investment_df,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_subsector_investment_df,
+            f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.Crop}.{GlossaryCore.SubShareSectorInvestDfValue}': self.share_subssubsector_investment_df,
+        }
+    def test_crop_discipline_3(self):
+        '''
+        Check discipline setup and run
+        '''
+
+        self.model_name ="crop_model3"
+        self.inputs_dicts = {
+            f'{self.name}.assumptions_dict': ClimateEcoDiscipline.assumptions_dict_no_damages,
+        }
+

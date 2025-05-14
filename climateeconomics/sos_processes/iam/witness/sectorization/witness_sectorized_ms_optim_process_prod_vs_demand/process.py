@@ -22,8 +22,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse Sectorized Multi-Scenario Optimization Process',
-        'description': '',
+        'label': 'WITNESS Coarse Sectorized Multi-Scenario - Optim energy production vs demand',
+        'description': 'Process of multiscenarios in which the energy production and demand are matched by the optimizer',
         'category': '',
         'version': '',
         'icon': "fa-solid fa-list",
@@ -32,7 +32,7 @@ class ProcessBuilder(BaseProcessBuilder):
     def get_builders(self):
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization_optim')
+            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization_optim_prod_vs_demand')
 
         scatter_scenario_name = 'scenarios'
 

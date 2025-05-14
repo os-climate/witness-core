@@ -1397,7 +1397,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "visibility": "Shared",
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "description": "Capital of sector {}",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),

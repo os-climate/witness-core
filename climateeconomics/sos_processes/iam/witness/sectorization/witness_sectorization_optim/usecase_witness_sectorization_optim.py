@@ -13,11 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 import numpy as np
-from climateeconomics.database import DatabaseWitnessCore
+import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
@@ -25,12 +26,13 @@ from sostrades_optimization_plugins.models.func_manager.func_manager_disc import
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim_sub_process.usecase import (
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim_sub_process.datacase import (
     COUPLING_NAME,
     EXTRA_NAME,
 )
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim_sub_process.usecase import (
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim_sub_process.datacase import (
     Study as witness_sectorization_optim_sub_usecase,
 )
 
@@ -173,7 +175,7 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
 
         values_dict[
-            f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.function_df'] = self.setup_func_df()
+            f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.func_manager_name}.function_df'] = self.setup_func_df()
 
         dspace_energy_mix = self.witness_uc.dspace
         dspace_sectorization = self.dspace_sectorization()
@@ -218,7 +220,8 @@ class Study(ClimateEconomicsStudyManager):
              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
              # optimization parameters:
-             f'{ns}.{self.optim_name}.max_iter': 1500,
+             f'{ns}.{self.optim_name}.max_iter': 1,
+             f'{ns}.{self.optim_name}.eval_mode': True,
              f'{ns}.warm_start': True,
              f'{ns}.{self.optim_name}.{self.sub_uc.coupling_name}.warm_start': True,
              f'{ns}.{self.optim_name}.{self.sub_uc.coupling_name}.cache_type': 'SimpleCache',
@@ -259,5 +262,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

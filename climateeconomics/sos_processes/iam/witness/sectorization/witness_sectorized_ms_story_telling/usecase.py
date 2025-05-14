@@ -20,10 +20,13 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.database.story_telling.story_telling_db import StoryTellingDatabase
+from climateeconomics.database.story_telling.story_telling_db import (
+    StDB,
+)
 from climateeconomics.glossarycore import GlossaryCore
-
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization.usecase_witness_coarse_sectorization import Study as StudyRef
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization.usecase_witness_coarse_sectorization import (
+    Study as StudyRef,
+)
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -60,24 +63,24 @@ class Study(ClimateEconomicsStudyManager):
         }
         scenario_datas = {
             self.UC1: {
-                GlossaryCore.invest_mix: StoryTellingDatabase.FullFossilEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.FullFossilShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.NoCCUSInvestShare.get_all_cols_between_years(self.year_start, self.year_end),
+                GlossaryCore.invest_mix: StDB.FullFossilEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.FullFossilShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.NoCCUSInvestShare.get_all_cols_between_years(self.year_start, self.year_end),
             },
             self.UC2: {
-                GlossaryCore.invest_mix: StoryTellingDatabase.FullFossilEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.FullFossilShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.NoCCUSInvestShare.get_all_cols_between_years(self.year_start, self.year_end),
+                GlossaryCore.invest_mix: StDB.FullFossilEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.FullFossilShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.NoCCUSInvestShare.get_all_cols_between_years(self.year_start, self.year_end),
             },
             self.UC3: {
-                GlossaryCore.invest_mix: StoryTellingDatabase.BAUEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.BusineesAsUsualShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.NoCCUSInvestShare.get_all_cols_between_years(self.year_start, self.year_end),
+                GlossaryCore.invest_mix: StDB.BAUEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.BusineesAsUsualShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.NoCCUSInvestShare.get_all_cols_between_years(self.year_start, self.year_end),
             },
             self.UC4: {
-                GlossaryCore.invest_mix: StoryTellingDatabase.NZEEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.NZEShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
-                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StoryTellingDatabase.NZEShareCCUSInvest.get_all_cols_between_years(self.year_start, self.year_end),
+                GlossaryCore.invest_mix: StDB.NZEEnergyInvestMix.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.NZEShareEnergyInvest.get_all_cols_between_years(self.year_start, self.year_end),
+                f"{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": StDB.NZEShareCCUSInvest.get_all_cols_between_years(self.year_start, self.year_end),
             },
         }
         for scenario_name, study_class in scenario_dict.items():

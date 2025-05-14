@@ -14,23 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import copy
-import pandas as pd
+
 import numpy as np
-from climateeconomics.database import DatabaseWitnessCore
+import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_optimization_plugins.models.func_manager.func_manager import FunctionManager
+from sostrades_optimization_plugins.models.func_manager.func_manager import (
+    FunctionManager,
+)
 from sostrades_optimization_plugins.models.func_manager.func_manager_disc import (
     FunctionManagerDisc,
 )
 
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
-    ClimateEconomicsStudyManager,
-)
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim_sub_process.usecase import (
-    COUPLING_NAME,
-    EXTRA_NAME,
-)
 from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorization_optim.usecase_witness_sectorization_optim import (
     Study as StudyOptim,
 )
@@ -40,6 +37,19 @@ class Study(StudyOptim):
 
     def __init__(self, run_usecase=False, execution_engine=None):
         super().__init__(filename=__file__, run_usecase=run_usecase, execution_engine=execution_engine)
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
+
+
+    def setup_func_df(self):
+        return pd.DataFrame({
+            'variable': [GlossaryCore.EnergyProdVsDemandObjective],
+            'parent': [GlossaryCore.EnergyProdVsDemandObjective],
+            'ftype': [FunctionManagerDisc.OBJECTIVE],
+            'weight': [1.],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM],
+            'namespace': [GlossaryCore.NS_FUNCTIONS]
+        })
+
 
     def setup_usecase(self, study_folder_path=None):
         values_dict = super().setup_usecase(study_folder_path=study_folder_path)
@@ -81,6 +91,7 @@ class Study(StudyOptim):
         }
         values_dict[f'{self.study_name}.{self.optim_name}.design_space'] = design_space
         values_dict[f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.share_invest_energy_sector'] = np.array(initial_values)
+        values_dict[f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.mdo_mode_energy'] = False
 
         return values_dict
 
@@ -88,4 +99,4 @@ class Study(StudyOptim):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.run(for_test=True)
