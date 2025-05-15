@@ -103,7 +103,6 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
             f'{name}.{GlossaryCore.YearEnd}': self.year_end,
             f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
             f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-            f'{name}.mdo_mode_sectors': False,
             f'{name}.mdo_mode_energy': False,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_agriculture,
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_industry,
@@ -125,54 +124,3 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
                             outputs=output_checked
                             )
 
-    def test_analytic_grad_mdo_mode_sectors(self):
-        name = 'Test'
-        model_name = 'sectors_redistribution_invests.SectorsRedistributionInvestsDiscipline'
-        ee = ExecutionEngine(name)
-        ns_dict = {'ns_public': f'{name}',
-                   GlossaryCore.NS_WITNESS: f'{name}',
-                   GlossaryCore.NS_FUNCTIONS: f'{name}',
-                   GlossaryCore.NS_ENERGY_MIX: f'{name}',
-                   'ns_coal_resource': f'{name}',
-                   'ns_resource': f'{name}',
-                   GlossaryCore.NS_SECTORS: f'{name}'}
-        ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invest_discipline.SectorsRedistributionInvestsDiscipline'
-        builder = ee.factory.get_builder_from_module(model_name, mod_path)
-
-        ee.factory.set_builders_to_coupling_builder(builder)
-
-        ee.configure()
-        ee.display_treeview_nodes()
-
-        inputs_dict = {
-            f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
-            f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-            f'{name}.mdo_mode_energy': True,
-            f'{name}.mdo_mode_sectors': True,
-            f'{name}.{GlossaryCore.SectorAgriculture}.invest_mdo_df': self.invests_agriculture,
-            f'{name}.{GlossaryCore.SectorIndustry}.invest_mdo_df': self.invests_industry,
-            f'{name}.{GlossaryCore.SectorServices}.invest_mdo_df': self.invests_services,
-        }
-
-        ee.load_study_from_input_dict(inputs_dict)
-        ee.execute()
-        disc = ee.root_process.proxy_disciplines[0]
-        filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            #graph.to_plotly().show()
-            pass
-        inputs_checked = [f'{name}.{sector}.invest_mdo_df' for sector in
-                           self.sector_list]
-
-        output_checked = [f'{name}.{sector}.{GlossaryCore.InvestmentDfValue}' for sector in self.sector_list]
-        disc_techno = ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-        self.check_jacobian(location=dirname(__file__),
-                            filename='jacobian_sectors_redistribution_invest_discipline_2.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            local_data=disc_techno.local_data,
-                            inputs=inputs_checked,
-                            outputs=output_checked
-                            )

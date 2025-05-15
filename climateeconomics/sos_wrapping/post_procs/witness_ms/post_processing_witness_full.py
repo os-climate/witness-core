@@ -35,7 +35,7 @@ def post_processing_filters(execution_engine, namespace):
                   'Consumption vs Mean Energy Price']
     selected_chart_list = []
 
-    scatter_scenario = 'optimization scenarios'
+    scatter_scenario = 'scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
@@ -50,7 +50,7 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
 
-    scatter_scenario = 'optimization scenarios'
+    scatter_scenario = 'scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
     selected_scenarios = scenario_list
@@ -252,7 +252,7 @@ def get_variables_values_per_scenario(execution_engine, varnames, scenario_list=
     @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
     '''
     df_per_scenario_dicts = [{} for _ in varnames]
-    scatter_scenario = 'optimization scenarios'
+    scatter_scenario = 'scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     if not scenario_list:
         scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()

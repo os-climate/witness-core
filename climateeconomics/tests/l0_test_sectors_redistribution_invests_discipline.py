@@ -82,7 +82,6 @@ class SectorsRedistributionInvestsDisciplineTest(unittest.TestCase):
 
         inputs_dict = {f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
                        f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
-                       f'{name}.mdo_mode_sectors': False,
                        f'{name}.mdo_mode_energy': False,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_agriculture,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invests_industry,

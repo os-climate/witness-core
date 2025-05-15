@@ -34,7 +34,7 @@ class ProcessBuilder(BaseProcessBuilder):
         builder_cdf_list = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization_optim')
 
-        scatter_scenario_name = 'optimization scenarios'
+        scatter_scenario_name = 'scenarios'
 
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',

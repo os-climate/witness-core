@@ -1397,7 +1397,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "visibility": "Shared",
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "description": "Capital of sector {}",
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
@@ -1587,7 +1587,6 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
-    ShareSectorEnergyDfValue = "share_sector_energy_df"
     ShareSectorEnergy = "Share of total energy production [%]"
     ShareSectorEnergyDf = {
         "type": "dataframe",
@@ -1601,18 +1600,6 @@ class GlossaryCore:
         },
     }
     ResidentialCategory = "Residential"
-    ShareResidentialEnergyDfValue = "share_residential_energy_df"
-    ShareResidentialEnergyDf = {
-        "type": "dataframe",
-        "unit": "%",
-        "description": "Amount of the total energy production attributed to residential",
-        "visibility": "Shared",
-        "namespace": NS_WITNESS,
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            ShareSectorEnergy: ("float", [0.0, 100.0], False),
-        },
-    }
     ResidentialEnergyConsumptionDfValue = "residential_energy_consumption_df"
     ResidentialEnergyConsumptionDf = {
         "var_name": ResidentialEnergyConsumptionDfValue,
@@ -1635,18 +1622,6 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YearEndDefault], False),
             TotalEmissions: ("float", None, False),
-        },
-    }
-
-    OtherEnergyCategory = "Other"
-    ShareOtherEnergyDfValue = "share_other_energy_df"
-    ShareOtherEnergyDf = {
-        "type": "dataframe",
-        "unit": "%",
-        "description": "Amount of the total energy production attributed to other category",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, YearEndDefault], False),
-            ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
 
@@ -2422,6 +2397,17 @@ class GlossaryCore:
         "user_level": 2,
         "description": "Demands for each energy within the Energy sector",
         "dynamic_dataframe_columns": True,
+    }
+
+    EnergyProdVsDemandObjective = "energy_prod_vs_demand_objective"
+    EnergyProdVsDemandObjectiveVar = {
+        "type": "array",
+        AutodifferentiedDisc.GRADIENTS: True,
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "unit": "-",
+        "user_level": 2,
+        "description": "Energy prod vs demand objetive. Zero means perfect equilibrium. Self-normalized objetive",
     }
 
     EnergyMixNetProductionsDfValue = "energy_mix_net_production"

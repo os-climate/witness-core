@@ -31,18 +31,15 @@ class SectorRedistributionInvestsModel:
         sectors_invests = {}
         all_sectors_invests_df = {}
         for sector in self.inputs["sector_list_wo_subsector"]:
-            if not self.inputs["mdo_mode_sectors"]:
-                economics_df: pd.DataFrame = self.inputs[GlossaryCore.EconomicsDfValue]
-                net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
-                conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SectorizedEconomicsDf['unit']][GlossaryCore.InvestmentDf['unit']]
-                sector_invests_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
-                                            GlossaryCore.ShareInvestment].values / 100. * net_output * conversion_factor
-                sector_invests_df = pd.DataFrame(
-                    {GlossaryCore.Years: economics_df[GlossaryCore.Years].values,
-                     GlossaryCore.InvestmentsValue: sector_invests_values}
-                )
-            else:
-                sector_invests_df = self.inputs[f'{sector}.invest_mdo_df']
+            economics_df: pd.DataFrame = self.inputs[GlossaryCore.EconomicsDfValue]
+            net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
+            conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.SectorizedEconomicsDf['unit']][GlossaryCore.InvestmentDf['unit']]
+            sector_invests_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
+                                        GlossaryCore.ShareInvestment].values / 100. * net_output * conversion_factor
+            sector_invests_df = pd.DataFrame(
+                {GlossaryCore.Years: economics_df[GlossaryCore.Years].values,
+                 GlossaryCore.InvestmentsValue: sector_invests_values}
+            )
 
             all_sectors_invests_df[sector] = sector_invests_df[GlossaryCore.InvestmentsValue].values
             all_sectors_invests_df[GlossaryCore.Years] = sector_invests_df[GlossaryCore.Years].values

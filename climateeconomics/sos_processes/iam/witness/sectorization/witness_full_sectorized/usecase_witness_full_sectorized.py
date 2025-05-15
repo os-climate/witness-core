@@ -75,11 +75,7 @@ class Study(StudyCoarse):
             ** new_invests
         })
 
-        setup_data.update(
-            **self.set_value_at_namespace("invest_mix", invest_mix_df, GlossaryEnergy.invest_mix_df['namespace'])
-        )
-        """
-        """
+        setup_data[f'{self.study_name}.InvestmentDistribution.{GlossaryEnergy.invest_mix}'] = invest_mix_df
         return setup_data
 
 

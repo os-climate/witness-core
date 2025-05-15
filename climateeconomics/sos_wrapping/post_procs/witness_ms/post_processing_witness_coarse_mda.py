@@ -32,9 +32,10 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 )
 
 from climateeconomics.database.database_witness_core import DatabaseWitnessCore
+from climateeconomics.database.story_telling.story_telling_db import StDB
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorized_ms_optim_process._usecase import (
-    Study as study_ms_mdo_sect,
+from climateeconomics.sos_processes.iam.witness.sectorization.witness_sectorized_ms_optim_process_prod_vs_demand.usecase_tipping_points import (
+    Study as study_tp,
 )
 from climateeconomics.sos_wrapping.post_procs.dashboard import create_xy_chart
 
@@ -324,16 +325,16 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Investements in energy' in graphs_list:
 
-        chart_name = 'Energy investments without tax'
+        chart_name = 'Energy investments'
         x_axis_name = 'Years'
-        y_axis_name = f'Energy investments wo tax [{GlossaryCore.EnergyInvestmentsWoTax["unit"]}]'
+        y_axis_name = f'Energy investments [{GlossaryCore.InvestmentDf["unit"]}]'
 
-        df_paths = [GlossaryEnergy.EnergyInvestmentsWoTaxValue, ]
+        df_paths = [f"{GlossaryCore.EnergyMix}.{GlossaryCore.InvestmentsValue}", ]
         (invest_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         invest_dict = {}
         for scenario in scenario_list:
-            invest_dict[scenario] = invest_df_dict[scenario][GlossaryEnergy.EnergyInvestmentsWoTaxValue].values.tolist(
+            invest_dict[scenario] = invest_df_dict[scenario][GlossaryEnergy.InvestmentsValue].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, invest_dict,
@@ -503,17 +504,17 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Total Net Energy production'
         x_axis_name = 'Years'
-        y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
+        y_axis_name = GlossaryCore.EnergyMixNetProductionsDf["unit"]
 
         df_paths = [
-            f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
+            f'{GlossaryCore.EnergyMixNetProductionsDfValue}']
         (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
         energy_production_detailed_dict = {}
         for scenario in scenario_list:
             energy_production_detailed_dict[scenario] = energy_production_detailed_df_dict[
-                scenario]['Total production (uncut)'].values.tolist()
+                scenario]['Total'].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_production_detailed_dict,
                                                   chart_name=chart_name,
@@ -528,15 +529,15 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Total Net Fossil Energy production'
         x_axis_name = 'Years'
-        y_axis_name = 'Fossil energy production [TWh]'
+        y_axis_name =  GlossaryCore.EnergyMixNetProductionsDf["unit"]
 
-        df_paths = [f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
-        (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+        df_paths = [f'{GlossaryCore.EnergyMixNetProductionsDfValue}']
+        (energy_net_prod_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
         for scenario in scenario_list:
-            energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
-                scenario]['production fossil (TWh)'].values.tolist()
+            energy_production_brut_detailed_dict[scenario] = energy_net_prod_dict[
+                scenario]['fossil'].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
                                                   chart_name=chart_name,
@@ -549,17 +550,17 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Clean energy production' in graphs_list:
 
-        chart_name = 'Total Net Clean energy production'
+        chart_name = 'Total Net Clean Energy production'
         x_axis_name = 'Years'
-        y_axis_name = '[TWh]'
+        y_axis_name = GlossaryCore.EnergyMixNetProductionsDf["unit"]
 
-        df_paths = [f'{EnergyMix.name}.{GlossaryCore.StreamProductionDetailedValue}']
-        (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+        df_paths = [f'{GlossaryCore.EnergyMixNetProductionsDfValue}']
+        (energy_net_prod_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
         for scenario in scenario_list:
-            energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
-                scenario][f'production {GlossaryCore.clean_energy} (TWh)'].values.tolist()
+            energy_production_brut_detailed_dict[scenario] = energy_net_prod_dict[
+                scenario][GlossaryCore.clean_energy].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
                                                   chart_name=chart_name,
@@ -599,12 +600,12 @@ def post_processings(execution_engine, namespace, filters):
             x_axis_name = 'Years'
             y_axis_name = '[G$]'
 
-            df_paths = [GlossaryCore.EconomicsDetailDfValue]
-            (economics_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+            df_paths = ["consumption_detail_df"]
+            (consumption_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
             consumption_dict = {}
             for scenario in scenario_list:
-                consumption_dict[scenario] = economics_df_dict[
+                consumption_dict[scenario] = consumption_df_dict[
                     scenario][GlossaryCore.Consumption].values.tolist()
 
             new_chart = get_scenario_comparison_chart(years, consumption_dict,
@@ -656,7 +657,7 @@ def post_processings(execution_engine, namespace, filters):
         raw_data_dict["IEA"] = {
                 "data_type": "dataframe",
                 "data": raw_iea_df,
-                "x_column_name": "Total production",
+                "x_column_name": "Total",
                 "y_column_name": "output_net_of_d",
                 "marker_symbol": "square",
                 "text_column": "years",
@@ -666,8 +667,8 @@ def post_processings(execution_engine, namespace, filters):
             scenario_name: {
                 "data_type": "variable",
                 "scenario_name": scenario_name,
-                "x_var_name": f"EnergyMix.{GlossaryEnergy.StreamProductionValue}",
-                "x_column_name": GlossaryCore.TotalProductionValue,
+                "x_var_name": f"{GlossaryCore.EnergyMixNetProductionsDfValue}",
+                "x_column_name": "Total",
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
                 "text_column": GlossaryCore.Years,
@@ -778,39 +779,32 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
     color_mapping = {
 
         # MDO multiscenario coarse sectorisé:
-        study_ms_mdo_sect.UC1: dict(color='red'),
-        study_ms_mdo_sect.UC2: dict(color='red'),
-        study_ms_mdo_sect.UC3: dict(color='orange'),
-        study_ms_mdo_sect.UC4: dict(color='green'),
+        StDB.UC1: dict(color='red'),
+        StDB.UC2: dict(color='red'),
+        StDB.UC3: dict(color='orange'),
+        StDB.UC4: dict(color='green'),
+
+        StDB.USECASE2B: dict(color='red'),  # Red
+        StDB.USECASE4: dict(color='#FFA533'),  # Orange
+        StDB.USECASE7: dict(color='#32CD32'),  # Red
+
+        # the lower the TP, the darker the color
+        StDB.USECASE2: dict(color='red'),  # Red
+        study_tp.USECASE4_TP3: dict(color='red'),  # Red
+        study_tp.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
+        study_tp.USECASE4_TP1: dict(color='#FFA533'),  # Orange
+        study_tp.USECASE7_TP3: dict(color='#2E8B57'),  # Dark Green
+        study_tp.USECASE7_TP2: dict(color='#32CD32'),  # Green
+        study_tp.USECASE7_TP1: dict(color='#7FFF00'),  # Light Green
 
     }
-    """
-    usecase_ms_mda_tipping_point.USECASE2: dict(color='red'),  # Red
-    usecase_ms_mda_tipping_point.USECASE4_TP2: dict(color='#FF5733'),  # Dark orange
-    usecase_ms_mda_tipping_point.USECASE4_TP1: dict(color='#FFA533'),  # Orange
-    usecase_ms_mda_tipping_point.USECASE4_TP_REF: dict(color='#FFD633'),  # Light Orange
-    usecase_ms_mda_tipping_point.USECASE7_TP2: dict(color='#2E8B57'),  # Dark green
-    usecase_ms_mda_tipping_point.USECASE7_TP1: dict(color='#32CD32'),  # Green
-    usecase_ms_mda_tipping_point.USECASE7_TP_REF: dict(color='#7FFF00'),  # Light Green
-
-    # the lower the TP, the darker the color
-    usecase_ms_mdo_iamc.UC1: dict(color='red'),  # Red
-    usecase_ms_mdo_iamc.UC3_tp1: dict(color='#FFD633'),  # Light Orange
-    usecase_ms_mdo_iamc.UC3_tp2: dict(color='#FFA533'),  # orange
-    usecase_ms_mdo_iamc.UC4_tp1: dict(color='#89CFF0'),  # Light blue
-    usecase_ms_mdo_iamc.UC4_tp2: dict(color='#0047AB'),  # Dark blue
-    usecase_ms_mdo_iamc.UC_NZE_tp1: dict(color='#7FFF00'),  # Light green
-    usecase_ms_mdo_iamc.UC_NZE_tp2: dict(color='#2E8B57'),  # Dark Green
-
-    usecase_ms_mdo_with_nze.NO_CCUS: dict(color='#FFD633'),  # Light Orange
-    usecase_ms_mdo_with_nze.ALL_TECHNOS: dict(color='#0047AB'),  # Dark blue
-    usecase_ms_mdo_with_nze.ALL_TECHNOS_NZE: dict(color='#7FFF00'),  # Light green
-    """
     line_color = None
 
     for scenario, y_values in y_dict.items():
         if scenario in color_mapping.keys():
             line_color = color_mapping[scenario]
+        else:
+            raise Exception("No color for scenario")
 
         if line_color is not None:  # Check if line_color is assigned
             marker_symbol = 'circle'
