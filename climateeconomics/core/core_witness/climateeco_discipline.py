@@ -36,6 +36,12 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 'activate_pandemic_effects': False,
                                                 }
 
+    assumptions_dict_no_damages = {'compute_gdp': True,
+                                'compute_climate_impact_on_gdp': False,
+                                'activate_climate_effect_population': False,
+                                'activate_pandemic_effects': False,
+                                }
+
     YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YearStartDefault, "structuring": True,
                           'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950, 2080]}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,

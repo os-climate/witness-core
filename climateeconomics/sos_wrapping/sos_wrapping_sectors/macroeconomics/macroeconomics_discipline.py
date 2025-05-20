@@ -67,6 +67,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.DamageDetailedDfValue: GlossaryCore.DamageDetailedDf,
+        GlossaryCore.CapitalDfValue: GlossaryCore.CapitalDf
     }
 
     def init_execution(self):
@@ -110,6 +111,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.DamageDetailedDfValue: self.macro_model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
         }
 
+        outputs_dict.update(self.macro_model.outputs)
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -133,7 +136,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
                 identity_mat)
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.EconomicsDfValue, GlossaryCore.Capital),
+                (GlossaryCore.CapitalDfValue, GlossaryCore.Capital),
                 (f'{sector}.{GlossaryCore.CapitalDfValue}', GlossaryCore.Capital),
                 identity_mat)
             # wrt output net damage for each sector
@@ -284,22 +287,29 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.Capital in chart_list:
 
             to_plot = [GlossaryCore.Capital, GlossaryCore.UsableCapital]
+            capital_df = self.get_sosdisc_outputs(GlossaryCore.CapitalDfValue)
             legend = {GlossaryCore.Capital: 'capital stock',
                       GlossaryCore.UsableCapital: 'usable capital stock'}
-            years = list(economics_detail_df[GlossaryCore.Years].values)
-
             chart_name = 'Total capital stock and usable capital'
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'capital stock [T$]',
-                                                 chart_name=chart_name, y_min_zero=True)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.CapitalDf["unit"],
+                                                 chart_name=chart_name, y_min_zero=True, stacked_bar=True)
 
             for key in to_plot:
-                ordonate_data = list(economics_detail_df[key])
+                ordonate_data = list(capital_df[key])
                 new_series = InstanciatedSeries(
                     years, ordonate_data, legend[key], 'lines', True)
                 new_chart.add_series(new_series)
+
             new_series = InstanciatedSeries(
-                years, economics_detail_df[GlossaryCore.Capital] * 0.85, '85% of capital stock', 'lines', True)
+                years, capital_df[GlossaryCore.Capital] * 0.85, '85% of capital stock', 'lines', True)
             new_chart.add_series(new_series)
+
+            for sector in sector_list:
+                capital_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.CapitalDfValue}')
+                sector_capital = capital_df[GlossaryCore.Capital].values
+                new_series = InstanciatedSeries(years, sector_capital, f"{sector} capital", 'bar', True)
+                new_chart.add_series(new_series)
+
             instanciated_charts.append(new_chart)
 
         if 'share capital' in chart_list:

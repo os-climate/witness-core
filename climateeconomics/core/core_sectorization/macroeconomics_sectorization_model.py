@@ -33,6 +33,7 @@ class MacroeconomicsModel():
         """Constructor"""
         self.inputs = None
         self.economics_df = None
+        self.outputs = {}
         self.economics_detail_df = None
         self.years_range = None
         self.sectors_list = None
@@ -89,6 +90,13 @@ class MacroeconomicsModel():
                                             GlossaryCore.OutputNetOfDamage: self.sum_net_output,
                                             GlossaryCore.OutputGrowth: output_growth,
                                             GlossaryCore.Damages: damages})
+
+        self.outputs[GlossaryCore.CapitalDfValue] = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.Capital: self.sum_capital,
+            GlossaryCore.UsableCapital: self.sum_u_capital,
+           })
+
         economics_detail_df.index = self.years_range
         self.economics_detail_df = economics_detail_df
         self.economics_df = economics_detail_df[GlossaryCore.SectorizedEconomicsDf['dataframe_descriptor'].keys()]
