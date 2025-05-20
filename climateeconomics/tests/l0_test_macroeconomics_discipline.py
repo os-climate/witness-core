@@ -158,7 +158,6 @@ class MacroDiscTest(GenericDisciplinesTestClass):
          f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
          f'{self.name}.{GlossaryCore.SectionList}': self.section_list,
          f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': self.section_gdp_df,
-         f'{self.name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_residential_energy_consumption,
          f'{self.name}.assumptions_dict': {
              'compute_gdp': True,
              'compute_climate_impact_on_gdp': True,

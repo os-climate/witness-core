@@ -32,7 +32,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'icon': "fa-solid fa-square-root-variable",
     }
 
-    def get_builders(self):
+    def get_builders(self, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2]):
 
         optim_name = "MDO"
 
@@ -41,7 +41,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         techno_dict = GlossaryEnergy.DEFAULT_TECHNO_DICT_DEV
 
         coupling_builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization_optim_sub_process', invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=techno_dict)
+            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization_optim_sub_process', invest_discipline=invest_discipline, techno_dict=techno_dict)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(

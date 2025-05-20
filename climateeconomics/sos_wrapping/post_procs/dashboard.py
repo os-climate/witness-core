@@ -925,7 +925,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             execution_engine, f"{DAMAGE_DISC}.tp_a2", scenario_name
         )
         tp_a3 = get_scenario_value(
-            execution_engine, f"{DAMAGE_DISC}.tp_a3", scenario_name
+            execution_engine, "tp_a3", scenario_name
         )
         tp_a4 = get_scenario_value(
             execution_engine, f"{DAMAGE_DISC}.tp_a4", scenario_name

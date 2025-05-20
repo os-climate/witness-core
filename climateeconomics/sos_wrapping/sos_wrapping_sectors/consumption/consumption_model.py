@@ -28,7 +28,7 @@ class SectorizedConsumptionModel:
 
     def compute_sectors_consumption(self):
         """Sector Consumption S = Net output of sector S - invest in sector S - total energy invest X share energy prod attributed to sector S"""
-        years = self.inputs[f"{self.inputs[GlossaryCore.SectorListValue][0]}.{GlossaryCore.ProductionDfValue}"][GlossaryCore.OutputNetOfDamage].values
+        years = self.inputs[f"{self.inputs[GlossaryCore.SectorListValue][0]}.{GlossaryCore.ProductionDfValue}"][GlossaryCore.Years].values
 
         sectors_consumption_df = pd.DataFrame({GlossaryCore.Years: years})
 
