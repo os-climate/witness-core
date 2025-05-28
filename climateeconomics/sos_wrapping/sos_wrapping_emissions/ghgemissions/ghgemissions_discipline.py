@@ -89,6 +89,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyMixNetProductionsDfValue: GlossaryCore.EnergyMixNetProductionsDf,
         GlossaryCore.SectorListValue: sector_list_variable,
         GlossaryCore.GHGEnergyEmissionsDfValue: GlossaryCore.GHGEnergyEmissionsDf,
+        GlossaryCore.CCUS_CO2EmissionsDfValue: GlossaryCore.CCUS_CO2EmissionsDf,
         GlossaryCore.ResidentialEnergyConsumptionDfValue: GlossaryCore.ResidentialEnergyConsumptionDf
     }
 
@@ -215,6 +216,19 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         years = np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1,)
+
+        conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.CCUS_CO2EmissionsDf['unit']][
+            GlossaryCore.GHGEmissionsDf['unit']]
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.CO2),
+            (GlossaryCore.CCUS_CO2EmissionsDfValue, GlossaryCore.CO2),
+            np.identity(len(years)) * conversion_factor)
+
+        d_constraint_2050 = self.emissions_model.d_2050_carbon_negative_constraint(np.identity(len(years)) * conversion_factor)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ConstraintCarbonNegative2050, GlossaryCore.CO2),
+            (GlossaryCore.CCUS_CO2EmissionsDfValue, GlossaryCore.CO2),
+            d_constraint_2050)
 
         # land emissions
         d_energy_carbon_intensity_d_ghg_total_emissions = {}
@@ -464,6 +478,13 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             new_serie = InstanciatedSeries(
                 list(GHG_emissions_detail_df[GlossaryCore.Years].values),
                 list(GHG_emissions_detail_df[e_t.format(ghg)].values), e_t.format(ghg), 'bar')
+
+            new_chart.series.append(new_serie)
+
+        if ghg == GlossaryCore.CO2:
+            new_serie = InstanciatedSeries(
+                list(GHG_emissions_detail_df[GlossaryCore.Years].values),
+                list(GHG_emissions_detail_df[GlossaryCore.CCUS].values), GlossaryCore.CCUS, 'bar')
 
             new_chart.series.append(new_serie)
 

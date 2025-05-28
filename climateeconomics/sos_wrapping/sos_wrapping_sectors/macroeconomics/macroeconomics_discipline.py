@@ -304,12 +304,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 years, capital_df[GlossaryCore.Capital] * 0.85, '85% of capital stock', 'lines', True)
             new_chart.add_series(new_series)
 
-            for sector in sector_list:
-                capital_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.CapitalDfValue}')
-                sector_capital = capital_df[GlossaryCore.Capital].values
-                new_series = InstanciatedSeries(years, sector_capital, f"{sector} capital", 'bar', True)
-                new_chart.add_series(new_series)
-
             instanciated_charts.append(new_chart)
 
         if 'share capital' in chart_list:

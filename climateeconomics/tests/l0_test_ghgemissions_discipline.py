@@ -103,9 +103,14 @@ class GHGEmissionDiscTest(unittest.TestCase):
             f"{self.name}.{sector}.{GlossaryCore.SectionGdpDfValue}": generate_energy_consumption_df_sector(
                 sector) for sector in
             GlossaryCore.SectorsPossibleValues}
+        self.ccus_emissions = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.CO2: -4.
+        })
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
+                       f'{self.name}.{GlossaryCore.CCUS_CO2EmissionsDfValue}': self.ccus_emissions,
                        f'{self.name}.{GlossaryCore.SectorListValue}': GlossaryCore.SectorsPossibleValues,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}': CO2_land_emissions,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': CH4_land_emissions,
