@@ -114,7 +114,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 "scenario_name": scenario_name,
                 "x_var_name": GlossaryEnergy.EnergyMixRawProductionValue,
                 "x_column_name": "Total",
-                "x_data_scale": 1e-3,
+                "x_data_scale": 1,
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
                 "text_column": GlossaryCore.Years,
