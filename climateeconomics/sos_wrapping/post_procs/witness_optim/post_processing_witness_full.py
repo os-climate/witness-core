@@ -144,10 +144,11 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
                                     * multilevel_df.loc[energy]['production']).sum()), ]
             total_price_wotaxes += [np.sum((multilevel_df.loc[energy]['price_per_kWh_wotaxes']
                                             * multilevel_df.loc[energy]['production']).sum()), ]
-            CO2_per_kWh += [np.divide(total_CO2[i], production[i]), ]
-            price_per_kWh += [np.divide(total_price[i], production[i]), ]
-            price_per_kWh_wotaxes += [
-                np.divide(total_price_wotaxes[i], production[i]), ]
+            CO2_per_kWh += [0. if production[i] == 0. else total_CO2[i] / production[i]
+                            ]
+            price_per_kWh += [0. if production[i] == 0. else total_price[i] / production[i]]
+
+            price_per_kWh_wotaxes += [0. if production[i] == 0. else total_price_wotaxes[i] / production[i]]
             CO2_taxes_array += [np.mean(CO2_taxes), ]
         customdata = [energy_list, price_per_kWh, CO2_per_kWh,
                       production, invest, total_CO2, CO2_taxes_array,
@@ -198,10 +199,10 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
                                  * multilevel_df.loc[energy]['production']).sum()[i_year], ]
                 total_price_wotaxes += [(multilevel_df.loc[energy]['price_per_kWh_wotaxes']
                                          * multilevel_df.loc[energy]['production']).sum()[i_year], ]
-                CO2_per_kWh += [np.divide(total_CO2[i], production[i]), ]
-                price_per_kWh += [np.divide(total_price[i], production[i]), ]
-                price_per_kWh_wotaxes += [
-                    np.divide(total_price_wotaxes[i], production[i]), ]
+                CO2_per_kWh += [0. if production[i] == 0. else total_CO2[i] / production[i]]
+                price_per_kWh += [0. if production[i] == 0. else total_price[i] / production[i]]
+                price_per_kWh_wotaxes += [0. if production[i] == 0. else total_price_wotaxes[i] / production[i]]
+
                 CO2_taxes_array += [CO2_taxes[i], ]
             customdata = [energy_list, price_per_kWh, CO2_per_kWh,
                           production, invest, total_CO2, CO2_taxes_array,
@@ -302,7 +303,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     multilevel_df = pd.DataFrame(
         index=idx,
         columns=['production', GlossaryCore.InvestValue, 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes',
-                 'CO2_from_production', 'CO2_per_use', 'CO2_after_use', 'CO2_from_other_consumption'])
+                 'CO2_per_use'])
 
     energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
 
@@ -345,17 +346,17 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                 #     'CO2_emissions_detailed')
 
             # Calculate total CO2 emissions
-            CO2_per_use = np.zeros(len(invest_techno[GlossaryCore.Years]))
-            # CO2_from_other_consumption = np.zeros(len(invest_techno[GlossaryCore.Years]))
-            # CO2_from_production = np.zeros(len(invest_techno[GlossaryCore.Years]))
+            CO2_per_use = np.zeros(len(years))
+            # CO2_from_other_consumption = np.zeros(len(years))
+            # CO2_from_production = np.zeros(len(years))
             if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(invest_techno[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(years)) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(invest_techno[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use']
+                        len(years)) * data_fuel_dict['CO2_per_use']
             # for emission_type in carbon_emissions:
             #     if emission_type == GlossaryCore.Years:
             #         continue
@@ -379,6 +380,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                 f'{techno}_wotaxes'].values
             idx = pd.MultiIndex.from_tuples(
                 [(f'{energy}', f'{techno}')], names=['energy', 'techno'])
+
             columns_techno = ['energy', 'technology',
                               'production', GlossaryCore.InvestValue,
                               'CO2_per_kWh', 'price_per_kWh',
@@ -386,7 +388,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                               'CO2_per_use']
             techno_df = pd.DataFrame([(energy, techno, production_techno, invest_techno,
                                        CO2_per_kWh_techno, price_per_kWh_techno, price_per_kWh_wotaxes_techno,
-                                       CO2_per_use,)],
+                                       CO2_per_use)],
+
                                      index=idx, columns=columns_techno)
             multilevel_df = pd.concat([multilevel_df, techno_df])
 
