@@ -70,7 +70,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         chain_builders.extend(builder_iea_disc)
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            'ns_optim',
+            'ns_energy',
             'climateeconomics.sos_wrapping.post_procs.witness_optim.post_processing_witness_full')
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
