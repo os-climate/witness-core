@@ -26,7 +26,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse sectorization Process',
+        'label': 'WITNESS Full vs IEA NZE Process',
         'description': '',
         'category': '',
         'version': '',

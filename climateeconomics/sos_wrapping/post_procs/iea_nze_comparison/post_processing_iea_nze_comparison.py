@@ -365,7 +365,7 @@ def post_processings(execution_engine, namespace, filters):
         x_witness_df, _ = get_shared_value(execution_engine, WITNESS_RAW_ENERGY_DF_NAME)
         y_witness_df, _ = get_shared_value(execution_engine, "Macroeconomics.economics_detail_df")
         x_witness = x_witness_df.loc[x_witness_df[GlossaryCore.Years] <= year_end][
-                        WITNESS_RAW_ENERGY_COL_NAME] / 1e3  # Value is in TWh, plot in PWh
+            WITNESS_RAW_ENERGY_COL_NAME]  # Value is in TWh, plot in PWh
         y_witness = y_witness_df.loc[y_witness_df[GlossaryCore.Years] <= year_end]["output_net_of_d"]
         new_series = InstanciatedSeries(
             x_witness.values.tolist(),
