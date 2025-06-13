@@ -15,7 +15,6 @@ limitations under the License.
 
 '''
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
