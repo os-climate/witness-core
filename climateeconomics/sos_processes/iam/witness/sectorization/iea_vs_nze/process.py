@@ -41,7 +41,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders = []
 
-
+        mods_dict = {
+            'IEA Data Preparation': 'climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline.IEADataPreparationDiscipline',
+            }
+        ns_dict = {'ns_dashboard_iea': self.ee.study_name}
+        builder_iea_disc = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+        chain_builders.extend(builder_iea_disc)
 
         # retrieve energy process
         chain_builders_witness = self.ee.factory.get_builder_from_process(
@@ -56,12 +61,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders.extend(chain_builders_energy)
 
-        mods_dict = {
-            'IEA Data Preparation': 'climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline.IEADataPreparationDiscipline',
-            }
-        ns_dict = {'ns_dashboard_iea': self.ee.study_name}
-        builder_iea_disc = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-        chain_builders.extend(builder_iea_disc)
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_energy': f'{self.ee.study_name}.EnergyMix',
