@@ -126,7 +126,7 @@ class Study(ClimateEconomicsStudyManager):
         setup_data[f'{self.study_name}.consumers_actors'] = [GlossaryCore.CCUS, GlossaryCore.SectorIndustry, GlossaryCore.SectorServices, GlossaryCore.Crop]
 
         # loading IEA vs nze data:
-        invest_mix = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'invest_mix.csv'))
+        invest_mix = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'invest_mix_2.csv'))
         setup_data[f'{self.study_name}.EnergyMix.invest_mix'] = invest_mix
 
         utilisation_ratio = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'utilisation_ratio.csv'))
