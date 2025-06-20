@@ -82,7 +82,8 @@ class DataStudy():
         witness_input[f"{self.study_name}.{'Damage.damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
         #         witness_input[f"{self.study_name}.{}#                      '.Damage.damage_constraint_factor'}" = np.asarray([1] * len(years))
-        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.reforestation_investment"] = self.reforestation_investment_df
+        witness_input[
+            f"{self.study_name}.Energy Investment Plan.reforestation_investment"] = self.reforestation_investment_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[5], 'data')
