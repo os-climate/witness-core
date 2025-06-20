@@ -204,6 +204,11 @@ class Study(StudyManager):
                 "indus_emissions": 0.
             })
 
+            CCUS_emission = pd.DataFrame({
+                GlossaryCore.Years: years,
+                GlossaryCore.CO2: -0.1
+            })
+
             for sector in GlossaryCore.SectorsPossibleValues:
                 global_data_dir = join(dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'data')
                 section_non_energy_emission_gdp_df = pd.read_csv(
@@ -239,6 +244,7 @@ class Study(StudyManager):
                 f'{self.study_name}.Utility.{GlossaryCore.SectorServices}_shift_scurve': -0.2,
                 f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}_strech_scurve': 1.7,
                 f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}_shift_scurve': -0.25,
+                f'{self.study_name}.{GlossaryCore.CCUS_CO2EmissionsDfValue}': CCUS_emission,
             })
 
         setup_data_list.update(cons_input)

@@ -178,6 +178,7 @@ class CropDiscipline(SubSectorDiscipline):
                                 GlossaryCore.Years: years,
                                 **GlossaryCore.crop_calibration_data[varname]
                             })
+                            self.update_default_value(varname, self.IO_TYPE_IN, df_share["default"])
                         dataframes_inputs[varname] = df_share
 
                 for ghg in GlossaryCore.GreenHouseGases:
@@ -187,6 +188,7 @@ class CropDiscipline(SubSectorDiscipline):
                     dict_ghg_by_prod_unit["description"] = dict_ghg_by_prod_unit["description"].format(ghg)
                     if varname in GlossaryCore.crop_calibration_data:
                         dict_ghg_by_prod_unit["default"] = GlossaryCore.crop_calibration_data[varname]
+                        self.update_default_value(varname, self.IO_TYPE_IN, dict_ghg_by_prod_unit["default"])
                     dataframes_inputs[varname] = dict_ghg_by_prod_unit
 
                 for varname, df_input in dataframes_inputs.items():
