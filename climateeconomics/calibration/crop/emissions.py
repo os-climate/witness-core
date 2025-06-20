@@ -105,8 +105,7 @@ n2o_share_of_emissions_co2_eq = {
     GlossaryCore.Maize: agriculture_n2o_share_of_emissions_co2_eq,
     GlossaryCore.SugarCane: agriculture_n2o_share_of_emissions_co2_eq,
 }
-for ft in total_ghg_emissions_per_kg:
-    total_ghg_eq = total_ghg_emissions_per_kg[ft]
+for ft, total_ghg_eq in total_ghg_emissions_per_kg.items():
     methane_share = methane_share_of_emissions_co2eq[ft]
     n2o_share = n2o_share_of_emissions_co2_eq[ft]
     breakdown_ghg = solve_breakdown_ghg(total_ghg_eq, methane_share, n2o_share)

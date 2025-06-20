@@ -75,7 +75,7 @@ class Study(StudyCoarse):
             ** new_invests
         })
 
-        setup_data[f'{self.study_name}.InvestmentDistribution.{GlossaryEnergy.invest_mix}'] = invest_mix_df
+        setup_data[f'{self.study_name}.Energy Investment Plan.{GlossaryEnergy.invest_mix}'] = invest_mix_df
         return setup_data
 
 

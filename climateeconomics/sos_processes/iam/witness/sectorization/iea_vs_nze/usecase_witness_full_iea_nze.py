@@ -126,7 +126,7 @@ class Study(ClimateEconomicsStudyManager):
         setup_data[f'{self.study_name}.consumers_actors'] = [GlossaryCore.CCUS, GlossaryCore.SectorIndustry, GlossaryCore.SectorServices, GlossaryCore.Crop]
 
         # loading IEA vs nze data:
-        invest_mix = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'invest_mix.csv'))
+        invest_mix = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'invest_mix_2.csv'))
         setup_data[f'{self.study_name}.EnergyMix.invest_mix'] = invest_mix
 
         utilisation_ratio = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'utilisation_ratio.csv'))
@@ -165,8 +165,8 @@ class Study(ClimateEconomicsStudyManager):
         forest_invest = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'forest_investment.csv'))
 
         setup_data.update({
-            f'{self.study_name}.InvestmentDistribution.invest_mix': invest_mix,
-            #f'{self.study_name}.InvestmentDistribution.reforestation_investment': forest_invest,
+            f'{self.study_name}.Energy Investment Plan.invest_mix': invest_mix,
+            # f'{self.study_name}.Energy Investment Plan.reforestation_investment': forest_invest,
             f'{self.study_name}.Agriculture.Crop.crop_investment': crop_investment_df_NZE,
             f'{self.study_name}.Agriculture.Forestry.reforestation_cost_per_ha': 3800.,
             f'{self.study_name}.Population.diet_mortality_param_df': diet_mortality_df,
