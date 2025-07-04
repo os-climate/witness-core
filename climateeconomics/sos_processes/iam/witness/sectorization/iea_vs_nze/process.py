@@ -26,7 +26,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse sectorization Process',
+        'label': 'WITNESS Full vs IEA NZE Process',
         'description': '',
         'category': '',
         'version': '',
@@ -40,6 +40,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def get_builders(self, techno_dict: dict = GlossaryEnergy.DEFAULT_TECHNO_DICT):
 
         chain_builders = []
+
+        mods_dict = {
+            'IEA Data Preparation': 'climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline.IEADataPreparationDiscipline',
+            }
+        ns_dict = {'ns_dashboard_iea': self.ee.study_name}
+        builder_iea_disc = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+        chain_builders.extend(builder_iea_disc)
+
         # retrieve energy process
         chain_builders_witness = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sect_wo_energy')
@@ -63,14 +71,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_dashboard', 'climateeconomics.sos_wrapping.post_procs.dashboard')
 
-        mods_dict = {'IEA': 'climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline.IEADataPreparationDiscipline',
-        }
-        ns_dict = {'ns_dashboard_iea': self.ee.study_name}
-        builder_iea_disc = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-        chain_builders.extend(builder_iea_disc)
-
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            'ns_optim',
+            'ns_energy',
             'climateeconomics.sos_wrapping.post_procs.witness_optim.post_processing_witness_full')
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(

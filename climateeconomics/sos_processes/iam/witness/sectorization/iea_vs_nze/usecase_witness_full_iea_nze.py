@@ -62,6 +62,7 @@ def create_df_from_csv(filename: str, data_dir=DATA_DIR, **kwargs):
     return pd.read_csv(str(data_dir / filename), **kwargs)
 
 
+IEAName = 'IEA Data Preparation'
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=True, run_usecase=True,
@@ -125,7 +126,7 @@ class Study(ClimateEconomicsStudyManager):
         setup_data[f'{self.study_name}.consumers_actors'] = [GlossaryCore.CCUS, GlossaryCore.SectorIndustry, GlossaryCore.SectorServices, GlossaryCore.Crop]
 
         # loading IEA vs nze data:
-        invest_mix = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'invest_mix.csv'))
+        invest_mix = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'invest_mix_2.csv'))
         setup_data[f'{self.study_name}.EnergyMix.invest_mix'] = invest_mix
 
         utilisation_ratio = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'utilisation_ratio.csv'))
@@ -164,8 +165,8 @@ class Study(ClimateEconomicsStudyManager):
         forest_invest = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'forest_investment.csv'))
 
         setup_data.update({
-            f'{self.study_name}.InvestmentDistribution.invest_mix': invest_mix,
-            #f'{self.study_name}.InvestmentDistribution.reforestation_investment': forest_invest,
+            f'{self.study_name}.Energy Investment Plan.invest_mix': invest_mix,
+            # f'{self.study_name}.Energy Investment Plan.reforestation_investment': forest_invest,
             f'{self.study_name}.Agriculture.Crop.crop_investment': crop_investment_df_NZE,
             f'{self.study_name}.Agriculture.Forestry.reforestation_cost_per_ha': 3800.,
             f'{self.study_name}.Population.diet_mortality_param_df': diet_mortality_df,
@@ -217,27 +218,27 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.mdo_mode_energy': True,
             f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
             f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
-            f'{self.study_name}.IEA.{GlossaryEnergy.CO2EmissionsGtValue}': CO2_emissions_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.EconomicsDfValue}': GDP_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.CO2TaxesValue}': CO2_tax_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.StreamProductionValue}': energy_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.EnergyFinalConsumptionName}': energy_consumption_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.TemperatureDfValue}': temperature_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.PopulationDfValue}': population_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.CO2EmissionsGtValue}': CO2_emissions_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.EconomicsDfValue}': GDP_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.CO2TaxesValue}': CO2_tax_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.StreamProductionValue}': energy_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.EnergyFinalConsumptionName}': energy_consumption_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.TemperatureDfValue}': temperature_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.PopulationDfValue}': population_df,
             # energy production
-            f'{self.study_name}.IEA.{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production': nuclear_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production': hydro_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}_techno_production': solar_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}_techno_production': wind_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production': coal_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.methane}_{GlossaryEnergy.FossilGas}_techno_production': fossil_gas_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production': biogas_production_df,
-            #f'{self.study_name}.IEA.{GlossaryEnergy.CropEnergy}_techno_production': crop_production_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.ForestProduction}_techno_production': forest_production_df,
-            f'{self.study_name}.IEA.land_surface_detail_df': land_use_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Nuclear}_techno_production': nuclear_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Hydropower}_techno_production': hydro_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.electricity}_{GlossaryEnergy.Solar}_techno_production': solar_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.electricity}_{GlossaryEnergy.WindOnshoreAndOffshore}_techno_production': wind_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.solid_fuel}_{GlossaryEnergy.CoalExtraction}_techno_production': coal_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.methane}_{GlossaryEnergy.FossilGas}_techno_production': fossil_gas_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production': biogas_production_df,
+            # f'{self.study_name}.{IEAName}.{GlossaryEnergy.CropEnergy}_techno_production': crop_production_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.ForestProduction}_techno_production': forest_production_df,
+            f'{self.study_name}.{IEAName}.land_surface_detail_df': land_use_df,
             # energy prices
-            f'{self.study_name}.IEA.{GlossaryEnergy.electricity}_{GlossaryEnergy.StreamPricesValue}': electricity_prices_df,
-            f'{self.study_name}.IEA.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}': natural_gas_price_df
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.electricity}_{GlossaryEnergy.StreamPricesValue}': electricity_prices_df,
+            f'{self.study_name}.{IEAName}.{GlossaryEnergy.methane}_{GlossaryEnergy.StreamPricesValue}': natural_gas_price_df
         })
 
 

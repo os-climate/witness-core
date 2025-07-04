@@ -87,6 +87,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_public",
         "range": [2000, 2300],
+        "structuring":True
     }
     Forestry = "Forestry"
     biomass_dry = "biomass_dry"

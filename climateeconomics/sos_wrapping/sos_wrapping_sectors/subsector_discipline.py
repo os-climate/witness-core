@@ -61,6 +61,8 @@ class SubSectorDiscipline(AutodifferentiedDisc):
                     self.sector_name: default_values[self.sector_name]
                 })
                 share_sector_invest_df_var = GlossaryCore.get_dynamic_variable(GlossaryCore.SubSectorInvestDf)
+                self.update_default_value(
+                    GlossaryCore.ShareSectorInvestmentDfValue, self.IO_TYPE_IN, default_df)
                 share_sector_invest_df_var["default"] = default_df
 
                 dynamic_inputs[f'{GlossaryCore.ShareSectorInvestmentDfValue}'] = share_sector_invest_df_var
