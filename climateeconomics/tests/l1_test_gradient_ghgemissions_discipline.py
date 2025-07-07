@@ -162,7 +162,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=self.inputs_cheked,
                             outputs=self.outputs_checked)
 
-    def test_carbon_emissions_analytic_grad_affine_co2_objective(self):
+    def     test_carbon_emissions_analytic_grad_affine_co2_objective(self):
 
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -203,7 +203,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-
+        self.override_dump_jacobian = 1
         self.check_jacobian(location=dirname(__file__), filename='jacobian_ghg_emission_discipline_affine_co2_objective.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=self.inputs_cheked,

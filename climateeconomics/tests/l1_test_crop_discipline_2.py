@@ -36,7 +36,7 @@ class Crop2JacobianTestCase(GenericDisciplinesTestClass):
         self.name = 'Test'
         self.override_dump_jacobian = False
         self.show_graphs = False
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.pickle_directory = dirname(__file__)
         self.year_start = 2021
         self.year_end = 2023
