@@ -75,12 +75,16 @@ class SectorModel(DifferentiableModel):
         """
         K(t), Capital for time period, trillions $USD
         """
-        capital = self.inputs['capital_start']
+        capital = self.inputs['capital_start'] # in T$
         capital_list = [capital]
+
+        capital_unit = GlossaryCore.SectorCapitalDf["unit"]
+        invest_unit = GlossaryCore.InvestmentDf["unit"]
+        conversion_factor = GlossaryCore.conversion_dict[invest_unit][capital_unit]
 
         investments = self.inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}:{GlossaryCore.InvestmentsValue}"]
         for invest in investments[:-1]:
-            capital = (1 - self.inputs['depreciation_capital']) * capital + invest
+            capital = (1 - self.inputs['depreciation_capital']) * capital + invest * conversion_factor
             capital_list.append(capital)
 
         self.outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}:{GlossaryCore.Capital}"] = self.np.array(capital_list)

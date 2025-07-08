@@ -60,6 +60,11 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             "Total": 100.
         })
 
+        self.ccus_emissions = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.CO2: -4.
+        })
+
         self.residential_energy_consumption = pd.DataFrame({GlossaryCore.Years: years,
                                                             "Total": 1.2})
 
@@ -86,6 +91,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}',
             f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}',
             f'{self.name}.{GlossaryCore.GHGEnergyEmissionsDfValue}',
+            f'{self.name}.{GlossaryCore.CCUS_CO2EmissionsDfValue}',
             f"{self.name}.{GlossaryCore.EnergyMixNetProductionsDfValue}",
         ]
 
@@ -137,6 +143,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CH4)}': self.CH4_land_emissions,
                        f'{self.name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.N2O)}': self.N2O_land_emissions,
                        f'{self.name}.{GlossaryCore.GHGEnergyEmissionsDfValue}': self.GHG_total_energy_emissions,
+                       f'{self.name}.{GlossaryCore.CCUS_CO2EmissionsDfValue}': self.ccus_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.{GlossaryCore.EnergyMixNetProductionsDfValue}": self.energy_production,
                        f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
@@ -155,7 +162,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=self.inputs_cheked,
                             outputs=self.outputs_checked)
 
-    def test_carbon_emissions_analytic_grad_affine_co2_objective(self):
+    def     test_carbon_emissions_analytic_grad_affine_co2_objective(self):
 
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -184,6 +191,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.GHGEnergyEmissionsDfValue}': self.GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": self.CO2_emissions_ref,
                        f"{self.name}.affine_co2_objective": False,
+                       f'{self.name}.{GlossaryCore.CCUS_CO2EmissionsDfValue}': self.ccus_emissions,
                        f"{self.name}.{GlossaryCore.EnergyMixNetProductionsDfValue}": self.energy_production,
                        f"{self.name}.{GlossaryCore.ResidentialEnergyConsumptionDfValue}": self.residential_energy_consumption,
                        **self.ghg_eenergy_consumptions_sectors,
@@ -195,7 +203,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].discipline_wrapp.discipline
-
+        self.override_dump_jacobian = 1
         self.check_jacobian(location=dirname(__file__), filename='jacobian_ghg_emission_discipline_affine_co2_objective.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=self.inputs_cheked,

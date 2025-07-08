@@ -227,7 +227,7 @@ class ForestryDiscipline(SubSectorDiscipline):
                 self.update_default_value('initial_co2_emissions', 'in', DatabaseWitnessCore.ForestEmissions.get_value_at_year(year_start))
 
     def init_execution(self):
-        self.model = ForestryModel()
+        self.model = ForestryModel(sosname="forestry")
 
     def get_chart_filter_list(self):
 

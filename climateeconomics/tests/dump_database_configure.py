@@ -226,12 +226,12 @@ def generate_dict_from_usecase_3(usecase):
                                                                                       input_description['type'])
     dictionnary_list = []
     id_discipline = 1
-    for energy in out_dict.keys():
+    for energy, subdict in out_dict.items():
         custom_dict = {}
         custom_dict["_id"] = id_discipline
         custom_dict["techno_name"] = energy.split("Discipline")[0]
         custom_dict["region"] = "world"
-        for key, value in sorted(out_dict[energy].items()):
+        for key, value in sorted(subdict.items()):
             custom_dict[key] = value
         dictionnary_list.append(custom_dict)
         id_discipline += 1

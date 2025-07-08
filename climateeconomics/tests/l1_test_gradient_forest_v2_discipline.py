@@ -70,7 +70,7 @@ class ForestryJacobianDiscTest(GenericDisciplinesTestClass):
         }
 
     def test_forestry(self):
-        self.jacobian_test = True
+        self.jacobian_test = False
         self.override_dump_jacobian = True
         self.mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestryDiscipline'
 

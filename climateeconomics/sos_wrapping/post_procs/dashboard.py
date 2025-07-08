@@ -114,7 +114,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
                 "scenario_name": scenario_name,
                 "x_var_name": GlossaryEnergy.EnergyMixRawProductionValue,
                 "x_column_name": "Total",
-                "x_data_scale": 1e-3,
+                "x_data_scale": 1,
                 "y_var_name": "Macroeconomics.economics_detail_df",
                 "y_column_name": "output_net_of_d",
                 "text_column": GlossaryCore.Years,
@@ -300,7 +300,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
         df_energy_invest = get_scenario_value(
             execution_engine,
-            GlossaryCore.EnergyInvestmentsWoTaxValue,
+            f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}",
             scenario_name,
         )
         df_consumption = get_scenario_value(
@@ -846,7 +846,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
         df_energy_invest = get_scenario_value(
             execution_engine,
-            GlossaryCore.EnergyInvestmentsWoTaxValue,
+            f"{GlossaryEnergy.EnergyMix}.{GlossaryEnergy.InvestmentsValue}",
             scenario_name,
         )
         df_consumption = get_scenario_value(
@@ -925,7 +925,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             execution_engine, f"{DAMAGE_DISC}.tp_a2", scenario_name
         )
         tp_a3 = get_scenario_value(
-            execution_engine, f"{DAMAGE_DISC}.tp_a3", scenario_name
+            execution_engine, "tp_a3", scenario_name
         )
         tp_a4 = get_scenario_value(
             execution_engine, f"{DAMAGE_DISC}.tp_a4", scenario_name
@@ -1000,7 +1000,7 @@ def complete_economics_df_for_sectorization(
         df_non_energy_invest[GlossaryCore.InvestmentsValue].values
     )
     economics_detail_df_completed[GlossaryCore.EnergyInvestmentsValue] = (
-        df_energy_invest[GlossaryCore.EnergyInvestmentsWoTaxValue].values
+        df_energy_invest[GlossaryCore.InvestmentsValue].values
     )
     economics_detail_df_completed[GlossaryCore.InvestmentsValue] = (
         economics_detail_df_completed[GlossaryCore.EnergyInvestmentsValue]

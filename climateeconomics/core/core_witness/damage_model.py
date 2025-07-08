@@ -101,6 +101,8 @@ class DamageModel:
         temp = temperature - temperature[0]
         # Compute reduction in productivity due to increase in temperature
         pdctivity_reduction = self.param["crop_prod_reduction_param_a"] * temp ** 2 + self.param["crop_prod_reduction_param_b"] * temp
+        if not self.param["assumptions_dict"]["compute_climate_impact_on_gdp"]:
+            pdctivity_reduction = pdctivity_reduction * 0.
         self.outputs[GlossaryCore.CropProductivityReductionName] = pd.DataFrame({
             GlossaryCore.Years: self.years_range,
             GlossaryCore.CropProductivityReductionName: pdctivity_reduction

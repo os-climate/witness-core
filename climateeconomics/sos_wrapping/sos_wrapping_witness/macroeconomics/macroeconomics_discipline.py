@@ -293,7 +293,7 @@ class MacroeconomicsDiscipline(AutodifferentiedDisc):
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
-        self.model = MacroEconomics(param)
+        self.model = MacroEconomics(param, sosname="Macroeconomics")
 
     def get_chart_filter_list(self):
 

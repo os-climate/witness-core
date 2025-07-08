@@ -128,10 +128,16 @@ class Crop(SubSectorModel):
         production_raw = self.outputs[f"usable_capital_breakdown:{self.ft}"] *\
                          self.inputs[GlossaryCore.FoodTypeCapitalIntensityName][self.ft]
 
-        production_wasted_by_productivity_loss = production_raw * (- self.inputs[f"{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}"]) / 100.  # Mt
+        if self.inputs["assumptions_dict"]["compute_climate_impact_on_gdp"]:
+            production_wasted_by_productivity_loss = production_raw * (- self.inputs[f"{GlossaryCore.CropProductivityReductionName}:{GlossaryCore.CropProductivityReductionName}"]) / 100.  # Mt
+            production_wasted_by_climate_damages = (production_raw - production_wasted_by_productivity_loss) *\
+                                               self.inputs[f'{GlossaryCore.DamageFractionDfValue}:{GlossaryCore.DamageFractionOutput}']  # Mt
+        else:
+            production_wasted_by_productivity_loss = self.zeros_arrays
+            production_wasted_by_climate_damages = self.zeros_arrays
+
         self.outputs[f"{GlossaryCore.FoodTypeNotProducedDueToClimateChangeName}:{self.ft}"] = production_wasted_by_productivity_loss
-        self.outputs[f"{GlossaryCore.FoodTypeWasteByClimateDamagesName}:{self.ft}"] = (
-                                                                              production_raw - production_wasted_by_productivity_loss) * self.inputs[f'{GlossaryCore.DamageFractionDfValue}:{GlossaryCore.DamageFractionOutput}']  # Mt
+        self.outputs[f"{GlossaryCore.FoodTypeWasteByClimateDamagesName}:{self.ft}"] = production_wasted_by_climate_damages
         self.temp_variables[f"production_before_waste:{self.ft}"] = production_raw - production_wasted_by_productivity_loss  # Mt
 
         # split energy and food production land use and emissions

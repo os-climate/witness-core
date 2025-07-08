@@ -159,7 +159,7 @@ class SectorDiscipline(AutodifferentiedDisc):
             self.add_outputs(dynamic_outputs)
 
     def init_execution(self):
-        self.model = SectorModel()
+        self.model = SectorModel(sosname=self.get_sosdisc_inputs("sector_name"))
 
     def get_chart_filter_list(self):
 
@@ -228,7 +228,7 @@ class SectorDiscipline(AutodifferentiedDisc):
 
             chart_name = 'Productive capital stock and usable capital for production'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital stock [trillion dollars]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorCapitalDf["unit"],
                                                  chart_name=chart_name, y_min_zero=True)
             note = {'Productive Capital': ' Non energy capital'}
             new_chart.annotation_upper_left = note

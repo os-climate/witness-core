@@ -52,7 +52,7 @@ class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, bspline=True, run_usecase=True,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, file_path=__file__):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT, file_path=__file__):
         super().__init__(file_path, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end

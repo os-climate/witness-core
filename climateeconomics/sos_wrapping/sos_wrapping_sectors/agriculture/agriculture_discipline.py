@@ -89,7 +89,7 @@ class AgricultureSectorDiscipline(AutodifferentiedDisc):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name, logger)
-        self.model = AgricultureModel()
+        self.model = AgricultureModel(sosname="agriculture_sector_model")
 
     def add_additionnal_dynamic_variables(self):
         return {}, {}

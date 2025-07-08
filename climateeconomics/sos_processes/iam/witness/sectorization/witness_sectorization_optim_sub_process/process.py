@@ -17,6 +17,7 @@ limitations under the License.
 
 # -*- coding: utf-8 -*-
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import (
     INVEST_DISC_NAME,
 )
@@ -26,6 +27,9 @@ from energy_models.sos_processes.witness_sub_process_builder import (
 
 from climateeconomics.glossarycore import GlossaryCore
 
+OPTIM_NAME = "MDO"
+COUPLING_NAME = "WITNESS_Eval"
+EXTRA_NAME = "WITNESS"
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
@@ -36,6 +40,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
+    def __init__(self, ee):
+        super().__init__(ee=ee)
+        self.techno_dict = GlossaryEnergy.DEFAULT_COARSE_TECHNO_DICT
+
 
     def get_builders(self):
 
@@ -43,10 +51,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         designvariable_name = "DesignVariables"
         func_manager_name = "FunctionsManager"
         extra_name = 'WITNESS'
-        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
 
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization',
+            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization', invest_discipline=self.invest_discipline,
             techno_dict=self.techno_dict)
 
         # modify namespaces defined in the child process

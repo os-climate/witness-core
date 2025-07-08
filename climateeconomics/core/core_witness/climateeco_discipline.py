@@ -36,6 +36,12 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 'activate_pandemic_effects': False,
                                                 }
 
+    assumptions_dict_no_damages = {'compute_gdp': True,
+                                'compute_climate_impact_on_gdp': False,
+                                'activate_climate_effect_population': False,
+                                'activate_pandemic_effects': False,
+                                }
+
     YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YearStartDefault, "structuring": True,
                           'unit': GlossaryCore.Years, 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950, 2080]}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
@@ -233,10 +239,10 @@ class ClimateEcoDiscipline(SoSWrapp):
                         raise TypeError(f"Unsupported type for variable '{key}'")
 
     def set_gradients_from_autodiff(self, gradients: dict[str: dict[str: dict[str: dict[str: np.ndarray]]]]):
-        for output_name in gradients:
-            for output_col in gradients[output_name]:
-                for input_name in gradients[output_name][output_col]:
-                    for input_col, value in gradients[output_name][output_col][input_name].items():
+        for output_name, subgrad in gradients.items():
+            for output_col, subsubgrad in subgrad.items():
+                for input_name, subsubsubgrad in subsubgrad.items():
+                    for input_col, value in subsubsubgrad.items():
                         self.set_partial_derivative_for_other_types(
                             (output_name, output_col),
                             (input_name, input_col),

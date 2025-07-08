@@ -117,12 +117,21 @@ class Study(StudyManager):
             GlossaryCore.EnergyCarbonIntensityDfValue: 100.0
         })
 
+        share_invest_ccus = pd.DataFrame({GlossaryCore.Years: years,
+                                                    GlossaryCore.ShareInvestment: 0.01})
+
+        share_invests_energy = pd.DataFrame({GlossaryCore.Years: years,
+                                                    GlossaryCore.ShareInvestment: DatabaseWitnessCore.ShareInvestEnergy.value})
+
         cons_input = {
             f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryCore.YearEnd}": self.year_end,
+            f"{self.study_name}.mdo_mode_energy": False,
             f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}": total_invests,
             f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}": damage_fraction_df,
             f"{self.study_name}.{GlossaryCore.EconomicsDfValue}": economics_df,
+            f"{self.study_name}.{GlossaryCore.CCUS}.{GlossaryCore.ShareSectorInvestmentDfValue}": share_invest_ccus,
+            f"{self.study_name}.{GlossaryCore.EnergyMix}.{GlossaryCore.ShareSectorInvestmentDfValue}": share_invests_energy,
             f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
              f'{self.study_name}.{GlossaryCore.EnergyCarbonIntensityDfValue}': carbon_intensity_of_energy_mix,
         }
@@ -144,18 +153,6 @@ class Study(StudyManager):
                  GlossaryCore.ShareInvestment: invest_agri_start})
 
             # Energy
-            share_energy_resi_2020 = DatabaseWitnessCore.EnergyshareResidentialYearStart.value
-            share_energy_other_2020 = DatabaseWitnessCore.EnergyshareOtherYearStart.value
-            share_energy_agri_2020 = DatabaseWitnessCore.EnergyshareAgricultureYearStart.value
-            share_energy_services_2020 = DatabaseWitnessCore.EnergyshareServicesYearStart.value
-            share_energy_agriculture = pd.DataFrame({GlossaryCore.Years: years,
-                                                     GlossaryCore.ShareSectorEnergy: share_energy_agri_2020})
-            share_energy_services = pd.DataFrame({GlossaryCore.Years: years,
-                                                  GlossaryCore.ShareSectorEnergy: share_energy_services_2020})
-            share_energy_resi = pd.DataFrame({GlossaryCore.Years: years,
-                                              GlossaryCore.ShareSectorEnergy: share_energy_resi_2020})
-            share_energy_other = pd.DataFrame({GlossaryCore.Years: years,
-                                               GlossaryCore.ShareSectorEnergy: share_energy_other_2020})
 
             brut_net = 1 / 1.45
             energy_outlook = pd.DataFrame({
@@ -207,6 +204,11 @@ class Study(StudyManager):
                 "indus_emissions": 0.
             })
 
+            CCUS_emission = pd.DataFrame({
+                GlossaryCore.Years: years,
+                GlossaryCore.CO2: -0.1
+            })
+
             for sector in GlossaryCore.SectorsPossibleValues:
                 global_data_dir = join(dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'data')
                 section_non_energy_emission_gdp_df = pd.read_csv(
@@ -226,10 +228,6 @@ class Study(StudyManager):
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_agriculture,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_services,
                 f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_indus,
-                f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_services,
-                f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_agriculture,
-                f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
-                f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
                 f"{self.study_name}.{GlossaryCore.EnergyMixNetProductionsDfValue}": energy_production,
                 f"{self.study_name}.{GlossaryCore.EnergyMarketRatioAvailabilitiesValue}": energy_market_ratios,
                 f"{self.study_name}.{GlossaryCore.insertGHGAgriLandEmissions.format(GlossaryCore.CO2)}": CO2_emitted_land,
@@ -246,6 +244,7 @@ class Study(StudyManager):
                 f'{self.study_name}.Utility.{GlossaryCore.SectorServices}_shift_scurve': -0.2,
                 f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}_strech_scurve': 1.7,
                 f'{self.study_name}.Utility.{GlossaryCore.SectorIndustry}_shift_scurve': -0.25,
+                f'{self.study_name}.{GlossaryCore.CCUS_CO2EmissionsDfValue}': CCUS_emission,
             })
 
         setup_data_list.update(cons_input)

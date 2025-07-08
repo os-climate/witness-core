@@ -122,11 +122,22 @@ class GHGEmissions:
             self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)] = 0.
         self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(GlossaryCore.CO2)] = self.total_economics_emisssions[GlossaryCore.NonEnergyEmissions].values
 
+        conversion_factor = GlossaryCore.conversion_dict[GlossaryCore.CCUS_CO2EmissionsDf['unit']][GlossaryCore.GHGEmissionsDf['unit']]
+        self.ghg_emissions_df[GlossaryCore.CCUS] = self.param[GlossaryCore.CCUS_CO2EmissionsDfValue][GlossaryCore.CO2].values * conversion_factor
+
         for ghg in self.GHG_TYPE_LIST:
-            self.ghg_emissions_df[ghg] = \
-                self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(ghg)].values + \
-                self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)].values + \
-                self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)].values
+            if ghg == GlossaryCore.CO2:
+                self.ghg_emissions_df[ghg] = \
+                    self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(ghg)].values + \
+                    self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)].values + \
+                    self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)].values + \
+                    self.ghg_emissions_df[GlossaryCore.CCUS].values
+            else:
+
+                self.ghg_emissions_df[ghg] = \
+                    self.ghg_emissions_df[GlossaryCore.insertGHGAgriLandEmissions.format(ghg)].values + \
+                    self.ghg_emissions_df[GlossaryCore.insertGHGNonEnergyEmissions.format(ghg)].values + \
+                    self.ghg_emissions_df[GlossaryCore.insertGHGEnergyEmissions.format(ghg)].values
 
     def compute_total_gwp(self):
 

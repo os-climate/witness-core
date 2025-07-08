@@ -38,7 +38,7 @@ def post_processing_filters(execution_engine, namespace):
                   'Utility per scenario', 'GHG emissions per scenario', 'ppm(mean) vs Welfare',
                   'Total production per scenario', 'ppm per scenario', 'invest per scenario']
 
-    scatter_scenario = 'optimization scenarios'
+    scatter_scenario = 'scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     scenario_key = execution_engine.dm.get_data_id(
         f'{namespace_w}.scenario_list')
@@ -54,7 +54,7 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
 
-    scatter_scenario = 'optimization scenarios'
+    scatter_scenario = 'scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     scenario_key = execution_engine.dm.get_data_id(
         f'{namespace_w}.scenario_list')
@@ -494,7 +494,7 @@ def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
     @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
     '''
     df_per_scenario_dicts = [{} for _ in df_paths]
-    scatter_scenario = 'optimization scenarios'
+    scatter_scenario = 'scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     if not scenario_list:
         scenario_key = execution_engine.dm.get_data_id(
