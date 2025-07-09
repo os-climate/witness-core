@@ -160,6 +160,9 @@ class Study(ClimateEconomicsStudyManager):
                                                                                            34.26931397]})
         invest_mix[f'{GlossaryEnergy.methane}.{GlossaryEnergy.Methanation}'] = 0.
         invest_mix[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.{GlossaryEnergy.BiomassFermentation}'] = 0.
+        invest_mix[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}'] = 0.
+        invest_mix[f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}'] /= 6.
+        invest_mix[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}'] /= 3.
 
         diet_mortality_df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'diet_mortality.csv'))
         forest_invest = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'forest_investment.csv'))
