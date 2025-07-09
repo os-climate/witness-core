@@ -671,23 +671,23 @@ def post_processings(execution_engine, namespace, filters):
             )
             instanciated_charts.append(new_chart)
 
-    if "Land_use" in chart_list:
-        land_use_df = get_scenario_value(execution_engine, f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}",
-                                         namespace + IEA_NAME)
-        for surface in [var for var in land_use_df.keys() if var != GlossaryEnergy.Years]:
-            new_chart = create_chart_comparing_WITNESS_and_IEA(
-                chart_name="Land use",
-                y_axis_name=f"{surface}",
-                iea_variable=f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}{SUFFIX_VAR_IEA}",
-                witness_variable="Land Use.land_surface_detail_df",
-                columns_to_plot=[surface],
-                args_to_plot={
-                    "args_0": {'y_min_zero': True},
-                    "args_1": {"df_label": "WITNESS"},
-                    "args_2": {"display_type": "scatter", "df_label": "IEA"},
-                },
-            )
-            instanciated_charts.append(new_chart)
+    # if "Land_use" in chart_list:
+    #     land_use_df = get_scenario_value(execution_engine, f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}",
+    #                                      namespace + IEA_NAME)
+    #     for surface in [var for var in land_use_df.keys() if var != GlossaryEnergy.Years]:
+    #         new_chart = create_chart_comparing_WITNESS_and_IEA(
+    #             chart_name="Land use",
+    #             y_axis_name=f"{surface}",
+    #             iea_variable=f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}{SUFFIX_VAR_IEA}",
+    #             witness_variable="Land Use.land_surface_detail_df",
+    #             columns_to_plot=[surface],
+    #             args_to_plot={
+    #                 "args_0": {'y_min_zero': True},
+    #                 "args_1": {"df_label": "WITNESS"},
+    #                 "args_2": {"display_type": "scatter", "df_label": "IEA"},
+    #             },
+    #         )
+    #         instanciated_charts.append(new_chart)
 
     if "Test" not in chart_list:
         # if not in coarse, add primary energy chart
