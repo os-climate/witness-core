@@ -28,7 +28,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import (
