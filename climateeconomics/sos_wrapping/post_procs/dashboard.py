@@ -220,19 +220,19 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
 
         # Creating list of values according to CO2 storage limited by CO2 captured
-        graph_net_co2 = []
-        for year_index, year in enumerate(years):
-            # carbon_captured = ccus_output[GlossaryEnergy.carbon_captured][
-            #     year_index
-            # ]
-            graph_net_co2.append(
-                total_ghg_df[GlossaryCore.CO2][year_index] + total_ghg_df[GlossaryCore.CCUS][year_index]
-            )
+        # graph_net_co2 = []
+        # for year_index, year in enumerate(years):
+        #     # carbon_captured = ccus_output[GlossaryEnergy.carbon_captured][
+        #     #     year_index
+        #     # ]
+        #     graph_net_co2.append(
+        #         total_ghg_df[GlossaryCore.CO2][year_index] + total_ghg_df[GlossaryCore.CCUS][year_index]
+        #     )
 
         fig.add_trace(
             go.Scatter(
                 x=years,
-                y=graph_net_co2,
+                y=(total_ghg_df[GlossaryCore.CO2] + total_ghg_df[GlossaryCore.CCUS]).to_list(),
                 fill="tonexty",  # fill area between trace0 and trace1
                 mode="lines",
                 fillcolor="rgba(200, 200, 200, 0.0)",
