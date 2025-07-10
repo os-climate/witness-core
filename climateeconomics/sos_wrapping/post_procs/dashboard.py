@@ -232,7 +232,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         fig.add_trace(
             go.Scatter(
                 x=years,
-                y=(total_ghg_df[GlossaryCore.CO2] + total_ghg_df[GlossaryCore.CCUS]).to_list(),
+                y=(total_ghg_df[GlossaryCore.CO2] + total_ghg_df[GlossaryCore.CCUS]*1e5).to_list(),
                 fill="tonexty",  # fill area between trace0 and trace1
                 mode="lines",
                 fillcolor="rgba(200, 200, 200, 0.0)",
