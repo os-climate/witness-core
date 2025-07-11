@@ -294,7 +294,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Population",
             y_axis_name="Population (Millions)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.PopulationDfValue}{SUFFIX_VAR_IEA}",
-            witness_variable="population_df",
+            witness_variable=execution_engine.dm.get_value(f'{namespace}.population_df'),
             columns_to_plot=["population"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
