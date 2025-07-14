@@ -15,10 +15,13 @@ limitations under the License.
 '''
 
 
-def get_scenario_value(execution_engine, var_name, scenario_name, split_scenario_name: bool = True):
+def get_scenario_value(execution_engine, var_name, scenario_name, split_scenario_name: bool = True,
+                       iea_data: bool = True):
     """returns the value of a variable for the specified scenario"""
     all_scenario_varnames = execution_engine.dm.get_all_namespaces_from_var_name(var_name)
-    all_scenario_varnames = [scenario for scenario in all_scenario_varnames if 'IEA Data Preparation' not in scenario]
+    if not iea_data:
+        all_scenario_varnames = [scenario for scenario in all_scenario_varnames if
+                                 'IEA Data Preparation' not in scenario]
     if len(all_scenario_varnames) > 1:
         # multiscenario case
         if split_scenario_name:
