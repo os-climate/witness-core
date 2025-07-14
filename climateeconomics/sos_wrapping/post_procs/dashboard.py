@@ -198,11 +198,12 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
             execution_engine, GlossaryCore.TemperatureDfValue, scenario_name, split_scenario_name=False
         )
         total_ghg_df = get_scenario_value(
-            execution_engine, GlossaryCore.GHGEmissionsDfValue, scenario_name, split_scenario_name=False
+            execution_engine, f'GHGEmissions.{GlossaryCore.GHGEmissionsDetailedDfValue}', scenario_name,
+            split_scenario_name=False
         )
-        ccus_output = get_scenario_value(
-            execution_engine, GlossaryEnergy.CCUSOutputValue, scenario_name, split_scenario_name=False
-        )
+        # ccus_output = get_scenario_value(
+        #     execution_engine, GlossaryEnergy.CCUSOutputValue, scenario_name, split_scenario_name=False
+        # )
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = "Temperature and CO2 evolution"
@@ -219,19 +220,19 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         )
 
         # Creating list of values according to CO2 storage limited by CO2 captured
-        graph_gross_co2 = []
-        for year_index, year in enumerate(years):
-            carbon_captured = ccus_output[GlossaryEnergy.carbon_captured][
-                year_index
-            ]
-            graph_gross_co2.append(
-                total_ghg_df[GlossaryCore.CO2][year_index] + carbon_captured
-            )
+        # graph_net_co2 = []
+        # for year_index, year in enumerate(years):
+        #     # carbon_captured = ccus_output[GlossaryEnergy.carbon_captured][
+        #     #     year_index
+        #     # ]
+        #     graph_net_co2.append(
+        #         total_ghg_df[GlossaryCore.CO2][year_index] + total_ghg_df[GlossaryCore.CCUS][year_index]
+        #     )
 
         fig.add_trace(
             go.Scatter(
                 x=years,
-                y=total_ghg_df[GlossaryCore.CO2].to_list(),
+                y=(total_ghg_df[GlossaryCore.CO2] + total_ghg_df[GlossaryCore.CCUS]*1e5).to_list(),
                 fill="tonexty",  # fill area between trace0 and trace1
                 mode="lines",
                 fillcolor="rgba(200, 200, 200, 0.0)",
@@ -244,7 +245,7 @@ def post_processings(execution_engine, scenario_name, chart_filters=None):
         fig.add_trace(
             go.Scatter(
                 x=years,
-                y=graph_gross_co2,
+                y=total_ghg_df[GlossaryCore.CO2].to_list(),
                 name="Total CO2 emissions (before CCUS)",
             ),
             secondary_y=False,
