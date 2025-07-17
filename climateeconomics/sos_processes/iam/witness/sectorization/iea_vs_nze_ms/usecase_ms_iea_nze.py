@@ -17,13 +17,9 @@ from os.path import dirname, join
 
 import pandas as pd
 
-from climateeconomics.core.core_witness.climateeco_discipline import (
-    ClimateEcoDiscipline,
-)
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import (
     ClimateEconomicsStudyManager,
 )
-from climateeconomics.database.story_telling.story_telling_db import StDB
 from climateeconomics.sos_processes.iam.witness.sectorization.iea_vs_nze.usecase_witness_full_iea_nze import (
     Study as StudyIEANZE,
 )
