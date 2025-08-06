@@ -111,7 +111,7 @@ class Study(ClimateEconomicsStudyManager):
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
+            f'{self.study_name}.max_mda_iter': 2,
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
@@ -160,6 +160,10 @@ class Study(ClimateEconomicsStudyManager):
                                                                                            34.26931397]})
         invest_mix[f'{GlossaryEnergy.methane}.{GlossaryEnergy.Methanation}'] = 0.
         invest_mix[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.{GlossaryEnergy.BiomassFermentation}'] = 0.
+        invest_mix[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.{GlossaryEnergy.Refinery}'] = 0.
+        invest_mix[f'{GlossaryEnergy.methane}.{GlossaryEnergy.FossilGas}'] /= 6.
+        invest_mix[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.WaterGasShift}'] /= 3.
+        invest_mix[f'{GlossaryEnergy.solid_fuel}.{GlossaryEnergy.Pelletizing}'] /= 3.
 
         diet_mortality_df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'diet_mortality.csv'))
         forest_invest = pd.read_csv(os.path.join(os.path.dirname(__file__), 'data', 'forest_investment.csv'))
