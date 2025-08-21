@@ -98,3 +98,7 @@ ignore_missing_imports = true
 source = ["src"]
 omit = ["test/*"]
 # relative_files = true
+
+[tool.uv]
+extra-index-url = ["https://test.pypi.org/simple/"]
+index-strategy = "unsafe-best-match"

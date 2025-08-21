@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -21,7 +22,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse Sectorized Multi-Scenario Process',
+        'label': 'WITNESS Full vs IEA NZE MultiScenario Process',
         'description': '',
         'category': '',
         'version': '',
@@ -31,7 +32,7 @@ class ProcessBuilder(BaseProcessBuilder):
     def get_builders(self):
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness.sectorization', 'witness_sectorization')
+            'climateeconomics.sos_processes.iam.witness.sectorization', 'iea_vs_nze')
 
         scatter_scenario_name = 'scenarios'
 
@@ -45,7 +46,7 @@ class ProcessBuilder(BaseProcessBuilder):
         multi_scenario = self.ee.factory.create_multi_instance_driver(
             scatter_scenario_name, builder_cdf_list
         )
-        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_scatter_scenario', 'climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_coarse_mda')
-        #self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_scatter_scenario', 'climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_full')
+        #self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_scatter_scenario', 'climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_coarse_mda')
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_scatter_scenario', 'climateeconomics.sos_wrapping.post_procs.witness_ms.post_processing_witness_full')
 
         return multi_scenario
