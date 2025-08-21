@@ -64,6 +64,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         self.ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_dashboard': f'{self.name}',
+                   'ns_dashboard_iea': f'{self.name}',
                    f'ns_{GlossaryCore.SectorIndustry.lower()}_emissions': self.name,
                    f'ns_{GlossaryCore.SectorServices.lower()}_emissions': self.name,
                    f'ns_{GlossaryCore.SectorAgriculture.lower()}_emissions': self.name,

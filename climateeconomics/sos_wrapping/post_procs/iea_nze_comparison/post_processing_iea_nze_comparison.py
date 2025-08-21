@@ -654,7 +654,7 @@ def post_processings(execution_engine, namespace, filters):
         # get the technos
         electricity_prices_df = get_scenario_value(execution_engine,
                                                    f'{GlossaryEnergy.electricity}_{GlossaryEnergy.StreamPricesValue}',
-                                                   namespace + IEA_NAME, iea_data=True)
+                                                   f"{namespace}.{IEA_NAME}", iea_data=True)
         for techno in [var for var in electricity_prices_df.keys() if var != GlossaryEnergy.Years]:
             new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name=f"Electricity price for {techno}",

@@ -37,6 +37,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
+                   'ns_dashboard_iea': ns_scatter,
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: ns_scatter,
                    GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: ns_scatter,
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: ns_scatter,

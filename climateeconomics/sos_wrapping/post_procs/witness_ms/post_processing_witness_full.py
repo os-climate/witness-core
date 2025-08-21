@@ -62,8 +62,8 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 selected_chart_list = chart_filter.selected_values
 
-    df_paths = [f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.YearStart}',
-                f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.YearEnd}', ]
+    df_paths = [GlossaryCore.YearStart,
+                GlossaryCore.YearEnd, ]
     year_start_dict, year_end_dict = get_variables_values_per_scenario(
         execution_engine, df_paths, selected_scenarios)
     year_start, year_end = year_start_dict[selected_scenarios[0]
@@ -82,8 +82,8 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Temperature anomaly (°C above pre-industrial)'
         y_axis_name = 'Utility'
 
-        df_paths = ['MDO.WITNESS_Eval.WITNESS.Temperature change.temperature_detail_df',
-                    f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}'
+        df_paths = ['Temperature change.temperature_detail_df',
+                    f'{GlossaryCore.UtilityDfValue}'
                     ]
         (temperature_df_dict, utility_df_dict) = get_variables_values_per_scenario(
             execution_engine, df_paths, selected_scenarios)
@@ -106,8 +106,8 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Summed CO2 emissions'
         y_axis_name = 'min( Utility )'
 
-        df_paths = [f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.GHGEmissionsDfValue}',
-                    f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}',
+        df_paths = [f'{GlossaryCore.GHGEmissionsDfValue}',
+                    f'{GlossaryCore.UtilityDfValue}',
                     ]
         (co2_emissions_df_dict, utility_df_dict) = get_variables_values_per_scenario(
             execution_engine, df_paths)
@@ -132,8 +132,8 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Mean ppm'
         y_axis_name = f'Utility in {year_end}'
 
-        df_paths = [f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.GHGCycleDfValue}',
-                    f'MDO.WITNESS_Eval.WITNESS.{GlossaryCore.UtilityDfValue}',
+        df_paths = [f'{GlossaryCore.GHGCycleDfValue}',
+                    f'{GlossaryCore.UtilityDfValue}',
                     ]
         (carboncycle_detail_df_dict, utility_df_dict) = get_variables_values_per_scenario(
             execution_engine, df_paths)
@@ -260,7 +260,10 @@ def get_variables_values_per_scenario(execution_engine, varnames, scenario_list=
     for i, variable in enumerate(varnames):
         all_scenarios_variables_names = execution_engine.dm.get_all_namespaces_from_var_name(variable)
         for scenario in scenario_list:
-            scenario_variable = list(filter(lambda x: scenario in x, all_scenarios_variables_names))[0]
+            valid_variables = list(filter(lambda x: scenario in x, all_scenarios_variables_names))
+            assert1 = len(valid_variables) == 1
+            assert assert1
+            scenario_variable = valid_variables[0]
             scenario_variable_value = execution_engine.dm.get_value(scenario_variable)
             df_per_scenario_dicts[i][scenario] = scenario_variable_value
     return df_per_scenario_dicts
