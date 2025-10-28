@@ -48,7 +48,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     # fixme : dict of variables used to force update of namespace used only by post-proc modules OR namespace that only belongs to dynamic variables
     cheat_variables_dict = \
-        {'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
+        {
+            'cheat_var_to_update_ns_dashboard_in_ms_mdo': {'type': 'float','namespace':'ns_dashboard', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
+            'cheat_var_dashboard_iea': {'type': 'float','namespace':'ns_dashboard_iea', 'visibility':'Shared', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'cheat_var_to_update_ns_regions_in_ms_mdo': {'type': 'float', 'namespace': GlossaryCore.NS_REGIONALIZED_POST_PROC,
                                                        'visibility': 'Shared', 'default': 0.0, 'unit': '-',
                                                        'user_level': 3},

@@ -56,6 +56,7 @@ class DamageDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_dashboard': f'{self.name}',
+                   'ns_dashboard_iea': f'{self.name}',
                    GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: f'{self.name}',
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
@@ -110,6 +111,7 @@ class DamageDiscTest(unittest.TestCase):
         self.model_name = 'damage'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   'ns_dashboard_iea': f'{self.name}',
                    GlossaryCore.NS_REGIONALIZED_POST_PROC: f'{self.name}',
                    GlossaryCore.NS_SECTORS_POST_PROC_EMISSIONS: f'{self.name}',
                    GlossaryCore.NS_SECTORS_POST_PROC_GDP: f'{self.name}',

@@ -15,16 +15,33 @@ limitations under the License.
 '''
 
 
-def get_scenario_value(execution_engine, var_name, scenario_name, split_scenario_name: bool = True):
+def get_scenario_value(execution_engine, var_name, scenario_name, split_scenario_name: bool = True,
+                       iea_data: bool = False):
     """returns the value of a variable for the specified scenario"""
     all_scenario_varnames = execution_engine.dm.get_all_namespaces_from_var_name(var_name)
+    if not iea_data:
+        all_scenario_varnames = [scenario for scenario in all_scenario_varnames if
+                                 'IEA Data Preparation' not in scenario]
+
+    else:
+        all_scenario_varnames = [scenario for scenario in all_scenario_varnames if
+                                 'IEA Data Preparation' in scenario]
     if len(all_scenario_varnames) > 1:
         # multiscenario case
+        base_scenario_name = scenario_name
         if split_scenario_name:
-            scenario_name = scenario_name.split('.')[2]
+            scenario_name = base_scenario_name.split('.')[2]
+        assert1 = len(list(filter(lambda x: scenario_name in x, all_scenario_varnames))) == 1
+        if not assert1:
+            scenario_name = base_scenario_name.split('.')[1]
+            assert2 = len(list(filter(lambda x: scenario_name in x, all_scenario_varnames))) == 1
+            assert assert2
+
         selected_scenario_varname = list(filter(lambda x: scenario_name in x, all_scenario_varnames))[0]
     else:
         # not multiscenario case
+        assert1 = len(all_scenario_varnames) == 1
+        assert assert1
         selected_scenario_varname = all_scenario_varnames[0]
     value_selected_scenario = execution_engine.dm.get_value(selected_scenario_varname)
     return value_selected_scenario

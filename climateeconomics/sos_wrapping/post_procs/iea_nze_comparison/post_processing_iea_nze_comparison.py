@@ -28,7 +28,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart,
 )
 
-from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.core.tools.post_proc import get_scenario_value
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.post_procs.iea_data_preparation.iea_data_preparation_discipline import (
@@ -212,24 +211,32 @@ def post_processings(execution_engine, namespace, filters):
             sum_columns: str = None,
             witness_scaling: dict = None,
     ):
-        if isinstance(witness_variable, str):
-            witness_variable = [witness_variable]
-        if len(witness_variable) == 1:
+        witness_value = None
+        if isinstance(witness_variable, (str,list)):
+            if isinstance(witness_variable, str):
+                witness_variable = [witness_variable]
+            if len(witness_variable) == 1:
+                columns_to_plot = [columns_to_plot]
+        else:
+            witness_value = witness_variable
             columns_to_plot = [columns_to_plot]
 
-        # Find dataframe whose namespace "path" contains witness_var_path
-        df_witness_list = []
-        for wv in witness_variable:
-            df = get_df_from_var_name(wv)
-            if df is None:
-                logging.warning(f"No data found for {wv} in {namespace}")
-                return None
-            else:
-                if witness_scaling is not None and wv in witness_scaling:
-                    # Apply scaling if necessary
-                    for c, s in witness_scaling[wv].items():
-                        df[c] = df[c] * s
-                df_witness_list.append(df)
+        if witness_value is not None:
+            df_witness_list = [witness_value]
+        else:
+            # Find dataframe whose namespace "path" contains witness_var_path
+            df_witness_list = []
+            for wv in witness_variable:
+                df = get_df_from_var_name(wv)
+                if df is None:
+                    logging.warning(f"No data found for {wv} in {namespace}")
+                    return None
+                else:
+                    if witness_scaling is not None and wv in witness_scaling:
+                        # Apply scaling if necessary
+                        for c, s in witness_scaling[wv].items():
+                            df[c] = df[c] * s
+                    df_witness_list.append(df)
 
         df_iea = get_df_from_var_name(iea_variable)
         if df_iea is None:
@@ -287,7 +294,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Population",
             y_axis_name="Population (Millions)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.PopulationDfValue}{SUFFIX_VAR_IEA}",
-            witness_variable="population_df",
+            witness_variable=execution_engine.dm.get_value(f'{namespace}.population_df'),
             columns_to_plot=["population"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -316,7 +323,7 @@ def post_processings(execution_engine, namespace, filters):
             chart_name="Temperature",
             y_axis_name="Increase in atmospheric temperature (°C)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.TemperatureDfValue}{SUFFIX_VAR_IEA}",
-            witness_variable="temperature_df",
+            witness_variable=execution_engine.dm.get_value(f'{namespace}.temperature_df'),
             columns_to_plot=["temp_atmo"],
             args_to_plot={
                 "args_0": {'y_min_zero': True},
@@ -327,11 +334,14 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
     if "CO2_emissions" in chart_list:
+        df = execution_engine.dm.get_value(f'{namespace}.GHGEmissions.{GlossaryCore.GHGEmissionsDetailedDfValue}')[
+            ['years', 'CO2', 'CCUS']]
+        df[GlossaryCore.CO2] = df['CO2'] + df['CCUS']
         new_chart = create_chart_comparing_WITNESS_and_IEA(
             chart_name="CO2 emissions of the energy sector",
             y_axis_name="Total CO2 emissions (Gt)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.CO2EmissionsGtValue}{SUFFIX_VAR_IEA}",
-            witness_variable=f"{GlossaryCore.GHGEnergyEmissionsDfValue}",
+            witness_variable=df,
             columns_to_plot=[GlossaryCore.CO2],
             args_to_plot={
                 "args_1": {"df_label": "WITNESS"},
@@ -572,13 +582,14 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
         # "Modern gaseous bioenergy"
         new_chart = create_chart_comparing_WITNESS_and_IEA(
-            chart_name="Energy from gaseous bionergy",
+            chart_name="Energy from gaseous bioenergy",
             y_axis_name="Energy (TWh)",
             iea_variable=f"{IEA_NAME}.{GlossaryEnergy.biogas}_{GlossaryEnergy.AnaerobicDigestion}_techno_production{SUFFIX_VAR_IEA}",
             witness_variable=f"EnergyMix.biogas.{GlossaryEnergy.StreamProductionValue}",
             columns_to_plot=["biogas"],
             args_to_plot={"args_2": {"display_type": "scatter", "col_suffix": "IEA"}},
-            # sum_columns="WITNESS"
+            witness_scaling={f"EnergyMix.biogas.{GlossaryEnergy.StreamProductionValue}": {
+                "biogas": 1e3}},
         )
         instanciated_charts.append(new_chart)
 
@@ -643,7 +654,7 @@ def post_processings(execution_engine, namespace, filters):
         # get the technos
         electricity_prices_df = get_scenario_value(execution_engine,
                                                    f'{GlossaryEnergy.electricity}_{GlossaryEnergy.StreamPricesValue}',
-                                                   namespace + IEA_NAME)
+                                                   f"{namespace}.{IEA_NAME}", iea_data=True)
         for techno in [var for var in electricity_prices_df.keys() if var != GlossaryEnergy.Years]:
             new_chart = create_chart_comparing_WITNESS_and_IEA(
                 chart_name=f"Electricity price for {techno}",
@@ -659,23 +670,23 @@ def post_processings(execution_engine, namespace, filters):
             )
             instanciated_charts.append(new_chart)
 
-    if "Land_use" in chart_list:
-        land_use_df = get_scenario_value(execution_engine, f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}",
-                                         namespace + IEA_NAME)
-        for surface in [var for var in land_use_df.keys() if var != GlossaryEnergy.Years]:
-            new_chart = create_chart_comparing_WITNESS_and_IEA(
-                chart_name="Land use",
-                y_axis_name=f"{surface}",
-                iea_variable=f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}{SUFFIX_VAR_IEA}",
-                witness_variable="Land Use.land_surface_detail_df",
-                columns_to_plot=[surface],
-                args_to_plot={
-                    "args_0": {'y_min_zero': True},
-                    "args_1": {"df_label": "WITNESS"},
-                    "args_2": {"display_type": "scatter", "df_label": "IEA"},
-                },
-            )
-            instanciated_charts.append(new_chart)
+    # if "Land_use" in chart_list:
+    #     land_use_df = get_scenario_value(execution_engine, f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}",
+    #                                      namespace + IEA_NAME)
+    #     for surface in [var for var in land_use_df.keys() if var != GlossaryEnergy.Years]:
+    #         new_chart = create_chart_comparing_WITNESS_and_IEA(
+    #             chart_name="Land use",
+    #             y_axis_name=f"{surface}",
+    #             iea_variable=f"{IEA_NAME}.{LandUseV2.LAND_SURFACE_DETAIL_DF}{SUFFIX_VAR_IEA}",
+    #             witness_variable="Land Use.land_surface_detail_df",
+    #             columns_to_plot=[surface],
+    #             args_to_plot={
+    #                 "args_0": {'y_min_zero': True},
+    #                 "args_1": {"df_label": "WITNESS"},
+    #                 "args_2": {"display_type": "scatter", "df_label": "IEA"},
+    #             },
+    #         )
+    #         instanciated_charts.append(new_chart)
 
     if "Test" not in chart_list:
         # if not in coarse, add primary energy chart
